@@ -1,0 +1,1083 @@
+<!DOCTYPE html> 
+<html lang="pt-BR"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<meta name="apple-mobile-web-app-capable" content="yes"> 
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> 
+<meta name="apple-mobile-web-app-title" content="Cartões"> 
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231a1814'/%3E%3Crect x='10' y='30' width='80' height='50' rx='8' fill='%23c84b0c'/%3E%3Crect x='10' y='42' width='80' height='12' fill='%23a83a08'/%3E%3Crect x='18' y='62' width='20' height='8' rx='3' fill='%23fff' opacity='.7'/%3E%3C/svg%3E"> 
+<title>Controle de Cartões</title> 
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"> 
+<style> 
+:root{ 
+  --bg:#f5f3ef;--surface:#fff;--surface2:#f0ede8;--border:#e2ddd7; 
+  --text:#1a1814;--muted:#8a8070;--accent:#c84b0c;--accent2:#1a6b4a; 
+  --warn:#b8860b;--danger:#c0392b;--success:#1a6b4a; 
+  --bradesco:#cc092f;--santander:#ec0000;--picpay:#21c25e; 
+  --radius:12px;--shadow:0 2px 12px rgba(0,0,0,.08); 
+} 
+*{margin:0;padding:0;box-sizing:border-box;} 
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;min-height:100vh;} 
+header{background:var(--text);color:#fff;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;} 
+.logo{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:8px;} 
+.logo span{color:var(--accent);font-size:1.2rem;} 
+.header-actions{display:flex;gap:6px;align-items:center;} 
+#data-atual{font-size:.7rem;color:#aaa;margin-right:4px;} 
+.btn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;transition:all .18s;display:inline-flex;align-items:center;gap:5px;} 
+.btn-primary{background:var(--accent);color:#fff;} 
+.btn-primary:hover{background:#a83a08;} 
+.btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);} 
+.btn-sm{padding:5px 10px;font-size:.75rem;} 
+.btn-outline{background:none;border:1px solid var(--border);color:var(--text);} 
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);} 
+.btn-danger{background:none;border:1px solid #fcc;color:var(--danger);} 
+.btn-danger:hover{background:var(--danger);color:#fff;} 
+.tabs{background:var(--surface);border-bottom:2px solid var(--border);padding:0 16px;display:flex;overflow-x:auto;scrollbar-width:none;} 
+.tabs::-webkit-scrollbar{display:none;} 
+.tab{padding:12px 16px;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);border:none;background:none;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;} 
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);} 
+main{padding:18px 16px;max-width:1100px;margin:0 auto;} 
+.page{display:none;} 
+.page.active{display:block;animation:fadeIn .2s;} 
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}} 
+.totais-bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;} 
+@media(min-width:700px){.totais-bar{grid-template-columns:repeat(4,1fr);}} 
+.total-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);} 
+.total-card .label{font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:5px;} 
+.total-card .valor{font-size:1.2rem;font-weight:800;letter-spacing:-0.5px;} 
+.total-card .valor.danger{color:var(--danger);} 
+.total-card .valor.success{color:var(--success);} 
+.total-card .valor.warn{color:var(--warn);} 
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-top:20px;} 
+.section-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);} 
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:20px;} 
+.card-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);transition:transform .2s;} 
+.card-chip:hover{transform:translateY(-2px);} 
+.chip-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;} 
+.bank-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 7px;border-radius:4px;color:#fff;} 
+.bank-label.bradesco{background:var(--bradesco);} 
+.bank-label.santander{background:var(--santander);} 
+.bank-label.picpay{background:var(--picpay);} 
+.venc-info{font-size:.68rem;color:var(--muted);} 
+.chip-name{font-weight:700;font-size:.88rem;margin-bottom:10px;} 
+.bar-wrap{height:5px;background:var(--surface2);border-radius:3px;margin-bottom:5px;} 
+.bar-fill{height:100%;border-radius:3px;transition:width .5s;} 
+.limit-nums{display:flex;justify-content:space-between;font-size:.68rem;} 
+.fatura-next{margin-top:9px;background:var(--surface2);border-radius:7px;padding:6px 9px;display:flex;justify-content:space-between;font-size:.75rem;} 
+.fn-label{color:var(--muted);} 
+.fn-val{font-weight:700;color:var(--accent);} 
+.faturas-container{display:flex;flex-direction:column;gap:9px;} 
+.fatura-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);} 
+.fatura-row.urgente{border-left:4px solid var(--danger);} 
+.fatura-row.vencendo{border-left:4px solid var(--warn);} 
+.fatura-row.ok{border-left:4px solid var(--success);} 
+.fatura-row.passada{border-left:4px solid #ccc;opacity:.7;} 
+.dia-circle{width:44px;height:44px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;} 
+.dia-circle .d{font-size:1rem;font-weight:800;line-height:1;} 
+.dia-circle .m{font-size:.58rem;text-transform:uppercase;} 
+.fatura-info{flex:1;} 
+.fi-nome{font-weight:600;font-size:.88rem;} 
+.fi-sub{font-size:.7rem;color:var(--muted);margin-top:2px;} 
+.fatura-valor{font-size:1rem;font-weight:800;} 
+.table-toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center;} 
+.filter-chip{padding:5px 12px;border-radius:20px;font-size:.73rem;font-weight:600;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all .18s;} 
+.filter-chip.active,.filter-chip:hover{background:var(--accent);color:#fff;border-color:var(--accent);} 
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);} 
+table{width:100%;border-collapse:collapse;font-size:.82rem;} 
+thead{background:var(--surface2);} 
+thead th{text-align:left;padding:9px 12px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);white-space:nowrap;} 
+tbody tr{border-top:1px solid var(--border);transition:background .12s;} 
+tbody tr:hover{background:#faf8f5;} 
+tbody td{padding:9px 12px;vertical-align:middle;} 
+.tag{display:inline-block;padding:2px 7px;border-radius:5px;font-size:.68rem;font-weight:700;} 
+.tag.bradesco{background:#fce8ec;color:var(--bradesco);} 
+.tag.santander{background:#fce8e8;color:var(--santander);} 
+.tag.picpay{background:#e8f9ef;color:var(--picpay);} 
+.parc-tag{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.7rem;background:#ece8ff;color:#5b3fd4;font-weight:600;} 
+.parc-tag.passada{background:#eee;color:#999;} 
+.action-btns{display:flex;gap:3px;} 
+.icon-btn{width:26px;height:26px;border-radius:6px;border:none;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:all .15s;} 
+.icon-btn.edit{background:#e8f0fe;color:#1967d2;} 
+.icon-btn.edit:hover{background:#1967d2;color:#fff;} 
+.icon-btn.del{background:#fce8e8;color:var(--danger);} 
+.icon-btn.del:hover{background:var(--danger);color:#fff;} 
+.empty-state{text-align:center;padding:48px 16px;color:var(--muted);} 
+.empty-state .icon{font-size:2.5rem;margin-bottom:10px;} 
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);z-index:200;align-items:center;justify-content:center;padding:12px;} 
+.modal-overlay.open{display:flex;} 
+.modal{background:var(--surface);border-radius:18px;width:100%;max-width:500px;max-height:93vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);} 
+.modal-hd{padding:20px 20px 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;} 
+.modal-hd h2{font-size:1rem;font-weight:700;} 
+.close-btn{width:28px;height:28px;border-radius:7px;border:none;background:var(--surface2);color:var(--muted);cursor:pointer;font-size:.9rem;} 
+.modal-bd{padding:0 20px 20px;} 
+.form-group{margin-bottom:13px;} 
+.form-group label{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;} 
+.form-group input,.form-group select{width:100%;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;transition:border-color .18s;} 
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent);} 
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;} 
+.modal-ft{padding:0 20px 20px;display:flex;gap:8px;justify-content:flex-end;} 
+.info-box{background:#fff8e8;border:1px solid #f0d070;border-radius:8px;padding:9px 12px;font-size:.78rem;color:#7a5c00;margin-bottom:12px;line-height:1.5;} 
+.parcelas-edit-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:6px;} 
+.parcelas-edit-table th{text-align:left;padding:6px 9px;background:var(--surface2);font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);} 
+.parcelas-edit-table td{padding:5px 7px;border-top:1px solid var(--border);} 
+.parcelas-edit-table input{width:100%;padding:4px 7px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;background:var(--surface2);font-family:'Outfit',sans-serif;} 
+.parcelas-edit-table input:focus{outline:none;border-color:var(--accent);} 
+.fatura-detalhe{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);} 
+.fatura-detalhe-hd{padding:12px 16px;background:var(--surface2);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;} 
+.fd-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;} 
+.fd-total{font-size:1rem;font-weight:800;} 
+.fd-row{display:flex;align-items:center;gap:10px;padding:9px 16px;border-top:1px solid var(--border);font-size:.82rem;} 
+.fd-desc{flex:1;} 
+.fd-parc{min-width:55px;} 
+.fd-val{min-width:85px;text-align:right;font-weight:600;} 
+.backup-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;max-width:480px;box-shadow:var(--shadow);margin-bottom:14px;} 
+.backup-section h3{font-size:.88rem;font-weight:700;margin-bottom:5px;} 
+.backup-section p{font-size:.8rem;color:var(--muted);margin-bottom:12px;line-height:1.6;} 
+.iphone-box{background:linear-gradient(135deg,#1a1814,#2d2820);border-radius:var(--radius);padding:20px;max-width:480px;color:#fff;margin-bottom:14px;} 
+.iphone-box h3{font-size:.95rem;font-weight:700;margin-bottom:12px;color:var(--accent);} 
+.iphone-step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;} 
+.iphone-step .num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;} 
+.iphone-step .txt{font-size:.82rem;line-height:1.5;color:#ddd;} 
+.iphone-step .txt strong{color:#fff;} 
+.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;padding:20px;} 
+.confirm-overlay.open{display:flex;} 
+.confirm-box{background:var(--surface);border-radius:16px;padding:24px;max-width:320px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;} 
+.confirm-box .cb-icon{font-size:2rem;margin-bottom:10px;} 
+.confirm-box .cb-title{font-weight:700;font-size:1rem;margin-bottom:6px;} 
+.confirm-box .cb-msg{font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.5;} 
+.confirm-box .cb-btns{display:flex;gap:10px;justify-content:center;} 
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:10px 20px;border-radius:30px;font-size:.82rem;font-weight:500;transition:all .3s;z-index:500;opacity:0;white-space:nowrap;} 
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;} 
+.btn-pagar{background:var(--success);color:#fff;border:none;} 
+.btn-pagar:hover{background:#155a3a;} 
+.pago-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;background:#d4edda;color:var(--success);} 
+.fatura-detalhe.paga{opacity:.6;} 
+.fatura-detalhe.paga .fatura-detalhe-hd{background:#f0faf4;} 
+@media print{ 
+  header,.tabs,.table-toolbar,.action-btns,.btn,.icon-btn,.modal-overlay,.no-print{display:none!important;} 
+  body{background:#fff!important;font-size:11px;} 
+  main{padding:0!important;max-width:none!important;} 
+  .page{display:block!important;} 
+  .page:not(.active){display:none!important;} 
+  .fatura-detalhe{break-inside:avoid;border:1px solid #ccc!important;box-shadow:none!important;} 
+  .total-card,.card-chip{border:1px solid #ccc!important;box-shadow:none!important;} 
+} 
+</style> 
+</head> 
+<body> 
+<header> 
+  <div class="logo"><span>💳</span> Controle de Cartões</div> 
+  <div class="header-actions"> 
+    <span id="data-atual"></span> 
+    <button class="btn btn-ghost btn-sm no-print" onclick="showPage('backup')">⬇ Backup</button> 
+    <button class="btn btn-primary btn-sm no-print" onclick="abrirModalCompra()">＋ Nova</button> 
+  </div> 
+</header> 
+<div class="tabs"> 
+  <button class="tab active" onclick="showPage('dashboard')">Dashboard</button> 
+  <button class="tab" onclick="showPage('lancamentos')">Lançamentos</button> 
+  <button class="tab" onclick="showPage('faturas')">Faturas</button> 
+  <button class="tab" onclick="showPage('limites')">Limites</button> 
+  <button class="tab" onclick="showPage('backup')">Backup</button> 
+</div> 
+<main> 
+<!-- DASHBOARD --> 
+<div class="page active" id="page-dashboard"> 
+  <div class="totais-bar" id="totais-bar"></div> 
+  <div class="section-head"><div class="section-title">Meus Cartões</div></div> 
+  <div class="cards-grid" id="cards-grid"></div> 
+  <div class="section-head"> 
+    <div class="section-title">Faturas — Todas</div> 
+    <div class="no-print" style="display:flex;gap:6px;"> 
+      <select id="dash-filtro-periodo" onchange="renderDashboard()" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"> 
+        <option value="todas">Todas as faturas</option> 
+        <option value="futuras" selected>Próximas faturas</option> 
+        <option value="passadas">Faturas passadas</option> 
+      </select> 
+    </div> 
+  </div> 
+  <div class="faturas-container" id="faturas-proximas"></div> 
+</div> 
+<!-- LANÇAMENTOS --> 
+<div class="page" id="page-lancamentos"> 
+  <div class="table-toolbar"> 
+    <button class="filter-chip active" onclick="filtrar('todos',this)">Todos</button> 
+    <button class="filter-chip" onclick="filtrar('bradesco1',this)">BRA 01</button> 
+    <button class="filter-chip" onclick="filtrar('bradesco10',this)">BRA 10</button> 
+    <button class="filter-chip" onclick="filtrar('bradesco20',this)">BRA 20</button> 
+    <button class="filter-chip" onclick="filtrar('santander',this)">Santander</button> 
+    <button class="filter-chip" onclick="filtrar('picpay',this)">PicPay</button> 
+    <div style="flex:1"></div> 
+    <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button> 
+  </div> 
+  <div class="tbl-wrap"> 
+    <table> 
+      <thead><tr> 
+        <th>Dt. Compra</th><th>Descrição</th><th>Cartão</th><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Status</th><th class="no-print"></th> 
+      </tr></thead> 
+      <tbody id="tbody-lanc"></tbody> 
+    </table> 
+    <div class="empty-state" id="empty-lanc" style="display:none"><div class="icon">🧾</div><div>Nenhum lançamento</div></div> 
+  </div> 
+</div> 
+<!-- FATURAS --> 
+<div class="page" id="page-faturas"> 
+  <div class="section-head"> 
+    <div class="section-title">Faturas Detalhadas</div> 
+    <div style="display:flex;gap:8px;align-items:center;" class="no-print"> 
+      <select id="filtro-fatura-cartao" onchange="renderFaturas()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"> 
+        <option value="todos">Todos os cartões</option> 
+        <option value="bradesco1">BRA 01</option> 
+        <option value="bradesco10">BRA 10</option> 
+        <option value="bradesco20">BRA 20</option> 
+        <option value="santander">Santander</option> 
+        <option value="picpay">PicPay</option> 
+      </select> 
+      <select id="filtro-fatura-periodo" onchange="renderFaturas()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"> 
+        <option value="todas">Todas</option> 
+        <option value="futuras">A vencer</option> 
+        <option value="passadas">Passadas</option> 
+      </select> 
+      <button class="btn btn-outline btn-sm" onclick="window.print()">🖨 Imprimir</button> 
+    </div> 
+  </div> 
+  <div id="faturas-detalhe-container"></div> 
+</div> 
+<!-- LIMITES --> 
+<div class="page" id="page-limites"> 
+  <div class="section-head"><div class="section-title">Situação dos Limites</div></div> 
+  <div class="cards-grid" id="limites-grid"></div> 
+  <div class="section-head"><div class="section-title">Editar Limite</div></div> 
+  <div class="backup-section"> 
+    <div class="form-group"><label>Cartão</label> 
+      <select id="lim-cartao"> 
+        <option value="bradesco">Bradesco (todos) — limite unificado</option> 
+        <option value="santander">Santander</option> 
+        <option value="picpay">PicPay</option> 
+      </select> 
+    </div> 
+    <div class="form-group"><label>Novo Limite Total (R$)</label> 
+      <input type="number" id="lim-valor" placeholder="Ex: 170000"> 
+    </div> 
+    <button class="btn btn-primary" onclick="salvarLimite()">Salvar</button> 
+  </div> 
+</div> 
+<!-- BACKUP --> 
+<div class="page" id="page-backup"> 
+  <div class="iphone-box"> 
+    <h3>📱 Adicionar à tela inicial do iPhone</h3> 
+    <div class="iphone-step"><div class="num">1</div><div class="txt">Abra este arquivo no <strong>Safari</strong> (não Chrome)</div></div> 
+    <div class="iphone-step"><div class="num">2</div><div class="txt">Toque no ícone de <strong>compartilhar</strong> (quadrado com seta ↑) na barra inferior</div></div> 
+    <div class="iphone-step"><div class="num">3</div><div class="txt">Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong></div></div> 
+    <div class="iphone-step"><div class="num">4</div><div class="txt">Confirme o nome <strong>"Cartões"</strong> e toque em <strong>Adicionar</strong></div></div> 
+    <div class="iphone-step"><div class="num">5</div><div class="txt">O ícone 💳 aparecerá na sua tela inicial — funciona <strong>sem internet!</strong></div></div> 
+  </div> 
+  <div class="backup-section"> 
+    <h3>📤 Exportar backup</h3> 
+    <p>Salve no iCloud Drive, Google Drive ou WhatsApp para usar em outro dispositivo.</p> 
+    <button class="btn btn-primary" onclick="exportar()">Baixar backup.json</button> 
+  </div> 
+  <div class="backup-section"> 
+    <h3>📥 Importar backup</h3> 
+    <p>Restaura todos os dados a partir de um arquivo .json exportado anteriormente.</p> 
+    <input type="file" id="imp-file" accept=".json" style="display:none" onchange="importar(event)"> 
+    <button class="btn btn-outline" onclick="document.getElementById('imp-file').click()">Selecionar arquivo</button> 
+  </div> 
+  <div class="backup-section"> 
+    <h3>⚠️ Limpar dados</h3> 
+    <p>Remove todos os lançamentos deste dispositivo. Faça backup antes!</p> 
+    <button class="btn btn-danger" onclick="limparTudo()">Limpar tudo</button> 
+  </div> 
+</div> 
+</main> 
+<!-- MODAL NOVA COMPRA --> 
+<div class="modal-overlay" id="modal-compra"> 
+  <div class="modal"> 
+    <div class="modal-hd"><h2>Nova Compra</h2><button class="close-btn" onclick="fecharModal('modal-compra')">✕</button></div> 
+    <div class="modal-bd"> 
+      <div class="info-box" id="fechamento-info">Selecione o cartão e a data para ver a fatura de destino.</div> 
+      <div class="form-group"><label>Descrição</label><input type="text" id="c-desc" placeholder="Ex: Supermercado Extra"></div> 
+      <div class="form-row"> 
+        <div class="form-group"><label>Data da Compra</label><input type="date" id="c-data" onchange="calcularFechamento()"></div> 
+        <div class="form-group"><label>Valor Total (R$)</label><input type="number" id="c-valor" placeholder="0.00" step="0.01" oninput="calcularParcelas()"></div> 
+      </div> 
+      <div class="form-row"> 
+        <div class="form-group"><label>Cartão</label> 
+          <select id="c-cartao" onchange="calcularFechamento();calcularParcelas()"> 
+            <option value="bradesco1">BRA 01 — dia 01</option> 
+            <option value="bradesco10">BRA 10 — dia 10</option> 
+            <option value="bradesco20">BRA 20 — dia 20</option> 
+            <option value="santander">Santander — dia 15</option> 
+            <option value="picpay">PicPay — dia 25</option> 
+          </select> 
+        </div> 
+        <div class="form-group"><label>Parcelas</label> 
+          <select id="c-parcelas" onchange="calcularParcelas()"> 
+            <option value="1">1x (à vista)</option> 
+            <option value="2">2x</option><option value="3">3x</option><option value="4">4x</option> 
+            <option value="5">5x</option><option value="6">6x</option><option value="7">7x</option> 
+            <option value="8">8x</option><option value="9">9x</option><option value="10">10x</option> 
+            <option value="11">11x</option><option value="12">12x</option><option value="18">18x</option> 
+            <option value="24">24x</option> 
+          </select> 
+        </div> 
+      </div> 
+      <div id="parcelas-editor-wrap" style="display:none;"> 
+        <div class="form-group" style="margin-bottom:5px;"><label>Parcelas — edite valores e datas se necessário</label></div> 
+        <div style="overflow-x:auto;border-radius:7px;border:1px solid var(--border);"> 
+          <table class="parcelas-edit-table"> 
+            <thead><tr><th>#</th><th>Valor (R$)</th><th>Vencimento</th></tr></thead> 
+            <tbody id="parcelas-edit-tbody"></tbody> 
+          </table> 
+        </div> 
+      </div> 
+    </div> 
+    <div class="modal-ft"> 
+      <button class="btn btn-outline" onclick="fecharModal('modal-compra')">Cancelar</button> 
+      <button class="btn btn-primary" onclick="salvarCompra()">Salvar</button> 
+    </div> 
+  </div> 
+</div> 
+<!-- MODAL EDITAR --> 
+<div class="modal-overlay" id="modal-edit"> 
+  <div class="modal" style="max-width:400px;"> 
+    <div class="modal-hd"><h2>✏️ Editar Lançamento</h2><button class="close-btn" onclick="fecharModal('modal-edit')">✕</button></div> 
+    <div class="modal-bd"> 
+      <div style="background:#fff8e8;border:1px solid #f0d070;border-radius:8px;padding:9px 12px;font-size:.78rem;color:#7a5c00;margin-bottom:14px;"> 
+        ✏️ Edita apenas <strong>esta parcela</strong>. Para excluir a compra inteira, use o botão 🗑 abaixo. 
+      </div> 
+      <div class="form-group"><label>Descrição</label><input type="text" id="ep-desc"></div> 
+      <div class="form-row"> 
+        <div class="form-group"><label>Data da Compra</label><input type="date" id="ep-datacompra"></div> 
+        <div class="form-group"><label>Vencimento</label><input type="date" id="ep-venc"></div> 
+      </div> 
+      <div class="form-group"><label>Valor (R$)</label><input type="number" id="ep-valor" step="0.01"></div> 
+``` 
+  <!-- TROCAR CARTÃO --> 
+  <div style="border-top:1px solid var(--border);margin:14px 0 14px;"></div> 
+  <div class="form-group"> 
+    <label>🔄 Trocar Cartão</label> 
+    <select id="ep-cartao"> 
+      <option value="bradesco1">BRA 01 — Bradesco dia 01</option> 
+      <option value="bradesco10">BRA 10 — Bradesco dia 10</option> 
+      <option value="bradesco20">BRA 20 — Bradesco dia 20</option> 
+      <option value="santander">Santander — dia 15</option> 
+      <option value="picpay">PicPay — dia 25</option> 
+    </select> 
+  </div> 
+  <div class="form-group"> 
+    <label>Aplicar troca em</label> 
+    <select id="ep-trocar-escopo"> 
+      <option value="parcela">Somente esta parcela</option> 
+      <option value="todas">Todas as parcelas desta compra</option> 
+    </select> 
+  </div> 
+  <input type="hidden" id="ep-uid"> 
+  <input type="hidden" id="ep-compraid"> 
+  <input type="hidden" id="ep-cartao-original"> 
+</div> 
+<div class="modal-ft" style="justify-content:space-between;"> 
+  <button class="btn btn-danger btn-sm" onclick="deletarCompraModal()">🗑 Excluir compra inteira</button> 
+  <div style="display:flex;gap:8px;"> 
+    <button class="btn btn-outline" onclick="fecharModal('modal-edit')">Cancelar</button> 
+    <button class="btn btn-primary" onclick="salvarEdicao()">Salvar</button> 
+  </div> 
+</div> 
+``` 
+  </div> 
+</div> 
+<!-- MODAL CONFIRMAÇÃO --> 
+<div class="confirm-overlay" id="confirm-overlay"> 
+  <div class="confirm-box"> 
+    <div class="cb-icon">🗑</div> 
+    <div class="cb-title">Excluir compra?</div> 
+    <div class="cb-msg" id="confirm-msg">Esta ação removerá esta compra e todas as suas parcelas.</div> 
+    <div class="cb-btns"> 
+      <button class="btn btn-outline" onclick="confirmarNao()">Cancelar</button> 
+      <button class="btn btn-danger" style="background:var(--danger);color:#fff;" onclick="confirmarSim()">Excluir</button> 
+    </div> 
+  </div> 
+</div> 
+<!-- MODAL PAGAMENTO --> 
+<div class="modal-overlay" id="modal-pagamento"> 
+  <div class="modal" style="max-width:400px;"> 
+    <div class="modal-hd"><h2>💰 Registrar Pagamento</h2><button class="close-btn" onclick="fecharModal('modal-pagamento')">✕</button></div> 
+    <div class="modal-bd"> 
+      <div style="background:#f0faf4;border:1px solid #b8dfc9;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:.85rem;"> 
+        <div id="pag-info-cartao" style="font-weight:700;margin-bottom:4px;"></div> 
+        <div id="pag-info-venc" style="color:var(--muted);font-size:.78rem;"></div> 
+        <div id="pag-info-total" style="font-size:1.1rem;font-weight:800;color:var(--text);margin-top:6px;"></div> 
+      </div> 
+      <div class="form-group"> 
+        <label>Valor Pago (R$)</label> 
+        <input type="number" id="pag-valor" step="0.01" placeholder="0,00"> 
+        <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Preencha o valor exato pago. O limite será liberado proporcionalmente.</div> 
+      </div> 
+      <div class="form-group"> 
+        <label>Data do Pagamento</label> 
+        <input type="date" id="pag-data"> 
+      </div> 
+      <input type="hidden" id="pag-cartao"> 
+      <input type="hidden" id="pag-venc"> 
+      <input type="hidden" id="pag-total"> 
+    </div> 
+    <div class="modal-ft"> 
+      <button class="btn btn-outline" onclick="fecharModal('modal-pagamento')">Cancelar</button> 
+      <button class="btn btn-pagar" onclick="confirmarPagamento()">✓ Confirmar Pagamento</button> 
+    </div> 
+  </div> 
+</div> 
+<div class="toast" id="toast"></div> 
+<script> 
+// ============================================================ 
+// CARTÕES CONFIG 
+// ============================================================ 
+const CARTOES = { 
+  bradesco1:  {nome:'BRA 01', banco:'Bradesco', venc:1,  fechDias:10, tag:'bradesco'}, 
+  bradesco10: {nome:'BRA 10', banco:'Bradesco', venc:10, fechDias:10, tag:'bradesco'}, 
+  bradesco20: {nome:'BRA 20', banco:'Bradesco', venc:20, fechDias:10, tag:'bradesco'}, 
+  santander:  {nome:'Santander', banco:'Santander', venc:15, fechDias:5, tag:'santander'}, 
+  picpay:     {nome:'PicPay', banco:'PicPay', venc:25, fechDias:10, tag:'picpay'}, 
+}; 
+// ============================================================ 
+// SEED — dados das faturas (gerado automaticamente) 
+// ============================================================ 
+const SEED_COMPRAS = [{"uid":"854jhfwqkd","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":1,"valorParcela":489.67,"venc":"2025-07-15"},{"uid":"posyq9om0g","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":2,"valorParcela":489.67,"venc":"2025-08-15"},{"uid":"8hgqhxl2et","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":3,"valorParcela":489.67,"venc":"2025-09-15"},{"uid":"2y8dh1ie3s","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":4,"valorParcela":489.67,"venc":"2025-10-15"},{"uid":"wnc7qi0fhv","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":5,"valorParcela":489.67,"venc":"2025-11-15"},{"uid":"7djhbk1kf0","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":6,"valorParcela":489.67,"venc":"2025-12-15"},{"uid":"l46wll57ry","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":7,"valorParcela":489.67,"venc":"2026-01-15"},{"uid":"mgca2342xe","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":8,"valorParcela":489.67,"venc":"2026-02-15"},{"uid":"iarjbgwspl","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":9,"valorParcela":489.67,"venc":"2026-03-15"},{"uid":"zgp910gqhz","compraId":"yeimm9ochc","desc":"GRUPO CASAS BAHIA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":10,"valorParcela":489.67,"venc":"2026-04-15"},{"uid":"kaes4s33nv","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":1,"valorParcela":39.7,"venc":"2025-08-15"},{"uid":"oizyzozua1","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":2,"valorParcela":39.7,"venc":"2025-09-15"},{"uid":"54zbmj3xvm","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":3,"valorParcela":39.7,"venc":"2025-10-15"},{"uid":"12y01qbvo4","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":4,"valorParcela":39.7,"venc":"2025-11-15"},{"uid":"2d4gh3p1t4","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":5,"valorParcela":39.7,"venc":"2025-12-15"},{"uid":"83muhozw1k","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":6,"valorParcela":39.7,"venc":"2026-01-15"},{"uid":"flwtm0wsen","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":7,"valorParcela":39.7,"venc":"2026-02-15"},{"uid":"a1vte9q6yy","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":8,"valorParcela":39.7,"venc":"2026-03-15"},{"uid":"degqghsplt","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":9,"valorParcela":39.7,"venc":"2026-04-15"},{"uid":"cqjptl067f","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":10,"valorParcela":39.7,"venc":"2026-05-15"},{"uid":"3eydgdkbjo","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":11,"valorParcela":39.7,"venc":"2026-06-15"},{"uid":"ycc0q2kr29","compraId":"1i1yugfy4m","desc":"PG PAGTRUST TECNOLOGI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":12,"valorParcela":39.7,"venc":"2026-07-15"},{"uid":"pa16bkj2hm","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":1,"valorParcela":88.0,"venc":"2025-08-15"},{"uid":"lroh0brawx","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":2,"valorParcela":88.0,"venc":"2025-09-15"},{"uid":"x7akila6mu","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":3,"valorParcela":88.0,"venc":"2025-10-15"},{"uid":"bg8h3u503k","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":4,"valorParcela":88.0,"venc":"2025-11-15"},{"uid":"xkuzw9m5ky","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":5,"valorParcela":88.0,"venc":"2025-12-15"},{"uid":"cdejpit7wy","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":6,"valorParcela":88.0,"venc":"2026-01-15"},{"uid":"vyu42yqk2d","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":7,"valorParcela":88.0,"venc":"2026-02-15"},{"uid":"inm15hg0o4","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":8,"valorParcela":88.0,"venc":"2026-03-15"},{"uid":"hlxvhnw1sy","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":9,"valorParcela":88.0,"venc":"2026-04-15"},{"uid":"jalnc4wccq","compraId":"dg8c0xmunk","desc":"BPGMOURA ITAB (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":10,"valorParcela":88.0,"venc":"2026-05-15"},{"uid":"ytjxjbqidt","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":1,"valorParcela":3333.33,"venc":"2025-09-15"},{"uid":"6701h7lmra","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":2,"valorParcela":3333.33,"venc":"2025-10-15"},{"uid":"wzzmzi9h8k","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":3,"valorParcela":3333.33,"venc":"2025-11-15"},{"uid":"fpj32csq11","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":4,"valorParcela":3333.33,"venc":"2025-12-15"},{"uid":"nq4zrw2qq1","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":5,"valorParcela":3333.33,"venc":"2026-01-15"},{"uid":"qcrrsz594j","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":6,"valorParcela":3333.33,"venc":"2026-02-15"},{"uid":"l5xubeb7qf","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":7,"valorParcela":3333.33,"venc":"2026-03-15"},{"uid":"zmwmcj0eav","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":8,"valorParcela":3333.33,"venc":"2026-04-15"},{"uid":"3je0yfapnm","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":9,"valorParcela":3333.33,"venc":"2026-05-15"},{"uid":"4qq7cqtchj","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":10,"valorParcela":3333.33,"venc":"2026-06-15"},{"uid":"jv5x1ht6j7","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":11,"valorParcela":3333.33,"venc":"2026-07-15"},{"uid":"gsuoc3ppgb","compraId":"km6n52sked","desc":"PHILISOM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":12,"valorParcela":3333.33,"venc":"2026-08-15"},{"uid":"xg07xmrpwo","compraId":"g0ugn206jh","desc":"SANTANA MARTINS CIA 1 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":5,"parcela":1,"valorParcela":39.99,"venc":"2026-01-15"},{"uid":"xgys9a8wvn","compraId":"g0ugn206jh","desc":"SANTANA MARTINS CIA 1 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":5,"parcela":2,"valorParcela":39.99,"venc":"2026-02-15"},{"uid":"4mcssdvbyb","compraId":"g0ugn206jh","desc":"SANTANA MARTINS CIA 1 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":5,"parcela":3,"valorParcela":39.99,"venc":"2026-03-15"},{"uid":"vcbkoxkt75","compraId":"g0ugn206jh","desc":"SANTANA MARTINS CIA 1 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":5,"parcela":4,"valorParcela":39.99,"venc":"2026-04-15"},{"uid":"ik5ubqgik4","compraId":"g0ugn206jh","desc":"SANTANA MARTINS CIA 1 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":5,"parcela":5,"valorParcela":39.99,"venc":"2026-05-15"},{"uid":"2whxqmlh12","compraId":"ax71v7pg66","desc":"SANTANA MARTINS CIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":4,"parcela":1,"valorParcela":37.49,"venc":"2026-01-15"},{"uid":"xilz56bdl0","compraId":"ax71v7pg66","desc":"SANTANA MARTINS CIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":4,"parcela":2,"valorParcela":37.49,"venc":"2026-02-15"},{"uid":"dwcagt842d","compraId":"ax71v7pg66","desc":"SANTANA MARTINS CIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":4,"parcela":3,"valorParcela":37.49,"venc":"2026-03-15"},{"uid":"dbrz9i5tmf","compraId":"ax71v7pg66","desc":"SANTANA MARTINS CIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":4,"parcela":4,"valorParcela":37.49,"venc":"2026-04-15"},{"uid":"m6i9guuzsu","compraId":"xrcskmodm1","desc":"CRISTAL MOTORS (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":1,"valorParcela":1766.66,"venc":"2026-01-15"},{"uid":"ilnwxi2so3","compraId":"xrcskmodm1","desc":"CRISTAL MOTORS (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":2,"valorParcela":1766.66,"venc":"2026-02-15"},{"uid":"k7iyse9srq","compraId":"xrcskmodm1","desc":"CRISTAL MOTORS (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":3,"valorParcela":1766.66,"venc":"2026-03-15"},{"uid":"mhydy6zuqg","compraId":"xrcskmodm1","desc":"CRISTAL MOTORS (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":4,"valorParcela":1766.66,"venc":"2026-04-15"},{"uid":"j444uoh37q","compraId":"xrcskmodm1","desc":"CRISTAL MOTORS (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":5,"valorParcela":1766.66,"venc":"2026-05-15"},{"uid":"ogex0e2tqx","compraId":"xrcskmodm1","desc":"CRISTAL MOTORS (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":6,"valorParcela":1766.66,"venc":"2026-06-15"},{"uid":"t0gcnohzfm","compraId":"i7dq7s4ldj","desc":"SUPERMERCADO CONCEIC (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":3,"parcela":1,"valorParcela":199.53,"venc":"2026-02-15"},{"uid":"am8v0350mu","compraId":"i7dq7s4ldj","desc":"SUPERMERCADO CONCEIC (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":3,"parcela":2,"valorParcela":199.53,"venc":"2026-03-15"},{"uid":"lo35kqr1zx","compraId":"i7dq7s4ldj","desc":"SUPERMERCADO CONCEIC (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":3,"parcela":3,"valorParcela":199.53,"venc":"2026-04-15"},{"uid":"khpxgpeqlx","compraId":"hqnj3q53q5","desc":"ATACADAO 906 AS 1 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":3,"parcela":1,"valorParcela":276.2,"venc":"2026-02-15"},{"uid":"r4ggy6y2me","compraId":"hqnj3q53q5","desc":"ATACADAO 906 AS 1 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":3,"parcela":2,"valorParcela":276.2,"venc":"2026-03-15"},{"uid":"nh4lvfqztt","compraId":"hqnj3q53q5","desc":"ATACADAO 906 AS 1 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":3,"parcela":3,"valorParcela":276.2,"venc":"2026-04-15"},{"uid":"xyu0tg6aq3","compraId":"rgqxrv2hka","desc":"GRUPO CASAS BAHIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":1,"valorParcela":98.16,"venc":"2026-02-15"},{"uid":"8j9ld4s8rs","compraId":"rgqxrv2hka","desc":"GRUPO CASAS BAHIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":2,"valorParcela":98.16,"venc":"2026-03-15"},{"uid":"l4px58gpoh","compraId":"rgqxrv2hka","desc":"GRUPO CASAS BAHIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":3,"valorParcela":98.16,"venc":"2026-04-15"},{"uid":"aio49n45uy","compraId":"rgqxrv2hka","desc":"GRUPO CASAS BAHIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":4,"valorParcela":98.16,"venc":"2026-05-15"},{"uid":"xw940ixe5g","compraId":"rgqxrv2hka","desc":"GRUPO CASAS BAHIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":5,"valorParcela":98.16,"venc":"2026-06-15"},{"uid":"tw4tv5dpg2","compraId":"rgqxrv2hka","desc":"GRUPO CASAS BAHIA 2 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":6,"parcela":6,"valorParcela":98.16,"venc":"2026-07-15"},{"uid":"rte5u2f3sz","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":1,"valorParcela":77.9,"venc":"2026-02-15"},{"uid":"qr0y14d31a","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":2,"valorParcela":77.9,"venc":"2026-03-15"},{"uid":"x631czkqs6","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":3,"valorParcela":77.9,"venc":"2026-04-15"},{"uid":"dhfhpsxomj","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":4,"valorParcela":77.9,"venc":"2026-05-15"},{"uid":"pipr4lcx83","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":5,"valorParcela":77.9,"venc":"2026-06-15"},{"uid":"p0v2m6hkf5","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":6,"valorParcela":77.9,"venc":"2026-07-15"},{"uid":"mar7f1jozp","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":7,"valorParcela":77.9,"venc":"2026-08-15"},{"uid":"ywxcll6nl3","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":8,"valorParcela":77.9,"venc":"2026-09-15"},{"uid":"bhporczxtz","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":9,"valorParcela":77.9,"venc":"2026-10-15"},{"uid":"rn01afzg06","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":10,"valorParcela":77.9,"venc":"2026-11-15"},{"uid":"45dmoqmomk","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":11,"valorParcela":77.9,"venc":"2026-12-15"},{"uid":"ifqno8xoo8","compraId":"s24njyo8cq","desc":"SMILES CLUB SMILES (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":12,"valorParcela":77.9,"venc":"2027-01-15"},{"uid":"b2bfaa6lyk","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":1,"valorParcela":4529.67,"venc":"2026-02-15"},{"uid":"oz1najd162","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":2,"valorParcela":4529.67,"venc":"2026-03-15"},{"uid":"qfxdl35njl","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":3,"valorParcela":4529.67,"venc":"2026-04-15"},{"uid":"12kzoipi2n","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":4,"valorParcela":4529.67,"venc":"2026-05-15"},{"uid":"uxwkhgi0gv","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":5,"valorParcela":4529.67,"venc":"2026-06-15"},{"uid":"x6q4udfwt9","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":6,"valorParcela":4529.67,"venc":"2026-07-15"},{"uid":"1wspbq4sq6","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":7,"valorParcela":4529.67,"venc":"2026-08-15"},{"uid":"cbb1eyeko9","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":8,"valorParcela":4529.67,"venc":"2026-09-15"},{"uid":"vh8x3x973v","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":9,"valorParcela":4529.67,"venc":"2026-10-15"},{"uid":"i7tdw30gt8","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":10,"valorParcela":4529.67,"venc":"2026-11-15"},{"uid":"u41fytc80y","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":11,"valorParcela":4529.67,"venc":"2026-12-15"},{"uid":"wrdtcdti94","compraId":"fr2rkvfvxq","desc":"FASA ME ACORDOMENSALI (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":12,"valorParcela":4529.67,"venc":"2027-01-15"},{"uid":"p1n76nqq26","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":1,"valorParcela":13.9,"venc":"2026-02-15"},{"uid":"dlqcjg77fm","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":2,"valorParcela":13.9,"venc":"2026-03-15"},{"uid":"fuk7f5bgqt","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":3,"valorParcela":13.9,"venc":"2026-04-15"},{"uid":"pam4rlutit","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":4,"valorParcela":13.9,"venc":"2026-05-15"},{"uid":"xec42jydeb","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":5,"valorParcela":13.9,"venc":"2026-06-15"},{"uid":"rdtsk0hqmj","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":6,"valorParcela":13.9,"venc":"2026-07-15"},{"uid":"gbd7zdumjd","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":7,"valorParcela":13.9,"venc":"2026-08-15"},{"uid":"d5cs0urylv","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":8,"valorParcela":13.9,"venc":"2026-09-15"},{"uid":"bntiq9m4u8","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":9,"valorParcela":13.9,"venc":"2026-10-15"},{"uid":"3biu8iispm","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":10,"valorParcela":13.9,"venc":"2026-11-15"},{"uid":"svavmhenc3","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":11,"valorParcela":13.9,"venc":"2026-12-15"},{"uid":"svvryy5xcx","compraId":"b14ak56feg","desc":"AMAZON PRIME BR (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":12,"valorParcela":13.9,"venc":"2027-01-15"},{"uid":"xai8uad97n","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":1,"valorParcela":14.21,"venc":"2026-03-15"},{"uid":"wdou5aaa0w","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":2,"valorParcela":14.21,"venc":"2026-04-15"},{"uid":"iu22lwlabb","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":3,"valorParcela":14.21,"venc":"2026-05-15"},{"uid":"guopzjhd9y","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":4,"valorParcela":14.21,"venc":"2026-06-15"},{"uid":"hyi7c2czqu","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":5,"valorParcela":14.21,"venc":"2026-07-15"},{"uid":"n4ntrrw5b9","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":6,"valorParcela":14.21,"venc":"2026-08-15"},{"uid":"9q675xvuhu","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":7,"valorParcela":14.21,"venc":"2026-09-15"},{"uid":"xlypilu6do","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":8,"valorParcela":14.21,"venc":"2026-10-15"},{"uid":"42c0lbhi6l","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":9,"valorParcela":14.21,"venc":"2026-11-15"},{"uid":"pmbp8jzv25","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":10,"valorParcela":14.21,"venc":"2026-12-15"},{"uid":"22d9h4ytma","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":11,"valorParcela":14.21,"venc":"2027-01-15"},{"uid":"ldblu3429p","compraId":"r1lyvgd44v","desc":"CLUBE ESFERA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":12,"valorParcela":14.21,"venc":"2027-02-15"},{"uid":"wr6hsfsi1y","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":1,"valorParcela":42.71,"venc":"2026-03-15"},{"uid":"b4wdocmvjh","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":2,"valorParcela":42.71,"venc":"2026-04-15"},{"uid":"iqg7dlgd8h","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":3,"valorParcela":42.71,"venc":"2026-05-15"},{"uid":"hkw0jfrb25","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":4,"valorParcela":42.71,"venc":"2026-06-15"},{"uid":"qhlm2mezu9","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":5,"valorParcela":42.71,"venc":"2026-07-15"},{"uid":"r5ux0mtgkf","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":6,"valorParcela":42.71,"venc":"2026-08-15"},{"uid":"bi06bqhw1p","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":7,"valorParcela":42.71,"venc":"2026-09-15"},{"uid":"a3lxnv87o8","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":8,"valorParcela":42.71,"venc":"2026-10-15"},{"uid":"wipiccwwpx","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":9,"valorParcela":42.71,"venc":"2026-11-15"},{"uid":"0qjn01km9h","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":10,"valorParcela":42.71,"venc":"2026-12-15"},{"uid":"q720i37yl0","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":11,"valorParcela":42.71,"venc":"2027-01-15"},{"uid":"6oykh4rorp","compraId":"hkiqwkyfom","desc":"CLUBE LIVELO (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":12,"valorParcela":42.71,"venc":"2027-02-15"},{"uid":"lui55r2vbc","compraId":"saqj2hd8gm","desc":"ZS SEG AC PESSOA MAR26 (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":1,"parcela":1,"valorParcela":25.44,"venc":"2026-04-15"},{"uid":"dw5vw5rkuc","compraId":"20l3amghsa","desc":"PRODUTOSUOL (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":1,"parcela":1,"valorParcela":108.34,"venc":"2026-04-15"},{"uid":"nxlr0wi6el","compraId":"swxqny6aq6","desc":"APPLECOMBILL (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":1,"parcela":1,"valorParcela":66.9,"venc":"2026-04-15"},{"uid":"7itfjmfyl9","compraId":"i4grrbqein","desc":"NETFLIX COM (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":1,"parcela":1,"valorParcela":59.9,"venc":"2026-04-15"},{"uid":"xvfxbcqsc2","compraId":"ygzfzwubbr","desc":"ANUIDADE DIFERENCIADA (3363)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":1,"parcela":1,"valorParcela":166.66,"venc":"2026-04-15"},{"uid":"jt7vz7485c","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":1,"valorParcela":364.94,"venc":"2026-04-15"},{"uid":"x5dphwu0m0","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":2,"valorParcela":364.94,"venc":"2026-05-15"},{"uid":"h4g6rsrjwd","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":3,"valorParcela":364.94,"venc":"2026-06-15"},{"uid":"0zvm2d9zqr","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":4,"valorParcela":364.94,"venc":"2026-07-15"},{"uid":"vban0j6b1n","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":5,"valorParcela":364.94,"venc":"2026-08-15"},{"uid":"a1pkdldvxb","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":6,"valorParcela":364.94,"venc":"2026-09-15"},{"uid":"nflrkj2mwu","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":7,"valorParcela":364.94,"venc":"2026-10-15"},{"uid":"imxnzp6ujd","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":8,"valorParcela":364.94,"venc":"2026-11-15"},{"uid":"umsv7mcslh","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":9,"valorParcela":364.94,"venc":"2026-12-15"},{"uid":"sbm5zhnuz4","compraId":"ly3hz2pybs","desc":"PORTO SEGURO CIA SEG (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":10,"parcela":10,"valorParcela":364.94,"venc":"2027-01-15"},{"uid":"fw5i8a3p6r","compraId":"7ihhr1a85v","desc":"SEPHORA PAULISTA (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":1,"parcela":1,"valorParcela":500.0,"venc":"2026-04-15"},{"uid":"64nir4291v","compraId":"2riyj78wee","desc":"JIM COM MAILANE COST (7957)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":1,"parcela":1,"valorParcela":500.0,"venc":"2026-04-15"},{"uid":"nbr3v9xyv7","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":1,"valorParcela":1195.16,"venc":"2026-01-15"},{"uid":"qpfm1ctm7r","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":2,"valorParcela":1195.16,"venc":"2026-02-15"},{"uid":"brj5ek6ymh","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":3,"valorParcela":1195.16,"venc":"2026-03-15"},{"uid":"ug4h1aas9q","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":4,"valorParcela":1195.16,"venc":"2026-04-15"},{"uid":"bpdbrcgqt1","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":5,"valorParcela":1195.16,"venc":"2026-05-15"},{"uid":"ab1y6yo6ep","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":6,"valorParcela":1195.16,"venc":"2026-06-15"},{"uid":"h1uodjsmf6","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":7,"valorParcela":1195.16,"venc":"2026-07-15"},{"uid":"7wnyvqn4ka","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":8,"valorParcela":1195.16,"venc":"2026-08-15"},{"uid":"65ze5inx2j","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":9,"valorParcela":1195.16,"venc":"2026-09-15"},{"uid":"5zoe6a0e63","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":10,"valorParcela":1195.16,"venc":"2026-10-15"},{"uid":"5jrnnl0esw","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":11,"valorParcela":1195.16,"venc":"2026-11-15"},{"uid":"2dxzabme4a","compraId":"2awny9d601","desc":"SEGUROS SE SEGUROGAR (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":12,"parcela":12,"valorParcela":1195.16,"venc":"2026-12-15"},{"uid":"ie75bgwjw9","compraId":"2g0t20a0me","desc":"ELEMENTAR MANIPULACA (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":2,"parcela":1,"valorParcela":225.0,"venc":"2026-03-15"},{"uid":"sgnkw8by72","compraId":"2g0t20a0me","desc":"ELEMENTAR MANIPULACA (5667)","dataCompra":"2026-04-15","cartao":"santander","nParcelas":2,"parcela":2,"valorParcela":225.0,"venc":"2026-04-15"},{"uid":"8hhhalzgkq","compraId":"m5drzwes8s","desc":"AGUIA BRANCA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":1,"valorParcela":76.05,"venc":"2025-12-20"},{"uid":"nye0tyzk0m","compraId":"m5drzwes8s","desc":"AGUIA BRANCA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":2,"valorParcela":76.05,"venc":"2026-01-20"},{"uid":"ckwn49up7c","compraId":"m5drzwes8s","desc":"AGUIA BRANCA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":3,"valorParcela":76.05,"venc":"2026-02-20"},{"uid":"7d8nsuwz69","compraId":"m5drzwes8s","desc":"AGUIA BRANCA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":4,"valorParcela":76.05,"venc":"2026-03-20"},{"uid":"yyw5m3rxd2","compraId":"m5drzwes8s","desc":"AGUIA BRANCA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":5,"valorParcela":76.05,"venc":"2026-04-20"},{"uid":"1eoupp4zjl","compraId":"m5drzwes8s","desc":"AGUIA BRANCA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":6,"valorParcela":76.05,"venc":"2026-05-20"},{"uid":"sb8fddaab7","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":1,"valorParcela":98.0,"venc":"2025-12-20"},{"uid":"gcpjjdeun5","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":2,"valorParcela":98.0,"venc":"2026-01-20"},{"uid":"xzgbembsiq","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":3,"valorParcela":98.0,"venc":"2026-02-20"},{"uid":"t6iwensd6f","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":4,"valorParcela":98.0,"venc":"2026-03-20"},{"uid":"ny2z7xbxzm","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":5,"valorParcela":98.0,"venc":"2026-04-20"},{"uid":"fvs8ql21er","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":6,"valorParcela":98.0,"venc":"2026-05-20"},{"uid":"g9v2x9rr1x","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":7,"valorParcela":98.0,"venc":"2026-06-20"},{"uid":"naid515hvv","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":8,"valorParcela":98.0,"venc":"2026-07-20"},{"uid":"9cekricbcq","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":9,"valorParcela":98.0,"venc":"2026-08-20"},{"uid":"pctk36n7ve","compraId":"pmwymdlc4x","desc":"BPGMOURA ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":10,"parcela":10,"valorParcela":98.0,"venc":"2026-09-20"},{"uid":"qp06dwvi9i","compraId":"vo6ivb6x1u","desc":"JACQUELINE DE OLIVEI (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":39.92,"venc":"2026-02-20"},{"uid":"imtwgxe35v","compraId":"vo6ivb6x1u","desc":"JACQUELINE DE OLIVEI (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":39.92,"venc":"2026-03-20"},{"uid":"tkdvhjol0h","compraId":"vo6ivb6x1u","desc":"JACQUELINE DE OLIVEI (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":39.92,"venc":"2026-04-20"},{"uid":"bhrx1rqofg","compraId":"k7wxmzicn7","desc":"BIO MUNDO (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":38.99,"venc":"2026-02-20"},{"uid":"wg3abkal70","compraId":"k7wxmzicn7","desc":"BIO MUNDO (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":38.99,"venc":"2026-03-20"},{"uid":"s3t7byckx6","compraId":"k7wxmzicn7","desc":"BIO MUNDO (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":38.99,"venc":"2026-04-20"},{"uid":"u3sz6guxb3","compraId":"ljr09zumea","desc":"ATACADAO 906 AS 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":56.21,"venc":"2026-02-20"},{"uid":"kv8topey0f","compraId":"ljr09zumea","desc":"ATACADAO 906 AS 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":56.21,"venc":"2026-03-20"},{"uid":"k21uyii23b","compraId":"ljr09zumea","desc":"ATACADAO 906 AS 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":56.21,"venc":"2026-04-20"},{"uid":"n4y52pj2x1","compraId":"o9rp1ob9n3","desc":"POSTO JOCEL V LTDA 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":147.66,"venc":"2026-02-20"},{"uid":"51kum14x1h","compraId":"o9rp1ob9n3","desc":"POSTO JOCEL V LTDA 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":147.66,"venc":"2026-03-20"},{"uid":"sy818isxxz","compraId":"o9rp1ob9n3","desc":"POSTO JOCEL V LTDA 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":147.66,"venc":"2026-04-20"},{"uid":"d6refa9c18","compraId":"xltrur4ebv","desc":"ATACADAO 906 AS 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":430.47,"venc":"2026-03-20"},{"uid":"zio5g1st88","compraId":"xltrur4ebv","desc":"ATACADAO 906 AS 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":430.47,"venc":"2026-04-20"},{"uid":"8oifuz41yo","compraId":"xltrur4ebv","desc":"ATACADAO 906 AS 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":430.47,"venc":"2026-05-20"},{"uid":"dak7xy9sps","compraId":"e9xiqr5hvw","desc":"DROGASIL 2182 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":50.95,"venc":"2026-03-20"},{"uid":"wrtrhbgoy2","compraId":"e9xiqr5hvw","desc":"DROGASIL 2182 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":50.95,"venc":"2026-04-20"},{"uid":"43o14df1wz","compraId":"e9xiqr5hvw","desc":"DROGASIL 2182 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":50.95,"venc":"2026-05-20"},{"uid":"a65ybzo4bs","compraId":"0ougned234","desc":"CASA BOM SABOR 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":1,"valorParcela":52.48,"venc":"2026-03-20"},{"uid":"g7otgw5wjj","compraId":"0ougned234","desc":"CASA BOM SABOR 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":2,"valorParcela":52.48,"venc":"2026-04-20"},{"uid":"kenquproqd","compraId":"er9ugkhpiv","desc":"AGUIA BRANCA P (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":1,"valorParcela":122.94,"venc":"2026-03-20"},{"uid":"zmb3ydahyc","compraId":"er9ugkhpiv","desc":"AGUIA BRANCA P (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":2,"valorParcela":122.94,"venc":"2026-04-20"},{"uid":"ou6zunpuuj","compraId":"er9ugkhpiv","desc":"AGUIA BRANCA P (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":3,"valorParcela":122.94,"venc":"2026-05-20"},{"uid":"4ifapkhi7i","compraId":"er9ugkhpiv","desc":"AGUIA BRANCA P (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":4,"valorParcela":122.94,"venc":"2026-06-20"},{"uid":"wa5y7cr2gq","compraId":"er9ugkhpiv","desc":"AGUIA BRANCA P (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":5,"valorParcela":122.94,"venc":"2026-07-20"},{"uid":"1cu59ur4pk","compraId":"er9ugkhpiv","desc":"AGUIA BRANCA P (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":6,"valorParcela":122.94,"venc":"2026-08-20"},{"uid":"c09ntt7hp7","compraId":"zfex45obcr","desc":"POSTO JOCEL V LTDA 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":133.33,"venc":"2026-03-20"},{"uid":"0r6rfcgfqc","compraId":"zfex45obcr","desc":"POSTO JOCEL V LTDA 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":133.33,"venc":"2026-04-20"},{"uid":"cjr2e20ktw","compraId":"zfex45obcr","desc":"POSTO JOCEL V LTDA 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":133.33,"venc":"2026-05-20"},{"uid":"hosxe8bmm3","compraId":"vsksxr3cwv","desc":"USAFLEX ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":1,"valorParcela":71.66,"venc":"2026-03-20"},{"uid":"ygjdtyh11e","compraId":"vsksxr3cwv","desc":"USAFLEX ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":2,"valorParcela":71.66,"venc":"2026-04-20"},{"uid":"bqxu0czzpq","compraId":"vsksxr3cwv","desc":"USAFLEX ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":3,"valorParcela":71.66,"venc":"2026-05-20"},{"uid":"abrcndatah","compraId":"vsksxr3cwv","desc":"USAFLEX ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":4,"valorParcela":71.66,"venc":"2026-06-20"},{"uid":"3n5s7tes3k","compraId":"vsksxr3cwv","desc":"USAFLEX ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":5,"valorParcela":71.66,"venc":"2026-07-20"},{"uid":"pyy82xrb4i","compraId":"vsksxr3cwv","desc":"USAFLEX ITABUNA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":6,"parcela":6,"valorParcela":71.66,"venc":"2026-08-20"},{"uid":"xvz21ssn22","compraId":"9pdon14oy2","desc":"ATACADAO 906 AS 3 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":1,"valorParcela":61.1,"venc":"2026-03-20"},{"uid":"lw0ovjxiec","compraId":"9pdon14oy2","desc":"ATACADAO 906 AS 3 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":2,"valorParcela":61.1,"venc":"2026-04-20"},{"uid":"1u1xeicy2y","compraId":"6ldo358jm3","desc":"ATACADAO 906 AS 4 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":1,"valorParcela":66.61,"venc":"2026-03-20"},{"uid":"n1lwhplxkn","compraId":"6ldo358jm3","desc":"ATACADAO 906 AS 4 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":2,"valorParcela":66.61,"venc":"2026-04-20"},{"uid":"tuathm9g9b","compraId":"li5yt93jux","desc":"SABORES DO IATE (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":300.0,"venc":"2026-04-20"},{"uid":"abkj6klhlh","compraId":"soh6ot3eyh","desc":"MURI CULINARIA ORIENT (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":500.0,"venc":"2026-04-20"},{"uid":"3fi4e5aie1","compraId":"ty69q9t52n","desc":"POSTO D PASSAGEM (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":50.0,"venc":"2026-04-20"},{"uid":"4nomy67u5u","compraId":"uvz8t6wpzp","desc":"POSTO O MAIS QUERIDO (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":500.0,"venc":"2026-04-20"},{"uid":"7vm16k82fs","compraId":"dn2xyw5wa5","desc":"SIMOES MATERIAIS PCO (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":153.34,"venc":"2026-04-20"},{"uid":"rjcp8cdu4c","compraId":"dn2xyw5wa5","desc":"SIMOES MATERIAIS PCO (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":153.34,"venc":"2026-05-20"},{"uid":"z5ekb4rxsh","compraId":"dn2xyw5wa5","desc":"SIMOES MATERIAIS PCO (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":153.34,"venc":"2026-06-20"},{"uid":"lw6720x615","compraId":"6nzg3y8l3l","desc":"CASAS BOM SABOR 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":1,"valorParcela":42.24,"venc":"2026-04-20"},{"uid":"kbt2u5nrl9","compraId":"6nzg3y8l3l","desc":"CASAS BOM SABOR 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":2,"valorParcela":42.24,"venc":"2026-05-20"},{"uid":"j31k26yfeb","compraId":"vr3z4uj9w3","desc":"ATACADO RONDELLI 1 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":26.58,"venc":"2026-04-20"},{"uid":"acka76whbp","compraId":"mzyd1j5neq","desc":"ATACADO RONDELLI 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":1,"valorParcela":104.1,"venc":"2026-04-20"},{"uid":"vn6413ghbm","compraId":"mzyd1j5neq","desc":"ATACADO RONDELLI 2 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":2,"valorParcela":104.1,"venc":"2026-05-20"},{"uid":"9pa9bvi5d9","compraId":"k1abijlal2","desc":"ATACADO RONDELLI 3 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":1,"valorParcela":54.55,"venc":"2026-04-20"},{"uid":"jwmtr13ztp","compraId":"k1abijlal2","desc":"ATACADO RONDELLI 3 (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":2,"parcela":2,"valorParcela":54.55,"venc":"2026-05-20"},{"uid":"0zokqx63zr","compraId":"xb85lv0bp3","desc":"ECON PREMIAVEL BRADESCO (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":109.46,"venc":"2026-04-20"},{"uid":"evq3iqslyp","compraId":"w1wfsvlyt9","desc":"POSTO ALIANCA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":90.0,"venc":"2026-04-20"},{"uid":"csm18l8fnh","compraId":"qcsr6akili","desc":"ATACADAO 896 AS (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":24.9,"venc":"2026-04-20"},{"uid":"71l835xwzf","compraId":"qcggcy2sdp","desc":"DMA DISTRIBUIDORA SA (BRA20)","dataCompra":"2026-04-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":401.12,"venc":"2026-04-20"},{"uid":"atfnytrwz1","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":1,"valorParcela":4773.66,"venc":"2025-09-01"},{"uid":"z7oh1g6pc7","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":2,"valorParcela":4773.66,"venc":"2025-10-01"},{"uid":"jurulojhu7","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":3,"valorParcela":4773.66,"venc":"2025-11-01"},{"uid":"hpmdmfemkb","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":4,"valorParcela":4773.66,"venc":"2025-12-01"},{"uid":"vrg6fl8iil","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":5,"valorParcela":4773.66,"venc":"2026-01-01"},{"uid":"whac1z58v8","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":6,"valorParcela":4773.66,"venc":"2026-02-01"},{"uid":"dra3e80ra4","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":7,"valorParcela":4773.66,"venc":"2026-03-01"},{"uid":"6nmgsq62cb","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":8,"valorParcela":4773.66,"venc":"2026-04-01"},{"uid":"trsty4e92g","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":9,"valorParcela":4773.66,"venc":"2026-05-01"},{"uid":"u2bjgwju5y","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":10,"valorParcela":4773.66,"venc":"2026-06-01"},{"uid":"5jvefybkrg","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":11,"valorParcela":4773.66,"venc":"2026-07-01"},{"uid":"lhdg04vf7t","compraId":"hu839wetn7","desc":"FASA ME ACORDOMENSAL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":12,"parcela":12,"valorParcela":4773.66,"venc":"2026-08-01"},{"uid":"vakduawo78","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":1,"valorParcela":1150.0,"venc":"2025-10-01"},{"uid":"56rj40oaue","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":2,"valorParcela":1150.0,"venc":"2025-11-01"},{"uid":"4fpiugju03","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":3,"valorParcela":1150.0,"venc":"2025-12-01"},{"uid":"hd07tywsvq","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":4,"valorParcela":1150.0,"venc":"2026-01-01"},{"uid":"wquloq1p3j","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":5,"valorParcela":1150.0,"venc":"2026-02-01"},{"uid":"3n9vazedf3","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":6,"valorParcela":1150.0,"venc":"2026-03-01"},{"uid":"yufuhsnpmt","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":7,"valorParcela":1150.0,"venc":"2026-04-01"},{"uid":"wm5uw45xg3","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":8,"valorParcela":1150.0,"venc":"2026-05-01"},{"uid":"mgn1tdw92c","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":9,"valorParcela":1150.0,"venc":"2026-06-01"},{"uid":"artapk0l0w","compraId":"2n1csq84c5","desc":"FABRICA DE CACHOS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":10,"valorParcela":1150.0,"venc":"2026-07-01"},{"uid":"tg529ef06a","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":1,"valorParcela":54.5,"venc":"2026-01-01"},{"uid":"0tqt4dp74m","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":2,"valorParcela":54.5,"venc":"2026-02-01"},{"uid":"1xl1q32yp7","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":3,"valorParcela":54.5,"venc":"2026-03-01"},{"uid":"leyix6e06v","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":4,"valorParcela":54.5,"venc":"2026-04-01"},{"uid":"9iximzgqtq","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":5,"valorParcela":54.5,"venc":"2026-05-01"},{"uid":"d6cd907qc0","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":6,"valorParcela":54.5,"venc":"2026-06-01"},{"uid":"kdpenrnf91","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":7,"valorParcela":54.5,"venc":"2026-07-01"},{"uid":"6uq9th5jxw","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":8,"valorParcela":54.5,"venc":"2026-08-01"},{"uid":"fcxh07xegq","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":9,"valorParcela":54.5,"venc":"2026-09-01"},{"uid":"xpyaw6ipyi","compraId":"rm1v1p52dt","desc":"VIVARA ITA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":10,"parcela":10,"valorParcela":54.5,"venc":"2026-10-01"},{"uid":"dv9ufjjc0u","compraId":"u7x9kgydik","desc":"RDSAUDE ONLINE 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":1,"valorParcela":59.37,"venc":"2026-01-01"},{"uid":"zjfmow0l1r","compraId":"u7x9kgydik","desc":"RDSAUDE ONLINE 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":2,"valorParcela":59.37,"venc":"2026-02-01"},{"uid":"6dhnc2tkrq","compraId":"u7x9kgydik","desc":"RDSAUDE ONLINE 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":3,"valorParcela":59.37,"venc":"2026-03-01"},{"uid":"twvn3y8cl5","compraId":"u7x9kgydik","desc":"RDSAUDE ONLINE 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":4,"valorParcela":59.37,"venc":"2026-04-01"},{"uid":"wnkgg17x4u","compraId":"u7x9kgydik","desc":"RDSAUDE ONLINE 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":5,"valorParcela":59.37,"venc":"2026-05-01"},{"uid":"c3hriee235","compraId":"u7x9kgydik","desc":"RDSAUDE ONLINE 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":6,"valorParcela":59.37,"venc":"2026-06-01"},{"uid":"zpg2mstohp","compraId":"pvvfq6fayu","desc":"TELHAS BAHIA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":1,"valorParcela":3600.0,"venc":"2026-03-01"},{"uid":"vijsaw0p0h","compraId":"pvvfq6fayu","desc":"TELHAS BAHIA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":2,"valorParcela":3600.0,"venc":"2026-04-01"},{"uid":"32uv2cgw3v","compraId":"pvvfq6fayu","desc":"TELHAS BAHIA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":3,"valorParcela":3600.0,"venc":"2026-05-01"},{"uid":"l0jt71htul","compraId":"pvvfq6fayu","desc":"TELHAS BAHIA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":4,"valorParcela":3600.0,"venc":"2026-06-01"},{"uid":"gx715bcgvo","compraId":"pvvfq6fayu","desc":"TELHAS BAHIA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":5,"valorParcela":3600.0,"venc":"2026-07-01"},{"uid":"uf39fbutid","compraId":"vil6d2fx74","desc":"COMERCIO MS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":1,"valorParcela":750.0,"venc":"2026-03-01"},{"uid":"jqtzk6c603","compraId":"vil6d2fx74","desc":"COMERCIO MS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":2,"valorParcela":750.0,"venc":"2026-04-01"},{"uid":"k0awdx8rnq","compraId":"vil6d2fx74","desc":"COMERCIO MS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":3,"valorParcela":750.0,"venc":"2026-05-01"},{"uid":"vrsaarl64r","compraId":"vil6d2fx74","desc":"COMERCIO MS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":4,"valorParcela":750.0,"venc":"2026-06-01"},{"uid":"7zqo2fuhey","compraId":"vil6d2fx74","desc":"COMERCIO MS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":5,"valorParcela":750.0,"venc":"2026-07-01"},{"uid":"t4a5fklgoy","compraId":"v1ngc8s130","desc":"MANUAL SAUDE BRASIL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":1,"valorParcela":110.0,"venc":"2026-03-01"},{"uid":"6pnp8fdc84","compraId":"v1ngc8s130","desc":"MANUAL SAUDE BRASIL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":2,"valorParcela":110.0,"venc":"2026-04-01"},{"uid":"jgd6vgkxx8","compraId":"v1ngc8s130","desc":"MANUAL SAUDE BRASIL (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":3,"valorParcela":110.0,"venc":"2026-05-01"},{"uid":"883uknju6h","compraId":"pg2obx572o","desc":"POSTO JOCEL V LTDA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":1,"valorParcela":136.66,"venc":"2026-04-01"},{"uid":"7rm2o373gc","compraId":"pg2obx572o","desc":"POSTO JOCEL V LTDA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":2,"valorParcela":136.66,"venc":"2026-05-01"},{"uid":"wemm4erq8a","compraId":"pg2obx572o","desc":"POSTO JOCEL V LTDA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":3,"valorParcela":136.66,"venc":"2026-06-01"},{"uid":"09nb67peyo","compraId":"5s998y9ujm","desc":"LORRANA SILVA DE (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":1,"valorParcela":252.66,"venc":"2026-04-01"},{"uid":"vp618ck5mb","compraId":"5s998y9ujm","desc":"LORRANA SILVA DE (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":2,"valorParcela":252.66,"venc":"2026-05-01"},{"uid":"jgsiu87knp","compraId":"5s998y9ujm","desc":"LORRANA SILVA DE (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":3,"valorParcela":252.66,"venc":"2026-06-01"},{"uid":"isjjoh16nu","compraId":"5s998y9ujm","desc":"LORRANA SILVA DE (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":4,"valorParcela":252.66,"venc":"2026-07-01"},{"uid":"4b2n3bx2ob","compraId":"5s998y9ujm","desc":"LORRANA SILVA DE (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":5,"valorParcela":252.66,"venc":"2026-08-01"},{"uid":"q3nljeo7n5","compraId":"5s998y9ujm","desc":"LORRANA SILVA DE (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":6,"parcela":6,"valorParcela":252.66,"venc":"2026-09-01"},{"uid":"unbjzjpwh2","compraId":"qmxxob7qcq","desc":"LATAM AIR (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":4,"parcela":1,"valorParcela":364.85,"venc":"2026-04-01"},{"uid":"zwu3wgjmwv","compraId":"qmxxob7qcq","desc":"LATAM AIR (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":4,"parcela":2,"valorParcela":364.85,"venc":"2026-05-01"},{"uid":"ujlwulc6k1","compraId":"qmxxob7qcq","desc":"LATAM AIR (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":4,"parcela":3,"valorParcela":364.85,"venc":"2026-06-01"},{"uid":"n34pdfu0r2","compraId":"qmxxob7qcq","desc":"LATAM AIR (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":4,"parcela":4,"valorParcela":364.85,"venc":"2026-07-01"},{"uid":"ci9n8q7gvr","compraId":"3vvzcgpbm4","desc":"ATACADAO 906 AS 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":1,"valorParcela":63.33,"venc":"2026-04-01"},{"uid":"tln9l9t0dy","compraId":"3vvzcgpbm4","desc":"ATACADAO 906 AS 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":2,"valorParcela":63.33,"venc":"2026-05-01"},{"uid":"2p15ysr0ru","compraId":"3vvzcgpbm4","desc":"ATACADAO 906 AS 1 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":3,"valorParcela":63.33,"venc":"2026-06-01"},{"uid":"bmjw14jlbb","compraId":"zmz9h7092a","desc":"ATACADAO 906 AS 2 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":1,"valorParcela":56.59,"venc":"2026-04-01"},{"uid":"f0jvclqb79","compraId":"zmz9h7092a","desc":"ATACADAO 906 AS 2 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":2,"valorParcela":56.59,"venc":"2026-05-01"},{"uid":"9bs1l592r4","compraId":"zmz9h7092a","desc":"ATACADAO 906 AS 2 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":3,"valorParcela":56.59,"venc":"2026-06-01"},{"uid":"81pin5co9g","compraId":"8cnmjdnd5w","desc":"RESTAURANTE DO GUIDO (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":335.0,"venc":"2026-05-01"},{"uid":"5pwc57ykfo","compraId":"ou49qshn6n","desc":"13025175 GIORLANDO (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":132.0,"venc":"2026-05-01"},{"uid":"z0bpj4m34y","compraId":"4pnmqvnawh","desc":"JIM COM TABERNA DO P (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":529.0,"venc":"2026-05-01"},{"uid":"ljho3fjbjg","compraId":"5z9kv17l3u","desc":"RESTAURANTE ECOLOGIA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":80.0,"venc":"2026-05-01"},{"uid":"19kmmbpnz2","compraId":"zuqrdxvqta","desc":"CASAS BOM SABOR (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":61.77,"venc":"2026-05-01"},{"uid":"gsid5k0uqr","compraId":"n7w7saaaj0","desc":"BS COMERCIO DE GAS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":1,"valorParcela":83.34,"venc":"2026-05-01"},{"uid":"yz80oatw77","compraId":"n7w7saaaj0","desc":"BS COMERCIO DE GAS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":2,"valorParcela":83.34,"venc":"2026-06-01"},{"uid":"hurcgdwmef","compraId":"n7w7saaaj0","desc":"BS COMERCIO DE GAS (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":3,"valorParcela":83.34,"venc":"2026-07-01"},{"uid":"620tt6sul5","compraId":"pil09jamu3","desc":"ALVARUS ESTETICA MASCU (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":155.0,"venc":"2026-05-01"},{"uid":"8uegl3a7tu","compraId":"ac3yse8ttz","desc":"ATACADAO 906 AS 3 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":65.31,"venc":"2026-05-01"},{"uid":"hb6lty72fu","compraId":"ovnmrsupcc","desc":"ZP JAY OLIVEIRA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":1,"valorParcela":500.0,"venc":"2026-05-01"},{"uid":"nko7pqyhqu","compraId":"ovnmrsupcc","desc":"ZP JAY OLIVEIRA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":2,"valorParcela":500.0,"venc":"2026-06-01"},{"uid":"ds9p2rmhh1","compraId":"ovnmrsupcc","desc":"ZP JAY OLIVEIRA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":3,"valorParcela":500.0,"venc":"2026-07-01"},{"uid":"relx0oul5i","compraId":"ovnmrsupcc","desc":"ZP JAY OLIVEIRA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":4,"valorParcela":500.0,"venc":"2026-08-01"},{"uid":"jcwc32cbkp","compraId":"ovnmrsupcc","desc":"ZP JAY OLIVEIRA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":5,"parcela":5,"valorParcela":500.0,"venc":"2026-09-01"},{"uid":"s0galnrgf3","compraId":"xdejwf23gc","desc":"JIM COM MAYANA FRANC (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":95.0,"venc":"2026-05-01"},{"uid":"gzvcfa5i7e","compraId":"6k9pqn6r31","desc":"POSTO JARDIM DO O (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":50.0,"venc":"2026-05-01"},{"uid":"s9pcpty4fw","compraId":"hdzwbvfrfi","desc":"EBN TIKTOK SHOP (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":117.0,"venc":"2026-05-01"},{"uid":"fyznzhtg2d","compraId":"czevnd7add","desc":"CASAR PRE-SENTE (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":540.42,"venc":"2026-05-01"},{"uid":"4ju3a412ex","compraId":"ipzyef5b04","desc":"RESTAURANTE CHURRASC (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":4800.0,"venc":"2026-05-01"},{"uid":"knt0nf40qa","compraId":"rl5x3gped2","desc":"AUTO POSTO VIP (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":20.15,"venc":"2026-05-01"},{"uid":"3g1b8oj387","compraId":"31qjv2s53u","desc":"POSTO UNIVERSAL I (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":1,"valorParcela":166.68,"venc":"2026-05-01"},{"uid":"ysd59o354g","compraId":"31qjv2s53u","desc":"POSTO UNIVERSAL I (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":2,"valorParcela":166.68,"venc":"2026-06-01"},{"uid":"v4h6bx2nl9","compraId":"31qjv2s53u","desc":"POSTO UNIVERSAL I (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":3,"valorParcela":166.68,"venc":"2026-07-01"},{"uid":"x94qhjlq7t","compraId":"a46bo5f52l","desc":"JIM COM LUANA MOREIR (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":150.0,"venc":"2026-05-01"},{"uid":"mw15qycywo","compraId":"yohm5273o2","desc":"SUPER PAO (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":36.44,"venc":"2026-05-01"},{"uid":"9igozdwrtb","compraId":"qdrwdztiwi","desc":"ATACADAO 906 AS 4 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":158.23,"venc":"2026-05-01"},{"uid":"jyzbm6usnx","compraId":"y2d17llfg1","desc":"ATACADAO 906 AS 5 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":150.0,"venc":"2026-05-01"},{"uid":"2uiw6h4n18","compraId":"hrix24ai57","desc":"ATAKADAO ATAKAREJO (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":19.04,"venc":"2026-05-01"},{"uid":"1xsobhek7p","compraId":"jmht2x3lo0","desc":"CHOCOLATES VARIEDADE (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":129.99,"venc":"2026-05-01"},{"uid":"tf2u43y9n9","compraId":"yrh1kkq9i7","desc":"KOPENHAGEN (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":179.9,"venc":"2026-05-01"},{"uid":"wn5mifrscb","compraId":"8xg4mt4y5e","desc":"POSTO GRAPIUNA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":100.0,"venc":"2026-05-01"},{"uid":"nq8y9fqu23","compraId":"w6lg4r6q07","desc":"RDSAUDE ONLINE 2 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":29.98,"venc":"2026-05-01"},{"uid":"qxl26bjfw4","compraId":"gezl9w2xlb","desc":"IPPON (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":1,"valorParcela":119.9,"venc":"2026-05-01"},{"uid":"ugufq7zwzb","compraId":"gezl9w2xlb","desc":"IPPON (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":2,"valorParcela":119.9,"venc":"2026-06-01"},{"uid":"3m444cf7h4","compraId":"gezl9w2xlb","desc":"IPPON (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":3,"parcela":3,"valorParcela":119.9,"venc":"2026-07-01"},{"uid":"uegvz8ppls","compraId":"1xqh9fg7t2","desc":"LOS PAMPAS ITABUNA (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":100.0,"venc":"2026-05-01"},{"uid":"rsfp39xhc5","compraId":"pko2ejr4tw","desc":"RDSAUDE ONLINE 3 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":59.99,"venc":"2026-05-01"},{"uid":"d8q0ebcezy","compraId":"c69y8a0ocb","desc":"RDSAUDE ONLINE 4 (BRA01)","dataCompra":"2026-05-01","cartao":"bradesco1","nParcelas":1,"parcela":1,"valorParcela":77.49,"venc":"2026-05-01"},{"uid":"5nki9ke6oh","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":1,"valorParcela":499.9,"venc":"2025-08-10"},{"uid":"7xrosfefje","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":2,"valorParcela":499.9,"venc":"2025-09-10"},{"uid":"rm5qyaaxk3","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":3,"valorParcela":499.9,"venc":"2025-10-10"},{"uid":"27pksand4c","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":4,"valorParcela":499.9,"venc":"2025-11-10"},{"uid":"x7a5f2550j","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":5,"valorParcela":499.9,"venc":"2025-12-10"},{"uid":"ukpjinap4n","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":6,"valorParcela":499.9,"venc":"2026-01-10"},{"uid":"0lroy3buv8","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":7,"valorParcela":499.9,"venc":"2026-02-10"},{"uid":"enfgexen7v","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":8,"valorParcela":499.9,"venc":"2026-03-10"},{"uid":"qjjhl9vmav","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":9,"valorParcela":499.9,"venc":"2026-04-10"},{"uid":"lcjd3qvrpj","compraId":"t42mbnnwg0","desc":"TAP CALL CENTER VIP (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":10,"valorParcela":499.9,"venc":"2026-05-10"},{"uid":"e0lizoe2t3","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":1,"valorParcela":99.0,"venc":"2025-11-10"},{"uid":"x2rm6jbccf","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":2,"valorParcela":99.0,"venc":"2025-12-10"},{"uid":"7aunp4m3jw","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":3,"valorParcela":99.0,"venc":"2026-01-10"},{"uid":"0l0dsjzeb4","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":4,"valorParcela":99.0,"venc":"2026-02-10"},{"uid":"qdccfd1pll","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":5,"valorParcela":99.0,"venc":"2026-03-10"},{"uid":"gtntt4nuc0","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":6,"valorParcela":99.0,"venc":"2026-04-10"},{"uid":"ddhbt859no","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":7,"valorParcela":99.0,"venc":"2026-05-10"},{"uid":"kiz8qmvnpp","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":8,"valorParcela":99.0,"venc":"2026-06-10"},{"uid":"mtyi3mxprg","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":9,"valorParcela":99.0,"venc":"2026-07-10"},{"uid":"4ijd18sdwm","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":10,"valorParcela":99.0,"venc":"2026-08-10"},{"uid":"vb1l5k5428","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":11,"valorParcela":99.0,"venc":"2026-09-10"},{"uid":"l2n5t5aaoy","compraId":"8fi09tsttg","desc":"ADAPTAORG (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":12,"parcela":12,"valorParcela":99.0,"venc":"2026-10-10"},{"uid":"8vqqhdsfek","compraId":"u4yi0kid4c","desc":"MRSN COMERCIO CAL 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":1,"valorParcela":64.37,"venc":"2026-02-10"},{"uid":"ycczceaog8","compraId":"u4yi0kid4c","desc":"MRSN COMERCIO CAL 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":2,"valorParcela":64.37,"venc":"2026-03-10"},{"uid":"3bze4j3nle","compraId":"u4yi0kid4c","desc":"MRSN COMERCIO CAL 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":3,"valorParcela":64.37,"venc":"2026-04-10"},{"uid":"172o9mdhdg","compraId":"u4yi0kid4c","desc":"MRSN COMERCIO CAL 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":4,"valorParcela":64.37,"venc":"2026-05-10"},{"uid":"9ydlnfldt3","compraId":"ggpbsex14e","desc":"MRSN COMERCIO CAL 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":1,"valorParcela":37.49,"venc":"2026-02-10"},{"uid":"m5xjcm72ap","compraId":"ggpbsex14e","desc":"MRSN COMERCIO CAL 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":2,"valorParcela":37.49,"venc":"2026-03-10"},{"uid":"hnfn60kpzh","compraId":"ggpbsex14e","desc":"MRSN COMERCIO CAL 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":3,"valorParcela":37.49,"venc":"2026-04-10"},{"uid":"r4c238ygrc","compraId":"ggpbsex14e","desc":"MRSN COMERCIO CAL 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":4,"valorParcela":37.49,"venc":"2026-05-10"},{"uid":"mqxq7mckuu","compraId":"yy49gqs528","desc":"LOOM MULTIMARCAS 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":883.33,"venc":"2026-02-10"},{"uid":"c7turnvsb4","compraId":"yy49gqs528","desc":"LOOM MULTIMARCAS 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":883.33,"venc":"2026-03-10"},{"uid":"4m2hynqmvf","compraId":"yy49gqs528","desc":"LOOM MULTIMARCAS 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":883.33,"venc":"2026-04-10"},{"uid":"zj6sl2etwc","compraId":"4xg4vd7vje","desc":"LOOM MULTIMARCAS 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":266.66,"venc":"2026-02-10"},{"uid":"mfcj2zswls","compraId":"4xg4vd7vje","desc":"LOOM MULTIMARCAS 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":266.66,"venc":"2026-03-10"},{"uid":"b04u8a6d8p","compraId":"4xg4vd7vje","desc":"LOOM MULTIMARCAS 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":266.66,"venc":"2026-04-10"},{"uid":"d0rofn0evr","compraId":"4dtb2w25po","desc":"HERING LIGHT ITABUNA (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":1,"valorParcela":171.65,"venc":"2026-02-10"},{"uid":"o5x6r6hk35","compraId":"4dtb2w25po","desc":"HERING LIGHT ITABUNA (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":2,"valorParcela":171.65,"venc":"2026-03-10"},{"uid":"6gb49kywp9","compraId":"4dtb2w25po","desc":"HERING LIGHT ITABUNA (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":3,"valorParcela":171.65,"venc":"2026-04-10"},{"uid":"61902r5hef","compraId":"4dtb2w25po","desc":"HERING LIGHT ITABUNA (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":4,"valorParcela":171.65,"venc":"2026-05-10"},{"uid":"lztrm8qel2","compraId":"4dtb2w25po","desc":"HERING LIGHT ITABUNA (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":5,"valorParcela":171.65,"venc":"2026-06-10"},{"uid":"7la7w928sc","compraId":"4dtb2w25po","desc":"HERING LIGHT ITABUNA (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":6,"valorParcela":171.65,"venc":"2026-07-10"},{"uid":"bypfprldil","compraId":"tvsusu4ll7","desc":"ATACADAO 906 AS 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":578.73,"venc":"2026-02-10"},{"uid":"wdau6be309","compraId":"tvsusu4ll7","desc":"ATACADAO 906 AS 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":578.73,"venc":"2026-03-10"},{"uid":"jyhuzujzk0","compraId":"tvsusu4ll7","desc":"ATACADAO 906 AS 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":578.73,"venc":"2026-04-10"},{"uid":"nz2kt9xtha","compraId":"uqwe2fgqzh","desc":"POSTO JOCEL 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":120.2,"venc":"2026-02-10"},{"uid":"md9jn9wtnc","compraId":"uqwe2fgqzh","desc":"POSTO JOCEL 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":120.2,"venc":"2026-03-10"},{"uid":"t1yyqiajjm","compraId":"uqwe2fgqzh","desc":"POSTO JOCEL 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":120.2,"venc":"2026-04-10"},{"uid":"7riww0nl9a","compraId":"nzhuydsyin","desc":"CONLAR (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":210.0,"venc":"2026-02-10"},{"uid":"n1qwzzvg2p","compraId":"nzhuydsyin","desc":"CONLAR (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":210.0,"venc":"2026-03-10"},{"uid":"y9uskv71dp","compraId":"nzhuydsyin","desc":"CONLAR (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":210.0,"venc":"2026-04-10"},{"uid":"ak2zqdw0sb","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":1,"valorParcela":500.0,"venc":"2026-02-10"},{"uid":"8m43am80fu","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":2,"valorParcela":500.0,"venc":"2026-03-10"},{"uid":"qu8meu3giq","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":3,"valorParcela":500.0,"venc":"2026-04-10"},{"uid":"2w7wwljhge","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":4,"valorParcela":500.0,"venc":"2026-05-10"},{"uid":"3o3xs88fr0","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":5,"valorParcela":500.0,"venc":"2026-06-10"},{"uid":"mwkot7khd0","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":6,"valorParcela":500.0,"venc":"2026-07-10"},{"uid":"t2k1crajwy","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":7,"valorParcela":500.0,"venc":"2026-08-10"},{"uid":"ubekswxiaq","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":8,"valorParcela":500.0,"venc":"2026-09-10"},{"uid":"lh4eqavc9g","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":9,"valorParcela":500.0,"venc":"2026-10-10"},{"uid":"vgzcc9ni67","compraId":"ggra3dw56m","desc":"GALEGO MOVEIS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":10,"valorParcela":500.0,"venc":"2026-11-10"},{"uid":"19mzkib6te","compraId":"3vkmyx11xl","desc":"ATACADAO 906 AS 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":160.97,"venc":"2026-03-10"},{"uid":"yceq1ou2gb","compraId":"3vkmyx11xl","desc":"ATACADAO 906 AS 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":160.97,"venc":"2026-04-10"},{"uid":"cxogwn6gbs","compraId":"3vkmyx11xl","desc":"ATACADAO 906 AS 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":160.97,"venc":"2026-05-10"},{"uid":"9o59o0pclz","compraId":"znaz5w6lxy","desc":"IG ISAAC 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":1,"valorParcela":88.87,"venc":"2026-03-10"},{"uid":"dthmd60k4k","compraId":"znaz5w6lxy","desc":"IG ISAAC 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":2,"valorParcela":88.87,"venc":"2026-04-10"},{"uid":"xxu8m4vo50","compraId":"znaz5w6lxy","desc":"IG ISAAC 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":3,"valorParcela":88.87,"venc":"2026-05-10"},{"uid":"8drtqj5wmg","compraId":"znaz5w6lxy","desc":"IG ISAAC 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":4,"valorParcela":88.87,"venc":"2026-06-10"},{"uid":"igp6wo1qju","compraId":"b7uhzeprxc","desc":"IG ISAAC 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":1,"valorParcela":102.3,"venc":"2026-03-10"},{"uid":"q2jgg7mvkf","compraId":"b7uhzeprxc","desc":"IG ISAAC 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":2,"valorParcela":102.3,"venc":"2026-04-10"},{"uid":"awy4pxdvyq","compraId":"b7uhzeprxc","desc":"IG ISAAC 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":3,"valorParcela":102.3,"venc":"2026-05-10"},{"uid":"6evcvf5bss","compraId":"b7uhzeprxc","desc":"IG ISAAC 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":4,"parcela":4,"valorParcela":102.3,"venc":"2026-06-10"},{"uid":"3w632tqosq","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":1,"valorParcela":423.44,"venc":"2026-03-10"},{"uid":"nje2k1b3pr","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":2,"valorParcela":423.44,"venc":"2026-04-10"},{"uid":"0umqs8ep69","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":3,"valorParcela":423.44,"venc":"2026-05-10"},{"uid":"ro7b3kw8jl","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":4,"valorParcela":423.44,"venc":"2026-06-10"},{"uid":"sl3b3jndf0","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":5,"valorParcela":423.44,"venc":"2026-07-10"},{"uid":"sqflfgln7d","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":6,"valorParcela":423.44,"venc":"2026-08-10"},{"uid":"ajq8hzs4h9","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":7,"valorParcela":423.44,"venc":"2026-09-10"},{"uid":"45tkzag308","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":8,"valorParcela":423.44,"venc":"2026-10-10"},{"uid":"scd6cswszh","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":9,"valorParcela":423.44,"venc":"2026-11-10"},{"uid":"n61rrsuflm","compraId":"hciqhj9lnu","desc":"PG ISAAC TECSERV (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":10,"parcela":10,"valorParcela":423.44,"venc":"2026-12-10"},{"uid":"tuyf3i1veg","compraId":"zrtge19bz8","desc":"POSTO JOCEL 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":136.0,"venc":"2026-03-10"},{"uid":"nlz94ehz25","compraId":"zrtge19bz8","desc":"POSTO JOCEL 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":136.0,"venc":"2026-04-10"},{"uid":"7qp7xqfhrj","compraId":"zrtge19bz8","desc":"POSTO JOCEL 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":136.0,"venc":"2026-05-10"},{"uid":"h7p5erqd9w","compraId":"w7st857bjs","desc":"CASA DO CONSTRUTOR (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":1200.0,"venc":"2026-03-10"},{"uid":"c3p13ra12c","compraId":"w7st857bjs","desc":"CASA DO CONSTRUTOR (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":1200.0,"venc":"2026-04-10"},{"uid":"yfgkncd3nz","compraId":"w7st857bjs","desc":"CASA DO CONSTRUTOR (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":1200.0,"venc":"2026-05-10"},{"uid":"lu3edi4hha","compraId":"crzx3dp7yy","desc":"AMAZON BR 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":1,"valorParcela":38.64,"venc":"2026-04-10"},{"uid":"ajp6kwplaz","compraId":"crzx3dp7yy","desc":"AMAZON BR 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":2,"valorParcela":38.64,"venc":"2026-05-10"},{"uid":"wcextct83r","compraId":"crzx3dp7yy","desc":"AMAZON BR 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":3,"valorParcela":38.64,"venc":"2026-06-10"},{"uid":"bwgyqzwrw8","compraId":"crzx3dp7yy","desc":"AMAZON BR 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":4,"valorParcela":38.64,"venc":"2026-07-10"},{"uid":"4dcekf2vql","compraId":"crzx3dp7yy","desc":"AMAZON BR 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":5,"valorParcela":38.64,"venc":"2026-08-10"},{"uid":"y74pu27lps","compraId":"crzx3dp7yy","desc":"AMAZON BR 1 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":6,"parcela":6,"valorParcela":38.64,"venc":"2026-09-10"},{"uid":"dzylmt6b34","compraId":"rdh1l18d67","desc":"POSTO JOCEL 3 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":134.57,"venc":"2026-04-10"},{"uid":"gunwfr1a3d","compraId":"rdh1l18d67","desc":"POSTO JOCEL 3 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":134.57,"venc":"2026-05-10"},{"uid":"loy7w7o43r","compraId":"rdh1l18d67","desc":"POSTO JOCEL 3 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":134.57,"venc":"2026-06-10"},{"uid":"nrhz5w9azx","compraId":"0z12qnsy63","desc":"PAGUE MENOS (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":65.97,"venc":"2026-04-10"},{"uid":"p11okqsz6k","compraId":"fieuz9pu1x","desc":"FARAGE FERRO E ACO (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":5,"parcela":1,"valorParcela":500.0,"venc":"2026-04-10"},{"uid":"a2y75zzucc","compraId":"fieuz9pu1x","desc":"FARAGE FERRO E ACO (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":5,"parcela":2,"valorParcela":500.0,"venc":"2026-05-10"},{"uid":"6jgydrc52x","compraId":"fieuz9pu1x","desc":"FARAGE FERRO E ACO (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":5,"parcela":3,"valorParcela":500.0,"venc":"2026-06-10"},{"uid":"k7hy9k3mvq","compraId":"fieuz9pu1x","desc":"FARAGE FERRO E ACO (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":5,"parcela":4,"valorParcela":500.0,"venc":"2026-07-10"},{"uid":"ggnswujb7g","compraId":"fieuz9pu1x","desc":"FARAGE FERRO E ACO (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":5,"parcela":5,"valorParcela":500.0,"venc":"2026-08-10"},{"uid":"d4qss63znz","compraId":"trj06j6t5u","desc":"POSTO JOCEL 4 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":133.34,"venc":"2026-04-10"},{"uid":"skiubus135","compraId":"trj06j6t5u","desc":"POSTO JOCEL 4 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":133.34,"venc":"2026-05-10"},{"uid":"vrzoimqoch","compraId":"trj06j6t5u","desc":"POSTO JOCEL 4 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":133.34,"venc":"2026-06-10"},{"uid":"s20rei0wdr","compraId":"0pfh7bk7ox","desc":"CASA BOM SABOR (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":2,"parcela":1,"valorParcela":35.83,"venc":"2026-04-10"},{"uid":"ta067jg1lr","compraId":"0pfh7bk7ox","desc":"CASA BOM SABOR (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":2,"parcela":2,"valorParcela":35.83,"venc":"2026-05-10"},{"uid":"4lyxfibmmd","compraId":"bfv1gtpkz8","desc":"PONTO DO ACAI (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":55.0,"venc":"2026-04-10"},{"uid":"frlesn9x5y","compraId":"ehsgng00sc","desc":"SUPERMERCADO CONCEIC (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":232.59,"venc":"2026-04-10"},{"uid":"c5u71ccod0","compraId":"ehsgng00sc","desc":"SUPERMERCADO CONCEIC (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":232.59,"venc":"2026-05-10"},{"uid":"x0lm0fh0o1","compraId":"ehsgng00sc","desc":"SUPERMERCADO CONCEIC (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":232.59,"venc":"2026-06-10"},{"uid":"z952yjqoyh","compraId":"qsaesbjpio","desc":"ATACADAO 906 AS 3 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":522.65,"venc":"2026-04-10"},{"uid":"yxfiq7aba2","compraId":"qsaesbjpio","desc":"ATACADAO 906 AS 3 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":522.65,"venc":"2026-05-10"},{"uid":"hq3unjfo4c","compraId":"qsaesbjpio","desc":"ATACADAO 906 AS 3 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":522.65,"venc":"2026-06-10"},{"uid":"ae8xbmp08i","compraId":"gbt62nyo3r","desc":"AMAZON BR 2 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":16.11,"venc":"2026-04-10"},{"uid":"7lczn1essf","compraId":"z1tmb5cgm8","desc":"AMAZON BR 3 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":51.32,"venc":"2026-04-10"},{"uid":"325bqq0qix","compraId":"1zgn3fy4e7","desc":"AMAZON BR 4 (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":37.76,"venc":"2026-04-10"},{"uid":"pp9y9y1oua","compraId":"ya3ggs4ou2","desc":"WELLHUB FABIO OLIVEIRA (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":99.99,"venc":"2026-04-10"},{"uid":"hbvlp4foh7","compraId":"hfln0z4t4o","desc":"CIANO PJBANK (BRA10)","dataCompra":"2026-04-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":847.72,"venc":"2026-04-10"}]; 
+const SEED_LIMITES = {"bradesco1":{"total":170000.0,"usado":107291.71},"bradesco10":{"total":170000.0,"usado":35337.91},"bradesco20":{"total":170000.0,"usado":8520.73},"santander":{"total":250000.0,"usado":135228.32},"picpay":{"total":30000.0,"usado":0}}; 
+const NOVAS_COMPRAS = [{"uid":"emxuwcyum7","compraId":"9innrvrtge","desc":"UNOSSO BAR (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":256.63,"venc":"2026-05-20"},{"uid":"5ulhue8yn7","compraId":"htzpvphi74","desc":"ECON PREMIAVEL BRADESCO 2 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":109.46,"venc":"2026-05-20"},{"uid":"3cs0hsrpzv","compraId":"u6jokc4bk2","desc":"ATAKADAO ATAKAREJO 2 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":59.89,"venc":"2026-05-20"},{"uid":"626p2a8b8n","compraId":"jpbge2g384","desc":"SUPER PAO 3 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":29.31,"venc":"2026-05-20"},{"uid":"v4q9hwg3am","compraId":"gff6rask67","desc":"JACQUELINE DE OLIVEIRA 2 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":81.22,"venc":"2026-05-20"},{"uid":"jdc71ntdt9","compraId":"adk08byh0l","desc":"POINT DOS MORANGOS (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":94.0,"venc":"2026-05-20"},{"uid":"6vvfgfok2m","compraId":"5iiyk8p428","desc":"MURI RESTAURANTE (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":232.7,"venc":"2026-05-20"},{"uid":"kpqzfj1tk4","compraId":"66yaxjxj07","desc":"SAMS (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":95.0,"venc":"2026-05-20"},{"uid":"ngpdvjfcw0","compraId":"bkv6ni900e","desc":"BRADESCO AUT 01 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":498.48,"venc":"2026-05-20"},{"uid":"473t2h5fd4","compraId":"xiuzead0dk","desc":"MARIANICELYDOS (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":90.0,"venc":"2026-05-20"},{"uid":"a24ww3vvh6","compraId":"oyg20t3v7h","desc":"ATACADAO 906 AS 5 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":101.4,"venc":"2026-05-20"},{"uid":"3gefvs26b4","compraId":"19wew48j27","desc":"SUPER PAO 4 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":39.59,"venc":"2026-05-20"},{"uid":"f47dtsqz48","compraId":"5fsp0gwwa3","desc":"DRA DOS PETS (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":40.0,"venc":"2026-05-20"},{"uid":"84yiknydzj","compraId":"b5ibu862g8","desc":"ALVARUS ESTETICA 2 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":180.0,"venc":"2026-05-20"},{"uid":"2k2j4strsc","compraId":"hbj7q48r0w","desc":"ATACADAO 906 AS 6 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":95.93,"venc":"2026-05-20"},{"uid":"9itlaacko8","compraId":"z912o9522g","desc":"ATACADAO 906 AS 7 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":59.4,"venc":"2026-05-20"},{"uid":"plncyy88qx","compraId":"86e4y22t68","desc":"58097962ROSELYDOS (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":102.0,"venc":"2026-05-20"},{"uid":"sultzrilmd","compraId":"gv9i732byn","desc":"JIM COM DYEGO LACERDA (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":482.0,"venc":"2026-05-20"},{"uid":"ueau9wmj2s","compraId":"0p2rfvyvr1","desc":"LIU HORTIFRUTI (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":74.36,"venc":"2026-05-20"},{"uid":"43tycr63af","compraId":"nxv853x131","desc":"MURI CULINARIA ORIENT 2 (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":1,"parcela":1,"valorParcela":287.0,"venc":"2026-05-20"},{"uid":"4xx4jixm5k","compraId":"k5aqhnb0gp","desc":"POSTO JOCEL V LTDA EPP A (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":169.65,"venc":"2026-05-20"},{"uid":"0x8rujre20","compraId":"k5aqhnb0gp","desc":"POSTO JOCEL V LTDA EPP A (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":169.65,"venc":"2026-06-20"},{"uid":"mv960yrg6d","compraId":"k5aqhnb0gp","desc":"POSTO JOCEL V LTDA EPP A (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":169.65,"venc":"2026-07-20"},{"uid":"xqkyrpsyxp","compraId":"vnpftn2yeb","desc":"POSTO JOCEL B (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":3,"parcela":1,"valorParcela":170.0,"venc":"2026-05-20"},{"uid":"2y4y77sqg7","compraId":"vnpftn2yeb","desc":"POSTO JOCEL B (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":3,"parcela":2,"valorParcela":170.0,"venc":"2026-06-20"},{"uid":"oo8ib9ebvw","compraId":"vnpftn2yeb","desc":"POSTO JOCEL B (BRA20)","dataCompra":"2026-05-20","cartao":"bradesco20","nParcelas":3,"parcela":3,"valorParcela":170.0,"venc":"2026-07-20"},{"uid":"erxh058jpt","compraId":"700umwpz4d","desc":"WELLHUB FABIO OLIVEIRA 2 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":99.99,"venc":"2026-05-10"},{"uid":"uaoeyoyhy4","compraId":"l330rnca94","desc":"SUPER PAO 2 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":24.91,"venc":"2026-05-10"},{"uid":"1qbc8xrcnz","compraId":"xq2xzgdzsb","desc":"AMAZON BR 5 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":19.57,"venc":"2026-05-10"},{"uid":"r6w30lca16","compraId":"bzgzujq0g6","desc":"AMAZON BR 6 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":41.02,"venc":"2026-05-10"},{"uid":"suzznxdgdi","compraId":"gisacve9jx","desc":"AMAZON BR 7 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":109.98,"venc":"2026-05-10"},{"uid":"nathxq47kt","compraId":"psk9nr3pgq","desc":"AMAZON BR 8 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":31.32,"venc":"2026-05-10"},{"uid":"7v00wi3q7z","compraId":"qwjp6u1zyq","desc":"MIX MATEUS (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":33.11,"venc":"2026-05-10"},{"uid":"njigz1bjp0","compraId":"jlibyhayuf","desc":"B91 HORTIFRUT CG (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":119.47,"venc":"2026-05-10"},{"uid":"fger7yhibp","compraId":"knyowqoxlb","desc":"ATAKADAO ATAKAREJO (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":90.96,"venc":"2026-05-10"},{"uid":"8sibx48ru7","compraId":"gzw1hmbcpw","desc":"DISTRIBUIDORA DEUS A (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":54.0,"venc":"2026-05-10"},{"uid":"jh59yi7le5","compraId":"srkufygxhx","desc":"PAO E VINHO 1 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":40.59,"venc":"2026-05-10"},{"uid":"yrgffe29s0","compraId":"zak1wduvld","desc":"CIANO PJBANK 2 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":993.29,"venc":"2026-05-10"},{"uid":"cosczhneun","compraId":"kzermh33ea","desc":"DMA DISTRIBUIDORA SA 2 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":50.0,"venc":"2026-05-10"},{"uid":"dihhmjsa4c","compraId":"0mnae4cwks","desc":"CONVENIENCIA JEQUITIBA (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":40.0,"venc":"2026-05-10"},{"uid":"m084f6t7oa","compraId":"0nr1jn536i","desc":"EBN TIKTOK SHOP 2 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":112.87,"venc":"2026-05-10"},{"uid":"5h5ec6drl5","compraId":"myltzzqus6","desc":"PAO E VINHO 2 (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":52.81,"venc":"2026-05-10"},{"uid":"9hqvjhn56l","compraId":"1gg3thfz7u","desc":"LE CHAT (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":34.9,"venc":"2026-05-10"},{"uid":"6gb6p8vyvb","compraId":"rmd8uptytd","desc":"ATACADAO 906 AS D (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":96.79,"venc":"2026-05-10"},{"uid":"35q2d2da24","compraId":"75g3nljwuv","desc":"HORTI SUPERMERCADOS (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":38.92,"venc":"2026-05-10"},{"uid":"jg09499azy","compraId":"8vee17rvh7","desc":"VESUVIOPRAIA (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":93.47,"venc":"2026-05-10"},{"uid":"39c7u2ptx1","compraId":"4vtp35jhli","desc":"IFD IFOOD CLUB (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":1,"parcela":1,"valorParcela":7.95,"venc":"2026-05-10"},{"uid":"uqpr91ol4c","compraId":"uha3p2n1zf","desc":"SUPERMERCADO CONCEIC A (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":160.68,"venc":"2026-05-10"},{"uid":"5yo0u5h1os","compraId":"uha3p2n1zf","desc":"SUPERMERCADO CONCEIC A (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":160.68,"venc":"2026-06-10"},{"uid":"ygop20c5c8","compraId":"uha3p2n1zf","desc":"SUPERMERCADO CONCEIC A (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":160.68,"venc":"2026-07-10"},{"uid":"bn4ckwfwyz","compraId":"wc1h0z551k","desc":"JACQUELINE DE OLIVEIRA (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":4,"parcela":1,"valorParcela":53.23,"venc":"2026-05-10"},{"uid":"aypwixhcy0","compraId":"wc1h0z551k","desc":"JACQUELINE DE OLIVEIRA (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":4,"parcela":2,"valorParcela":53.23,"venc":"2026-06-10"},{"uid":"wzv969l7ar","compraId":"wc1h0z551k","desc":"JACQUELINE DE OLIVEIRA (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":4,"parcela":3,"valorParcela":53.23,"venc":"2026-07-10"},{"uid":"2fjq4xk4dl","compraId":"wc1h0z551k","desc":"JACQUELINE DE OLIVEIRA (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":4,"parcela":4,"valorParcela":53.23,"venc":"2026-08-10"},{"uid":"f3ij9rrmbi","compraId":"vs3as0sxyw","desc":"SUPERMERCADO CONCEIC B (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":163.51,"venc":"2026-05-10"},{"uid":"k3vg37uf8x","compraId":"vs3as0sxyw","desc":"SUPERMERCADO CONCEIC B (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":163.51,"venc":"2026-06-10"},{"uid":"njo5xwi78e","compraId":"vs3as0sxyw","desc":"SUPERMERCADO CONCEIC B (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":163.51,"venc":"2026-07-10"},{"uid":"ec520jduuw","compraId":"u8i2clgjkh","desc":"ATACADAO 906 AS E (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":339.97,"venc":"2026-05-10"},{"uid":"1ddbyyjwwk","compraId":"u8i2clgjkh","desc":"ATACADAO 906 AS E (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":339.97,"venc":"2026-06-10"},{"uid":"slih22k8ke","compraId":"u8i2clgjkh","desc":"ATACADAO 906 AS E (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":339.97,"venc":"2026-07-10"},{"uid":"233mqeeqst","compraId":"kdm1htsfly","desc":"ATACADAO 906 AS F (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":1,"valorParcela":238.06,"venc":"2026-05-10"},{"uid":"3zaiawnj87","compraId":"kdm1htsfly","desc":"ATACADAO 906 AS F (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":2,"valorParcela":238.06,"venc":"2026-06-10"},{"uid":"6bcgx85ge0","compraId":"kdm1htsfly","desc":"ATACADAO 906 AS F (BRA10)","dataCompra":"2026-05-10","cartao":"bradesco10","nParcelas":3,"parcela":3,"valorParcela":238.06,"venc":"2026-07-10"}]; 
+const DATA_VERSION = 'v5_maio2026'; 
+// ============================================================ 
+// STORAGE — localStorage com chave fixa 
+// ============================================================ 
+const STORAGE_KEY_COMPRAS   = 'cc_compras'; 
+const STORAGE_KEY_LIMITES   = 'cc_limites'; 
+const STORAGE_KEY_PAGAMENTOS= 'cc_pagamentos'; 
+const STORAGE_KEY_SEEDED    = 'cc_seeded_v5'; // muda só quando há novo seed 
+function salvar() { 
+  try { 
+    localStorage.setItem(STORAGE_KEY_COMPRAS,    JSON.stringify(compras)); 
+    localStorage.setItem(STORAGE_KEY_LIMITES,    JSON.stringify(limites)); 
+    localStorage.setItem(STORAGE_KEY_PAGAMENTOS, JSON.stringify(pagamentos)); 
+  } catch(e) { console.warn('localStorage cheio', e); } 
+} 
+function carregarLocal() { 
+  try { 
+    const c = localStorage.getItem(STORAGE_KEY_COMPRAS); 
+    const l = localStorage.getItem(STORAGE_KEY_LIMITES); 
+    const p = localStorage.getItem(STORAGE_KEY_PAGAMENTOS); 
+    if (c && l) return { compras: JSON.parse(c), limites: JSON.parse(l), pagamentos: p ? JSON.parse(p) : {} }; 
+  } catch(e) {} 
+  return null; 
+} 
+// ============================================================ 
+// ESTADO 
+// ============================================================ 
+let compras = []; 
+let limites = {}; 
+let pagamentos = {}; 
+function initData() { 
+  const jaSeeded = localStorage.getItem(STORAGE_KEY_SEEDED) === '1'; 
+  const local = carregarLocal(); 
+  if (local && jaSeeded) { 
+    // Dados já existem e seed já foi aplicado — usa o que está salvo (respeita exclusões) 
+    compras   = local.compras; 
+    limites   = local.limites; 
+    pagamentos = local.pagamentos || {}; 
+  } else { 
+    // Primeira vez OU novo seed disponível — carrega seed completo 
+    compras = JSON.parse(JSON.stringify(SEED_COMPRAS)) 
+                .concat(JSON.parse(JSON.stringify(NOVAS_COMPRAS))); 
+    limites = JSON.parse(JSON.stringify(SEED_LIMITES)); 
+    pagamentos = {}; 
+    localStorage.setItem(STORAGE_KEY_SEEDED, '1'); 
+    salvar(); 
+  } 
+} 
+// ============================================================ 
+// UTIL 
+// ============================================================ 
+const fmt = v => 'R$ ' + Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); 
+const hoje = new Date(); hoje.setHours(12,0,0,0); 
+document.getElementById('data-atual').textContent = hoje.toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'}); 
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); } 
+function addMes(dateStr, n) { 
+  const d = new Date(dateStr + 'T12:00:00'); 
+  d.setMonth(d.getMonth() + n); 
+  return d.toISOString().split('T')[0]; 
+} 
+function calcVenc(dataCompraStr, cartaoKey, numParcela) { 
+  const c = CARTOES[cartaoKey]; 
+  const dc = new Date(dataCompraStr + 'T12:00:00'); 
+  let fechBase = new Date(dc.getFullYear(), dc.getMonth(), c.venc - c.fechDias); 
+  let vencBase = new Date(dc.getFullYear(), dc.getMonth(), c.venc); 
+  if (dc > fechBase) { vencBase.setMonth(vencBase.getMonth() + 1); } 
+  vencBase.setMonth(vencBase.getMonth() + (numParcela - 1)); 
+  return vencBase.toISOString().split('T')[0]; 
+} 
+function diasAte(vencStr) { 
+  return Math.ceil((new Date(vencStr+'T12:00:00') - hoje) / 86400000); 
+} 
+function corLimite(pct) { 
+  return pct > 80 ? 'var(--danger)' : pct > 50 ? 'var(--warn)' : 'var(--success)'; 
+} 
+// ============================================================ 
+// TABS 
+// ============================================================ 
+const PAGES = ['dashboard','lancamentos','faturas','limites','backup']; 
+function showPage(id) { 
+  PAGES.forEach((p,i) => { 
+    document.getElementById('page-'+p).classList.toggle('active', p===id); 
+    document.querySelectorAll('.tab')[i].classList.toggle('active', p===id); 
+  }); 
+  if(id==='dashboard') renderDashboard(); 
+  if(id==='lancamentos') renderLancamentos(filtroAtivo); 
+  if(id==='faturas') renderFaturas(); 
+  if(id==='limites') renderLimites(); 
+} 
+// ============================================================ 
+// DASHBOARD 
+// ============================================================ 
+function renderDashboard() { 
+  const periodo = document.getElementById('dash-filtro-periodo').value; 
+  const em30 = new Date(hoje); em30.setDate(hoje.getDate()+30); 
+  let t30=0, tFuturo=0, nParc=0; 
+  const seenP = new Set(); 
+  // Calcula uso real por cartão = soma das parcelas FUTURAS (ainda a vencer) 
+  // Esse é o valor que efetivamente ocupa o limite do cartão 
+  const usoFuturo = {bradesco1:0, bradesco10:0, bradesco20:0, santander:0, picpay:0}; 
+  compras.forEach(c => { 
+    const vd = new Date(c.venc+'T12:00:00'); 
+    const futuro = vd >= hoje && !c.pago; 
+    if (futuro) { 
+      // Vence em 30 dias 
+      if (vd <= em30) t30 += c.valorParcela; 
+      // Total a pagar (apenas parcelas futuras = dívida real) 
+      tFuturo += c.valorParcela; 
+      // Uso de limite por cartão 
+      if (usoFuturo[c.cartao] !== undefined) usoFuturo[c.cartao] += c.valorParcela; 
+    } 
+    // Parcelamentos com pelo menos 1 parcela futura 
+    if (futuro && c.nParcelas > 1 && !seenP.has(c.compraId)) { 
+      nParc++; seenP.add(c.compraId); 
+    } 
+  }); 
+  // Limite disponível — Bradesco: limite único compartilhado entre 3 cartões 
+  const usadoBradesco = usoFuturo.bradesco1 + usoFuturo.bradesco10 + usoFuturo.bradesco20; 
+  const tDisp = Math.max(0,(limites.bradesco1.total||0) - usadoBradesco) 
+              + Math.max(0,(limites.santander.total||0) - usoFuturo.santander) 
+              + Math.max(0,(limites.picpay.total||0)    - usoFuturo.picpay); 
+  document.getElementById('totais-bar').innerHTML = ` 
+    <div class="total-card"><div class="label">Vence em 30 dias</div><div class="valor danger">${fmt(t30)}</div></div> 
+    <div class="total-card"><div class="label">Total a pagar (futuro)</div><div class="valor warn">${fmt(tFuturo)}</div></div> 
+    <div class="total-card"><div class="label">Parcelamentos ativos</div><div class="valor">${nParc}</div></div> 
+    <div class="total-card"><div class="label">Limite disponível</div><div class="valor success">${fmt(tDisp)}</div></div>`; 
+  // Cards — usa usoFuturo para refletir o que realmente ocupa o limite 
+  const usadoBradescoTotal = usoFuturo.bradesco1 + usoFuturo.bradesco10 + usoFuturo.bradesco20; 
+  const grid = document.getElementById('cards-grid'); 
+  grid.innerHTML = ''; 
+  Object.entries(CARTOES).forEach(([k,c]) => { 
+    const l = limites[k]; 
+    const isBra = k.startsWith('bradesco'); 
+    const usado = isBra ? usadoBradescoTotal : (usoFuturo[k]||0); 
+    const total = l.total||0; 
+    const pct = total > 0 ? Math.min(100,(usado/total)*100) : 0; 
+    const cor = corLimite(pct); 
+    // Próxima fatura a vencer 
+    const futuras = compras.filter(x=>x.cartao===k && new Date(x.venc+'T12:00:00')>=hoje); 
+    const proxVenc = futuras.reduce((m,x)=>x.venc<m?x.venc:m, '9999-99-99'); 
+    const fatProx = proxVenc !== '9999-99-99' ? compras.filter(x=>x.cartao===k&&x.venc===proxVenc).reduce((a,x)=>a+x.valorParcela,0) : 0; 
+    const tagUnif = isBra ? `<span style="font-size:.6rem;background:#fff3cd;color:#856404;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px;">unificado</span>` : ''; 
+    grid.innerHTML += ` 
+    <div class="card-chip"> 
+      <div class="chip-top"><span class="bank-label ${c.tag}">${c.banco}</span><span class="venc-info">Dia ${c.venc}</span></div> 
+      <div class="chip-name">${c.nome}${tagUnif}</div> 
+      <div style="font-size:.68rem;color:var(--muted);margin-bottom:8px">Limite: ${fmt(total)}${isBra?' (3 cartões)':''}</div> 
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${cor}"></div></div> 
+      <div class="limit-nums"><span style="color:${cor}">Usado: ${fmt(usado)}</span><span style="color:var(--success)">Livre: ${fmt(Math.max(0,total-usado))}</span></div> 
+      <div class="fatura-next"> 
+        <span class="fn-label">Próx. fat. ${proxVenc!=='9999-99-99'?new Date(proxVenc+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</span> 
+        <span class="fn-val">${fmt(fatProx)}</span> 
+      </div> 
+    </div>`; 
+  }); 
+  // Lista faturas 
+  const lista = document.getElementById('faturas-proximas'); 
+  lista.innerHTML = ''; 
+  const grupos = {}; 
+  compras.forEach(c => { 
+    const vd = new Date(c.venc+'T12:00:00'); 
+    const ePassada = vd < hoje; 
+    if (periodo === 'futuras' && ePassada) return; 
+    if (periodo === 'passadas' && !ePassada) return; 
+    const key = c.cartao+'|'+c.venc; 
+    if (!grupos[key]) grupos[key] = {cartao:c.cartao, venc:c.venc, total:0, passada:ePassada}; 
+    grupos[key].total += c.valorParcela; 
+  }); 
+  const sorted = Object.values(grupos).sort((a,b)=>a.venc.localeCompare(b.venc)); 
+  if (!sorted.length) { lista.innerHTML='<div class="empty-state"><div class="icon">📭</div><div>Nenhuma fatura no período</div></div>'; return; } 
+  sorted.forEach(g => { 
+    const dv = new Date(g.venc+'T12:00:00'); 
+    const dias = diasAte(g.venc); 
+    const card = CARTOES[g.cartao]; 
+    let cls='ok', corCirc='#eafaf2', corT='var(--success)'; 
+    if(g.passada){ cls='passada'; corCirc='#f5f5f5'; corT='#aaa'; } 
+    else if(dias<=3){ cls='urgente'; corCirc='#ffeaea'; corT='var(--danger)'; } 
+    else if(dias<=7){ cls='vencendo'; corCirc='#fff8e8'; corT='var(--warn)'; } 
+    const diasStr = g.passada ? `<span style="color:#aaa">Vencida ${Math.abs(dias)}d atrás</span>` 
+      : dias===0 ? `<span style="color:var(--warn)">Vence hoje</span>` 
+      : dias===1 ? `<span style="color:var(--warn)">Amanhã</span>` 
+      : `<span style="color:${corT}">Em ${dias} dias</span>`; 
+    lista.innerHTML += ` 
+    <div class="fatura-row ${cls}"> 
+      <div class="dia-circle" style="background:${corCirc}"> 
+        <div class="d" style="color:${corT}">${String(dv.getDate()).padStart(2,'0')}</div> 
+        <div class="m" style="color:${corT}">${dv.toLocaleDateString('pt-BR',{month:'short'}).replace('.','')}</div> 
+      </div> 
+      <div class="fatura-info"><div class="fi-nome">${card.nome}</div><div class="fi-sub">${diasStr}</div></div> 
+      <div class="fatura-valor">${fmt(g.total)}</div> 
+    </div>`; 
+  }); 
+} 
+// ============================================================ 
+// LANÇAMENTOS 
+// ============================================================ 
+let filtroAtivo = 'todos'; 
+function filtrar(f, btn) { 
+  filtroAtivo = f; 
+  document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active')); 
+  btn.classList.add('active'); 
+  renderLancamentos(f); 
+} 
+function renderLancamentos(filtro) { 
+  const tbody = document.getElementById('tbody-lanc'); 
+  const empty = document.getElementById('empty-lanc'); 
+  // Ordena: mais recente primeiro por dataCompra, depois por vencimento 
+  let lista = [...compras].sort((a,b) => { 
+    const da = a.dataCompra || a.venc; 
+    const db = b.dataCompra || b.venc; 
+    return db.localeCompare(da) || b.venc.localeCompare(a.venc) || a.parcela - b.parcela; 
+  }); 
+  if (filtro !== 'todos') lista = lista.filter(c=>c.cartao===filtro); 
+  if (!lista.length) { tbody.innerHTML=''; empty.style.display='block'; return; } 
+  empty.style.display = 'none'; 
+  tbody.innerHTML = lista.map(c => { 
+    const dias = diasAte(c.venc); 
+    const passada = dias < 0; 
+    const dStr = passada ? `<span style="color:#aaa;font-size:.7rem">Paga</span>` 
+      : dias===0 ? `<span style="color:var(--warn)">Hoje</span>` 
+      : dias<=5 ? `<span style="color:var(--warn)">${dias}d</span>` 
+      : `<span style="color:var(--muted)">${dias}d</span>`; 
+    const card = CARTOES[c.cartao]; 
+    const pTag = `<span class="parc-tag${passada?' passada':''}">${c.parcela}/${c.nParcelas}</span>`; 
+    const dtCompra = c.dataCompra 
+      ? new Date(c.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}) 
+      : '-'; 
+    return `<tr style="${passada?'opacity:.55':''}"> 
+      <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${dtCompra}</td> 
+      <td>${c.desc}</td> 
+      <td><span class="tag ${card.tag}">${card.nome}</span></td> 
+      <td>${pTag}</td> 
+      <td style="font-weight:600">${fmt(c.valorParcela)}</td> 
+      <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;white-space:nowrap">${new Date(c.venc+'T12:00:00').toLocaleDateString('pt-BR')}</td> 
+      <td>${dStr}</td> 
+      <td class="no-print"><div class="action-btns"> 
+        <button class="icon-btn edit" onclick="editarParcela('${c.uid}')" title="Editar">✏️</button> 
+        <button class="icon-btn del" onclick="deletarCompra('${c.compraId}')" title="Excluir compra">🗑</button> 
+      </div></td> 
+    </tr>`; 
+  }).join(''); 
+} 
+function editarParcela(u) { 
+  const c = compras.find(x=>x.uid===u); if(!c) return; 
+  document.getElementById('ep-uid').value          = u; 
+  document.getElementById('ep-compraid').value     = c.compraId; 
+  document.getElementById('ep-desc').value         = c.desc; 
+  document.getElementById('ep-valor').value        = c.valorParcela; 
+  document.getElementById('ep-venc').value         = c.venc; 
+  document.getElementById('ep-datacompra').value   = c.dataCompra || ''; 
+  document.getElementById('ep-cartao').value       = c.cartao; 
+  document.getElementById('ep-cartao-original').value = c.cartao; 
+  document.getElementById('ep-trocar-escopo').value = 'todas'; 
+  document.getElementById('modal-edit').classList.add('open'); 
+} 
+function salvarEdicao() { 
+  const u          = document.getElementById('ep-uid').value; 
+  const desc       = document.getElementById('ep-desc').value.trim(); 
+  const val        = parseFloat(document.getElementById('ep-valor').value); 
+  const venc       = document.getElementById('ep-venc').value; 
+  const dataCompra = document.getElementById('ep-datacompra').value; 
+  const novoCartao = document.getElementById('ep-cartao').value; 
+  const cartaoOrig = document.getElementById('ep-cartao-original').value; 
+  const escopo     = document.getElementById('ep-trocar-escopo').value; 
+  if(!desc||!val||!venc){showToast('Preencha todos os campos',true);return;} 
+  const idx = compras.findIndex(x=>x.uid===u); 
+  if(idx<0) return; 
+  const compraId = compras[idx].compraId; 
+  const trocouCartao = novoCartao !== cartaoOrig; 
+  if (escopo === 'todas') { 
+    // Aplica desc, dataCompra e cartão em TODAS as parcelas da mesma compra 
+    compras = compras.map(c => { 
+      if (c.compraId !== compraId) return c; 
+      return { ...c, desc, dataCompra, cartao: novoCartao }; 
+    }); 
+    // Atualiza só esta parcela com valor e venc individualmente 
+    const i2 = compras.findIndex(x=>x.uid===u); 
+    if(i2>=0) compras[i2] = { ...compras[i2], valorParcela: val, venc }; 
+  } else { 
+    // Aplica tudo só nesta parcela 
+    compras[idx] = { ...compras[idx], desc, valorParcela: val, venc, dataCompra, cartao: novoCartao }; 
+  } 
+  if (trocouCartao) { 
+    showToast(`Cartão alterado para ${CARTOES[novoCartao].nome} ✓`); 
+  } else { 
+    showToast('Lançamento atualizado ✓'); 
+  } 
+  salvar(); 
+  fecharModal('modal-edit'); 
+  renderLancamentos(filtroAtivo); 
+  renderDashboard(); 
+  renderFaturas(); 
+} 
+// ============================================================ 
+// EXCLUSÃO — usa modal próprio (confirm() bloqueado no iPhone) 
+// ============================================================ 
+let _cidParaExcluir = null; 
+function deletarCompraModal() { 
+  _cidParaExcluir = document.getElementById('ep-compraid').value; 
+  fecharModal('modal-edit'); 
+  setTimeout(()=>abrirConfirm(_cidParaExcluir), 250); 
+} 
+function deletarCompraFatura(cid) { 
+  abrirConfirm(cid); 
+} 
+function deletarCompra(cid) { 
+  abrirConfirm(cid); 
+} 
+function abrirConfirm(cid) { 
+  _cidParaExcluir = cid; 
+  // Mostra quantas parcelas serão excluídas 
+  const rel = compras.filter(x => x.compraId === cid); 
+  const desc = rel.length > 0 ? rel[0].desc : 'esta compra'; 
+  const nParc = rel.length; 
+  document.getElementById('confirm-msg').textContent = 
+    `"${desc}" — ${nParc} parcela${nParc>1?'s':''} serão removidas.`; 
+  document.getElementById('confirm-overlay').classList.add('open'); 
+} 
+function confirmarSim() { 
+  document.getElementById('confirm-overlay').classList.remove('open'); 
+  if (!_cidParaExcluir) return; 
+  compras = compras.filter(x => x.compraId !== _cidParaExcluir); 
+  _cidParaExcluir = null; 
+  salvar(); 
+  renderDashboard(); 
+  renderFaturas(); 
+  renderLancamentos(filtroAtivo); 
+  showToast('Compra excluída ✓'); 
+} 
+function confirmarNao() { 
+  document.getElementById('confirm-overlay').classList.remove('open'); 
+  _cidParaExcluir = null; 
+} 
+// ============================================================ 
+// FATURAS DETALHADAS 
+// ============================================================ 
+function renderFaturas() { 
+  const container = document.getElementById('faturas-detalhe-container'); 
+  const filtroCartao = document.getElementById('filtro-fatura-cartao').value; 
+  const filtroPeriodo = document.getElementById('filtro-fatura-periodo').value; 
+  container.innerHTML = ''; 
+  const grupos = {}; 
+  compras.forEach(c => { 
+    if (filtroCartao !== 'todos' && c.cartao !== filtroCartao) return; 
+    const vd = new Date(c.venc+'T12:00:00'); 
+    const passada = vd < hoje; 
+    if (filtroPeriodo === 'futuras' && passada) return; 
+    if (filtroPeriodo === 'passadas' && !passada) return; 
+    const key = c.cartao+'|'+c.venc; 
+    if (!grupos[key]) grupos[key]={cartao:c.cartao,venc:c.venc,itens:[],total:0,passada}; 
+    grupos[key].itens.push(c); 
+    grupos[key].total+=c.valorParcela; 
+  }); 
+  const sorted=Object.values(grupos).sort((a,b)=>a.venc.localeCompare(b.venc)); 
+  if(!sorted.length){container.innerHTML='<div class="empty-state"><div class="icon">📋</div><div>Nenhuma fatura no período</div></div>';return;} 
+  sorted.forEach(g=>{ 
+    const dv=new Date(g.venc+'T12:00:00'); 
+    const dias=diasAte(g.venc); 
+    const card=CARTOES[g.cartao]; 
+    const key=g.cartao+'|'+g.venc; 
+    const pag=pagamentos[key]; 
+    const pago=!!pag; 
+    const corBorda=pago?'var(--success)':g.passada?'#ccc':dias<=3?'var(--danger)':dias<=7?'var(--warn)':'var(--accent2)'; 
+    const diasStr=pago 
+      ? `<span class="pago-badge">✓ Pago em ${new Date(pag.data+'T12:00:00').toLocaleDateString('pt-BR')} — ${fmt(pag.valor)}</span>` 
+      : g.passada?`<span style="color:#aaa;font-size:.72rem">Vencida</span>` 
+      : dias===0?`<span style="color:var(--warn);font-size:.72rem">Vence hoje</span>` 
+      : `<span style="color:${corBorda};font-size:.72rem">Vence em ${dias} dias</span>`; 
+    const btnPagar = pago 
+      ? `<button class="btn btn-outline btn-sm no-print" onclick="desfazerPagamento('${key}')" style="color:var(--muted);font-size:.72rem;">↩ Desfazer</button>` 
+      : `<button class="btn btn-pagar btn-sm no-print" onclick="abrirPagamento('${g.cartao}','${g.venc}',${g.total})">💰 Pagar</button>`; 
+    container.innerHTML+=` 
+    <div class="fatura-detalhe${pago?' paga':''}" style="border-top:4px solid ${corBorda};${g.passada&&!pago?'opacity:.75':''}"> 
+      <div class="fatura-detalhe-hd"> 
+        <div class="fd-left"> 
+          <span class="tag ${card.tag}">${card.nome}</span> 
+          <span style="font-weight:600;font-size:.9rem">${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</span> 
+          ${diasStr} 
+        </div> 
+        <div style="display:flex;align-items:center;gap:10px;"> 
+          <div class="fd-total">${fmt(g.total)}</div> 
+          ${btnPagar} 
+        </div> 
+      </div> 
+      <div> 
+        <div class="fd-row" style="background:var(--surface2);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);"> 
+          <div class="fd-data no-print-hide" style="min-width:55px;max-width:55px">Dt.</div><div class="fd-desc">Descrição</div><div class="fd-parc">Parcela</div><div class="fd-val">Valor</div> 
+          <div style="min-width:60px" class="no-print"></div> 
+        </div> 
+        ${g.itens.sort((a,b)=>a.desc.localeCompare(b.desc)).map(i=>` 
+        <div class="fd-row"> 
+          <div class="fd-data no-print-hide" style="min-width:55px;max-width:55px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${i.dataCompra ? new Date(i.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : '-'}</div> 
+          <div class="fd-desc">${i.desc}</div> 
+          <div class="fd-parc"><span class="parc-tag${g.passada?' passada':''}">${i.parcela}/${i.nParcelas}</span></div> 
+          <div class="fd-val">${fmt(i.valorParcela)}</div> 
+          <div style="min-width:60px;display:flex;gap:3px;" class="no-print"> 
+            <button class="icon-btn edit" onclick="editarParcela('${i.uid}')" title="Editar">✏️</button> 
+            <button class="icon-btn del" onclick="deletarCompraFatura('${i.compraId}')" title="Excluir compra">🗑</button> 
+          </div> 
+        </div>`).join('')} 
+        <div class="fd-row" style="background:var(--surface2);font-weight:700;"> 
+          <div class="fd-desc" style="color:var(--muted)">Total da fatura</div> 
+          <div class="fd-parc"></div> 
+          <div class="fd-val" style="font-size:.95rem">${fmt(g.total)}</div> 
+          <div style="min-width:28px" class="no-print"></div> 
+        </div> 
+      </div> 
+    </div>`; 
+  }); 
+} 
+// ============================================================ 
+// PAGAMENTOS 
+// ============================================================ 
+function abrirPagamento(cartao, venc, total) { 
+  const card = CARTOES[cartao]; 
+  const dv = new Date(venc+'T12:00:00'); 
+  document.getElementById('pag-cartao').value = cartao; 
+  document.getElementById('pag-venc').value = venc; 
+  document.getElementById('pag-total').value = total; 
+  document.getElementById('pag-valor').value = total.toFixed(2); 
+  document.getElementById('pag-data').value = hoje.toISOString().split('T')[0]; 
+  document.getElementById('pag-info-cartao').textContent = card.nome + ' — ' + card.banco; 
+  document.getElementById('pag-info-venc').textContent = 'Vencimento: ' + dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}); 
+  document.getElementById('pag-info-total').textContent = 'Total da fatura: ' + fmt(total); 
+  document.getElementById('modal-pagamento').classList.add('open'); 
+} 
+function confirmarPagamento() { 
+  const cartao = document.getElementById('pag-cartao').value; 
+  const venc   = document.getElementById('pag-venc').value; 
+  const total  = parseFloat(document.getElementById('pag-total').value); 
+  const valor  = parseFloat(document.getElementById('pag-valor').value); 
+  const data   = document.getElementById('pag-data').value; 
+  if (!valor || valor <= 0 || !data) { showToast('Preencha valor e data', true); return; } 
+  const key = cartao+'|'+venc; 
+  pagamentos[key] = { valor, data, total }; 
+  // Marca as parcelas desta fatura como pagas (move vencimento para o passado) 
+  // Isso faz com que saiam do cálculo de "uso de limite" 
+  compras.forEach(c => { 
+    if (c.cartao === cartao && c.venc === venc) { 
+      c.pago = true; 
+    } 
+  }); 
+  salvar(); 
+  fecharModal('modal-pagamento'); 
+  renderFaturas(); 
+  renderDashboard(); 
+  renderLimites(); 
+  showToast(`Pagamento de ${fmt(valor)} registrado! Limite liberado ✓`); 
+} 
+function desfazerPagamento(key) { 
+  // sem confirm — executa direto (operação reversível) 
+  const pag = pagamentos[key]; 
+  if (pag) { 
+    const [cartao, venc] = key.split('|'); 
+    // Desmarca parcelas como pagas 
+    compras.forEach(c => { 
+      if (c.cartao === cartao && c.venc === venc) delete c.pago; 
+    }); 
+    delete pagamentos[key]; 
+    salvar(); 
+    renderFaturas(); 
+    renderDashboard(); 
+    renderLimites(); 
+    showToast('Pagamento desfeito'); 
+  } 
+} 
+// ============================================================ 
+// LIMITES 
+// ============================================================ 
+function renderLimites() { 
+  const grid=document.getElementById('limites-grid'); 
+  grid.innerHTML=''; 
+  // Calcula uso real = parcelas futuras por cartão 
+  const usoReal = {bradesco1:0, bradesco10:0, bradesco20:0, santander:0, picpay:0}; 
+  compras.forEach(c => { 
+    if (new Date(c.venc+'T12:00:00') >= hoje && !c.pago && usoReal[c.cartao]!==undefined) 
+      usoReal[c.cartao] += c.valorParcela; 
+  }); 
+  const usadoB = usoReal.bradesco1 + usoReal.bradesco10 + usoReal.bradesco20; 
+  const totalB = limites.bradesco1.total||0; 
+  const pctB = totalB>0 ? Math.min(100,(usadoB/totalB)*100) : 0; 
+  const corB = corLimite(pctB); 
+  grid.innerHTML+=` 
+  <div class="card-chip" style="border:2px solid #ffc107;"> 
+    <div class="chip-top"><span class="bank-label bradesco">Bradesco</span><span style="font-size:.62rem;background:#fff3cd;color:#856404;padding:2px 6px;border-radius:4px;font-weight:700;">UNIFICADO</span></div> 
+    <div class="chip-name">BRA 01 + 10 + 20</div> 
+    <div style="font-size:.7rem;color:var(--muted);margin-bottom:8px">Limite: ${fmt(totalB)} (3 cartões)</div> 
+    <div class="bar-wrap"><div class="bar-fill" style="width:${pctB}%;background:${corB}"></div></div> 
+    <div class="limit-nums"><span style="color:${corB}">Comprometido: ${fmt(usadoB)}</span><span style="color:var(--success)">Livre: ${fmt(Math.max(0,totalB-usadoB))}</span></div> 
+    <div style="text-align:center;font-size:.78rem;font-weight:700;color:${corB};margin-top:8px">${pctB.toFixed(1)}% utilizado</div> 
+  </div>`; 
+  ['santander','picpay'].forEach(k=>{ 
+    const c=CARTOES[k], l=limites[k]; 
+    const usado=usoReal[k]||0, total=l.total||0; 
+    const pct=total>0?Math.min(100,(usado/total)*100):0; 
+    const cor=corLimite(pct); 
+    grid.innerHTML+=` 
+    <div class="card-chip"> 
+      <div class="chip-top"><span class="bank-label ${c.tag}">${c.banco}</span><span class="venc-info">Dia ${c.venc}</span></div> 
+      <div class="chip-name">${c.nome}</div> 
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:8px">Limite: ${fmt(total)}</div> 
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${cor}"></div></div> 
+      <div class="limit-nums"><span style="color:${cor}">Comprometido: ${fmt(usado)}</span><span style="color:var(--success)">Livre: ${fmt(Math.max(0,total-usado))}</span></div> 
+      <div style="text-align:center;font-size:.78rem;font-weight:700;color:${cor};margin-top:8px">${pct.toFixed(1)}%</div> 
+    </div>`; 
+  }); 
+} 
+function salvarLimite(){ 
+  const sel=document.getElementById('lim-cartao').value; 
+  const val=parseFloat(document.getElementById('lim-valor').value); 
+  if(!val||val<=0){showToast('Valor inválido',true);return;} 
+  if(sel==='bradesco'){limites.bradesco1.total=limites.bradesco10.total=limites.bradesco20.total=val;} 
+  else{limites[sel].total=val;} 
+  salvar();renderLimites();showToast('Limite atualizado ✓'); 
+} 
+// ============================================================ 
+// NOVA COMPRA 
+// ============================================================ 
+function abrirModalCompra(){ 
+  document.getElementById('c-data').value=hoje.toISOString().split('T')[0]; 
+  document.getElementById('c-desc').value=''; 
+  document.getElementById('c-valor').value=''; 
+  document.getElementById('c-parcelas').value='1'; 
+  calcularFechamento();calcularParcelas(); 
+  document.getElementById('modal-compra').classList.add('open'); 
+} 
+function fecharModal(id){document.getElementById(id).classList.remove('open');} 
+function calcularFechamento(){ 
+  const data=document.getElementById('c-data').value; 
+  const cartao=document.getElementById('c-cartao').value; 
+  if(!data||!cartao)return; 
+  const v1=calcVenc(data,cartao,1); 
+  const dv=new Date(v1+'T12:00:00'); 
+  const c=CARTOES[cartao]; 
+  document.getElementById('fechamento-info').innerHTML= 
+    `📅 Compra em <strong>${new Date(data+'T12:00:00').toLocaleDateString('pt-BR')}</strong> — fecha ${c.fechDias}d antes do vencimento.<br> 
+    🟠 1ª parcela: fatura de <strong>${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</strong>`; 
+} 
+function calcularParcelas(){ 
+  const valor=parseFloat(document.getElementById('c-valor').value)||0; 
+  const n=parseInt(document.getElementById('c-parcelas').value)||1; 
+  const data=document.getElementById('c-data').value; 
+  const cartao=document.getElementById('c-cartao').value; 
+  const wrap=document.getElementById('parcelas-editor-wrap'); 
+  const tbody=document.getElementById('parcelas-edit-tbody'); 
+  if(!valor||!data||!cartao){wrap.style.display='none';return;} 
+  wrap.style.display='block'; 
+  const base=Math.floor((valor/n)*100)/100; 
+  const resto=Math.round((valor-base*n)*100)/100; 
+  tbody.innerHTML=''; 
+  for(let i=1;i<=n;i++){ 
+    const venc=calcVenc(data,cartao,i); 
+    const vp=i===n?base+resto:base; 
+    tbody.innerHTML+=`<tr> 
+      <td style="padding:6px 9px;font-weight:600">${i}/${n}</td> 
+      <td><input type="number" step="0.01" value="${vp.toFixed(2)}" id="pe-val-${i}"></td> 
+      <td><input type="date" value="${venc}" id="pe-venc-${i}"></td> 
+    </tr>`; 
+  } 
+} 
+async function salvarCompra(){ 
+  const desc=document.getElementById('c-desc').value.trim(); 
+  const data=document.getElementById('c-data').value; 
+  const valor=parseFloat(document.getElementById('c-valor').value); 
+  const cartao=document.getElementById('c-cartao').value; 
+  const n=parseInt(document.getElementById('c-parcelas').value); 
+  if(!desc||!data||!valor||valor<=0){showToast('Preencha todos os campos',true);return;} 
+  const compraId=uid(); 
+  let totalReal=0; 
+  for(let i=1;i<=n;i++){ 
+    const vVal=parseFloat(document.getElementById('pe-val-'+i).value)||0; 
+    const vVenc=document.getElementById('pe-venc-'+i).value; 
+    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc}); 
+    totalReal+=vVal; 
+  } 
+  limites[cartao].usado=(limites[cartao].usado||0)+totalReal; 
+  salvar();fecharModal('modal-compra');renderDashboard(); 
+  showToast('Compra lançada ✓'); 
+} 
+// ============================================================ 
+// BACKUP 
+// ============================================================ 
+function exportar(){ 
+  const blob=new Blob([JSON.stringify({versao:4,exportado:new Date().toISOString(),compras,limites,pagamentos},null,2)],{type:'application/json'}); 
+  const a=document.createElement('a'); 
+  a.href=URL.createObjectURL(blob); 
+  a.download=`cartoes-backup-${new Date().toISOString().split('T')[0]}.json`; 
+  a.click(); 
+  showToast('Backup exportado ✓'); 
+} 
+function importar(e){ 
+  const file=e.target.files[0];if(!file)return; 
+  const reader=new FileReader(); 
+  reader.onload=ev=>{ 
+    try{ 
+      const d=JSON.parse(ev.target.result); 
+      if(!d.compras||!d.limites)throw new Error(); 
+      // importa direto 
+      compras=d.compras; limites=d.limites; pagamentos=d.pagamentos||{}; 
+      localStorage.setItem('cc_version',DATA_VERSION); 
+      salvar(); renderDashboard(); 
+      showToast(`${compras.length} lançamentos importados ✓`); 
+    }catch{showToast('Arquivo inválido',true);} 
+  }; 
+  reader.readAsText(file); 
+  e.target.value=''; 
+} 
+function limparTudo(){ 
+  // limpa direto 
+  localStorage.removeItem(STORAGE_KEY_SEEDED); 
+  compras = JSON.parse(JSON.stringify(SEED_COMPRAS)).concat(JSON.parse(JSON.stringify(NOVAS_COMPRAS))); 
+  limites = JSON.parse(JSON.stringify(SEED_LIMITES)); 
+  pagamentos = {}; 
+  localStorage.setItem(STORAGE_KEY_SEEDED,'1'); 
+  salvar(); renderDashboard(); 
+  showToast('Dados restaurados ✓'); 
+} 
+// ============================================================ 
+// TOAST 
+// ============================================================ 
+function showToast(msg,erro=false){ 
+  const t=document.getElementById('toast'); 
+  t.textContent=msg;t.style.background=erro?'var(--danger)':'var(--text)'; 
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000); 
+} 
+// ============================================================ 
+// INIT 
+// ============================================================ 
+initData(); 
+renderDashboard(); 
+</script> 
+</body> 
+</html> 
+
+Enviado via UOL Mail 
