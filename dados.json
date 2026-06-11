@@ -1,0 +1,18 @@
+{
+  "cartoes": [
+    {"id": "bradesco1", "nome": "BRA 01", "bandeira": "Bradesco", "vencimento": 1, "limite": 170000, "usado": 107291.71},
+    {"id": "bradesco10", "nome": "BRA 10", "bandeira": "Bradesco", "vencimento": 10, "limite": 170000, "usado": 35337.91},
+    {"id": "bradesco20", "nome": "BRA 20", "bandeira": "Bradesco", "vencimento": 20, "limite": 170000, "usado": 8520.73},
+    {"id": "santander", "nome": "Santander", "bandeira": "Santander", "vencimento": 15, "limite": 250000, "usado": 135228.32},
+    {"id": "picpay", "nome": "PicPay", "bandeira": "PicPay", "vencimento": 25, "limite": 30000, "usado": 0}
+  ],
+  "limites": {
+    "bradesco1": {"total": 170000, "usado": 107291.71},
+    "bradesco10": {"total": 170000, "usado": 35337.91},
+    "bradesco20": {"total": 170000, "usado": 8520.73},
+    "santander": {"total": 250000, "usado": 135228.32},
+    "picpay": {"total": 30000, "usado": 0}
+  },
+  "compras": [],
+  "pagamentos": {}
+}
