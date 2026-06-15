@@ -3761,6 +3761,17 @@
       "parcela": 2,
       "valorParcela": 291.56,
       "venc": "2026-08-20"
+    },
+    {
+      "uid": "mqfd7twgpxcl",
+      "compraId": "mqfd7twgj4up",
+      "desc": "Rota transpoete",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 22,
+      "venc": "2026-07-20"
     }
   ],
   "limites": {
@@ -3770,7 +3781,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16049.760000000004
+      "usado": 16071.760000000004
     },
     "mlivre": {
       "total": 20700,
