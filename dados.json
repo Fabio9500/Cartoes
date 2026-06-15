@@ -9352,12 +9352,23 @@
       "parcela": 3,
       "valorParcela": 46.85,
       "venc": "2026-09-10"
+    },
+    {
+      "uid": "mqeiyef8lain",
+      "compraId": "mqeiyef8lqcz",
+      "desc": "teste",
+      "dataCompra": "2026-06-14",
+      "cartao": "bradesco1",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 1000000,
+      "venc": "2026-07-01"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 221318.44
+      "usado": 1221318.44
     },
     "bradesco10": {
       "total": 170000,
