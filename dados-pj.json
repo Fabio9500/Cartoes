@@ -3530,6 +3530,17 @@
       "parcela": 1,
       "valorParcela": 22,
       "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqenq861ldmh",
+      "compraId": "mqenq861drde",
+      "desc": "Setbri",
+      "dataCompra": "2026-06-11",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 45,
+      "venc": "2026-07-20"
     }
   ],
   "limites": {
@@ -3539,7 +3550,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 14346.760000000004
+      "usado": 14391.760000000004
     },
     "mlivre": {
       "total": 20700,
