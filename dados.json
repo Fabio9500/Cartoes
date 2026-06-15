@@ -9352,6 +9352,17 @@
       "parcela": 3,
       "valorParcela": 46.85,
       "venc": "2026-09-10"
+    },
+    {
+      "uid": "mqeo8zmyc5eh",
+      "compraId": "mqeo8zmy7vj2",
+      "desc": "Padaria",
+      "dataCompra": "2026-06-12",
+      "cartao": "bradesco20",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 41.89,
+      "venc": "2026-07-20"
     }
   ],
   "limites": {
@@ -9365,7 +9376,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 19476.149999999994
+      "usado": 19518.039999999994
     },
     "santander": {
       "total": 250000,
