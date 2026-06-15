@@ -9385,6 +9385,17 @@
       "parcela": 1,
       "valorParcela": 261.8,
       "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqeoghbbke9u",
+      "compraId": "mqeoghbb2hex",
+      "desc": "Amazon",
+      "dataCompra": "2026-06-05",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 109.98,
+      "venc": "2026-07-10"
     }
   ],
   "limites": {
@@ -9394,7 +9405,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 45014.41000000001
+      "usado": 45124.390000000014
     },
     "bradesco20": {
       "total": 170000,
