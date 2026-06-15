@@ -3684,12 +3684,23 @@
       "parcela": 1,
       "valorParcela": 6,
       "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqeo1gfsbftm",
+      "compraId": "mqeo1gfs0b3x",
+      "desc": "Serbri",
+      "dataCompra": "2026-06-09",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 70.2,
+      "venc": "2026-07-05"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3008431.84
+      "usado": 3008502.04
     },
     "cef": {
       "total": 20000,
