@@ -3640,6 +3640,28 @@
       "parcela": 2,
       "valorParcela": 103,
       "venc": "2026-08-20"
+    },
+    {
+      "uid": "mqenx28koq0b",
+      "compraId": "mqenx28ki93g",
+      "desc": "Hidroplastik",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 60.75,
+      "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqenx28kbre8",
+      "compraId": "mqenx28ki93g",
+      "desc": "Hidroplastik",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 60.74,
+      "venc": "2026-08-20"
     }
   ],
   "limites": {
@@ -3649,7 +3671,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 15007.700000000003
+      "usado": 15129.190000000002
     },
     "mlivre": {
       "total": 20700,
