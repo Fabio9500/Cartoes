@@ -3530,12 +3530,23 @@
       "parcela": 1,
       "valorParcela": 44,
       "venc": "2026-07-05"
+    },
+    {
+      "uid": "mqeisqoca7lj",
+      "compraId": "mqeisqocko5i",
+      "desc": "teste",
+      "dataCompra": "2026-06-14",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 1000000,
+      "venc": "2026-07-05"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 1008431.84
+      "usado": 2008431.8399999999
     },
     "cef": {
       "total": 20000,
