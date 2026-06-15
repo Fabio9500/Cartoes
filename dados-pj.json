@@ -3739,6 +3739,28 @@
       "parcela": 3,
       "valorParcela": 106.34,
       "venc": "2026-09-20"
+    },
+    {
+      "uid": "mqfd7gcbo7wd",
+      "compraId": "mqfd7gcb9e1z",
+      "desc": "Alumifwrro",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 291.56,
+      "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqfd7gcb1f46",
+      "compraId": "mqfd7gcb9e1z",
+      "desc": "Alumifwrro",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 291.56,
+      "venc": "2026-08-20"
     }
   ],
   "limites": {
@@ -3748,7 +3770,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 15466.640000000003
+      "usado": 16049.760000000004
     },
     "mlivre": {
       "total": 20700,
