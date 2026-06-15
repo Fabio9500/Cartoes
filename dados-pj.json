@@ -3673,6 +3673,17 @@
       "parcela": 1,
       "valorParcela": 12.45,
       "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqeny1oopl2l",
+      "compraId": "mqeny1oogsud",
+      "desc": "Gabage",
+      "dataCompra": "2026-06-12",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 6,
+      "venc": "2026-07-20"
     }
   ],
   "limites": {
@@ -3682,7 +3693,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 15141.640000000003
+      "usado": 15147.640000000003
     },
     "mlivre": {
       "total": 20700,
