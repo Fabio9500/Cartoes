@@ -3541,6 +3541,28 @@
       "parcela": 1,
       "valorParcela": 45,
       "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqenrmbhetu1",
+      "compraId": "mqenrmbhsyrg",
+      "desc": "Alimifer",
+      "dataCompra": "2026-06-11",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 89.99,
+      "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqenrmbh0sgd",
+      "compraId": "mqenrmbhsyrg",
+      "desc": "Alimifer",
+      "dataCompra": "2026-06-11",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 89.99,
+      "venc": "2026-08-20"
     }
   ],
   "limites": {
@@ -3550,7 +3572,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 14391.760000000004
+      "usado": 14571.740000000003
     },
     "mlivre": {
       "total": 20700,
