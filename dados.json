@@ -9374,6 +9374,17 @@
       "parcela": 1,
       "valorParcela": 52.45,
       "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqeoaml8rxe8",
+      "compraId": "mqeoaml8onp0",
+      "desc": "Rest. Lê Bostro",
+      "dataCompra": "2026-06-12",
+      "cartao": "bradesco20",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 261.8,
+      "venc": "2026-07-20"
     }
   ],
   "limites": {
@@ -9387,7 +9398,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 19570.489999999994
+      "usado": 19832.289999999994
     },
     "santander": {
       "total": 250000,
