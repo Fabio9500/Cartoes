@@ -3695,6 +3695,17 @@
       "parcela": 1,
       "valorParcela": 70.2,
       "venc": "2026-07-05"
+    },
+    {
+      "uid": "mqeo4qs72eev",
+      "compraId": "mqeo4qs7is73",
+      "desc": "Mercado Livre",
+      "dataCompra": "2026-05-25",
+      "cartao": "mlivre",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 193.03,
+      "venc": "2026-06-20"
     }
   ],
   "limites": {
@@ -3708,7 +3719,7 @@
     },
     "mlivre": {
       "total": 20700,
-      "usado": 2419.9500000000003
+      "usado": 2612.9800000000005
     },
     "santander": {
       "total": 0,
