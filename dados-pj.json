@@ -3706,6 +3706,39 @@
       "parcela": 1,
       "valorParcela": 193.03,
       "venc": "2026-06-20"
+    },
+    {
+      "uid": "mqfd6ntz5pbp",
+      "compraId": "mqfd6ntzrrvt",
+      "desc": "Rural química",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 106.33,
+      "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqfd6nu0tcs2",
+      "compraId": "mqfd6ntzrrvt",
+      "desc": "Rural química",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 106.33,
+      "venc": "2026-08-20"
+    },
+    {
+      "uid": "mqfd6nu097wa",
+      "compraId": "mqfd6ntzrrvt",
+      "desc": "Rural química",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 106.34,
+      "venc": "2026-09-20"
     }
   ],
   "limites": {
@@ -3715,7 +3748,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 15147.640000000003
+      "usado": 15466.640000000003
     },
     "mlivre": {
       "total": 20700,
