@@ -9418,6 +9418,83 @@
       "parcela": 1,
       "valorParcela": 45.48,
       "venc": "2026-07-10"
+    },
+    {
+      "uid": "mqeozamrkmb6",
+      "compraId": "mqeozamr4k1f",
+      "desc": "Dindin Capitalizacao",
+      "dataCompra": "2026-05-26",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 1,
+      "valorParcela": 100,
+      "venc": "2026-06-15"
+    },
+    {
+      "uid": "mqeozamrmpuc",
+      "compraId": "mqeozamr4k1f",
+      "desc": "Dindin Capitalizacao",
+      "dataCompra": "2026-05-26",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 2,
+      "valorParcela": 100,
+      "venc": "2026-07-15"
+    },
+    {
+      "uid": "mqeozamrg91o",
+      "compraId": "mqeozamr4k1f",
+      "desc": "Dindin Capitalizacao",
+      "dataCompra": "2026-05-26",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 3,
+      "valorParcela": 100,
+      "venc": "2026-08-15"
+    },
+    {
+      "uid": "mqeozamr1gss",
+      "compraId": "mqeozamr4k1f",
+      "desc": "Dindin Capitalizacao",
+      "dataCompra": "2026-05-26",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 4,
+      "valorParcela": 100,
+      "venc": "2026-09-15"
+    },
+    {
+      "uid": "mqeozamra1k6",
+      "compraId": "mqeozamr4k1f",
+      "desc": "Dindin Capitalizacao",
+      "dataCompra": "2026-05-26",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 5,
+      "valorParcela": 100,
+      "venc": "2026-10-15"
+    },
+    {
+      "uid": "mqeozamr26sv",
+      "compraId": "mqeozamr4k1f",
+      "desc": "Dindin Capitalizacao",
+      "dataCompra": "2026-05-26",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 6,
+      "valorParcela": 100,
+      "venc": "2026-11-15"
+    },
+    {
+      "uid": "mqeozamrh0i1",
+      "compraId": "mqeozamr4k1f",
+      "desc": "Dindin Capitalizacao",
+      "dataCompra": "2026-05-26",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 7,
+      "valorParcela": 100,
+      "venc": "2026-12-15"
     }
   ],
   "limites": {
@@ -9435,7 +9512,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 140725.28
+      "usado": 141425.28
     },
     "picpay": {
       "total": 30000,
