@@ -240,6 +240,7 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <button class="tab" onclick="showPage('lancamentos')">Lançamentos</button>
   <button class="tab" onclick="showPage('faturas')">Faturas</button>
   <button class="tab" onclick="showPage('limites')">Limites</button>
+  <button class="tab" onclick="showPage('relatorios')">📊 Relatórios</button>
   <button class="tab" onclick="showPage('backup')">Backup</button>
 </div>
 <main>
@@ -332,6 +333,105 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 </div>
 
 <!-- BACKUP -->
+<div class="page" id="page-relatorios">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-end;">
+    <div>
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:4px;">Período</label>
+      <select id="rel-periodo" onchange="renderRelatorios()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;">
+        <option value="3">Últimos 3 meses</option>
+        <option value="6" selected>Últimos 6 meses</option>
+        <option value="12">Últimos 12 meses</option>
+        <option value="0">Todos</option>
+      </select>
+    </div>
+    <div>
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:4px;">Cartão</label>
+      <select id="rel-cartao" onchange="renderRelatorios()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;">
+        <option value="todos">Todos os cartões</option>
+        <option value="c6">C6</option>
+        <option value="cef">CEF</option>
+        <option value="mlivre">M.Livre</option>
+        <option value="santander">Santander</option>
+        <option value="bradesco">Bradesco</option>
+      </select>
+    </div>
+    <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button>
+  </div>
+  <div id="rel-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px;"></div>
+  <div class="backup-section" style="max-width:100%;margin-bottom:14px;">
+    <h3 style="margin-bottom:14px;">📅 Gastos Mensais por Cartão</h3>
+    <div id="rel-mensal-wrap" style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+        <thead id="rel-mensal-head"></thead>
+        <tbody id="rel-mensal-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="backup-section" style="max-width:100%;margin-bottom:14px;">
+    <h3 style="margin-bottom:14px;">💰 Pago vs A Pagar por Mês</h3>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+        <thead><tr style="background:var(--surface2);">
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Mês</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--success);">Pago</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--warn);">A Pagar</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
+        </tr></thead>
+        <tbody id="rel-pago-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="backup-section" style="max-width:100%;margin-bottom:14px;">
+    <h3 style="margin-bottom:14px;">🏪 Top Fornecedores</h3>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+        <thead><tr style="background:var(--surface2);">
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">#</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Parcelas</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
+        </tr></thead>
+        <tbody id="rel-forn-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="backup-section" style="max-width:100%;margin-bottom:14px;">
+    <h3 style="margin-bottom:10px;">📋 Lançamentos por Data de Compra</h3>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <input type="text" id="rel-busca" placeholder="Buscar fornecedor..." oninput="renderLancamentosRel()"
+        style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;flex:1;">
+    </div>
+    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+        <thead><tr style="background:var(--surface2);">
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Parcela</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Valor</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Venc.</th>
+        </tr></thead>
+        <tbody id="rel-lanc-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="backup-section" style="max-width:100%;margin-bottom:14px;">
+    <h3 style="margin-bottom:14px;">🔄 Parcelamentos em Aberto</h3>
+    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+        <thead><tr style="background:var(--surface2);">
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Progresso</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Restante</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
+        </tr></thead>
+        <tbody id="rel-parc-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <div class="page" id="page-backup">
 
   <div class="backup-section">
@@ -736,7 +836,7 @@ function corLimite(pct) {
 // ============================================================
 // TABS
 // ============================================================
-const PAGES = ['dashboard','lancamentos','faturas','limites','backup'];
+const PAGES = ['dashboard','lancamentos','faturas','limites','relatorios','backup'];
 function showPage(id) {
   PAGES.forEach((p,i) => {
     document.getElementById('page-'+p).classList.toggle('active', p===id);
@@ -1170,6 +1270,79 @@ function showToast(msg,erro=false){
 }
 
 // ── INICIAR ──────────────────────────────────────────────────
+
+// ── RELATÓRIOS ───────────────────────────────────────────────
+function getMeses(n){
+  const meses=[];
+  if(n===0){const seen=new Set();compras.forEach(c=>{seen.add(c.venc.slice(0,7));});return[...seen].sort();}
+  const now=new Date();
+  for(let i=n-1;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);meses.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}
+  return meses;
+}
+function nomeMes(ym){const[y,m]=ym.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}).replace('.','/');} 
+function filtrarCompras(){
+  const n=parseInt(document.getElementById('rel-periodo').value);
+  const c=document.getElementById('rel-cartao').value;
+  const meses=getMeses(n);
+  const minM=meses.length>0?meses[0]:'0000-00';
+  return compras.filter(x=>{
+    if(n>0&&x.venc.slice(0,7)<minM)return false;
+    if(c!=='todos'&&x.cartao!==c)return false;
+    return true;
+  });
+}
+function renderRelatorios(){
+  const lista=filtrarCompras();
+  const n=parseInt(document.getElementById('rel-periodo').value);
+  const meses=getMeses(n);
+  const total=lista.reduce((a,x)=>a+x.valorParcela,0);
+  const pagos=lista.filter(x=>x.pago).reduce((a,x)=>a+x.valorParcela,0);
+  const aPagar=lista.filter(x=>!x.pago&&new Date(x.venc+'T12:00:00')>=hoje).reduce((a,x)=>a+x.valorParcela,0);
+  const vencidos=lista.filter(x=>!x.pago&&new Date(x.venc+'T12:00:00')<hoje).reduce((a,x)=>a+x.valorParcela,0);
+  const nCompras=new Set(lista.map(x=>x.compraId)).size;
+  document.getElementById('rel-cards').innerHTML=`
+    <div class="total-card"><div class="label">Total no período</div><div class="valor">${fmt(total)}</div></div>
+    <div class="total-card"><div class="label">Pago</div><div class="valor success">${fmt(pagos)}</div></div>
+    <div class="total-card"><div class="label">A Pagar</div><div class="valor warn">${fmt(aPagar)}</div></div>
+    <div class="total-card"><div class="label">Vencido</div><div class="valor danger">${fmt(vencidos)}</div></div>
+    <div class="total-card"><div class="label">Compras</div><div class="valor">${nCompras}</div></div>`;
+  const cartoes=Object.keys(CARTOES);
+  const head=document.getElementById('rel-mensal-head');
+  const body=document.getElementById('rel-mensal-body');
+  head.innerHTML=`<tr style="background:var(--surface2);"><th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>${meses.map(m=>`<th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">${nomeMes(m)}</th>`).join('')}<th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th></tr>`;
+  const totaisMes={};meses.forEach(m=>totaisMes[m]=0);
+  body.innerHTML=cartoes.map(k=>{
+    const card=CARTOES[k];
+    const vals=meses.map(m=>{const v=lista.filter(x=>x.cartao===k&&x.venc.slice(0,7)===m).reduce((a,x)=>a+x.valorParcela,0);totaisMes[m]=(totaisMes[m]||0)+v;return v;});
+    const tot=vals.reduce((a,v)=>a+v,0);
+    if(tot===0)return '';
+    return `<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;"><span class="tag ${card.tag}">${card.nome}</span></td>${vals.map(v=>`<td style="padding:8px 12px;text-align:right;font-weight:${v>0?'600':'400'};color:${v>0?'var(--text)':'var(--muted)'};">${v>0?fmt(v):'-'}</td>`).join('')}<td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(tot)}</td></tr>`;
+  }).join('')+`<tr style="border-top:2px solid var(--border);background:var(--surface2);font-weight:700;"><td style="padding:8px 12px;">Total</td>${meses.map(m=>`<td style="padding:8px 12px;text-align:right;">${fmt(totaisMes[m]||0)}</td>`).join('')}<td style="padding:8px 12px;text-align:right;">${fmt(Object.values(totaisMes).reduce((a,v)=>a+v,0))}</td></tr>`;
+  document.getElementById('rel-pago-body').innerHTML=meses.map(m=>{
+    const pago=lista.filter(x=>x.venc.slice(0,7)===m&&x.pago).reduce((a,x)=>a+x.valorParcela,0);
+    const aPag=lista.filter(x=>x.venc.slice(0,7)===m&&!x.pago).reduce((a,x)=>a+x.valorParcela,0);
+    const tot=pago+aPag;if(tot===0)return '';
+    return `<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;font-weight:600;">${nomeMes(m)}</td><td style="padding:8px 12px;text-align:right;color:var(--success);font-weight:600;">${pago>0?fmt(pago):'-'}</td><td style="padding:8px 12px;text-align:right;color:var(--warn);font-weight:600;">${aPag>0?fmt(aPag):'-'}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(tot)}</td></tr>`;
+  }).join('');
+  const forn={};lista.forEach(x=>{const key=x.desc.replace(/\s*\(.*?\)\s*$/,'').trim();if(!forn[key])forn[key]={total:0,count:0};forn[key].total+=x.valorParcela;forn[key].count++;});
+  const fornSorted=Object.entries(forn).sort((a,b)=>b[1].total-a[1].total).slice(0,20);
+  document.getElementById('rel-forn-body').innerHTML=fornSorted.map(([k,v],i)=>`<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;color:var(--muted);font-size:.75rem;">${i+1}</td><td style="padding:8px 12px;font-weight:600;">${k}</td><td style="padding:8px 12px;text-align:right;color:var(--muted);">${v.count}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(v.total)}</td></tr>`).join('');
+  const parcAtivos={};
+  compras.forEach(x=>{if(x.nParcelas>1){if(!parcAtivos[x.compraId])parcAtivos[x.compraId]={desc:x.desc,cartao:x.cartao,nParcelas:x.nParcelas,pagas:0,total:0,restante:0};parcAtivos[x.compraId].total+=x.valorParcela;const fut=new Date(x.venc+'T12:00:00')>=hoje&&!x.pago;if(fut)parcAtivos[x.compraId].restante+=x.valorParcela;if(x.pago||new Date(x.venc+'T12:00:00')<hoje)parcAtivos[x.compraId].pagas++;}});
+  const parcFilt=Object.values(parcAtivos).filter(x=>x.restante>0).sort((a,b)=>b.restante-a.restante);
+  document.getElementById('rel-parc-body').innerHTML=parcFilt.length?parcFilt.map(x=>{const card=CARTOES[x.cartao];const pct=Math.round((x.pagas/x.nParcelas)*100);return`<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;font-weight:600;">${x.desc.replace(/\s*\(.*?\)\s*$/,'').trim()}</td><td style="padding:8px 12px;"><span class="tag ${card.tag}">${card.nome}</span></td><td style="padding:8px 12px;text-align:right;"><div style="font-size:.72rem;color:var(--muted);margin-bottom:3px;">${x.pagas}/${x.nParcelas} (${pct}%)</div><div style="height:4px;background:var(--surface2);border-radius:2px;"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:2px;"></div></div></td><td style="padding:8px 12px;text-align:right;color:var(--warn);font-weight:700;">${fmt(x.restante)}</td><td style="padding:8px 12px;text-align:right;font-weight:600;">${fmt(x.total)}</td></tr>`;}).join(''):'<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--muted);">Nenhum parcelamento ativo</td></tr>';
+  renderLancamentosRel();
+}
+function renderLancamentosRel(){
+  const busca=(document.getElementById('rel-busca')?.value||'').toLowerCase();
+  const lista=filtrarCompras().filter(x=>!busca||x.desc.toLowerCase().includes(busca));
+  const sorted=[...lista].sort((a,b)=>{const da=a.dataCompra||a.venc,db=b.dataCompra||b.venc;return db.localeCompare(da)||a.desc.localeCompare(b.desc);});
+  const body=document.getElementById('rel-lanc-body');
+  if(!sorted.length){body.innerHTML='<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--muted);">Nenhum lançamento</td></tr>';return;}
+  body.innerHTML=sorted.slice(0,200).map(x=>{const card=CARTOES[x.cartao];const dc=x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'-';const dv=new Date(x.venc+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});const pass=new Date(x.venc+'T12:00:00')<hoje;return`<tr style="border-top:1px solid var(--border);${pass?'opacity:.6':''}"><td style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:.75rem;white-space:nowrap;">${dc}</td><td style="padding:7px 12px;">${x.desc}</td><td style="padding:7px 12px;"><span class="tag ${card.tag}">${card.nome}</span></td><td style="padding:7px 12px;text-align:right;"><span class="parc-tag${pass?' passada':''}">${x.parcela}/${x.nParcelas}</span></td><td style="padding:7px 12px;text-align:right;font-weight:600;">${fmt(x.valorParcela)}</td><td style="padding:7px 12px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:.75rem;white-space:nowrap;">${dv}</td></tr>`;}).join('');
+}
+
+
 boot();
 </script>
 </body>
