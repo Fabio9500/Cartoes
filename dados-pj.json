@@ -3519,6 +3519,17 @@
       "parcela": 1,
       "valorParcela": 53,
       "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqenpiib8x58",
+      "compraId": "mqenpiibqm33",
+      "desc": "Rubens bar",
+      "dataCompra": "2026-06-10",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 22,
+      "venc": "2026-07-20"
     }
   ],
   "limites": {
@@ -3528,7 +3539,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 14324.760000000004
+      "usado": 14346.760000000004
     },
     "mlivre": {
       "total": 20700,
