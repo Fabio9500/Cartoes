@@ -3662,6 +3662,17 @@
       "parcela": 2,
       "valorParcela": 60.74,
       "venc": "2026-08-20"
+    },
+    {
+      "uid": "mqenxpxdiznz",
+      "compraId": "mqenxpxdukl8",
+      "desc": "Alumifer",
+      "dataCompra": "2026-06-12",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 12.45,
+      "venc": "2026-07-20"
     }
   ],
   "limites": {
@@ -3671,7 +3682,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 15129.190000000002
+      "usado": 15141.640000000003
     },
     "mlivre": {
       "total": 20700,
