@@ -9529,6 +9529,18 @@
       "valorParcela": 40.9,
       "venc": "2026-06-15",
       "categoria": "Entretenimento"
+    },
+    {
+      "uid": "mqgvme9fnihb",
+      "compraId": "mqgvme9f4561",
+      "desc": "Vesuvio",
+      "dataCompra": "2026-06-16",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 50,
+      "venc": "2026-07-15",
+      "categoria": "Alimentação"
     }
   ],
   "limites": {
@@ -9546,7 +9558,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 141645.46
+      "usado": 141695.46
     },
     "picpay": {
       "total": 30000,
