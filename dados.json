@@ -9517,6 +9517,18 @@
       "parcela": 2,
       "valorParcela": 89.64,
       "venc": "2026-07-15"
+    },
+    {
+      "uid": "mqg1shd0kj8e",
+      "compraId": "mqg1shd0xh1l",
+      "desc": "Ass. Sportify",
+      "dataCompra": "2026-06-15",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 40.9,
+      "venc": "2026-06-15",
+      "categoria": "Entretenimento"
     }
   ],
   "limites": {
@@ -9534,7 +9546,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 141604.56
+      "usado": 141645.46
     },
     "picpay": {
       "total": 30000,
