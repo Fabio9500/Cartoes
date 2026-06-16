@@ -9495,6 +9495,28 @@
       "parcela": 7,
       "valorParcela": 100,
       "venc": "2026-12-15"
+    },
+    {
+      "uid": "mqg1qa8wbh37",
+      "compraId": "mqg1qa8w70h6",
+      "desc": "TikTok - Smart Watch",
+      "dataCompra": "2026-06-15",
+      "cartao": "santander",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 89.64,
+      "venc": "2026-06-15"
+    },
+    {
+      "uid": "mqg1qa8wgvx1",
+      "compraId": "mqg1qa8w70h6",
+      "desc": "TikTok - Smart Watch",
+      "dataCompra": "2026-06-15",
+      "cartao": "santander",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 89.64,
+      "venc": "2026-07-15"
     }
   ],
   "limites": {
@@ -9512,7 +9534,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 141425.28
+      "usado": 141604.56
     },
     "picpay": {
       "total": 30000,
