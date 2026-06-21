@@ -3832,6 +3832,18 @@
       "valorParcela": 13.75,
       "venc": "2026-07-20",
       "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn9gs1j7wz4",
+      "compraId": "mqn9gs1jw9wh",
+      "desc": "Água potavel",
+      "dataCompra": "2026-06-19",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 120,
+      "venc": "2026-07-20",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
@@ -3841,7 +3853,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16178.030000000004
+      "usado": 16298.030000000004
     },
     "mlivre": {
       "total": 20700,
