@@ -3880,6 +3880,30 @@
       "valorParcela": 100,
       "venc": "2026-09-20",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn9po51to9h",
+      "compraId": "mqn9po51opda",
+      "desc": "Serbri",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 57,
+      "venc": "2026-07-20",
+      "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn9po51c2te",
+      "compraId": "mqn9po51opda",
+      "desc": "Serbri",
+      "dataCompra": "2026-06-15",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 57,
+      "venc": "2026-08-20",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
@@ -3889,7 +3913,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16598.030000000006
+      "usado": 16712.030000000006
     },
     "mlivre": {
       "total": 20700,
