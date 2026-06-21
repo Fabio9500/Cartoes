@@ -4090,6 +4090,30 @@
       "parcela": 3,
       "valorParcela": 43.4,
       "venc": "2026-09-20"
+    },
+    {
+      "uid": "mqnnwpuc9hef",
+      "compraId": "mqnnwpuct3db",
+      "desc": "Tintauto",
+      "dataCompra": "2026-06-17",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 67.5,
+      "venc": "2026-07-20",
+      "categoria": "Serviços"
+    },
+    {
+      "uid": "mqnnwpucst6z",
+      "compraId": "mqnnwpuct3db",
+      "desc": "Tintauto",
+      "dataCompra": "2026-06-17",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 67.5,
+      "venc": "2026-08-20",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
@@ -4099,7 +4123,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 18214.51000000001
+      "usado": 18349.51000000001
     },
     "mlivre": {
       "total": 20700,
