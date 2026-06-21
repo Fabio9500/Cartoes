@@ -3904,6 +3904,42 @@
       "valorParcela": 57,
       "venc": "2026-08-20",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn9r5s1e8bt",
+      "compraId": "mqn9r5s1lxdd",
+      "desc": "Supermercado Conceição",
+      "dataCompra": "2026-06-21",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 106.61,
+      "venc": "2026-07-20",
+      "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn9r5s166c0",
+      "compraId": "mqn9r5s1lxdd",
+      "desc": "Supermercado Conceição",
+      "dataCompra": "2026-06-21",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 106.61,
+      "venc": "2026-08-20",
+      "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn9r5s1pqr4",
+      "compraId": "mqn9r5s1lxdd",
+      "desc": "Supermercado Conceição",
+      "dataCompra": "2026-06-21",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 106.61,
+      "venc": "2026-09-20",
+      "categoria": "Alimentação"
     }
   ],
   "limites": {
@@ -3913,7 +3949,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16712.030000000006
+      "usado": 17031.860000000008
     },
     "mlivre": {
       "total": 20700,
