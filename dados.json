@@ -9649,6 +9649,42 @@
       "valorParcela": 150,
       "venc": "2026-09-15",
       "categoria": "Combustível"
+    },
+    {
+      "uid": "mqn7yurr6ri0",
+      "compraId": "mqn7yurqi4be",
+      "desc": "Clara Mat. Construção",
+      "dataCompra": "2026-06-16",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 806.06,
+      "venc": "2026-07-15",
+      "categoria": "Outros"
+    },
+    {
+      "uid": "mqn7yurr6rrs",
+      "compraId": "mqn7yurqi4be",
+      "desc": "Clara Mat. Construção",
+      "dataCompra": "2026-06-16",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 806.06,
+      "venc": "2026-08-15",
+      "categoria": "Outros"
+    },
+    {
+      "uid": "mqn7yurrct2p",
+      "compraId": "mqn7yurqi4be",
+      "desc": "Clara Mat. Construção",
+      "dataCompra": "2026-06-16",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 806.06,
+      "venc": "2026-09-15",
+      "categoria": "Outros"
     }
   ],
   "limites": {
@@ -9666,7 +9702,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 142885.56
+      "usado": 145303.74
     },
     "picpay": {
       "total": 30000,
