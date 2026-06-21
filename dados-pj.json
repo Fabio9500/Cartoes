@@ -3844,6 +3844,42 @@
       "valorParcela": 120,
       "venc": "2026-07-20",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn9hrub88q5",
+      "compraId": "mqn9hrub2tyh",
+      "desc": "Certificado Digital",
+      "dataCompra": "2026-06-19",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 100,
+      "venc": "2026-07-20",
+      "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn9hrubs032",
+      "compraId": "mqn9hrub2tyh",
+      "desc": "Certificado Digital",
+      "dataCompra": "2026-06-19",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 100,
+      "venc": "2026-08-20",
+      "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn9hrub11r6",
+      "compraId": "mqn9hrub2tyh",
+      "desc": "Certificado Digital",
+      "dataCompra": "2026-06-19",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 100,
+      "venc": "2026-09-20",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
@@ -3853,7 +3889,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16298.030000000004
+      "usado": 16598.030000000006
     },
     "mlivre": {
       "total": 20700,
