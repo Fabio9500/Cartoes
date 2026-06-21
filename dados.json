@@ -9685,6 +9685,42 @@
       "valorParcela": 806.06,
       "venc": "2026-09-15",
       "categoria": "Outros"
+    },
+    {
+      "uid": "mqn7zuu5u5ip",
+      "compraId": "mqn7zuu50ali",
+      "desc": "Atacadao Congelamento",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 518.51,
+      "venc": "2026-07-15",
+      "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn7zuu5hrwe",
+      "compraId": "mqn7zuu50ali",
+      "desc": "Atacadao Congelamento",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 518.51,
+      "venc": "2026-08-15",
+      "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn7zuu5no26",
+      "compraId": "mqn7zuu50ali",
+      "desc": "Atacadao Congelamento",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 518.51,
+      "venc": "2026-09-15",
+      "categoria": "Alimentação"
     }
   ],
   "limites": {
@@ -9702,7 +9738,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 145303.74
+      "usado": 146859.27
     },
     "picpay": {
       "total": 30000,
