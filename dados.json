@@ -9733,6 +9733,18 @@
       "valorParcela": 73.68,
       "venc": "2026-07-15",
       "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn81mpxptv7",
+      "compraId": "mqn81mpxm1zf",
+      "desc": "Atacadao",
+      "dataCompra": "2026-06-21",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 7,
+      "venc": "2026-07-15",
+      "categoria": "Alimentação"
     }
   ],
   "limites": {
@@ -9750,7 +9762,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 146932.94999999998
+      "usado": 146939.94999999998
     },
     "picpay": {
       "total": 30000,
