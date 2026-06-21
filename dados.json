@@ -9745,6 +9745,18 @@
       "valorParcela": 7,
       "venc": "2026-07-15",
       "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn82l8im3cs",
+      "compraId": "mqn82l8igjkd",
+      "desc": "Bom Sabor",
+      "dataCompra": "2026-06-18",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 73.99,
+      "venc": "2026-07-15",
+      "categoria": "Alimentação"
     }
   ],
   "limites": {
@@ -9762,7 +9774,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 146939.94999999998
+      "usado": 147013.93999999997
     },
     "picpay": {
       "total": 30000,
