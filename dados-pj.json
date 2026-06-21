@@ -4114,6 +4114,30 @@
       "valorParcela": 67.5,
       "venc": "2026-08-20",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqno3a1wm8fz",
+      "compraId": "mqno3a1wy5ka",
+      "desc": "Alumifer",
+      "dataCompra": "2026-06-17",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 47.88,
+      "venc": "2026-07-20",
+      "categoria": "Serviços"
+    },
+    {
+      "uid": "mqno3a1wo7v6",
+      "compraId": "mqno3a1wy5ka",
+      "desc": "Alumifer",
+      "dataCompra": "2026-06-17",
+      "cartao": "cef",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 47.88,
+      "venc": "2026-08-20",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
@@ -4123,7 +4147,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 18445.270000000008
+      "usado": 18541.030000000006
     },
     "mlivre": {
       "total": 20700,
