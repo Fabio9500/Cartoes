@@ -4057,6 +4057,39 @@
       "valorParcela": 139.37,
       "venc": "2026-09-20",
       "categoria": "Supermercado"
+    },
+    {
+      "uid": "mqna2ax6dmge",
+      "compraId": "mqna2ax6vupn",
+      "desc": "Mirasul",
+      "dataCompra": "2026-06-21",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 43.4,
+      "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqna2ax6qa30",
+      "compraId": "mqna2ax6vupn",
+      "desc": "Mirasul",
+      "dataCompra": "2026-06-21",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 43.4,
+      "venc": "2026-08-20"
+    },
+    {
+      "uid": "mqna2ax6j4tc",
+      "compraId": "mqna2ax6vupn",
+      "desc": "Mirasul",
+      "dataCompra": "2026-06-21",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 43.4,
+      "venc": "2026-09-20"
     }
   ],
   "limites": {
@@ -4066,7 +4099,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 18084.31000000001
+      "usado": 18214.51000000001
     },
     "mlivre": {
       "total": 20700,
