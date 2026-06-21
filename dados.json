@@ -9817,6 +9817,18 @@
       "valorParcela": 126,
       "venc": "2026-07-15",
       "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn89sd0ja5t",
+      "compraId": "mqn89sd0c0hl",
+      "desc": "Cond Jardim 1102 - 1/10",
+      "dataCompra": "2026-06-21",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 310.77,
+      "venc": "2026-07-15",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
@@ -9834,7 +9846,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 147499.64999999994
+      "usado": 147810.41999999993
     },
     "picpay": {
       "total": 30000,
