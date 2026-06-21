@@ -3784,6 +3784,18 @@
       "valorParcela": 21.02,
       "venc": "2026-07-20",
       "categoria": "Outros"
+    },
+    {
+      "uid": "mqn9cipi6cka",
+      "compraId": "mqn9cipizhug",
+      "desc": "Gabage",
+      "dataCompra": "2026-06-16",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 40,
+      "venc": "2026-07-20",
+      "categoria": "Outros"
     }
   ],
   "limites": {
@@ -3793,7 +3805,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16092.780000000004
+      "usado": 16132.780000000004
     },
     "mlivre": {
       "total": 20700,
