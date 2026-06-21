@@ -9841,6 +9841,66 @@
       "valorParcela": 310.75,
       "venc": "2026-07-15",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn8uxzd2r7k",
+      "compraId": "mqn8uxzdm7gv",
+      "desc": "Telasul - Alumifer Postes",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 5,
+      "parcela": 1,
+      "valorParcela": 1507,
+      "venc": "2026-07-15",
+      "categoria": "Outros"
+    },
+    {
+      "uid": "mqn8uxzd2g4j",
+      "compraId": "mqn8uxzdm7gv",
+      "desc": "Telasul - Alumifer Postes",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 5,
+      "parcela": 2,
+      "valorParcela": 1507,
+      "venc": "2026-08-15",
+      "categoria": "Outros"
+    },
+    {
+      "uid": "mqn8uxzdbl1m",
+      "compraId": "mqn8uxzdm7gv",
+      "desc": "Telasul - Alumifer Postes",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 5,
+      "parcela": 3,
+      "valorParcela": 1507,
+      "venc": "2026-09-15",
+      "categoria": "Outros"
+    },
+    {
+      "uid": "mqn8uxzdyc4w",
+      "compraId": "mqn8uxzdm7gv",
+      "desc": "Telasul - Alumifer Postes",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 5,
+      "parcela": 4,
+      "valorParcela": 1507,
+      "venc": "2026-10-15",
+      "categoria": "Outros"
+    },
+    {
+      "uid": "mqn8uxzd422i",
+      "compraId": "mqn8uxzdm7gv",
+      "desc": "Telasul - Alumifer Postes",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 5,
+      "parcela": 5,
+      "valorParcela": 1507,
+      "venc": "2026-11-15",
+      "categoria": "Outros"
     }
   ],
   "limites": {
@@ -9858,7 +9918,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 148121.16999999993
+      "usado": 155656.16999999993
     },
     "picpay": {
       "total": 30000,
