@@ -1,5 +1,5 @@
 {
-  "versao": 1,
+  "versao": 5,
   "tipo": "pj",
   "compras": [
     {
@@ -3772,6 +3772,18 @@
       "parcela": 1,
       "valorParcela": 22,
       "venc": "2026-07-20"
+    },
+    {
+      "uid": "mqn9bmr0odg7",
+      "compraId": "mqn9bmr0uknm",
+      "desc": "Posto Jeovane",
+      "dataCompra": "2026-06-16",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 21.02,
+      "venc": "2026-07-20",
+      "categoria": "Outros"
     }
   ],
   "limites": {
@@ -3781,7 +3793,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16071.760000000004
+      "usado": 16092.780000000004
     },
     "mlivre": {
       "total": 20700,
