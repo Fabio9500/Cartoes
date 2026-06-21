@@ -9805,6 +9805,18 @@
       "valorParcela": 21.33,
       "venc": "2026-07-15",
       "categoria": "Educação"
+    },
+    {
+      "uid": "mqn870afaor0",
+      "compraId": "mqn870afo5lu",
+      "desc": "Unossobar",
+      "dataCompra": "2026-06-21",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 126,
+      "venc": "2026-07-15",
+      "categoria": "Alimentação"
     }
   ],
   "limites": {
@@ -9822,7 +9834,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 147373.64999999994
+      "usado": 147499.64999999994
     },
     "picpay": {
       "total": 30000,
