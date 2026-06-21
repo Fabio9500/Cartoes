@@ -3820,6 +3820,18 @@
       "valorParcela": 9.5,
       "venc": "2026-07-20",
       "categoria": "Outros"
+    },
+    {
+      "uid": "mqn9fo87aw6g",
+      "compraId": "mqn9fo86cutf",
+      "desc": "Itão",
+      "dataCompra": "2026-06-21",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 13.75,
+      "venc": "2026-07-20",
+      "categoria": "Alimentação"
     }
   ],
   "limites": {
@@ -3829,7 +3841,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16164.280000000004
+      "usado": 16178.030000000004
     },
     "mlivre": {
       "total": 20700,
