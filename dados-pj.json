@@ -3808,6 +3808,18 @@
       "valorParcela": 22,
       "venc": "2026-07-20",
       "categoria": "Outros"
+    },
+    {
+      "uid": "mqn9ep1gvzb2",
+      "compraId": "mqn9ep1gcjh7",
+      "desc": "Edvaldo",
+      "dataCompra": "2026-06-18",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 9.5,
+      "venc": "2026-07-20",
+      "categoria": "Outros"
     }
   ],
   "limites": {
@@ -3817,7 +3829,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 16154.780000000004
+      "usado": 16164.280000000004
     },
     "mlivre": {
       "total": 20700,
