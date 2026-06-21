@@ -9541,6 +9541,78 @@
       "valorParcela": 50,
       "venc": "2026-07-15",
       "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn7w4c1rcur",
+      "compraId": "mqn7w4c02cyg",
+      "desc": "Tico Mia Matheus",
+      "dataCompra": "2026-06-20",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 1,
+      "valorParcela": 123.35,
+      "venc": "2026-07-15",
+      "categoria": "Entretenimento"
+    },
+    {
+      "uid": "mqn7w4c1bnmz",
+      "compraId": "mqn7w4c02cyg",
+      "desc": "Tico Mia Matheus",
+      "dataCompra": "2026-06-20",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 2,
+      "valorParcela": 123.35,
+      "venc": "2026-08-15",
+      "categoria": "Entretenimento"
+    },
+    {
+      "uid": "mqn7w4c1kt0n",
+      "compraId": "mqn7w4c02cyg",
+      "desc": "Tico Mia Matheus",
+      "dataCompra": "2026-06-20",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 3,
+      "valorParcela": 123.35,
+      "venc": "2026-09-15",
+      "categoria": "Entretenimento"
+    },
+    {
+      "uid": "mqn7w4c1scmb",
+      "compraId": "mqn7w4c02cyg",
+      "desc": "Tico Mia Matheus",
+      "dataCompra": "2026-06-20",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 4,
+      "valorParcela": 123.35,
+      "venc": "2026-10-15",
+      "categoria": "Entretenimento"
+    },
+    {
+      "uid": "mqn7w4c1uhh8",
+      "compraId": "mqn7w4c02cyg",
+      "desc": "Tico Mia Matheus",
+      "dataCompra": "2026-06-20",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 5,
+      "valorParcela": 123.35,
+      "venc": "2026-11-15",
+      "categoria": "Entretenimento"
+    },
+    {
+      "uid": "mqn7w4c1u98q",
+      "compraId": "mqn7w4c02cyg",
+      "desc": "Tico Mia Matheus",
+      "dataCompra": "2026-06-20",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 6,
+      "valorParcela": 123.35,
+      "venc": "2026-12-15",
+      "categoria": "Entretenimento"
     }
   ],
   "limites": {
@@ -9558,7 +9630,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 141695.46
+      "usado": 142435.56
     },
     "picpay": {
       "total": 30000,
