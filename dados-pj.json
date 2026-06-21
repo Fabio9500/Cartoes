@@ -4114,6 +4114,18 @@
       "valorParcela": 67.5,
       "venc": "2026-08-20",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqnnxilowkk2",
+      "compraId": "mqnnxilnc333",
+      "desc": "Alumifer",
+      "dataCompra": "2026-06-17",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 95.76,
+      "venc": "2026-07-20",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
@@ -4123,7 +4135,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 18349.51000000001
+      "usado": 18445.270000000008
     },
     "mlivre": {
       "total": 20700,
