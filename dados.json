@@ -9793,6 +9793,18 @@
       "valorParcela": 100,
       "venc": "2026-07-15",
       "categoria": "Combustível"
+    },
+    {
+      "uid": "mqn860jwd3h3",
+      "compraId": "mqn860jwtuoq",
+      "desc": "Claude credito",
+      "dataCompra": "2026-06-16",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 21.33,
+      "venc": "2026-07-15",
+      "categoria": "Educação"
     }
   ],
   "limites": {
@@ -9810,7 +9822,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 147352.31999999995
+      "usado": 147373.64999999994
     },
     "picpay": {
       "total": 30000,
