@@ -9781,6 +9781,18 @@
       "valorParcela": 67.11,
       "venc": "2026-07-15",
       "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn850hv61os",
+      "compraId": "mqn850hv0fcu",
+      "desc": "Posto Combustível",
+      "dataCompra": "2026-06-17",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 100,
+      "venc": "2026-07-15",
+      "categoria": "Combustível"
     }
   ],
   "limites": {
@@ -9798,7 +9810,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 147252.31999999995
+      "usado": 147352.31999999995
     },
     "picpay": {
       "total": 30000,
