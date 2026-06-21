@@ -9769,6 +9769,18 @@
       "valorParcela": 171.27,
       "venc": "2026-07-15",
       "categoria": "Alimentação"
+    },
+    {
+      "uid": "mqn844zss851",
+      "compraId": "mqn844zs5894",
+      "desc": "Vesúvio",
+      "dataCompra": "2026-06-18",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 67.11,
+      "venc": "2026-07-15",
+      "categoria": "Alimentação"
     }
   ],
   "limites": {
@@ -9786,7 +9798,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 147185.20999999996
+      "usado": 147252.31999999995
     },
     "picpay": {
       "total": 30000,
