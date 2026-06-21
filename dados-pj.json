@@ -4021,6 +4021,42 @@
       "valorParcela": 93.38,
       "venc": "2026-08-20",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn9ysylup1v",
+      "compraId": "mqn9ysyl13p5",
+      "desc": "Supermercado",
+      "dataCompra": "2026-06-17",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 139.37,
+      "venc": "2026-07-20",
+      "categoria": "Supermercado"
+    },
+    {
+      "uid": "mqn9ysyl4zl3",
+      "compraId": "mqn9ysyl13p5",
+      "desc": "Supermercado",
+      "dataCompra": "2026-06-17",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 139.37,
+      "venc": "2026-08-20",
+      "categoria": "Supermercado"
+    },
+    {
+      "uid": "mqn9ysylx2so",
+      "compraId": "mqn9ysyl13p5",
+      "desc": "Supermercado",
+      "dataCompra": "2026-06-17",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 139.37,
+      "venc": "2026-09-20",
+      "categoria": "Supermercado"
     }
   ],
   "limites": {
@@ -4030,7 +4066,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 17666.200000000008
+      "usado": 18084.31000000001
     },
     "mlivre": {
       "total": 20700,
