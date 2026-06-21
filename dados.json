@@ -9829,6 +9829,18 @@
       "valorParcela": 310.77,
       "venc": "2026-07-15",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqn8alzwi4uc",
+      "compraId": "mqn8alzw6iov",
+      "desc": "Cond. Cidade 1102 - 2/10",
+      "dataCompra": "2026-06-21",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 310.75,
+      "venc": "2026-07-15",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
@@ -9846,7 +9858,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 147810.41999999993
+      "usado": 148121.16999999993
     },
     "picpay": {
       "total": 30000,
