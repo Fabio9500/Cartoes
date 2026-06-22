@@ -4245,6 +4245,58 @@
       "venc": "2026-07-20",
       "categoria": "Serviços",
       "memo": "Discos"
+    },
+    {
+      "uid": "mqptgv3paw0i",
+      "compraId": "mqptgv3omabf",
+      "desc": "Cristal",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 4,
+      "parcela": 1,
+      "valorParcela": 77.5,
+      "venc": "2026-07-20",
+      "categoria": "Transporte",
+      "memo": "02 Almax"
+    },
+    {
+      "uid": "mqptgv3p5piz",
+      "compraId": "mqptgv3omabf",
+      "desc": "Cristal",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 4,
+      "parcela": 2,
+      "valorParcela": 77.5,
+      "venc": "2026-08-20",
+      "categoria": "Transporte",
+      "memo": "02 Almax"
+    },
+    {
+      "uid": "mqptgv3pvbg8",
+      "compraId": "mqptgv3omabf",
+      "desc": "Cristal",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 4,
+      "parcela": 3,
+      "valorParcela": 77.5,
+      "venc": "2026-09-20",
+      "categoria": "Transporte",
+      "memo": "02 Almax"
+    },
+    {
+      "uid": "mqptgv3p0fyj",
+      "compraId": "mqptgv3omabf",
+      "desc": "Cristal",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 4,
+      "parcela": 4,
+      "valorParcela": 77.5,
+      "venc": "2026-10-20",
+      "categoria": "Transporte",
+      "memo": "02 Almax"
     }
   ],
   "limites": {
@@ -4254,7 +4306,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 18747.030000000006
+      "usado": 19057.030000000006
     },
     "mlivre": {
       "total": 20700,
