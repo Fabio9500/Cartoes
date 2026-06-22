@@ -4180,6 +4180,45 @@
       "valorParcela": 47.88,
       "venc": "2026-08-20",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mqptb95b4zky",
+      "compraId": "mqptb95avxxf",
+      "desc": "Mirasul",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 42,
+      "venc": "2026-07-20",
+      "categoria": "Serviços",
+      "memo": "Discos de corte"
+    },
+    {
+      "uid": "mqptb95bqyg0",
+      "compraId": "mqptb95avxxf",
+      "desc": "Mirasul",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 42,
+      "venc": "2026-08-20",
+      "categoria": "Serviços",
+      "memo": "Discos de corte"
+    },
+    {
+      "uid": "mqptb95bhdjk",
+      "compraId": "mqptb95avxxf",
+      "desc": "Mirasul",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 42,
+      "venc": "2026-09-20",
+      "categoria": "Serviços",
+      "memo": "Discos de corte"
     }
   ],
   "limites": {
@@ -4189,7 +4228,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 18541.030000000006
+      "usado": 18667.030000000006
     },
     "mlivre": {
       "total": 20700,
