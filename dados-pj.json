@@ -4219,6 +4219,19 @@
       "venc": "2026-09-20",
       "categoria": "Serviços",
       "memo": "Discos de corte"
+    },
+    {
+      "uid": "mqpte2guijwp",
+      "compraId": "mqpte2gu4zri",
+      "desc": "Oficina Chausse",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 35,
+      "venc": "2026-07-20",
+      "categoria": "Serviços",
+      "memo": "Carvão lixadeira peq."
     }
   ],
   "limites": {
@@ -4228,7 +4241,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 18667.030000000006
+      "usado": 18702.030000000006
     },
     "mlivre": {
       "total": 20700,
