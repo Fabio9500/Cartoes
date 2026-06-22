@@ -4232,6 +4232,19 @@
       "venc": "2026-07-20",
       "categoria": "Serviços",
       "memo": "Carvão lixadeira peq."
+    },
+    {
+      "uid": "mqptfu18eb03",
+      "compraId": "mqptfu182jaj",
+      "desc": "Serbri",
+      "dataCompra": "2026-06-22",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 45,
+      "venc": "2026-07-20",
+      "categoria": "Serviços",
+      "memo": "Discos"
     }
   ],
   "limites": {
@@ -4241,7 +4254,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 18702.030000000006
+      "usado": 18747.030000000006
     },
     "mlivre": {
       "total": 20700,
