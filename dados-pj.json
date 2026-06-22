@@ -775,7 +775,8 @@
       "nParcelas": 10,
       "parcela": 10,
       "valorParcela": 203.97,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "q24zq3re6x",
@@ -810,7 +811,8 @@
       "nParcelas": 5,
       "parcela": 4,
       "valorParcela": 30.65,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "cwgtmf0rdu",
@@ -856,7 +858,8 @@
       "nParcelas": 5,
       "parcela": 4,
       "valorParcela": 32.58,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "ftozb3o1no",
@@ -2868,7 +2871,8 @@
       "nParcelas": 1,
       "parcela": 1,
       "valorParcela": 244.4,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "mpb2facvj8kr",
@@ -2879,7 +2883,8 @@
       "nParcelas": 1,
       "parcela": 1,
       "valorParcela": 421.52,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "mpb2ghjsyj75",
@@ -2890,7 +2895,8 @@
       "nParcelas": 8,
       "parcela": 1,
       "valorParcela": 23.74,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "mpb2ghjswsu1",
@@ -2990,7 +2996,8 @@
       "nParcelas": 1,
       "parcela": 1,
       "valorParcela": 9.9,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "mpkadnd257aa",
@@ -3001,7 +3008,8 @@
       "nParcelas": 6,
       "parcela": 1,
       "valorParcela": 21.2,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "mpkadnd2hh1j",
@@ -3705,7 +3713,8 @@
       "nParcelas": 1,
       "parcela": 1,
       "valorParcela": 193.03,
-      "venc": "2026-06-20"
+      "venc": "2026-06-20",
+      "pago": true
     },
     {
       "uid": "mqfd6ntz5pbp",
@@ -4197,6 +4206,11 @@
       "valor": 5692.38,
       "data": "2026-06-05",
       "total": 5692.38
+    },
+    "mlivre|2026-06-20": {
+      "valor": 1180.99,
+      "data": "2026-06-22",
+      "total": 1180.99
     }
   }
 }
