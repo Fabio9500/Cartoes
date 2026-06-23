@@ -3514,8 +3514,9 @@
       "cartao": "c6",
       "nParcelas": 1,
       "parcela": 1,
-      "valorParcela": 45.69,
-      "venc": "2026-07-05"
+      "valorParcela": 100045.69,
+      "venc": "2026-07-05",
+      "memo": ""
     },
     {
       "uid": "mq1qgy9p0tku",
