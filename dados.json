@@ -9966,12 +9966,25 @@
       "venc": "2026-12-01",
       "categoria": "Moradia",
       "memo": "Fechadura digital"
+    },
+    {
+      "uid": "mqqep1thx9oz",
+      "compraId": "mqqep1th4ide",
+      "desc": "PlayStation",
+      "dataCompra": "2026-06-23",
+      "cartao": "bradesco1",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 69.98,
+      "venc": "2026-08-01",
+      "categoria": "Entretenimento",
+      "memo": "FIFA 26"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 2222285.09
+      "usado": 2222355.07
     },
     "bradesco10": {
       "total": 170000,
