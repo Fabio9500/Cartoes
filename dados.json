@@ -8701,8 +8701,9 @@
       "cartao": "bradesco1",
       "nParcelas": 1,
       "parcela": 1,
-      "valorParcela": 61,
-      "venc": "2026-07-01"
+      "valorParcela": 100061,
+      "venc": "2026-07-01",
+      "memo": ""
     },
     {
       "uid": "mpnb1u4gpgm5",
