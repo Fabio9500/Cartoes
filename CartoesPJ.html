@@ -234,7 +234,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sync-txt">Sync</span>
     </div>
     <button class="dark-toggle no-print" onclick="toggleDark()" id="dark-btn">🌙</button>
-    <button class="btn btn-ghost btn-sm no-print" onclick="showPage('backup')">⬇ Backup</button>
+    <button onclick="abrirModalBackup()" title="Fazer backup dos dados" style="background:#2ea043;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif;" class="no-print">💾 Backup</button>
     <button class="btn btn-outline btn-sm no-print" onclick="abrirModalFala()">🎤 Falar/Texto</button>
     <button class="btn btn-primary btn-sm no-print" onclick="abrirModalCompra()">＋ Nova</button>
   </div>
@@ -653,9 +653,9 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div class="iphone-step"><div class="num">4</div><div class="txt">Confirme <strong>"Cartões PJ"</strong> e toque em <strong>Adicionar</strong></div></div>
   </div>
   <div class="backup-section">
-    <h3>📤 Exportar backup</h3>
-    <p>Salva cópia local em JSON — use sempre que quiser guardar um ponto seguro dos seus dados.</p>
-    <button class="btn btn-primary" onclick="exportar()">Baixar backup.json</button>
+    <h3>💾 Backup dos dados</h3>
+    <p>Salve uma cópia dos seus dados — localmente, no GitHub ou nos dois ao mesmo tempo.</p>
+    <button class="btn btn-primary" onclick="abrirModalBackup()">💾 Opções de Backup</button>
   </div>
 
   <div class="backup-section">
@@ -856,6 +856,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
 <script>
 // ── GITHUB ──────────────────────────────────────────────────
 const GH_OWNER='Fabio9500', GH_REPO='Cartoes', GH_FILE='dados-pj.json', GH_BRANCH='main', GH_TOKEN_KEY='cc_pj_gh_token';
+let _shaAtual='', _intervaloSync=null;
 let ghToken='', ghSha='';
 
 async function ghFetch(path,opts={}){
@@ -1119,10 +1120,14 @@ window.addEventListener('online',async()=>{
   _sincronizando=false; atualizarIndicadorConexao();
 });
 window.addEventListener('offline',()=>{setSyncStatus('queued');atualizarIndicadorConexao();});
+
+// Backup automático no GitHub a cada 6 horas
+setInterval(async()=>{ await backupGitHub(true); }, 6*60*60*1000);
 async function boot(){
   ghToken=localStorage.getItem(GH_TOKEN_KEY)||'';
   atualizarIndicadorConexao();
   setInterval(atualizarIndicadorConexao,5000);
+  iniciarSincronizacaoAutomatica();
   if(!ghToken){document.getElementById('loading-screen').style.display='none';document.getElementById('setup-screen').style.display='flex';return;}
   await initData();
 }
@@ -2507,6 +2512,87 @@ function renderBuscaGeral(){
   }).join('');
 }
 
+
+// ── BACKUP E SINCRONIZAÇÃO AVANÇADA ─────────────────────────
+async function backupGitHub(silencioso){
+  if(!ghToken||!isOnline())return false;
+  try{
+    const agora=new Date();
+    const ts=agora.toISOString().slice(0,16).replace('T','_').replace(/:/g,'-');
+    const nomeArq=`backups/backup_${ts}.json`;
+    const url=`https://api.github.com/repos/Fabio9500/Cartoes/contents/${nomeArq}`;
+    const conteudo=btoa(unescape(encodeURIComponent(JSON.stringify(montarPayload(),null,2))));
+    const r=await fetch(url,{
+      method:'PUT',
+      headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:`Backup ${ts}`,content:conteudo})
+    });
+    if(r.ok){
+      try{localStorage.setItem(PREFIX+'_ultimo_bkp',new Date().toLocaleString('pt-BR'));}catch(e){}
+      if(!silencioso){showToast('☁️ Backup salvo no GitHub!');}
+      return true;
+    }
+  }catch(e){}
+  if(!silencioso){showToast('⚠ Erro ao salvar backup no GitHub',true);}
+  return false;
+}
+
+function backupLocal(){
+  const ts=new Date().toISOString().slice(0,16).replace('T','_').replace(/:/g,'-');
+  const nomeArq=`CartoesPJ_backup_${ts}.json`;
+  const blob=new Blob([JSON.stringify(montarPayload(),null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=nomeArq;a.click();
+  URL.revokeObjectURL(url);
+  try{localStorage.setItem(PREFIX+'_ultimo_bkp',new Date().toLocaleString('pt-BR'));}catch(e){}
+  showToast('💾 Backup baixado: '+nomeArq);
+}
+
+async function fazerBackupCompleto(){
+  showToast('⏳ Fazendo backup completo...');
+  const ghOk=await backupGitHub(true);
+  backupLocal();
+  showToast(ghOk?'✅ Backup concluído — GitHub + arquivo local':'💾 Backup local concluído (GitHub indisponível)',!ghOk);
+}
+
+function abrirModalBackup(){
+  let ultimoBkp='';
+  try{ultimoBkp=localStorage.getItem(PREFIX+'_ultimo_bkp')||'';}catch(e){}
+  document.getElementById('modal-backup').classList.add('open');
+  document.getElementById('backup-ultimo').textContent=ultimoBkp?'Último backup: '+ultimoBkp:'Nenhum backup registrado ainda.';
+}
+
+function iniciarSincronizacaoAutomatica(){
+  if(_intervaloSync)clearInterval(_intervaloSync);
+  _intervaloSync=setInterval(verificarAtualizacaoRemota,30000);
+}
+
+async function verificarAtualizacaoRemota(){
+  if(!ghToken||!isOnline())return;
+  try{
+    const r=await ghFetch(`contents/${GH_FILE}`);
+    if(!r.ok)return;
+    const j=await r.json();
+    const shaRemoto=j.sha;
+    if(!_shaAtual){_shaAtual=shaRemoto;return;}
+    if(shaRemoto===_shaAtual)return;
+    _shaAtual=shaRemoto;ghSha=shaRemoto;setLastSha(shaRemoto);
+    let novosDados;
+    if(!j.content||j.content.trim()===''){
+      const r2=await fetch(j.download_url);
+      if(!r2.ok)return;
+      novosDados=await r2.json();
+    }else{
+      novosDados=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+    }
+    try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(novosDados));}catch(e){}
+    compras=novosDados.compras||[];limites=novosDados.limites||{};pagamentos=novosDados.pagamentos||{};
+    renderDashboard();
+    showToast('🔄 Dados atualizados de outro dispositivo');
+  }catch(e){}
+}
+
 boot();
 
 
@@ -2660,6 +2746,39 @@ boot();
       </div>
       <div style="margin-top:18px;text-align:right;">
         <button class="btn btn-primary" onclick="interpretarEAbrirCompra()">Interpretar →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL BACKUP -->
+<div class="modal-overlay" id="modal-backup">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-hd">
+      <div><h2>💾 Backup dos Dados</h2>
+        <div id="backup-ultimo" style="font-size:.72rem;color:var(--muted);margin-top:3px;"></div>
+      </div>
+      <button class="close-btn" onclick="fecharModal('modal-backup')">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn-primary" style="justify-content:center;" onclick="fecharModal('modal-backup');fazerBackupCompleto()">
+          ☁️ + 💾 &nbsp;Backup Completo (GitHub + Download Local)
+        </button>
+        <button class="btn btn-outline" style="justify-content:center;" onclick="fecharModal('modal-backup');backupGitHub(false)">
+          ☁️ &nbsp;Salvar só no GitHub
+        </button>
+        <button class="btn btn-outline" style="justify-content:center;" onclick="fecharModal('modal-backup');backupLocal()">
+          💾 &nbsp;Baixar arquivo local
+        </button>
+      </div>
+      <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px;">
+        <p style="font-size:.72rem;color:var(--muted);margin:0;line-height:1.6;">
+          ☁️ <strong>GitHub:</strong> salva em <code style="background:var(--surface);padding:1px 5px;border-radius:4px;">Cartoes/backups/backup_data_hora.json</code> — histórico completo de versões no repositório.<br>
+          💾 <strong>Local:</strong> baixa arquivo no seu computador — ideal para guardar cópia offline.<br>
+          🔄 <strong>Automático:</strong> backup no GitHub acontece sozinho a cada 6 horas.
+        </p>
       </div>
     </div>
   </div>
