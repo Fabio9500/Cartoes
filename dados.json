@@ -10344,12 +10344,25 @@
       "venc": "2026-08-01",
       "categoria": "Moradia",
       "memo": "Água mineral"
+    },
+    {
+      "uid": "mqu95mwva0rx",
+      "compraId": "mqu95mwvt0ye",
+      "desc": "Atacadao",
+      "dataCompra": "2026-06-25",
+      "cartao": "bradesco1",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 49.71,
+      "venc": "2026-08-01",
+      "categoria": "Supermercado",
+      "memo": "Compras Semana"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 2228729.88
+      "usado": 2228779.59
     },
     "bradesco10": {
       "total": 170000,
