@@ -10370,12 +10370,38 @@
       "venc": "2026-08-01",
       "categoria": "Supermercado",
       "memo": "Compras semana"
+    },
+    {
+      "uid": "mqu97ks056de",
+      "compraId": "mqu97ks034vw",
+      "desc": "Atacadao",
+      "dataCompra": "2026-06-24",
+      "cartao": "bradesco1",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 121.83,
+      "venc": "2026-08-01",
+      "categoria": "Supermercado",
+      "memo": "Compras semana"
+    },
+    {
+      "uid": "mqu97ks0okso",
+      "compraId": "mqu97ks034vw",
+      "desc": "Atacadao",
+      "dataCompra": "2026-06-24",
+      "cartao": "bradesco1",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 121.82,
+      "venc": "2026-09-01",
+      "categoria": "Supermercado",
+      "memo": "Compras semana"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 2228786.17
+      "usado": 2229029.82
     },
     "bradesco10": {
       "total": 170000,
