@@ -10214,6 +10214,32 @@
       "venc": "2027-03-15",
       "categoria": "Moradia",
       "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9gihwkapt",
+      "compraId": "mqu9gihwwruz",
+      "desc": "Atacadao",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 121.83,
+      "venc": "2026-07-15",
+      "categoria": "Supermercado",
+      "memo": "Compras semana"
+    },
+    {
+      "uid": "mqu9gihwcleq",
+      "compraId": "mqu9gihwwruz",
+      "desc": "Atacadao",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 121.82,
+      "venc": "2026-08-15",
+      "categoria": "Supermercado",
+      "memo": "Compras semana"
     }
   ],
   "limites": {
@@ -10231,7 +10257,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 157656.16999999993
+      "usado": 157899.81999999992
     },
     "picpay": {
       "total": 30000,
