@@ -10097,6 +10097,123 @@
       "venc": "2026-07-15",
       "categoria": "Supermercado",
       "memo": "Compras semana"
+    },
+    {
+      "uid": "mqu9fmado1l6",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 1,
+      "valorParcela": 222.22,
+      "venc": "2026-07-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9fmaekqbd",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 2,
+      "valorParcela": 222.22,
+      "venc": "2026-08-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9fmae1czg",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 3,
+      "valorParcela": 222.22,
+      "venc": "2026-09-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9fmae8aj6",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 4,
+      "valorParcela": 222.22,
+      "venc": "2026-10-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9fmaexwyr",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 5,
+      "valorParcela": 222.22,
+      "venc": "2026-11-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9fmaelzda",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 6,
+      "valorParcela": 222.22,
+      "venc": "2026-12-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9fmaepih8",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 7,
+      "valorParcela": 222.22,
+      "venc": "2027-01-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9fmaeus6g",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 8,
+      "valorParcela": 222.22,
+      "venc": "2027-02-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
+    },
+    {
+      "uid": "mqu9fmaeouny",
+      "compraId": "mqu9fmaci0h5",
+      "desc": "Itabuna tecidos",
+      "dataCompra": "2026-06-25",
+      "cartao": "santander",
+      "nParcelas": 9,
+      "parcela": 9,
+      "valorParcela": 222.24,
+      "venc": "2027-03-15",
+      "categoria": "Moradia",
+      "memo": "Roupas de vama"
     }
   ],
   "limites": {
@@ -10114,7 +10231,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 155656.16999999993
+      "usado": 157656.16999999993
     },
     "picpay": {
       "total": 30000,
