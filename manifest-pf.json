@@ -1,0 +1,16 @@
+{
+  "name": "Cartões PF — Controle Pessoal",
+  "short_name": "Cartões PF",
+  "description": "Controle de cartões de crédito pessoais",
+  "start_url": "./CartoesPF.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d1117",
+  "theme_color": "#58a6ff",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icon-pf-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-pf-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<meta name="theme-color" content="#bc8cff">
+<link rel="manifest" href="manifest-pj.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cartões PJ">
+<link rel="apple-touch-icon" href="icon-pj-192.png">
+<meta name="mobile-web-app-capable" content="yes">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1664,7 +1671,8 @@ function imprimirSecao(secId, titulo){
   </head><body>
     <h2>${titulo}</h2>
     ${el.outerHTML}
-  </body></html>`);
+  
+</body></html>`);
   w.document.close();
   setTimeout(()=>w.print(), 500);
 }
@@ -2279,76 +2287,6 @@ function confirmarImportacao(){
 // ── LANÇAMENTO POR VOZ / TEXTO LIVRE ─────────────────────────
 function isoDateLocal(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 
-// ── NÚMEROS POR EXTENSO ──────────────────────────────────────
-// A API de voz em pt-BR transcreve números como palavras ("três vezes", "trezentos reais").
-// preNormalizarFala converte extensos para dígitos antes dos parsers rodarem.
-const _NE={
-  'zero':0,'um':1,'uma':1,'dois':2,'duas':2,'três':3,'tres':3,
-  'quatro':4,'cinco':5,'seis':6,'sete':7,'oito':8,'nove':9,'dez':10,
-  'onze':11,'doze':12,'treze':13,'quatorze':14,'catorze':14,'quinze':15,
-  'dezesseis':16,'dezessete':17,'dezoito':18,'dezenove':19,
-  'vinte':20,'trinta':30,'quarenta':40,'cinquenta':50,
-  'sessenta':60,'setenta':70,'oitenta':80,'noventa':90,
-  'cem':100,'cento':100,'duzentos':200,'duzentas':200,
-  'trezentos':300,'trezentas':300,'quatrocentos':400,'quatrocentas':400,
-  'quinhentos':500,'quinhentas':500,'seiscentos':600,'seiscentas':600,
-  'setecentos':700,'setecentas':700,'oitocentos':800,'oitocentas':800,
-  'novecentos':900,'novecentas':900,'mil':1000
-};
-function _ehTokN(s){return s in _NE||/^\d+([.,]\d+)?$/.test(s);}
-function _calcExtenso(seq){
-  if(seq.length===1&&/^\d/.test(seq[0]))return parseFloat(seq[0].replace(/\.(?=\d{3})/g,'').replace(',','.'));
-  let tot=0,at=0;
-  for(const p of seq){
-    if(p==='e')continue;
-    if(/^\d/.test(p)){at+=parseFloat(p.replace(',','.'));continue;}
-    const v=_NE[p];if(v===undefined)continue;
-    if(v===1000){at=(at||1)*1000;tot+=at;at=0;}else at+=v;
-  }
-  return tot+at;
-}
-function preNormalizarFala(texto){
-  let t=texto;
-  // 1. Parcelas por extenso: "em três vezes" → "em 3 vezes"
-  const PARC=[
-    [/\bem\s+duas?\s+(?:x\b|vezes\b)/gi,'em 2 vezes'],[/\bem\s+tr[eê]s\s+(?:x\b|vezes\b)/gi,'em 3 vezes'],
-    [/\bem\s+quatro\s+(?:x\b|vezes\b)/gi,'em 4 vezes'],[/\bem\s+cinco\s+(?:x\b|vezes\b)/gi,'em 5 vezes'],
-    [/\bem\s+seis\s+(?:x\b|vezes\b)/gi,'em 6 vezes'],[/\bem\s+sete\s+(?:x\b|vezes\b)/gi,'em 7 vezes'],
-    [/\bem\s+oito\s+(?:x\b|vezes\b)/gi,'em 8 vezes'],[/\bem\s+nove\s+(?:x\b|vezes\b)/gi,'em 9 vezes'],
-    [/\bem\s+dez\s+(?:x\b|vezes\b)/gi,'em 10 vezes'],[/\bem\s+onze\s+(?:x\b|vezes\b)/gi,'em 11 vezes'],
-    [/\bem\s+doze\s+(?:x\b|vezes\b)/gi,'em 12 vezes'],
-    [/\bparcelad[oa]\s+em\s+duas?\b/gi,'parcelado em 2'],[/\bparcelad[oa]\s+em\s+tr[eê]s\b/gi,'parcelado em 3'],
-    [/\bparcelad[oa]\s+em\s+quatro\b/gi,'parcelado em 4'],[/\bparcelad[oa]\s+em\s+cinco\b/gi,'parcelado em 5'],
-    [/\bparcelad[oa]\s+em\s+seis\b/gi,'parcelado em 6'],[/\bparcelad[oa]\s+em\s+sete\b/gi,'parcelado em 7'],
-    [/\bparcelad[oa]\s+em\s+oito\b/gi,'parcelado em 8'],[/\bparcelad[oa]\s+em\s+nove\b/gi,'parcelado em 9'],
-    [/\bparcelad[oa]\s+em\s+dez\b/gi,'parcelado em 10'],[/\bparcelad[oa]\s+em\s+onze\b/gi,'parcelado em 11'],
-    [/\bparcelad[oa]\s+em\s+doze\b/gi,'parcelado em 12'],
-  ];
-  for(const[re,s]of PARC)t=t.replace(re,s);
-  // 2. Valor por extenso + "reais": "trezentos e cinquenta reais" → "350 reais"
-  const lower=t.toLowerCase();
-  const toks=lower.split(/\s+/);
-  const idxR=toks.findIndex(x=>x==='reais'||x==='real');
-  if(idxR>0){
-    let i=idxR-1;const seq=[];
-    while(i>=0&&(_ehTokN(toks[i])||toks[i]==='e')){seq.unshift(toks[i]);i--;}
-    while(seq.length>0&&seq[0]==='e')seq.shift();
-    if(seq.length>0&&seq.some(s=>s!=='e'&&!/^\d/.test(s))){
-      const val=_calcExtenso(seq);
-      if(val>0){
-        const origToks=t.split(/\s+/);
-        const idxROrig=origToks.findIndex(x=>x.toLowerCase()==='reais'||x.toLowerCase()==='real');
-        if(idxROrig>=seq.length){
-          const antes=origToks.slice(idxROrig-seq.length,idxROrig).join(' ');
-          const re=new RegExp(antes.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s+(?:reais|real)','i');
-          t=t.replace(re,val+' reais');
-        }
-      }
-    }
-  }
-  return t;
-}
-
 function parseDataFala(t){
   if(/\bhoje\b/.test(t))return{iso:isoDateLocal(hoje),achou:true};
   if(/\bontem\b/.test(t)){const d=new Date(hoje);d.setDate(d.getDate()-1);return{iso:isoDateLocal(d),achou:true};}
@@ -2464,22 +2402,18 @@ function parseDescricaoFala(original,cartaoAlias){
 }
 
 function interpretarTextoCompra(textoOriginal){
-  // Normaliza extensos para dígitos antes de qualquer parse
-  // Ex: "trezentos e cinquenta reais" → "350 reais" | "em três vezes" → "em 3 vezes"
-  const tNorm=preNormalizarFala(textoOriginal);
-  const t=tNorm.toLowerCase();
+  const t=textoOriginal.toLowerCase();
   const avisos=[];
-  // Data do lançamento por voz é sempre o dia atual
-  const dataCompraVoz=isoDateLocal(hoje);
+  const dataInfo=parseDataFala(t);
   const nParcelas=parseParcelasFala(t);
-  const valor=parseValorFala(tNorm);
+  const valor=parseValorFala(textoOriginal);
   const cartaoInfo=parseCartaoFala(t);
   const categoria=parseCategoriaFala(t);
-  const desc=parseDescricaoFala(tNorm,cartaoInfo.alias);
+  const desc=parseDescricaoFala(textoOriginal,cartaoInfo.alias);
   if(valor===null)avisos.push('Não identifiquei o valor — confira.');
   if(cartaoInfo.ambiguo)avisos.push('Você disse "Bradesco" mas há 3 cartões Bradesco — escolha qual abaixo.');
   else if(!cartaoInfo.key)avisos.push('Não identifiquei o cartão — selecione manualmente.');
-  return{desc,valor,cartao:cartaoInfo.key,nParcelas,dataCompra:dataCompraVoz,categoria,avisos};
+  return{desc,valor,cartao:cartaoInfo.key,nParcelas,dataCompra:dataInfo.iso,categoria,avisos};
 }
 
 // ── RECONHECIMENTO DE VOZ ────────────────────────────────────
@@ -2858,5 +2792,29 @@ boot();
   </div>
 </div>
 
+
+<script>
+// ── PWA CartoesPJ ──
+(function(){
+function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream; }
+function isStandalone(){ return window.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches; }
+var deferredInstall=null;
+window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); deferredInstall=e; var btn=document.createElement('button'); btn.type='button'; btn.textContent='📲 Instalar App'; btn.style.cssText='position:fixed;bottom:80px;right:16px;background:#bc8cff;color:#000;border:none;border-radius:20px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.4)'; btn.onclick=function(){ if(!deferredInstall)return; deferredInstall.prompt(); deferredInstall.userChoice.then(function(r){ if(r.outcome==='accepted')btn.remove(); deferredInstall=null; }); }; document.body.appendChild(btn); });
+window.addEventListener('load',function(){
+  if(!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('./sw.js',{scope:'./'}).then(function(reg){
+    reg.addEventListener('updatefound',function(){ var nSW=reg.installing; nSW.addEventListener('statechange',function(){ if(nSW.state==='installed'&&navigator.serviceWorker.controller){ var el=document.createElement('div'); el.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#bc8cff;color:#000;padding:10px 18px;border-radius:20px;font-size:12px;font-weight:700;z-index:9999;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.5);white-space:nowrap'; el.textContent='🔄 Nova versão — toque para atualizar'; el.onclick=function(){ if(reg.waiting)reg.waiting.postMessage('SKIP_WAITING'); el.remove(); }; document.body.appendChild(el); setTimeout(function(){ el.remove(); },8000); } }); });
+  }).catch(function(e){ console.warn('[SW CartoesPJ]',e); });
+  navigator.serviceWorker.addEventListener('controllerchange',function(){ location.reload(); });
+  if(isIOS()&&!isStandalone()){
+    setTimeout(function(){
+      var btn=document.createElement('button'); btn.type='button'; btn.textContent='📲 Instalar no iPhone'; btn.style.cssText='position:fixed;bottom:80px;right:16px;background:#bc8cff;color:#000;border:none;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.4)';
+      btn.onclick=function(){ alert('📲 Para instalar Cartões PJ:\n\n1. Toque em Compartilhar \u25a1\u2191\n   (barra inferior do Safari)\n2. Toque em "Adicionar \xe0 Tela de In\xedcio"\n3. Toque em "Adicionar"\n\nO app abrir\xe1 offline!'); };
+      document.body.appendChild(btn);
+    },2000);
+  }
+});
+})();
+</script>
 </body>
 </html>
