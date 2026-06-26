@@ -10097,32 +10097,6 @@
       "venc": "2026-08-01",
       "categoria": "Supermercado",
       "memo": "Compras semana"
-    },
-    {
-      "uid": "mqu97ks056de",
-      "compraId": "mqu97ks034vw",
-      "desc": "Atacadao",
-      "dataCompra": "2026-06-24",
-      "cartao": "bradesco1",
-      "nParcelas": 2,
-      "parcela": 1,
-      "valorParcela": 121.83,
-      "venc": "2026-08-01",
-      "categoria": "Supermercado",
-      "memo": "Compras semana"
-    },
-    {
-      "uid": "mqu97ks0okso",
-      "compraId": "mqu97ks034vw",
-      "desc": "Atacadao",
-      "dataCompra": "2026-06-24",
-      "cartao": "bradesco1",
-      "nParcelas": 2,
-      "parcela": 2,
-      "valorParcela": 121.82,
-      "venc": "2026-09-01",
-      "categoria": "Supermercado",
-      "memo": "Compras semana"
     }
   ],
   "limites": {
