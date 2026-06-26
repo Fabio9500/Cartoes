@@ -10064,11 +10064,11 @@
       "compraId": "mqu94gtzeg9g",
       "desc": "Distribuidora de agua",
       "dataCompra": "2026-06-25",
-      "cartao": "bradesco1",
+      "cartao": "santander",
       "nParcelas": 1,
       "parcela": 1,
       "valorParcela": 64,
-      "venc": "2026-08-01",
+      "venc": "2026-07-15",
       "categoria": "Moradia",
       "memo": "Água mineral"
     },
