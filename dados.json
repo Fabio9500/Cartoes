@@ -10077,11 +10077,11 @@
       "compraId": "mqu95mwvt0ye",
       "desc": "Atacadao",
       "dataCompra": "2026-06-25",
-      "cartao": "bradesco1",
+      "cartao": "santander",
       "nParcelas": 1,
       "parcela": 1,
       "valorParcela": 49.71,
-      "venc": "2026-08-01",
+      "venc": "2026-07-15",
       "categoria": "Supermercado",
       "memo": "Compras Semana"
     },
