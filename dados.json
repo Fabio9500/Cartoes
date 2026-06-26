@@ -10162,12 +10162,25 @@
       "venc": "2027-07-01",
       "categoria": "Serviços",
       "memo": "Estorno Alessandro"
+    },
+    {
+      "uid": "mqu8j7axw7l2",
+      "compraId": "mqu8j7axumfn",
+      "desc": "Posto",
+      "dataCompra": "2026-06-25",
+      "cartao": "bradesco1",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 99.37,
+      "venc": "2026-08-01",
+      "categoria": "Combustível",
+      "memo": "Abastecimento Honert"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 2226116.51
+      "usado": 2226215.88
     },
     "bradesco10": {
       "total": 170000,
