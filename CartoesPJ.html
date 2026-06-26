@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta name="theme-color" content="#bc8cff">
-<link rel="manifest" href="manifest-pj.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Cartões PJ">
-<link rel="apple-touch-icon" href="icon-pj-192.png">
-<meta name="mobile-web-app-capable" content="yes">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -183,6 +176,27 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
 .conn-indicator.pending{background:#fbbf24;color:#1a1a1a;}
 @media print{.conn-indicator{display:none!important;}}
 .sync-dot.queued{background:#fbbf24;animation:pulse 1s infinite;}
+
+/* ── LOGIN / AUTENTICAÇÃO ────────────────────────────────── */
+#login-screen{z-index:2000;}
+.login-logo{font-size:3rem;margin-bottom:12px;text-align:center;}
+.login-title{font-size:1.15rem;font-weight:800;text-align:center;margin-bottom:4px;}
+.login-sub{font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:22px;line-height:1.6;}
+.login-campo{position:relative;}
+.login-campo input{width:100%;padding:12px 44px 12px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:1.1rem;letter-spacing:4px;transition:border-color .18s;text-align:center;}
+.login-campo input::placeholder{letter-spacing:1px;font-size:.88rem;}
+.login-campo input:focus{outline:none;border-color:var(--accent);}
+.login-olho{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--muted);padding:4px;}
+.btn-login{width:100%;padding:12px;border-radius:10px;background:var(--accent);color:#fff;border:none;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:12px;transition:background .18s;}
+.btn-login:hover{background:#003d73;}
+.btn-login:disabled{opacity:.5;cursor:not-allowed;}
+.login-link{display:block;text-align:center;margin-top:14px;font-size:.75rem;color:var(--muted);cursor:pointer;text-decoration:underline;}
+.login-link:hover{color:var(--text);}
+.login-block-info{background:#fce8e8;border:1px solid #f5c6c6;border-radius:8px;padding:9px 12px;font-size:.78rem;color:var(--danger);text-align:center;margin-bottom:12px;line-height:1.5;}
+.btn-lock{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 9px;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:600;font-family:'Outfit',sans-serif;}
+.btn-lock:hover{background:rgba(255,255,255,.22);}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.shake{animation:shake .4s ease;}
 </style>
 </head>
 <body>
@@ -232,6 +246,25 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
 </div>
 
+<!-- ── TELA DE LOGIN ──────────────────────────────────────── -->
+<div class="fullscreen-cover" id="login-screen" style="display:none">
+  <div class="setup-card" style="max-width:360px;">
+    <div class="login-logo">🔒</div>
+    <div class="login-title" id="login-titulo">Acesso Restrito</div>
+    <div class="login-sub" id="login-sub-txt">Cartões PJ — Telasul / Construsul</div>
+    <div class="login-block-info" id="login-block-info" style="display:none"></div>
+    <div id="login-erro" class="erro-box"></div>
+    <div class="login-campo">
+      <input type="password" id="login-senha" placeholder="••••••••"
+             autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')verificarSenha()">
+      <button class="login-olho" onclick="toggleSenhaVisivel()" id="login-olho-btn" title="Mostrar/ocultar senha">👁</button>
+    </div>
+    <button class="btn-login" id="btn-login" onclick="verificarSenha()">🔓 Entrar</button>
+    <span class="login-link" onclick="esqueceuSenha()" id="login-link-esqueceu">Esqueci minha senha</span>
+  </div>
+</div>
+
 <header>
   <div class="logo"><span>💳</span> Cartões PJ</div>
   <div class="header-actions">
@@ -241,6 +274,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sync-txt">Sync</span>
     </div>
     <button class="dark-toggle no-print" onclick="toggleDark()" id="dark-btn">🌙</button>
+    <button class="btn-lock no-print" onclick="bloquearManualmente()" title="Bloquear o sistema">🔒</button>
     <button onclick="abrirModalBackup()" title="Fazer backup dos dados" style="background:#2ea043;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif;" class="no-print">💾 Backup</button>
     <button class="btn btn-outline btn-sm no-print" onclick="abrirModalFala()">🎤 Falar/Texto</button>
     <button class="btn btn-primary btn-sm no-print" onclick="abrirModalCompra()">＋ Nova</button>
@@ -861,6 +895,155 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
 <div class="toast" id="toast"></div>
 
 <script>
+// ── AUTENTICAÇÃO ─────────────────────────────────────────────
+// Chave compartilhada com CartoesPF e ChequeSys (mesma origem GitHub Pages)
+const AUTH_KEY   = 'app_auth_hash';
+const AUTH_TS    = 'app_auth_ts';
+const AUTH_TRIES = 'app_auth_tries';
+const AUTH_BLOCK = 'app_auth_block';
+const AUTH_TIMEOUT   = 10 * 60 * 1000; // 10 min sem uso → pede senha novamente
+const AUTH_BLOCK_MS  =  5 * 60 * 1000; // 5 min de bloqueio após 3 erros
+const AUTH_MAX_TRIES = 3;
+
+async function sha256(texto){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function authValido(){
+  const ts = parseInt(localStorage.getItem(AUTH_TS)||'0');
+  return Date.now() - ts < AUTH_TIMEOUT;
+}
+
+function refreshAuth(){
+  localStorage.setItem(AUTH_TS, Date.now().toString());
+}
+
+function mostrarLoginScreen(modoDefinir){
+  document.getElementById('loading-screen').style.display = 'none';
+  const tela = document.getElementById('login-screen');
+  const sub   = document.getElementById('login-sub-txt');
+  const titulo= document.getElementById('login-titulo');
+  const link  = document.getElementById('login-link-esqueceu');
+  const btn   = document.getElementById('btn-login');
+  if(modoDefinir){
+    titulo.textContent = '🔑 Criar Senha';
+    sub.textContent    = 'Defina uma senha para proteger este sistema.\nEla valerá também para Cartões PF e ChequeSys.';
+    link.style.display = 'none';
+    btn.textContent    = '✅ Definir senha';
+    tela.dataset.modo  = 'definir';
+  } else {
+    titulo.textContent = 'Acesso Restrito';
+    sub.textContent    = 'Cartões PJ — Telasul / Construsul';
+    link.style.display = 'block';
+    btn.textContent    = '🔓 Entrar';
+    tela.dataset.modo  = 'login';
+  }
+  tela.style.display = 'flex';
+  setTimeout(()=>document.getElementById('login-senha').focus(), 120);
+}
+
+async function verificarSenha(){
+  const senhaEl  = document.getElementById('login-senha');
+  const erroEl   = document.getElementById('login-erro');
+  const blockEl  = document.getElementById('login-block-info');
+  const senha    = senhaEl.value.trim();
+  erroEl.style.display = 'none';
+  blockEl.style.display = 'none';
+
+  // Verificar bloqueio temporário
+  const blockUntil = parseInt(localStorage.getItem(AUTH_BLOCK)||'0');
+  if(Date.now() < blockUntil){
+    const min = Math.ceil((blockUntil - Date.now()) / 60000);
+    blockEl.textContent = `⛔ Muitas tentativas incorretas. Aguarde ${min} minuto(s) para tentar novamente.`;
+    blockEl.style.display = 'block';
+    return;
+  }
+
+  if(!senha){ erroEl.textContent='Digite a senha.'; erroEl.style.display='block'; return; }
+  if(senha.length < 4){ erroEl.textContent='A senha deve ter pelo menos 4 caracteres.'; erroEl.style.display='block'; return; }
+
+  const modo = document.getElementById('login-screen').dataset.modo;
+  const hash = await sha256(senha);
+
+  if(modo === 'definir'){
+    // Primeira vez — salva o hash e segue
+    localStorage.setItem(AUTH_KEY, hash);
+    localStorage.removeItem(AUTH_TRIES);
+    localStorage.removeItem(AUTH_BLOCK);
+    refreshAuth();
+    document.getElementById('login-screen').style.display = 'none';
+    senhaEl.value = '';
+    await bootAposAuth();
+    return;
+  }
+
+  // Modo login normal
+  const hashSalvo = localStorage.getItem(AUTH_KEY);
+  if(hash === hashSalvo){
+    localStorage.removeItem(AUTH_TRIES);
+    localStorage.removeItem(AUTH_BLOCK);
+    refreshAuth();
+    document.getElementById('login-screen').style.display = 'none';
+    senhaEl.value = '';
+    await bootAposAuth();
+  } else {
+    // Senha errada
+    const tries = (parseInt(localStorage.getItem(AUTH_TRIES)||'0')) + 1;
+    localStorage.setItem(AUTH_TRIES, tries.toString());
+    const restam = AUTH_MAX_TRIES - tries;
+    if(tries >= AUTH_MAX_TRIES){
+      localStorage.setItem(AUTH_BLOCK, (Date.now() + AUTH_BLOCK_MS).toString());
+      localStorage.removeItem(AUTH_TRIES);
+      erroEl.textContent = '⛔ Senha incorreta. Sistema bloqueado por 5 minutos.';
+    } else {
+      erroEl.textContent = `❌ Senha incorreta. ${restam} tentativa(s) restante(s).`;
+    }
+    erroEl.style.display = 'block';
+    senhaEl.classList.add('shake');
+    senhaEl.addEventListener('animationend', ()=>senhaEl.classList.remove('shake'), {once:true});
+    senhaEl.value = '';
+    senhaEl.focus();
+  }
+}
+
+function toggleSenhaVisivel(){
+  const inp = document.getElementById('login-senha');
+  const btn = document.getElementById('login-olho-btn');
+  if(inp.type === 'password'){ inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
+}
+
+function esqueceuSenha(){
+  if(!confirm('Isso irá redefinir sua senha de acesso.\n\nSeus dados NÃO serão apagados.\n\nDeseja continuar?')) return;
+  localStorage.removeItem(AUTH_KEY);
+  localStorage.removeItem(AUTH_TRIES);
+  localStorage.removeItem(AUTH_BLOCK);
+  localStorage.removeItem(AUTH_TS);
+  document.getElementById('login-erro').style.display = 'none';
+  document.getElementById('login-block-info').style.display = 'none';
+  mostrarLoginScreen(true);
+}
+
+function bloquearManualmente(){
+  localStorage.removeItem(AUTH_TS);
+  location.reload();
+}
+
+async function verificarAuth(){
+  const hashSalvo = localStorage.getItem(AUTH_KEY);
+  if(!hashSalvo){
+    mostrarLoginScreen(true);  // Primeira vez — define senha
+    return;
+  }
+  if(authValido()){
+    refreshAuth();
+    await bootAposAuth();  // Sessão ainda ativa
+    return;
+  }
+  mostrarLoginScreen(false);  // Sessão expirada — pede senha
+}
+
 // ── GITHUB ──────────────────────────────────────────────────
 const GH_OWNER='Fabio9500', GH_REPO='Cartoes', GH_FILE='dados-pj.json', GH_BRANCH='main', GH_TOKEN_KEY='cc_pj_gh_token';
 let _shaAtual='', _intervaloSync=null;
@@ -1131,6 +1314,10 @@ window.addEventListener('offline',()=>{setSyncStatus('queued');atualizarIndicado
 // Backup automático no GitHub a cada 6 horas
 setInterval(async()=>{ await backupGitHub(true); }, 6*60*60*1000);
 async function boot(){
+  await verificarAuth();
+}
+
+async function bootAposAuth(){
   ghToken=localStorage.getItem(GH_TOKEN_KEY)||'';
   atualizarIndicadorConexao();
   setInterval(atualizarIndicadorConexao,5000);
@@ -1671,8 +1858,7 @@ function imprimirSecao(secId, titulo){
   </head><body>
     <h2>${titulo}</h2>
     ${el.outerHTML}
-  
-</body></html>`);
+  </body></html>`);
   w.document.close();
   setTimeout(()=>w.print(), 500);
 }
@@ -2792,29 +2978,5 @@ boot();
   </div>
 </div>
 
-
-<script>
-// ── PWA CartoesPJ ──
-(function(){
-function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream; }
-function isStandalone(){ return window.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches; }
-var deferredInstall=null;
-window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); deferredInstall=e; var btn=document.createElement('button'); btn.type='button'; btn.textContent='📲 Instalar App'; btn.style.cssText='position:fixed;bottom:80px;right:16px;background:#bc8cff;color:#000;border:none;border-radius:20px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.4)'; btn.onclick=function(){ if(!deferredInstall)return; deferredInstall.prompt(); deferredInstall.userChoice.then(function(r){ if(r.outcome==='accepted')btn.remove(); deferredInstall=null; }); }; document.body.appendChild(btn); });
-window.addEventListener('load',function(){
-  if(!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./sw.js',{scope:'./'}).then(function(reg){
-    reg.addEventListener('updatefound',function(){ var nSW=reg.installing; nSW.addEventListener('statechange',function(){ if(nSW.state==='installed'&&navigator.serviceWorker.controller){ var el=document.createElement('div'); el.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#bc8cff;color:#000;padding:10px 18px;border-radius:20px;font-size:12px;font-weight:700;z-index:9999;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.5);white-space:nowrap'; el.textContent='🔄 Nova versão — toque para atualizar'; el.onclick=function(){ if(reg.waiting)reg.waiting.postMessage('SKIP_WAITING'); el.remove(); }; document.body.appendChild(el); setTimeout(function(){ el.remove(); },8000); } }); });
-  }).catch(function(e){ console.warn('[SW CartoesPJ]',e); });
-  navigator.serviceWorker.addEventListener('controllerchange',function(){ location.reload(); });
-  if(isIOS()&&!isStandalone()){
-    setTimeout(function(){
-      var btn=document.createElement('button'); btn.type='button'; btn.textContent='📲 Instalar no iPhone'; btn.style.cssText='position:fixed;bottom:80px;right:16px;background:#bc8cff;color:#000;border:none;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.4)';
-      btn.onclick=function(){ alert('📲 Para instalar Cartões PJ:\n\n1. Toque em Compartilhar \u25a1\u2191\n   (barra inferior do Safari)\n2. Toque em "Adicionar \xe0 Tela de In\xedcio"\n3. Toque em "Adicionar"\n\nO app abrir\xe1 offline!'); };
-      document.body.appendChild(btn);
-    },2000);
-  }
-});
-})();
-</script>
 </body>
 </html>
