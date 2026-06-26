@@ -10175,12 +10175,51 @@
       "venc": "2026-08-01",
       "categoria": "Combustível",
       "memo": "Abastecimento Honert"
+    },
+    {
+      "uid": "mqu8l5jpqpnp",
+      "compraId": "mqu8l5jpsawm",
+      "desc": "Posto jocel",
+      "dataCompra": "2026-06-25",
+      "cartao": "bradesco1",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 150,
+      "venc": "2026-08-01",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
+    },
+    {
+      "uid": "mqu8l5jpuuxz",
+      "compraId": "mqu8l5jpsawm",
+      "desc": "Posto jocel",
+      "dataCompra": "2026-06-25",
+      "cartao": "bradesco1",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 150,
+      "venc": "2026-09-01",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
+    },
+    {
+      "uid": "mqu8l5jpumk3",
+      "compraId": "mqu8l5jpsawm",
+      "desc": "Posto jocel",
+      "dataCompra": "2026-06-25",
+      "cartao": "bradesco1",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 150,
+      "venc": "2026-10-01",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 2226215.88
+      "usado": 2226665.88
     },
     "bradesco10": {
       "total": 170000,
