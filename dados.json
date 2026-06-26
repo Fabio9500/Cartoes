@@ -10331,12 +10331,25 @@
       "venc": "2027-04-01",
       "categoria": "Moradia",
       "memo": "Roupas de cama"
+    },
+    {
+      "uid": "mqu94gtzh5ic",
+      "compraId": "mqu94gtzeg9g",
+      "desc": "Distribuidora de agua",
+      "dataCompra": "2026-06-25",
+      "cartao": "bradesco1",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 64,
+      "venc": "2026-08-01",
+      "categoria": "Moradia",
+      "memo": "Água mineral"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 2228665.88
+      "usado": 2228729.88
     },
     "bradesco10": {
       "total": 170000,
