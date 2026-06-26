@@ -9539,9 +9539,10 @@
       "cartao": "santander",
       "nParcelas": 1,
       "parcela": 1,
-      "valorParcela": 50,
+      "valorParcela": 54.21,
       "venc": "2026-07-15",
-      "categoria": "Alimentação"
+      "categoria": "Alimentação",
+      "memo": ""
     },
     {
       "uid": "mqn7w4c1rcur",
