@@ -10241,12 +10241,25 @@
       "venc": "2026-08-15",
       "categoria": "Supermercado",
       "memo": "Compras semana"
+    },
+    {
+      "uid": "mqv73nt0xk33",
+      "compraId": "mqv73nt09dho",
+      "desc": "Colcci",
+      "dataCompra": "2026-06-26",
+      "cartao": "bradesco1",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 100000,
+      "venc": "2026-07-01",
+      "categoria": "Vestuário",
+      "memo": "Roupas matheus"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 2229029.82
+      "usado": 2329029.82
     },
     "bradesco10": {
       "total": 170000,
