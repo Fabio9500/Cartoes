@@ -10357,12 +10357,25 @@
       "venc": "2026-08-01",
       "categoria": "Supermercado",
       "memo": "Compras Semana"
+    },
+    {
+      "uid": "mqu96h4mfswp",
+      "compraId": "mqu96h4miwtt",
+      "desc": "Atacadao",
+      "dataCompra": "2026-06-22",
+      "cartao": "bradesco1",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 6.58,
+      "venc": "2026-08-01",
+      "categoria": "Supermercado",
+      "memo": "Compras semana"
     }
   ],
   "limites": {
     "bradesco1": {
       "total": 170000,
-      "usado": 2228779.59
+      "usado": 2228786.17
     },
     "bradesco10": {
       "total": 170000,
