@@ -4,7 +4,7 @@
   "description": "Controle de cartões de crédito empresariais — Telasul/Construsul",
   "id": "cartoes-pj-telasul",
   "start_url": "./CartoesPJ.html",
-  "scope": "./",
+  "scope": "./CartoesPJ.html",
   "display": "standalone",
   "background_color": "#f5f3ef",
   "theme_color": "#005aa7",
