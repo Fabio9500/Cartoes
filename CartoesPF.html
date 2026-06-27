@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Cartões">
+<meta name="apple-mobile-web-app-title" content="Cartões PF">
+<!-- PWA — Cartões PF -->
+<link rel="manifest" href="manifest-pf.json">
+<meta name="theme-color" content="#c84b0c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Cartões PF">
+<link rel="apple-touch-icon" href="icon-pf.svg">
 <title>Controle de Cartões</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -2974,5 +2980,25 @@ boot();
   </div>
 </div>
 
+<!-- PWA — Registro do Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
+      .then(reg => {
+        reg.addEventListener('updatefound', () => {
+          const nSW = reg.installing;
+          nSW.addEventListener('statechange', () => {
+            if (nSW.state === 'installed' && navigator.serviceWorker.controller) {
+              if (typeof showToast === 'function') showToast('🔄 Nova versão disponível — recarregue para atualizar');
+            }
+          });
+        });
+      })
+      .catch(err => console.warn('[CartoesPF] SW não registrado:', err));
+    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
+  });
+}
+</script>
 </body>
 </html>
