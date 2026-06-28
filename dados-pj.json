@@ -4405,7 +4405,9 @@
       "total": 4136.7699999999995
     }
   },
-  "fechamentos": {},
+  "fechamentos": {
+    "c6": "2026-06-28"
+  },
   "fornecedores": [
     {
       "id": "mqy6voivhadd",
