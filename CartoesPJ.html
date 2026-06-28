@@ -318,7 +318,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>Dt. Compra</th><th>Fornecedor</th><th>Cartão</th><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Status</th><th class="no-print"></th></tr></thead>
+      <thead><tr><th>Dt. Compra</th><th>Fornecedor</th><th>Memorando</th><th>Cartão</th><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Status</th><th class="no-print"></th></tr></thead>
       <tbody id="tbody-lanc"></tbody>
     </table>
     <div class="empty-state" id="empty-lanc" style="display:none"><div class="icon">🧾</div><div>Nenhum lançamento</div></div>
@@ -794,10 +794,6 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         <div class="form-group"><label>Data da Compra</label><input type="date" id="c-data" onchange="calcularFechamento()"></div>
         <div class="form-group"><label>Valor Total (R$)</label><input type="number" id="c-valor" placeholder="0.00" step="0.01" oninput="calcularParcelas()"></div>
       </div>
-      <div class="form-group">
-        <label>Fechamento real da fatura <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional — preencha somente quando o fechamento real diferir do automático)</span></label>
-        <input type="date" id="c-fechamento" onchange="calcularFechamento()">
-      </div>
       <div class="form-row">
         <div class="form-group"><label>Cartão</label>
           <select id="c-cartao" onchange="calcularFechamento();calcularParcelas()">
@@ -1103,7 +1099,7 @@ function setFila(payload){try{localStorage.setItem(PREFIX+'_fila',JSON.stringify
 function limparFila(){localStorage.removeItem(PREFIX+'_fila');}
 function getLastSha(){return localStorage.getItem(PREFIX+'_last_sha')||'';}
 function setLastSha(sha){if(sha)localStorage.setItem(PREFIX+'_last_sha',sha);}
-function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos};}
+function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos};}
 
 function atualizarIndicadorConexao(){
   const el=document.getElementById('conn-indicator');
@@ -1156,7 +1152,7 @@ const CARTOES={
 };
 const DEFAULT_LIMITES={c6:{total:50000,usado:0},cef:{total:50000,usado:0},mlivre:{total:30000,usado:0},santander:{total:100000,usado:0},bradesco:{total:100000,usado:0}};
 
-let compras=[], limites={}, pagamentos={};
+let compras=[], limites={}, pagamentos={}, fechamentos={};
 
 // ── STORAGE ─────────────────────────────────────────────────
 async function salvar(){
@@ -1235,7 +1231,7 @@ async function initData(){
         setSyncStatus('saving');
         await resolverFilaPendente(fila,data,ghSha);
       } else {
-        compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{};
+        compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{};
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
         setSyncStatus('ok');
       }
@@ -1369,8 +1365,9 @@ const fmt=v=>'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,max
 const hoje=new Date(); hoje.setHours(12,0,0,0);
 document.getElementById('data-atual').textContent=hoje.toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'});
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
-function calcVenc(dataCompraStr,cartaoKey,numParcela,fechOverride){
+function calcVenc(dataCompraStr,cartaoKey,numParcela){
   const c=CARTOES[cartaoKey], dc=new Date(dataCompraStr+'T12:00:00');
+  const fechOverride=(fechamentos&&fechamentos[cartaoKey])||null;
   let fechBase=fechOverride
     ?new Date(fechOverride+'T23:59:59')
     :new Date(dc.getFullYear(),dc.getMonth(),c.venc-c.fechDias);
@@ -1429,6 +1426,16 @@ function renderDashboard(){
     const proxVenc=futuras.reduce((m,x)=>x.venc<m?x.venc:m,'9999-99-99');
     const fatProx=proxVenc!=='9999-99-99'?compras.filter(x=>x.cartao===k&&x.venc===proxVenc).reduce((a,x)=>a+x.valorParcela,0):0;
     const tagU=isBra?`<span style="font-size:.6rem;background:#fff3cd;color:#856404;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px;">unificado</span>`:'';
+    const fechada=fechamentos&&fechamentos[k];
+    const statusCard=fechada
+      ?`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+          <span style="font-size:.72rem;color:var(--warn);font-weight:700;">🔒 Fechada ${new Date(fechada+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</span>
+          <button onclick="reabrirFatura('${k}')" style="padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.7rem;cursor:pointer;color:var(--muted);">Reabrir</button>
+        </div>`
+      :`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+          <span style="font-size:.72rem;color:var(--success);font-weight:600;">🟢 Aberta</span>
+          <button onclick="fecharFatura('${k}')" style="padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.7rem;cursor:pointer;color:var(--muted);">Fechar fatura</button>
+        </div>`;
     grid.innerHTML+=`
     <div class="card-chip">
       <div class="chip-top"><span class="bank-label ${c.tag}">${c.banco}</span><span class="venc-info">Dia ${c.venc}</span></div>
@@ -1440,6 +1447,7 @@ function renderDashboard(){
         <span class="fn-label">Próx. fat. ${proxVenc!=='9999-99-99'?new Date(proxVenc+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</span>
         <span class="fn-val">${fmt(fatProx)}</span>
       </div>
+      ${statusCard}
     </div>`;
   });
   const lista=document.getElementById('faturas-proximas'); lista.innerHTML='';
@@ -1479,6 +1487,19 @@ function renderDashboard(){
   });
 }
 
+// ── FECHAMENTO DE FATURA ────────────────────────────────────
+function fecharFatura(k){
+  if(!fechamentos)fechamentos={};
+  fechamentos[k]=hoje.toISOString().split('T')[0];
+  salvar();renderDashboard();
+  showToast(`Fatura ${CARTOES[k].nome} fechada 🔒 — próximas compras vão para a fatura seguinte`);
+}
+function reabrirFatura(k){
+  if(fechamentos)delete fechamentos[k];
+  salvar();renderDashboard();
+  showToast(`Fatura ${CARTOES[k].nome} reaberta 🟢`);
+}
+
 // ── LANÇAMENTOS ─────────────────────────────────────────────
 let filtroAtivo='todos';
 function filtrar(f,btn){filtroAtivo=f;document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLancamentos(f);}
@@ -1495,7 +1516,9 @@ function renderLancamentos(filtro){
     const dtC=c.dataCompra?new Date(c.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'-';
     return `<tr style="${passada?'opacity:.55':''}">
       <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${dtC}</td>
-      <td>${c.desc}${c.memo?`<div style="font-size:.68rem;color:var(--muted);margin-top:1px;">${c.memo}</div>`:''}</td><td><span class="tag ${card.tag}">${card.nome}</span></td>
+      <td style="font-weight:600;">${c.desc}</td>
+      <td style="font-size:.75rem;color:var(--muted);">${c.memo||'<span style="opacity:.3">—</span>'}</td>
+      <td><span class="tag ${card.tag}">${card.nome}</span></td>
       <td>${pTag}</td><td style="font-weight:600">${fmt(c.valorParcela)}</td>
       <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;white-space:nowrap">${new Date(c.venc+'T12:00:00').toLocaleDateString('pt-BR')}</td>
       <td>${dStr}</td>
@@ -1743,7 +1766,6 @@ function abrirModalCompra(){
   document.getElementById('c-desc').value='';document.getElementById('c-valor').value='';document.getElementById('c-parcelas').value='1';
   const catEl=document.getElementById('c-categoria');if(catEl)catEl.value='';
   const memoEl=document.getElementById('c-memo');if(memoEl)memoEl.value='';
-  const fechEl=document.getElementById('c-fechamento');if(fechEl)fechEl.value='';
   const resumo=document.getElementById('fala-resumo');if(resumo){resumo.style.display='none';resumo.innerHTML='';}
   calcularFechamento();calcularParcelas();document.getElementById('modal-compra').classList.add('open');
 }
@@ -1751,26 +1773,23 @@ function fecharModal(id){document.getElementById(id).classList.remove('open');}
 function calcularFechamento(){
   const data=document.getElementById('c-data').value,cartao=document.getElementById('c-cartao').value;
   if(!data||!cartao)return;
-  const fech=document.getElementById('c-fechamento')?.value||'';
   const c=CARTOES[cartao];
-  const autoFechDia=c.venc-c.fechDias;
-  const v1=calcVenc(data,cartao,1,fech||null),dv=new Date(v1+'T12:00:00');
-  const modoStr=fech
-    ?`<span style="color:var(--warn);">⚙️ Fechamento manual: <strong>${new Date(fech+'T12:00:00').toLocaleDateString('pt-BR')}</strong></span>`
-    :`Fechamento automático: ${c.fechDias}d antes do vencimento (dia ${autoFechDia<1?autoFechDia+c.venc:autoFechDia})`;
+  const fechAtivo=fechamentos&&fechamentos[cartao];
+  const v1=calcVenc(data,cartao,1),dv=new Date(v1+'T12:00:00');
+  const modoStr=fechAtivo
+    ?`<span style="color:var(--warn);">🔒 Fatura fechada em ${new Date(fechAtivo+'T12:00:00').toLocaleDateString('pt-BR')} — esta compra vai para a <strong>próxima fatura</strong></span>`
+    :`Fechamento automático: ${c.fechDias}d antes do vencimento (dia ${c.venc-c.fechDias})`;
   document.getElementById('fechamento-info').innerHTML=`📅 Compra em <strong>${new Date(data+'T12:00:00').toLocaleDateString('pt-BR')}</strong> — ${modoStr}.<br>🟠 1ª parcela: fatura de <strong>${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</strong>`;
-  calcularParcelas();
 }
 function calcularParcelas(){
   const valor=parseFloat(document.getElementById('c-valor').value)||0,n=parseInt(document.getElementById('c-parcelas').value)||1;
   const data=document.getElementById('c-data').value,cartao=document.getElementById('c-cartao').value;
-  const fech=document.getElementById('c-fechamento')?.value||null;
   const wrap=document.getElementById('parcelas-editor-wrap'),tbody=document.getElementById('parcelas-edit-tbody');
   if(!valor||!data||!cartao){wrap.style.display='none';return;}
   wrap.style.display='block';
   const base=Math.floor((valor/n)*100)/100,resto=Math.round((valor-base*n)*100)/100;
   tbody.innerHTML='';
-  for(let i=1;i<=n;i++){const venc=calcVenc(data,cartao,i,fech),vp=i===n?base+resto:base;tbody.innerHTML+=`<tr><td style="padding:6px 9px;font-weight:600">${i}/${n}</td><td><input type="number" step="0.01" value="${vp.toFixed(2)}" id="pe-val-${i}"></td><td><input type="date" value="${venc}" id="pe-venc-${i}"></td></tr>`;}
+  for(let i=1;i<=n;i++){const venc=calcVenc(data,cartao,i),vp=i===n?base+resto:base;tbody.innerHTML+=`<tr><td style="padding:6px 9px;font-weight:600">${i}/${n}</td><td><input type="number" step="0.01" value="${vp.toFixed(2)}" id="pe-val-${i}"></td><td><input type="date" value="${venc}" id="pe-venc-${i}"></td></tr>`;}
 }
 function salvarCompra(){
   const desc=document.getElementById('c-desc').value.trim(),data=document.getElementById('c-data').value;
