@@ -510,8 +510,11 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div style="background:var(--surface2);border-radius:10px;padding:11px 14px;margin-bottom:12px;">
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
         <span style="font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap;">🔎 Filtros:</span>
-        <input type="text" id="sf-forn-nome" placeholder="Fornecedor..." oninput="renderSecForn()"
-          style="flex:1;min-width:130px;max-width:210px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Outfit,sans-serif;font-size:.78rem;">
+        <input type="text" id="sf-forn-nome" list="dl-forn-filtro" placeholder="Fornecedor..." oninput="renderSecForn()"
+          style="flex:1;min-width:130px;max-width:210px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Outfit,sans-serif;font-size:.78rem;" autocomplete="off">
+        <button onclick="abrirListaForn()" title="Ver todos os fornecedores"
+          style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:.9rem;line-height:1;flex-shrink:0;">▾</button>
+        <datalist id="dl-forn-filtro"></datalist>
         <span style="font-size:.72rem;color:var(--muted);white-space:nowrap;">De:</span>
         <input type="date" id="sf-forn-de" onchange="renderSecForn()"
           style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Outfit,sans-serif;font-size:.78rem;">
@@ -536,6 +539,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">#</th>
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Categorias</th>
           <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Parcelas</th>
           <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
         </tr></thead>
@@ -594,6 +598,8 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data Compra</th>
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Memorando</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Categoria</th>
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
           <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Parcelas</th>
           <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
@@ -785,7 +791,10 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         <div class="form-group"><label>Data da Compra</label><input type="date" id="c-data" onchange="calcularFechamento()"></div>
         <div class="form-group"><label>Valor Total (R$)</label><input type="number" id="c-valor" placeholder="0.00" step="0.01" oninput="calcularParcelas()"></div>
       </div>
-      <div class="form-row">
+      <div class="form-group">
+        <label>Fechamento real da fatura <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional — preencha somente quando o fechamento real diferir do automático)</span></label>
+        <input type="date" id="c-fechamento" onchange="calcularFechamento()">
+      </div>
         <div class="form-group"><label>Cartão</label>
           <select id="c-cartao" onchange="calcularFechamento();calcularParcelas()">
             <option value="bradesco1">BRA 01 — dia 01</option>
@@ -1344,9 +1353,11 @@ const fmt=v=>'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,max
 const hoje=new Date(); hoje.setHours(12,0,0,0);
 document.getElementById('data-atual').textContent=hoje.toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'});
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
-function calcVenc(dataCompraStr,cartaoKey,numParcela){
+function calcVenc(dataCompraStr,cartaoKey,numParcela,fechOverride){
   const c=CARTOES[cartaoKey], dc=new Date(dataCompraStr+'T12:00:00');
-  let fechBase=new Date(dc.getFullYear(),dc.getMonth(),c.venc-c.fechDias);
+  let fechBase=fechOverride
+    ?new Date(fechOverride+'T23:59:59')
+    :new Date(dc.getFullYear(),dc.getMonth(),c.venc-c.fechDias);
   let vencBase=new Date(dc.getFullYear(),dc.getMonth(),c.venc);
   if(dc>fechBase){vencBase.setMonth(vencBase.getMonth()+1);}
   vencBase.setMonth(vencBase.getMonth()+(numParcela-1));
@@ -1617,13 +1628,15 @@ function renderFaturas(){
       </div>
       <div>
         <div class="fd-row" style="background:var(--surface2);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">
-          <div style="min-width:55px;max-width:55px">Dt.</div><div class="fd-desc">Fornecedor</div><div class="fd-parc">Parcela</div><div class="fd-val">Valor</div>
+          <div style="min-width:55px;max-width:55px">Dt.</div><div class="fd-desc">Fornecedor</div><div style="flex:1;min-width:110px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Memorando</div><div style="min-width:90px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Categoria</div><div class="fd-parc">Parcela</div><div class="fd-val">Valor</div>
           <div style="min-width:60px" class="no-print"></div>
         </div>
         ${g.itens.sort((a,b)=>a.desc.localeCompare(b.desc)).map(i=>`
         <div class="fd-row">
           <div style="min-width:55px;max-width:55px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${i.dataCompra?new Date(i.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</div>
-          <div class="fd-desc">${i.desc}${i.memo?`<div style="font-size:.68rem;color:var(--muted);font-weight:400;margin-top:1px;">${i.memo}</div>`:''}</div>
+          <div class="fd-desc">${i.desc}</div>
+          <div style="flex:1;min-width:110px;font-size:.75rem;color:var(--muted);padding:0 4px;">${i.memo||'<span style="opacity:.3">—</span>'}</div>
+          <div style="min-width:90px;">${i.categoria?`<span style="display:inline-block;padding:1px 6px;border-radius:10px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--muted);">${i.categoria}</span>`:''}</div>
           <div class="fd-parc"><span class="parc-tag${g.passada?' passada':''}">${i.parcela}/${i.nParcelas}</span></div>
           <div class="fd-val">${fmt(i.valorParcela)}</div>
           <div style="min-width:60px;display:flex;gap:3px;" class="no-print">
@@ -1632,7 +1645,7 @@ function renderFaturas(){
           </div>
         </div>`).join('')}
         <div class="fd-row" style="background:var(--surface2);font-weight:700;">
-          <div class="fd-desc" style="color:var(--muted)">Total da fatura</div><div class="fd-parc"></div>
+          <div class="fd-desc" style="color:var(--muted)">Total da fatura</div><div style="flex:1;min-width:110px;"></div><div style="min-width:90px;"></div><div class="fd-parc"></div>
           <div class="fd-val" style="font-size:.95rem">${fmt(g.total)}</div><div style="min-width:28px" class="no-print"></div>
         </div>
       </div>
@@ -1725,6 +1738,7 @@ function abrirModalCompra(){
   document.getElementById('c-desc').value='';document.getElementById('c-valor').value='';document.getElementById('c-parcelas').value='1';
   const catEl=document.getElementById('c-categoria');if(catEl)catEl.value='';
   const memoEl=document.getElementById('c-memo');if(memoEl)memoEl.value='';
+  const fechEl=document.getElementById('c-fechamento');if(fechEl)fechEl.value='';
   const resumo=document.getElementById('fala-resumo');if(resumo){resumo.style.display='none';resumo.innerHTML='';}
   calcularFechamento();calcularParcelas();document.getElementById('modal-compra').classList.add('open');
 }
@@ -1732,18 +1746,26 @@ function fecharModal(id){document.getElementById(id).classList.remove('open');}
 function calcularFechamento(){
   const data=document.getElementById('c-data').value,cartao=document.getElementById('c-cartao').value;
   if(!data||!cartao)return;
-  const v1=calcVenc(data,cartao,1),dv=new Date(v1+'T12:00:00'),c=CARTOES[cartao];
-  document.getElementById('fechamento-info').innerHTML=`📅 Compra em <strong>${new Date(data+'T12:00:00').toLocaleDateString('pt-BR')}</strong> — fecha ${c.fechDias}d antes do vencimento.<br>🟠 1ª parcela: fatura de <strong>${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</strong>`;
+  const fech=document.getElementById('c-fechamento')?.value||'';
+  const c=CARTOES[cartao];
+  const autoFechDia=c.venc-c.fechDias;
+  const v1=calcVenc(data,cartao,1,fech||null),dv=new Date(v1+'T12:00:00');
+  const modoStr=fech
+    ?`<span style="color:var(--warn);">⚙️ Fechamento manual: <strong>${new Date(fech+'T12:00:00').toLocaleDateString('pt-BR')}</strong></span>`
+    :`Fechamento automático: ${c.fechDias}d antes do vencimento (dia ${autoFechDia<1?autoFechDia+c.venc:autoFechDia})`;
+  document.getElementById('fechamento-info').innerHTML=`📅 Compra em <strong>${new Date(data+'T12:00:00').toLocaleDateString('pt-BR')}</strong> — ${modoStr}.<br>🟠 1ª parcela: fatura de <strong>${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</strong>`;
+  calcularParcelas();
 }
 function calcularParcelas(){
   const valor=parseFloat(document.getElementById('c-valor').value)||0,n=parseInt(document.getElementById('c-parcelas').value)||1;
   const data=document.getElementById('c-data').value,cartao=document.getElementById('c-cartao').value;
+  const fech=document.getElementById('c-fechamento')?.value||null;
   const wrap=document.getElementById('parcelas-editor-wrap'),tbody=document.getElementById('parcelas-edit-tbody');
   if(!valor||!data||!cartao){wrap.style.display='none';return;}
   wrap.style.display='block';
   const base=Math.floor((valor/n)*100)/100,resto=Math.round((valor-base*n)*100)/100;
   tbody.innerHTML='';
-  for(let i=1;i<=n;i++){const venc=calcVenc(data,cartao,i),vp=i===n?base+resto:base;tbody.innerHTML+=`<tr><td style="padding:6px 9px;font-weight:600">${i}/${n}</td><td><input type="number" step="0.01" value="${vp.toFixed(2)}" id="pe-val-${i}"></td><td><input type="date" value="${venc}" id="pe-venc-${i}"></td></tr>`;}
+  for(let i=1;i<=n;i++){const venc=calcVenc(data,cartao,i,fech),vp=i===n?base+resto:base;tbody.innerHTML+=`<tr><td style="padding:6px 9px;font-weight:600">${i}/${n}</td><td><input type="number" step="0.01" value="${vp.toFixed(2)}" id="pe-val-${i}"></td><td><input type="date" value="${venc}" id="pe-venc-${i}"></td></tr>`;}
 }
 function salvarCompra(){
   const desc=document.getElementById('c-desc').value.trim(),data=document.getElementById('c-data').value;
@@ -1825,7 +1847,7 @@ function renderLancamentosRel(){
     if(cartao!=='todos'&&x.cartao!==cartao)return;
     if(busca&&!x.desc.toLowerCase().includes(busca)&&!(x.memo||'').toLowerCase().includes(busca))return;
     if(!grupos[x.compraId])grupos[x.compraId]={
-      compraId:x.compraId,desc:x.desc,memo:x.memo||'',cartao:x.cartao,
+      compraId:x.compraId,desc:x.desc,memo:x.memo||'',categoria:x.categoria||'',cartao:x.cartao,
       dataCompra:x.dataCompra||x.venc,nParcelas:x.nParcelas,
       valorParcela:x.valorParcela,total:0,
       vencMin:x.venc,vencMax:x.venc,restante:0
@@ -1854,7 +1876,7 @@ function renderLancamentosRel(){
     const totalVal=sorted.reduce((a,x)=>a+x.total,0);
     infoEl.textContent=sorted.length>0?`${sorted.length} compra${sorted.length>1?'s':''} — Total: ${fmt(totalVal)}`:'';
   }
-  if(!sorted.length){body.innerHTML='<tr><td colspan="7" style="padding:24px;text-align:center;color:var(--muted);">Nenhum lançamento no período</td></tr>';return;}
+  if(!sorted.length){body.innerHTML='<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted);">Nenhum lançamento no período</td></tr>';return;}
   body.innerHTML=sorted.slice(0,500).map(x=>{
     const card=CARTOES[x.cartao];
     const dc=x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'-';
@@ -1862,9 +1884,12 @@ function renderLancamentosRel(){
     const dvMax=new Date(x.vencMax+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
     const vencStr=x.nParcelas>1?`${dvMin} → ${dvMax}`:dvMin;
     const quitado=x.restante===0;
+    const catChip=x.categoria?`<span style="display:inline-block;padding:1px 6px;border-radius:10px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--muted);">${x.categoria}</span>`:'';
     return`<tr style="border-top:1px solid var(--border);${quitado?'opacity:.55':''}">
       <td style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:.75rem;white-space:nowrap;">${dc}</td>
-      <td style="padding:7px 12px;font-weight:600;">${x.desc}${x.memo?`<div style="font-size:.68rem;color:var(--muted);font-weight:400;margin-top:1px;">${x.memo}</div>`:''}</td>
+      <td style="padding:7px 12px;font-weight:600;">${x.desc}</td>
+      <td style="padding:7px 12px;font-size:.75rem;color:var(--muted);">${x.memo||'<span style="opacity:.3">—</span>'}</td>
+      <td style="padding:7px 12px;">${catChip}</td>
       <td style="padding:7px 12px;"><span class="tag ${card.tag}">${card.nome}</span></td>
       <td style="padding:7px 12px;text-align:right;white-space:nowrap;"><span style="font-size:.75rem;color:var(--muted);">${x.nParcelas}x de </span><strong>${fmt(x.valorParcela)}</strong></td>
       <td style="padding:7px 12px;text-align:right;font-weight:700;">${fmt(x.total)}</td>
@@ -2325,6 +2350,12 @@ function renderSecPagos(lista,meses){
     return`<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;font-weight:600;">${nomeMes(m)}</td><td style="padding:8px 12px;text-align:right;color:var(--success);font-weight:600;">${pago>0?fmt(pago):'-'}</td><td style="padding:8px 12px;text-align:right;color:var(--warn);font-weight:600;">${aPag>0?fmt(aPag):'-'}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(tot)}</td></tr>`;
   }).join('');
 }
+function abrirListaForn(){
+  const el=document.getElementById('sf-forn-nome');
+  if(!el)return;
+  el.value='';el.focus();
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+}
 function renderSecForn(lista){
   if(!lista)lista=getSecData('forn');
   const body=document.getElementById('rel-forn-body');if(!body)return;
@@ -2333,6 +2364,13 @@ function renderSecForn(lista){
   if(catSel&&catSel.options.length<=1){
     CATEGORIAS.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);});
   }
+  // Atualiza datalist do filtro de fornecedor
+  const dlFF=document.getElementById('dl-forn-filtro');
+  if(dlFF){
+    const ns=new Set();
+    compras.forEach(x=>{const n=(x.desc||'').replace(/\s*\(.*?\)\s*$/,'').trim();if(n)ns.add(n);});
+    dlFF.innerHTML=[...ns].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
+  }
   // Lê filtros
   const filNome=(document.getElementById('sf-forn-nome')?.value||'').toLowerCase().trim();
   const filDe  =document.getElementById('sf-forn-de')?.value||'';
@@ -2340,24 +2378,23 @@ function renderSecForn(lista){
   const filCat =document.getElementById('sf-forn-cat')?.value||'';
   const filMemo=(document.getElementById('sf-forn-memo')?.value||'').toLowerCase().trim();
   const temFiltro=filNome||filDe||filAte||filCat||filMemo;
-  // Aplica filtros de atributo sobre a lista do período
   const dateRef=x=>x.dataCompra||x.venc;
   let filtrada=lista;
   if(filDe)   filtrada=filtrada.filter(x=>dateRef(x)>=filDe);
   if(filAte)  filtrada=filtrada.filter(x=>dateRef(x)<=filAte);
   if(filCat)  filtrada=filtrada.filter(x=>(x.categoria||'')===filCat);
   if(filMemo) filtrada=filtrada.filter(x=>(x.memo||'').toLowerCase().includes(filMemo));
-  // Agrupa por fornecedor
+  // Agrupa por fornecedor (rastreia categorias únicas)
   const forn={};
   filtrada.forEach(x=>{
     const key=x.desc.replace(/\s*\(.*?\)\s*$/,'').trim();
     if(filNome&&!key.toLowerCase().includes(filNome))return;
-    if(!forn[key])forn[key]={total:0,count:0};
+    if(!forn[key])forn[key]={total:0,count:0,cats:new Set()};
     forn[key].total+=x.valorParcela;forn[key].count++;
+    if(x.categoria)forn[key].cats.add(x.categoria);
   });
   const sorted=Object.entries(forn).sort((a,b)=>b[1].total-a[1].total);
   const exibir=temFiltro?sorted:sorted.slice(0,20);
-  // Info de resultado
   const infoEl=document.getElementById('sf-forn-info');
   if(infoEl){
     if(temFiltro){
@@ -2368,7 +2405,8 @@ function renderSecForn(lista){
       infoEl.textContent=sorted.length>20?`Exibindo top 20 de ${sorted.length} fornecedores — use filtros para refinar`:'';
     }
   }
-  body.innerHTML=exibir.length?exibir.map(([k,v],i)=>`<tr style="border-top:1px solid var(--border);cursor:pointer;" data-forn="${k.replace(/"/g,'&quot;')}" onclick="abrirFornecedor(this.dataset.forn)" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''"><td style="padding:8px 12px;color:var(--muted);font-size:.75rem;">${i+1}</td><td style="padding:8px 12px;font-weight:600;color:var(--accent);">${k} <span style="font-size:.65rem;">🔍</span></td><td style="padding:8px 12px;text-align:right;color:var(--muted);">${v.count}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(v.total)}</td></tr>`).join(''):'<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);">Nenhum fornecedor encontrado</td></tr>';
+  const chips=cats=>[...cats].map(c=>`<span style="display:inline-block;padding:1px 6px;border-radius:10px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--muted);margin:1px 2px 1px 0;">${c}</span>`).join('');
+  body.innerHTML=exibir.length?exibir.map(([k,v],i)=>`<tr style="border-top:1px solid var(--border);cursor:pointer;" data-forn="${k.replace(/"/g,'&quot;')}" onclick="abrirFornecedor(this.dataset.forn)" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''"><td style="padding:8px 12px;color:var(--muted);font-size:.75rem;">${i+1}</td><td style="padding:8px 12px;font-weight:600;color:var(--accent);">${k} <span style="font-size:.65rem;">🔍</span></td><td style="padding:8px 12px;">${chips(v.cats)||'<span style="opacity:.3;font-size:.72rem;">—</span>'}</td><td style="padding:8px 12px;text-align:right;color:var(--muted);">${v.count}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(v.total)}</td></tr>`).join(''):'<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--muted);">Nenhum fornecedor encontrado</td></tr>';
 }
 function limparFiltrosForn(){
   ['sf-forn-nome','sf-forn-de','sf-forn-ate','sf-forn-cat','sf-forn-memo'].forEach(id=>{
