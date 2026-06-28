@@ -4324,12 +4324,51 @@
       "venc": "2026-07-20",
       "categoria": "Desp. Obras",
       "memo": "Barra Chata"
+    },
+    {
+      "uid": "mqyb2pt2g39t",
+      "compraId": "mqyb2pt23auq",
+      "desc": "Eletroled",
+      "dataCompra": "2026-06-25",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 55.98,
+      "venc": "2026-08-05",
+      "categoria": "Pro-Labore",
+      "memo": "Mat. p/ Fabio"
+    },
+    {
+      "uid": "mqyb2pt2uo2q",
+      "compraId": "mqyb2pt23auq",
+      "desc": "Eletroled",
+      "dataCompra": "2026-06-25",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 55.98,
+      "venc": "2026-09-05",
+      "categoria": "Pro-Labore",
+      "memo": "Mat. p/ Fabio"
+    },
+    {
+      "uid": "mqyb2pt22yek",
+      "compraId": "mqyb2pt23auq",
+      "desc": "Eletroled",
+      "dataCompra": "2026-06-25",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 55.98,
+      "venc": "2026-10-05",
+      "categoria": "Pro-Labore",
+      "memo": "Mat. p/ Fabio"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3008502.04
+      "usado": 3008669.98
     },
     "cef": {
       "total": 20000,
