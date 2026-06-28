@@ -4298,6 +4298,19 @@
       "venc": "2026-10-20",
       "categoria": "Transporte",
       "memo": "02 Almax"
+    },
+    {
+      "uid": "mqyal11ztrqx",
+      "compraId": "mqyal11zqmim",
+      "desc": "Rota transpoete",
+      "dataCompra": "2026-06-28",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 22,
+      "venc": "2026-07-20",
+      "categoria": "Tercerizado",
+      "memo": "Passagem Jailton"
     }
   ],
   "limites": {
@@ -4307,7 +4320,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 19057.030000000006
+      "usado": 19079.030000000006
     },
     "mlivre": {
       "total": 20700,
