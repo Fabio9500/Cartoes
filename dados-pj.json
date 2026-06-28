@@ -4363,6 +4363,19 @@
       "venc": "2026-10-05",
       "categoria": "Pro-Labore",
       "memo": "Mat. p/ Fabio"
+    },
+    {
+      "uid": "mqybu5bl4sm4",
+      "compraId": "mqybu5bl79cz",
+      "desc": "Mercado livre",
+      "dataCompra": "2026-06-23",
+      "cartao": "mlivre",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 753.66,
+      "venc": "2026-07-20",
+      "categoria": "Desp. Obras",
+      "memo": "18 Iluminarias"
     }
   ],
   "limites": {
@@ -4376,7 +4389,7 @@
     },
     "mlivre": {
       "total": 20700,
-      "usado": 2612.9800000000005
+      "usado": 3366.6400000000003
     },
     "santander": {
       "total": 0,
