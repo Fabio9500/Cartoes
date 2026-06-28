@@ -10501,6 +10501,19 @@
       "venc": "2026-07-15",
       "categoria": "Diversos",
       "memo": "omega Vita For"
+    },
+    {
+      "uid": "mqydhf62mttq",
+      "compraId": "mqydhf62vg24",
+      "desc": "Telasul - Churrascaria",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 1000,
+      "venc": "2026-07-15",
+      "categoria": "Diversos",
+      "memo": "Almoço Travessão"
     }
   ],
   "limites": {
@@ -10518,7 +10531,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 166071.1499999999
+      "usado": 167071.1499999999
     },
     "picpay": {
       "total": 30000,
