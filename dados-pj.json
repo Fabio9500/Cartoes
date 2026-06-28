@@ -4311,6 +4311,19 @@
       "venc": "2026-07-20",
       "categoria": "Tercerizado",
       "memo": "Passagem Jailton"
+    },
+    {
+      "uid": "mqyapzmerlp6",
+      "compraId": "mqyapzmdzxn6",
+      "desc": "Alumifer",
+      "dataCompra": "2026-06-25",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 52.9,
+      "venc": "2026-07-20",
+      "categoria": "Desp. Obras",
+      "memo": "Barra Chata"
     }
   ],
   "limites": {
@@ -4320,7 +4333,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 19079.030000000006
+      "usado": 19131.930000000008
     },
     "mlivre": {
       "total": 20700,
