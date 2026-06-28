@@ -6503,8 +6503,9 @@
       "cartao": "santander",
       "nParcelas": 24,
       "parcela": 15,
-      "valorParcela": 1,
-      "venc": "2027-07-15"
+      "valorParcela": 654.35,
+      "venc": "2027-07-15",
+      "memo": ""
     },
     {
       "uid": "moghwqzz4cpv",
