@@ -4415,6 +4415,19 @@
       "venc": "2026-09-20",
       "categoria": "Pro-Labore",
       "memo": "Camisa Cazé TV"
+    },
+    {
+      "uid": "mqybwn3jihgt",
+      "compraId": "mqybwn3jmocv",
+      "desc": "Mercado livre",
+      "dataCompra": "2026-06-26",
+      "cartao": "mlivre",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 147.62,
+      "venc": "2026-07-20",
+      "categoria": "Pro-Labore",
+      "memo": "07 Balizadores"
     }
   ],
   "limites": {
@@ -4428,7 +4441,7 @@
     },
     "mlivre": {
       "total": 20700,
-      "usado": 3461.6400000000003
+      "usado": 3609.26
     },
     "santander": {
       "total": 0,
