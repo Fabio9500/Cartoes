@@ -10514,6 +10514,19 @@
       "venc": "2026-07-15",
       "categoria": "Diversos",
       "memo": "Almoço Travessão"
+    },
+    {
+      "uid": "mqydk6bwwhhg",
+      "compraId": "mqydk6bwizy1",
+      "desc": "Cond. Cidadelle",
+      "dataCompra": "2026-06-09",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 911.31,
+      "venc": "2026-07-15",
+      "categoria": "Diversos",
+      "memo": "Cond. E15"
     }
   ],
   "limites": {
@@ -10531,7 +10544,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 167071.1499999999
+      "usado": 167982.4599999999
     },
     "picpay": {
       "total": 30000,
