@@ -11931,6 +11931,11 @@
       "obs": ""
     }
   ],
-  "categorias": [],
+  "categorias": [
+    {
+      "id": "mqy7oe2jvb8v",
+      "nome": "Diversos"
+    }
+  ],
   "cartoesCustom": {}
 }
