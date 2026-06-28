@@ -10659,6 +10659,19 @@
       "venc": "2027-01-15",
       "categoria": "Diversos",
       "memo": "Panelas"
+    },
+    {
+      "uid": "mqyem35po6t8",
+      "compraId": "mqyem35p6nh8",
+      "desc": "Amazon",
+      "dataCompra": "2026-06-09",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 109.98,
+      "venc": "2026-07-15",
+      "categoria": "Diversos",
+      "memo": "Trident"
     }
   ],
   "limites": {
@@ -10676,7 +10689,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 168881.4799999999
+      "usado": 168991.4599999999
     },
     "picpay": {
       "total": 30000,
