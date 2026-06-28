@@ -10410,6 +10410,84 @@
       "venc": "2027-07-01",
       "categoria": "Serviços",
       "memo": "Acordo Alessandro"
+    },
+    {
+      "uid": "mqyd8n2xis3s",
+      "compraId": "mqyd8n2x0u1k",
+      "desc": "Telasul - Batele",
+      "dataCompra": "2026-06-19",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 1,
+      "valorParcela": 1333.35,
+      "venc": "2026-07-15",
+      "categoria": "Diversos",
+      "memo": "Mat. Barreiras"
+    },
+    {
+      "uid": "mqyd8n2xqbv6",
+      "compraId": "mqyd8n2x0u1k",
+      "desc": "Telasul - Batele",
+      "dataCompra": "2026-06-19",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 2,
+      "valorParcela": 1333.33,
+      "venc": "2026-08-15",
+      "categoria": "Diversos",
+      "memo": "Mat. Barreiras"
+    },
+    {
+      "uid": "mqyd8n2x93az",
+      "compraId": "mqyd8n2x0u1k",
+      "desc": "Telasul - Batele",
+      "dataCompra": "2026-06-19",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 3,
+      "valorParcela": 1333.33,
+      "venc": "2026-09-15",
+      "categoria": "Diversos",
+      "memo": "Mat. Barreiras"
+    },
+    {
+      "uid": "mqyd8n2xn7y4",
+      "compraId": "mqyd8n2x0u1k",
+      "desc": "Telasul - Batele",
+      "dataCompra": "2026-06-19",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 4,
+      "valorParcela": 1333.33,
+      "venc": "2026-10-15",
+      "categoria": "Diversos",
+      "memo": "Mat. Barreiras"
+    },
+    {
+      "uid": "mqyd8n2yao71",
+      "compraId": "mqyd8n2x0u1k",
+      "desc": "Telasul - Batele",
+      "dataCompra": "2026-06-19",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 5,
+      "valorParcela": 1333.33,
+      "venc": "2026-11-15",
+      "categoria": "Diversos",
+      "memo": "Mat. Barreiras"
+    },
+    {
+      "uid": "mqyd8n2ymlxw",
+      "compraId": "mqyd8n2x0u1k",
+      "desc": "Telasul - Batele",
+      "dataCompra": "2026-06-19",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 6,
+      "valorParcela": 1333.33,
+      "venc": "2026-12-15",
+      "categoria": "Diversos",
+      "memo": "Mat. Barreiras"
     }
   ],
   "limites": {
@@ -10427,7 +10505,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 157899.81999999992
+      "usado": 165899.81999999992
     },
     "picpay": {
       "total": 30000,
