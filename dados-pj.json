@@ -4378,5 +4378,630 @@
       "data": "2026-06-22",
       "total": 4136.7699999999995
     }
-  }
+  },
+  "fechamentos": {},
+  "fornecedores": [
+    {
+      "id": "mqy6voivhadd",
+      "nome": "Água Empresa",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw7b0r",
+      "nome": "Água potavel",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwankj",
+      "nome": "Alimifer",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw14zl",
+      "nome": "Alimifer - 40 barras",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwc4uu",
+      "nome": "Alumi",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivxxvr",
+      "nome": "Alumifer",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw8d3j",
+      "nome": "Alumifer - Metalons",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivbqap",
+      "nome": "ALUMIFER A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivgstl",
+      "nome": "ALUMIFER B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivkacz",
+      "nome": "ALUMIFER C",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivzmqm",
+      "nome": "ALUMIFER D",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivlb1x",
+      "nome": "ALUMIFER E",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw8an8",
+      "nome": "Alumiferr",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwhqbm",
+      "nome": "Alumiferro",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwclah",
+      "nome": "Anuidade",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv8tzm",
+      "nome": "ANUIDADE NACIONAL ADIC PJ",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwk7ep",
+      "nome": "Ass. Melimais",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivnjtg",
+      "nome": "ATAKADAO ATAKAREJO",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivnicl",
+      "nome": "AUTO POSTO VIP",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivtt4f",
+      "nome": "AUTO POSTO VIP A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivfzo3",
+      "nome": "AUTO POSTO VIP B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivo75j",
+      "nome": "BIRA QUEIJO&CIA",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwfy0s",
+      "nome": "Bira Queijos",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivf1ef",
+      "nome": "BRITOCAR",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwxo5i",
+      "nome": "Capri tintas",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivnh5p",
+      "nome": "CASAFACIL",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivaqyb",
+      "nome": "CEDEP",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwlq56",
+      "nome": "Celular Wesley",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv7m8z",
+      "nome": "Centap",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw53po",
+      "nome": "Certificado Digital",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivexcd",
+      "nome": "CHICO BATERIAS",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivorvl",
+      "nome": "COMERCIO MS",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivtbng",
+      "nome": "COMERCIO MS A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv5qbm",
+      "nome": "COMERCIO MS B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv1hdd",
+      "nome": "Conlar",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv61i7",
+      "nome": "Construforma",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivj3l0",
+      "nome": "CONSTRUFORMA 2",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiww55h",
+      "nome": "Cristal",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivxp8u",
+      "nome": "DADOMATERIALSDE",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivu6a9",
+      "nome": "DAVILLA CAMISETAS",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv829u",
+      "nome": "DISTRIBUIDORA JACANA",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivqzpj",
+      "nome": "DROGARIA VELANES",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivd187",
+      "nome": "DROGARIAFORTALEZA",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw5ocr",
+      "nome": "Edvaldo",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivgnrh",
+      "nome": "Ely Reparos",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivx1zw",
+      "nome": "FERRAGENS SANTA RITA",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwh4td",
+      "nome": "Gabage",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw98rn",
+      "nome": "Gabage - Lentes",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv9xzq",
+      "nome": "GABAGE SOLDAS E FERRAMENT",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivc3b0",
+      "nome": "GILKAR",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivqwqs",
+      "nome": "HIDROPLASTIK",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiws8vr",
+      "nome": "Itão",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivpz8n",
+      "nome": "JF MANGUEIRAS E CONEXO",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivsmej",
+      "nome": "JIM.COM* NAIARA DOS S",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivp6ki",
+      "nome": "LLGCOMERCIODE",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwivzn",
+      "nome": "Luiz",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwtp3p",
+      "nome": "Matos tecidos",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv6e19",
+      "nome": "Mega Nordeste",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv0lva",
+      "nome": "MERCADO LIVRE",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwkhf4",
+      "nome": "Mercado Livre - Capacetes",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiweggi",
+      "nome": "Mercado livre - Liminarias",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwzsmo",
+      "nome": "Mercado livre - Vinho",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv73jd",
+      "nome": "MERCADOLIVRE",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv4nv1",
+      "nome": "MIRASOL",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivwkl8",
+      "nome": "MIRASOL A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiva3s4",
+      "nome": "MIRASOL B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivfn5l",
+      "nome": "MIRASOL C",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivakgf",
+      "nome": "MIRASOL PARC A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivwxg5",
+      "nome": "MIRASOL PARC B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivw9fz",
+      "nome": "Mirasul",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwqews",
+      "nome": "Mirasul - 15 tubos",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwup25",
+      "nome": "Mirasul - Barras",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwrmn1",
+      "nome": "Mirasul - Emenda Policarbonato",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivd1pm",
+      "nome": "MP*MELIMAIS",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwcdh5",
+      "nome": "Oficina Chausse",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv5x4o",
+      "nome": "PAI MENDONCA HOME CENT",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivckyu",
+      "nome": "PANIFICADORA PRIMUS",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivr6yn",
+      "nome": "PAULO HUDSON MARQUES S",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivx5a9",
+      "nome": "PDV MATIZ TINTAS",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv6h24",
+      "nome": "PEG PAG POPULAR SUPERM",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivuy4t",
+      "nome": "PLUTAO COMERCIAL DE FE",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwgc76",
+      "nome": "Posto",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwroha",
+      "nome": "Posto - Adeilton",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv78d2",
+      "nome": "POSTO D PASSAGEM",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivlfkw",
+      "nome": "POSTO JACANA",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv1o42",
+      "nome": "POSTO JARDIM DO O",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwgrne",
+      "nome": "Posto Jeovane",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivozfl",
+      "nome": "POSTO JOCEL V LTDA EPP",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivahoq",
+      "nome": "POSTO MILENIO",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw3ts6",
+      "nome": "Posto Riquelme",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwfazt",
+      "nome": "Prata Motos Adeilton",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwezjn",
+      "nome": "Restaurante",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivn8aa",
+      "nome": "RESTAURANTE DELICIAS",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv2hb9",
+      "nome": "Restaurante Funcionarios",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwtvk7",
+      "nome": "Rondelli",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwemai",
+      "nome": "Rota",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwy3xp",
+      "nome": "Rota transpoete",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwtxfw",
+      "nome": "Rota Transporte",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw9csr",
+      "nome": "Rubens bar",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivq0es",
+      "nome": "RURAL QUIMICA",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwabgq",
+      "nome": "Rural química",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv0mcq",
+      "nome": "RURAL QUIMICA A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivhvll",
+      "nome": "RURAL QUIMICA B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivns3q",
+      "nome": "SALAO DAS MOTOS",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivchz6",
+      "nome": "SAPUCAIA MATERIAIS PAR",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiwm55a",
+      "nome": "Serbr",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivcuu3",
+      "nome": "SERBRI",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivxd8c",
+      "nome": "SERBRI A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivl1dk",
+      "nome": "SERBRI B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivucvj",
+      "nome": "SERBRI C",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv6fkc",
+      "nome": "SERBRI PARC A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivim78",
+      "nome": "SERBRI PARC B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivzyd8",
+      "nome": "SERBRI PARC C",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivak71",
+      "nome": "SERBRI PARC D",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivl35l",
+      "nome": "SERBRI PARC E",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw97ha",
+      "nome": "Setbri",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw58ft",
+      "nome": "Supermercado",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiw9a6k",
+      "nome": "Supermercado Conceição",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivzpe5",
+      "nome": "TARIFA RENOV ANUAL FIDEL",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivi7ug",
+      "nome": "Tintaito",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivikhp",
+      "nome": "TINTAUTO",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv4bxd",
+      "nome": "TINTAUTO A",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voivy4eq",
+      "nome": "TINTAUTO B",
+      "obs": ""
+    },
+    {
+      "id": "mqy6voiv1a8e",
+      "nome": "TINTAUTO C",
+      "obs": ""
+    }
+  ],
+  "categorias": [],
+  "cartoesCustom": {}
 }
