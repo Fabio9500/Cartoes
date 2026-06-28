@@ -5002,6 +5002,11 @@
       "obs": ""
     }
   ],
-  "categorias": [],
+  "categorias": [
+    {
+      "id": "mqyaa78tv830",
+      "nome": "Mat. Abrasivo"
+    }
+  ],
   "cartoesCustom": {}
 }
