@@ -10566,6 +10566,97 @@
       "venc": "2026-09-15",
       "categoria": "Diversos",
       "memo": "Amarok"
+    },
+    {
+      "uid": "mqydm77uqtk7",
+      "compraId": "mqydm77uiphs",
+      "desc": "TikTok",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 1,
+      "valorParcela": 64.18,
+      "venc": "2026-07-15",
+      "categoria": "Diversos",
+      "memo": "Panelas"
+    },
+    {
+      "uid": "mqydm77utytd",
+      "compraId": "mqydm77uiphs",
+      "desc": "TikTok",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 2,
+      "valorParcela": 64.14,
+      "venc": "2026-08-15",
+      "categoria": "Diversos",
+      "memo": "Panelas"
+    },
+    {
+      "uid": "mqydm77ukfun",
+      "compraId": "mqydm77uiphs",
+      "desc": "TikTok",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 3,
+      "valorParcela": 64.14,
+      "venc": "2026-09-15",
+      "categoria": "Diversos",
+      "memo": "Panelas"
+    },
+    {
+      "uid": "mqydm77uchp9",
+      "compraId": "mqydm77uiphs",
+      "desc": "TikTok",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 4,
+      "valorParcela": 64.14,
+      "venc": "2026-10-15",
+      "categoria": "Diversos",
+      "memo": "Panelas"
+    },
+    {
+      "uid": "mqydm77udnhd",
+      "compraId": "mqydm77uiphs",
+      "desc": "TikTok",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 5,
+      "valorParcela": 64.14,
+      "venc": "2026-11-15",
+      "categoria": "Diversos",
+      "memo": "Panelas"
+    },
+    {
+      "uid": "mqydm77u30g2",
+      "compraId": "mqydm77uiphs",
+      "desc": "TikTok",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 6,
+      "valorParcela": 64.14,
+      "venc": "2026-12-15",
+      "categoria": "Diversos",
+      "memo": "Panelas"
+    },
+    {
+      "uid": "mqydm77umj9y",
+      "compraId": "mqydm77uiphs",
+      "desc": "TikTok",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 7,
+      "parcela": 7,
+      "valorParcela": 64.14,
+      "venc": "2027-01-15",
+      "categoria": "Diversos",
+      "memo": "Panelas"
     }
   ],
   "limites": {
@@ -10583,7 +10674,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 168432.4599999999
+      "usado": 168881.4799999999
     },
     "picpay": {
       "total": 30000,
