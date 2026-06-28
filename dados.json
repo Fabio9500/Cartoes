@@ -10241,6 +10241,19 @@
       "venc": "2026-08-15",
       "categoria": "Supermercado",
       "memo": "Compras semana"
+    },
+    {
+      "uid": "mqxvvkw7m2mr",
+      "compraId": "mqxvvkw7hkz5",
+      "desc": "Drogasil",
+      "dataCompra": "2026-06-05",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 50.79,
+      "venc": "2026-07-10",
+      "categoria": "Farmácia",
+      "memo": "Medicamento"
     }
   ],
   "limites": {
@@ -10250,7 +10263,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 45718.640000000014
+      "usado": 45769.430000000015
     },
     "bradesco20": {
       "total": 170000,
