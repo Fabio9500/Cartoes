@@ -6,12 +6,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cartões PJ">
-<!-- PWA — Cartões PJ -->
-<link rel="manifest" href="manifest-pj.json">
-<meta name="theme-color" content="#005aa7">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="application-name" content="Cartões PJ">
-<link rel="apple-touch-icon" href="icon-pj.svg">
 <title>Controle de Cartões PJ</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -515,6 +509,31 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-forn-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-forn-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('forn')">
     </div>
+    <!-- FILTROS AVANÇADOS FORNECEDOR -->
+    <div style="background:var(--surface2);border-radius:10px;padding:11px 14px;margin-bottom:12px;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+        <span style="font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap;">🔎 Filtros:</span>
+        <input type="text" id="sf-forn-nome" placeholder="Fornecedor..." oninput="renderSecForn()"
+          style="flex:1;min-width:130px;max-width:210px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Outfit,sans-serif;font-size:.78rem;">
+        <span style="font-size:.72rem;color:var(--muted);white-space:nowrap;">De:</span>
+        <input type="date" id="sf-forn-de" onchange="renderSecForn()"
+          style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Outfit,sans-serif;font-size:.78rem;">
+        <span style="font-size:.72rem;color:var(--muted);white-space:nowrap;">Até:</span>
+        <input type="date" id="sf-forn-ate" onchange="renderSecForn()"
+          style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Outfit,sans-serif;font-size:.78rem;">
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select id="sf-forn-cat" onchange="renderSecForn()"
+          style="flex:1;min-width:150px;max-width:220px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Outfit,sans-serif;font-size:.78rem;">
+          <option value="">Todas as categorias</option>
+        </select>
+        <input type="text" id="sf-forn-memo" placeholder="🔍 Palavra-chave no memorando..." oninput="renderSecForn()"
+          style="flex:2;min-width:180px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Outfit,sans-serif;font-size:.78rem;">
+        <button onclick="limparFiltrosForn()"
+          style="padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.78rem;cursor:pointer;color:var(--muted);white-space:nowrap;font-weight:600;">✕ Limpar</button>
+      </div>
+      <div id="sf-forn-info" style="font-size:.72rem;color:var(--muted);margin-top:7px;"></div>
+    </div>
 <div style="overflow-x:auto;">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
@@ -760,8 +779,10 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div class="modal-bd">
       <div class="info-box" id="fala-resumo" style="display:none;"></div>
       <div class="info-box" id="fechamento-info">Selecione o cartão e a data para ver a fatura de destino.</div>
-      <div class="form-group"><label>Fornecedor</label><input type="text" id="c-desc" placeholder="Ex: Leroy Merlin"></div>
-      <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="c-memo" placeholder="Ex: Furadeira para a obra"></div>
+      <div class="form-group"><label>Fornecedor</label><input type="text" id="c-desc" list="dl-fornecedor" placeholder="Ex: Leroy Merlin" autocomplete="off"></div>
+      <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="c-memo" list="dl-memorando" placeholder="Ex: Furadeira para a obra" autocomplete="off"></div>
+      <datalist id="dl-fornecedor"></datalist>
+      <datalist id="dl-memorando"></datalist>
       <div class="form-group"><label>Categoria</label><select id="c-categoria"><option value="">Sem categoria</option><option>Alimentação</option><option>Combustível</option><option>Educação</option><option>Entretenimento</option><option>Farmácia</option><option>Moradia</option><option>Saúde</option><option>Serviços</option><option>Supermercado</option><option>Transporte</option><option>Vestuário</option><option>Outros</option></select></div>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="c-data" onchange="calcularFechamento()"></div>
@@ -1690,7 +1711,20 @@ function salvarLimite(){
 }
 
 // ── NOVA COMPRA ─────────────────────────────────────────────
+function atualizarDatalistCompras(){
+  // Fornecedores únicos ordenados alfabeticamente
+  const fornSet=new Set();
+  compras.forEach(x=>{const n=(x.desc||'').replace(/\s*\(.*?\)\s*$/,'').trim();if(n)fornSet.add(n);});
+  const dlF=document.getElementById('dl-fornecedor');
+  if(dlF)dlF.innerHTML=[...fornSet].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
+  // Memorandos únicos ordenados alfabeticamente
+  const memoSet=new Set();
+  compras.forEach(x=>{const m=(x.memo||'').trim();if(m)memoSet.add(m);});
+  const dlM=document.getElementById('dl-memorando');
+  if(dlM)dlM.innerHTML=[...memoSet].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
+}
 function abrirModalCompra(){
+  atualizarDatalistCompras();
   document.getElementById('c-data').value=hoje.toISOString().split('T')[0];
   document.getElementById('c-desc').value='';document.getElementById('c-valor').value='';document.getElementById('c-parcelas').value='1';
   const catEl=document.getElementById('c-categoria');if(catEl)catEl.value='';
@@ -2298,9 +2332,53 @@ function renderSecPagos(lista,meses){
 function renderSecForn(lista){
   if(!lista)lista=getSecData('forn');
   const body=document.getElementById('rel-forn-body');if(!body)return;
-  const forn={};lista.forEach(x=>{const key=x.desc.replace(/\s*\(.*?\)\s*$/,'').trim();if(!forn[key])forn[key]={total:0,count:0};forn[key].total+=x.valorParcela;forn[key].count++;});
-  const sorted=Object.entries(forn).sort((a,b)=>b[1].total-a[1].total).slice(0,20);
-  body.innerHTML=sorted.length?sorted.map(([k,v],i)=>`<tr style="border-top:1px solid var(--border);cursor:pointer;" data-forn="${k.replace(/"/g,'&quot;')}" onclick="abrirFornecedor(this.dataset.forn)" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''"><td style="padding:8px 12px;color:var(--muted);font-size:.75rem;">${i+1}</td><td style="padding:8px 12px;font-weight:600;color:var(--accent);">${k} <span style="font-size:.65rem;">🔍</span></td><td style="padding:8px 12px;text-align:right;color:var(--muted);">${v.count}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(v.total)}</td></tr>`).join(''):'<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);">Nenhum fornecedor no período</td></tr>';
+  // Preenche select de categorias na primeira vez
+  const catSel=document.getElementById('sf-forn-cat');
+  if(catSel&&catSel.options.length<=1){
+    CATEGORIAS.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);});
+  }
+  // Lê filtros
+  const filNome=(document.getElementById('sf-forn-nome')?.value||'').toLowerCase().trim();
+  const filDe  =document.getElementById('sf-forn-de')?.value||'';
+  const filAte =document.getElementById('sf-forn-ate')?.value||'';
+  const filCat =document.getElementById('sf-forn-cat')?.value||'';
+  const filMemo=(document.getElementById('sf-forn-memo')?.value||'').toLowerCase().trim();
+  const temFiltro=filNome||filDe||filAte||filCat||filMemo;
+  // Aplica filtros de atributo sobre a lista do período
+  const dateRef=x=>x.dataCompra||x.venc;
+  let filtrada=lista;
+  if(filDe)   filtrada=filtrada.filter(x=>dateRef(x)>=filDe);
+  if(filAte)  filtrada=filtrada.filter(x=>dateRef(x)<=filAte);
+  if(filCat)  filtrada=filtrada.filter(x=>(x.categoria||'')===filCat);
+  if(filMemo) filtrada=filtrada.filter(x=>(x.memo||'').toLowerCase().includes(filMemo));
+  // Agrupa por fornecedor
+  const forn={};
+  filtrada.forEach(x=>{
+    const key=x.desc.replace(/\s*\(.*?\)\s*$/,'').trim();
+    if(filNome&&!key.toLowerCase().includes(filNome))return;
+    if(!forn[key])forn[key]={total:0,count:0};
+    forn[key].total+=x.valorParcela;forn[key].count++;
+  });
+  const sorted=Object.entries(forn).sort((a,b)=>b[1].total-a[1].total);
+  const exibir=temFiltro?sorted:sorted.slice(0,20);
+  // Info de resultado
+  const infoEl=document.getElementById('sf-forn-info');
+  if(infoEl){
+    if(temFiltro){
+      infoEl.textContent=exibir.length
+        ?`${exibir.length} fornecedor${exibir.length!==1?'es':''} encontrado${exibir.length!==1?'s':''} com filtros aplicados`
+        :'Nenhum resultado para os filtros selecionados';
+    } else {
+      infoEl.textContent=sorted.length>20?`Exibindo top 20 de ${sorted.length} fornecedores — use filtros para refinar`:'';
+    }
+  }
+  body.innerHTML=exibir.length?exibir.map(([k,v],i)=>`<tr style="border-top:1px solid var(--border);cursor:pointer;" data-forn="${k.replace(/"/g,'&quot;')}" onclick="abrirFornecedor(this.dataset.forn)" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''"><td style="padding:8px 12px;color:var(--muted);font-size:.75rem;">${i+1}</td><td style="padding:8px 12px;font-weight:600;color:var(--accent);">${k} <span style="font-size:.65rem;">🔍</span></td><td style="padding:8px 12px;text-align:right;color:var(--muted);">${v.count}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(v.total)}</td></tr>`).join(''):'<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);">Nenhum fornecedor encontrado</td></tr>';
+}
+function limparFiltrosForn(){
+  ['sf-forn-nome','sf-forn-de','sf-forn-ate','sf-forn-cat','sf-forn-memo'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  renderSecForn();
 }
 function renderSecParc(){
   const body=document.getElementById('rel-parc-body');if(!body)return;
@@ -2984,25 +3062,5 @@ boot();
   </div>
 </div>
 
-<!-- PWA — Registro do Service Worker -->
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
-      .then(reg => {
-        reg.addEventListener('updatefound', () => {
-          const nSW = reg.installing;
-          nSW.addEventListener('statechange', () => {
-            if (nSW.state === 'installed' && navigator.serviceWorker.controller) {
-              if (typeof showToast === 'function') showToast('🔄 Nova versão disponível — recarregue para atualizar');
-            }
-          });
-        });
-      })
-      .catch(err => console.warn('[CartoesPJ] SW não registrado:', err));
-    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
-  });
-}
-</script>
 </body>
 </html>
