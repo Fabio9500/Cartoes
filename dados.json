@@ -10527,6 +10527,45 @@
       "venc": "2026-07-15",
       "categoria": "Diversos",
       "memo": "Cond. E15"
+    },
+    {
+      "uid": "mqydl029ua1j",
+      "compraId": "mqydl0297fsq",
+      "desc": "Posto jocel",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 150,
+      "venc": "2026-07-15",
+      "categoria": "Diversos",
+      "memo": "Amarok"
+    },
+    {
+      "uid": "mqydl02apae7",
+      "compraId": "mqydl0297fsq",
+      "desc": "Posto jocel",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 150,
+      "venc": "2026-08-15",
+      "categoria": "Diversos",
+      "memo": "Amarok"
+    },
+    {
+      "uid": "mqydl02awko0",
+      "compraId": "mqydl0297fsq",
+      "desc": "Posto jocel",
+      "dataCompra": "2026-06-10",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 150,
+      "venc": "2026-09-15",
+      "categoria": "Diversos",
+      "memo": "Amarok"
     }
   ],
   "limites": {
@@ -10544,7 +10583,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 167982.4599999999
+      "usado": 168432.4599999999
     },
     "picpay": {
       "total": 30000,
