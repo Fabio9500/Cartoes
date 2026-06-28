@@ -4376,6 +4376,45 @@
       "venc": "2026-07-20",
       "categoria": "Desp. Obras",
       "memo": "18 Iluminarias"
+    },
+    {
+      "uid": "mqybvao9bcjz",
+      "compraId": "mqybvao94kbp",
+      "desc": "Mercado livre",
+      "dataCompra": "2026-06-25",
+      "cartao": "mlivre",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 31.68,
+      "venc": "2026-07-20",
+      "categoria": "Pro-Labore",
+      "memo": "Camisa Cazé TV"
+    },
+    {
+      "uid": "mqybvao9albz",
+      "compraId": "mqybvao94kbp",
+      "desc": "Mercado livre",
+      "dataCompra": "2026-06-25",
+      "cartao": "mlivre",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 31.66,
+      "venc": "2026-08-20",
+      "categoria": "Pro-Labore",
+      "memo": "Camisa Cazé TV"
+    },
+    {
+      "uid": "mqybvao9nryj",
+      "compraId": "mqybvao94kbp",
+      "desc": "Mercado livre",
+      "dataCompra": "2026-06-25",
+      "cartao": "mlivre",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 31.66,
+      "venc": "2026-09-20",
+      "categoria": "Pro-Labore",
+      "memo": "Camisa Cazé TV"
     }
   ],
   "limites": {
@@ -4389,7 +4428,7 @@
     },
     "mlivre": {
       "total": 20700,
-      "usado": 3366.6400000000003
+      "usado": 3461.6400000000003
     },
     "santander": {
       "total": 0,
