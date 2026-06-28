@@ -43,6 +43,8 @@ header{background:var(--text);color:#fff;padding:0 20px;display:flex;align-items
 .tabs::-webkit-scrollbar{display:none;}
 .tab{padding:12px 16px;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);border:none;background:none;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.cad-stab{padding:9px 18px;border:none;background:transparent;font-family:Outfit,sans-serif;font-size:.82rem;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;font-weight:600;transition:all .2s;}
+.cad-stab.active{color:var(--accent);border-bottom-color:var(--accent);}
 main{padding:18px 16px;max-width:1100px;margin:0 auto;}
 .page{display:none;}.page.active{display:block;animation:fadeIn .2s;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -286,6 +288,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   <button class="tab" onclick="showPage('faturas')">Faturas</button>
   <button class="tab" onclick="showPage('limites')">Limites</button>
   <button class="tab" onclick="showPage('relatorios')">📊 Relatórios</button>
+  <button class="tab" onclick="showPage('cadastros')">🗂 Cadastros</button>
   <button class="tab" onclick="showPage('backup')">Backup</button>
 </div>
 <main>
@@ -704,6 +707,82 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
 </div>
 
+<div class="page" id="page-cadastros">
+  <div style="max-width:1100px;margin:0 auto;padding:18px 16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <h2 style="margin:0;">🗂 Cadastros</h2>
+    </div>
+    <div style="display:flex;border-bottom:2px solid var(--border);margin-bottom:18px;">
+      <button class="cad-stab active" id="stb-forn" onclick="showCadSub('forn',this)">🏪 Fornecedores</button>
+      <button class="cad-stab" id="stb-cart" onclick="showCadSub('cart',this)">💳 Cartões</button>
+      <button class="cad-stab" id="stb-cat" onclick="showCadSub('cat',this)">🏷 Categorias</button>
+    </div>
+
+    <!-- FORNECEDORES -->
+    <div id="cad-forn">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <input type="text" id="cad-forn-busca" placeholder="🔍 Buscar fornecedor..." oninput="renderCadForn()"
+          style="flex:1;min-width:200px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:Outfit,sans-serif;font-size:.85rem;">
+        <button class="btn btn-primary btn-sm" onclick="abrirCad('forn')">+ Novo Fornecedor</button>
+        <button class="btn btn-outline btn-sm" onclick="importarFornecedoresHistorico()" title="Cria registros para todos os fornecedores já usados nos lançamentos">📥 Importar do histórico</button>
+      </div>
+      <div class="tbl-wrap">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+          <thead><tr style="background:var(--surface2);">
+            <th style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);">Nome</th>
+            <th style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);">Observação</th>
+            <th style="padding:10px 14px;width:80px;" class="no-print"></th>
+          </tr></thead>
+          <tbody id="cad-forn-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CARTÕES -->
+    <div id="cad-cart" style="display:none;">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+        <button class="btn btn-primary btn-sm" onclick="abrirCad('cart')">+ Novo Cartão</button>
+      </div>
+      <div id="cad-cart-body" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;"></div>
+    </div>
+
+    <!-- CATEGORIAS -->
+    <div id="cad-cat" style="display:none;">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <span style="font-size:.82rem;color:var(--muted);flex:1;">As categorias padrão e as personalizadas aparecem em todos os formulários do sistema.</span>
+        <button class="btn btn-primary btn-sm" onclick="abrirCad('cat')">+ Nova Categoria</button>
+        <button class="btn btn-outline btn-sm" onclick="importarCategoriasHistorico()" title="Importa categorias usadas nos lançamentos que não estão na lista padrão">📥 Importar do histórico</button>
+      </div>
+      <div class="tbl-wrap">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+          <thead><tr style="background:var(--surface2);">
+            <th style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);">Categoria</th>
+            <th style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);">Tipo</th>
+            <th style="padding:10px 14px;width:80px;" class="no-print"></th>
+          </tr></thead>
+          <tbody id="cad-cat-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CADASTROS (compartilhado) -->
+<div class="modal-overlay" id="modal-cad">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-hd"><h2 id="modal-cad-titulo">Cadastro</h2><button class="close-btn" onclick="fecharModal('modal-cad')">✕</button></div>
+    <div class="modal-bd">
+      <input type="hidden" id="cad-id">
+      <input type="hidden" id="cad-tipo">
+      <div id="modal-cad-campos"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-outline" onclick="fecharModal('modal-cad')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCad()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <div class="page" id="page-backup">
   <div class="backup-section">
     <h3>☁️ Sincronização GitHub</h3>
@@ -1099,7 +1178,7 @@ function setFila(payload){try{localStorage.setItem(PREFIX+'_fila',JSON.stringify
 function limparFila(){localStorage.removeItem(PREFIX+'_fila');}
 function getLastSha(){return localStorage.getItem(PREFIX+'_last_sha')||'';}
 function setLastSha(sha){if(sha)localStorage.setItem(PREFIX+'_last_sha',sha);}
-function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos};}
+function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,categorias,cartoesCustom};}
 
 function atualizarIndicadorConexao(){
   const el=document.getElementById('conn-indicator');
@@ -1143,16 +1222,17 @@ function setSyncStatus(s){
 }
 
 // ── CARTÕES ─────────────────────────────────────────────────
-const CARTOES={
+let CARTOES={
   c6:       {nome:'C6',banco:'C6 Bank',venc:5, fechDias:10,tag:'c6'},
   cef:      {nome:'CEF',banco:'Caixa',venc:20,fechDias:10,tag:'cef'},
   mlivre:   {nome:'M.Livre',banco:'Mercado Pago',venc:20,fechDias:10,tag:'mlivre'},
   santander:{nome:'Santander',banco:'Santander',venc:1,fechDias:10,tag:'santander'},
   bradesco: {nome:'Bradesco',banco:'Bradesco',venc:1,fechDias:10,tag:'bradesco'},
 };
+const CARTOES_BUILTIN=Object.keys(CARTOES);
 const DEFAULT_LIMITES={c6:{total:50000,usado:0},cef:{total:50000,usado:0},mlivre:{total:30000,usado:0},santander:{total:100000,usado:0},bradesco:{total:100000,usado:0}};
 
-let compras=[], limites={}, pagamentos={}, fechamentos={};
+let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={};
 
 // ── STORAGE ─────────────────────────────────────────────────
 async function salvar(){
@@ -1231,7 +1311,8 @@ async function initData(){
         setSyncStatus('saving');
         await resolverFilaPendente(fila,data,ghSha);
       } else {
-        compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{};
+        compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; categorias=data.categorias||[]; cartoesCustom=data.cartoesCustom||{};
+        Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
         setSyncStatus('ok');
       }
@@ -1380,7 +1461,7 @@ function diasAte(v){return Math.ceil((new Date(v+'T12:00:00')-hoje)/86400000);}
 function corLimite(p){return p>80?'var(--danger)':p>50?'var(--warn)':'var(--success)';}
 
 // ── TABS ────────────────────────────────────────────────────
-const PAGES=['dashboard','lancamentos','faturas','limites','relatorios','backup'];
+const PAGES=['dashboard','lancamentos','faturas','limites','relatorios','cadastros','backup'];
 let _paginaAnterior='dashboard', _paginaAtual='dashboard';
 function showPage(id){
   _paginaAnterior=_paginaAtual; _paginaAtual=id;
@@ -1393,6 +1474,7 @@ function showPage(id){
   if(id==='faturas')renderFaturas();
   if(id==='limites')renderLimites();
   if(id==='relatorios')renderRelatorios();
+  if(id==='cadastros')renderCadastros();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function irInicio(){showPage('dashboard');}
@@ -1749,19 +1831,28 @@ function salvarLimite(){
 
 // ── NOVA COMPRA ─────────────────────────────────────────────
 function atualizarDatalistCompras(){
-  // Fornecedores únicos ordenados alfabeticamente
-  const fornSet=new Set();
+  // Fornecedores únicos: primeiro da lista de cadastros, depois do histórico
+  const fornSet=new Set(fornecedores.map(f=>f.nome));
   compras.forEach(x=>{const n=(x.desc||'').replace(/\s*\(.*?\)\s*$/,'').trim();if(n)fornSet.add(n);});
   const dlF=document.getElementById('dl-fornecedor');
   if(dlF)dlF.innerHTML=[...fornSet].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
-  // Memorandos únicos ordenados alfabeticamente
+  // Memorandos únicos
   const memoSet=new Set();
   compras.forEach(x=>{const m=(x.memo||'').trim();if(m)memoSet.add(m);});
   const dlM=document.getElementById('dl-memorando');
   if(dlM)dlM.innerHTML=[...memoSet].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
 }
+function listaCats(){
+  if(categorias.length>0)return categorias.map(c=>c.nome).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  return [...CATEGORIAS].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+}
+function popularCatSelect(selId, selVal){
+  const el=document.getElementById(selId);if(!el)return;
+  el.innerHTML=`<option value="">Sem categoria</option>`+listaCats().map(n=>`<option${n===selVal?' selected':''}>${n}</option>`).join('');
+}
 function abrirModalCompra(){
   atualizarDatalistCompras();
+  popularCatSelect('c-categoria','');
   document.getElementById('c-data').value=hoje.toISOString().split('T')[0];
   document.getElementById('c-desc').value='';document.getElementById('c-valor').value='';document.getElementById('c-parcelas').value='1';
   const catEl=document.getElementById('c-categoria');if(catEl)catEl.value='';
@@ -1983,25 +2074,32 @@ function imprimirFaturaUnica(cartao, venc){
   const itens=compras.filter(c=>c.cartao===cartao&&c.venc===venc).sort((a,b)=>a.desc.localeCompare(b.desc));
   const total=itens.reduce((a,x)=>a+x.valorParcela,0);
   const dv=new Date(venc+'T12:00:00');
-  const w=window.open('','_blank','width=720,height=640');
+  const w=window.open('','_blank','width=860,height=640');
   if(!w)return;
-  const linhas=itens.map(x=>`<tr><td>${x.desc}${x.memo?'<div style="font-size:10px;color:#8a8070;margin-top:2px;">'+x.memo+'</div>':''}</td><td>${x.nParcelas>1?x.parcela+'/'+x.nParcelas:'à vista'}</td><td style="text-align:right;">${fmt(x.valorParcela)}</td></tr>`).join('');
+  const linhas=itens.map(x=>`<tr>
+    <td>${x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'—'}</td>
+    <td><strong>${x.desc}</strong></td>
+    <td style="color:#8a8070;font-size:10px;">${x.memo||'—'}</td>
+    <td>${x.categoria?`<span style="display:inline-block;padding:1px 6px;border-radius:8px;background:#f0ede8;font-size:9px;font-weight:700;">${x.categoria}</span>`:'—'}</td>
+    <td style="text-align:center;">${x.nParcelas>1?x.parcela+'/'+x.nParcelas:'à vista'}</td>
+    <td style="text-align:right;font-weight:700;">${fmt(x.valorParcela)}</td>
+  </tr>`).join('');
   w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fatura '+card.nome+'</title><style>'
     +'body{font-family:Arial,sans-serif;font-size:12px;padding:24px;color:#1a1814;}'
-    +'h2{margin:0 0 4px;color:#1a1814;}'
-    +'.sub{color:#8a8070;margin-bottom:18px;font-size:13px;}'
+    +'h2{margin:0 0 4px;color:#1a1814;}.sub{color:#8a8070;margin-bottom:18px;font-size:13px;}'
     +'table{width:100%;border-collapse:collapse;font-size:11px;}'
-    +'th{background:#f0ede8;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#8a8070;border-bottom:2px solid #e2ddd7;}'
-    +'td{padding:7px 10px;border-bottom:1px solid #e2ddd7;}'
+    +'th{background:#f0ede8;padding:6px 9px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:#8a8070;border-bottom:2px solid #e2ddd7;}'
+    +'td{padding:6px 9px;border-bottom:1px solid #e2ddd7;vertical-align:middle;}'
     +'tr:last-child td{border-bottom:none;}'
     +'tfoot td{font-weight:700;border-top:2px solid #1a1814;padding-top:10px;}'
     +'@media print{body{padding:0;}}'
     +'</style></head><body>'
     +'<h2>'+card.nome+' — '+card.banco+'</h2>'
     +'<div class="sub">Vencimento: '+dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})+' • '+itens.length+' lançamento'+(itens.length>1?'s':'')+'</div>'
-    +'<table><thead><tr><th>Fornecedor</th><th>Parcela</th><th style="text-align:right;">Valor</th></tr></thead>'
-    +'<tbody>'+linhas+'</tbody>'
-    +'<tfoot><tr><td colspan="2">Total</td><td style="text-align:right;">'+fmt(total)+'</td></tr></tfoot>'
+    +'<table><thead><tr>'
+    +'<th style="width:46px">Data</th><th>Fornecedor</th><th>Memorando</th><th style="width:90px">Categoria</th><th style="width:55px;text-align:center;">Parcela</th><th style="width:80px;text-align:right;">Valor</th>'
+    +'</tr></thead><tbody>'+linhas+'</tbody>'
+    +'<tfoot><tr><td colspan="5">Total</td><td style="text-align:right;">'+fmt(total)+'</td></tr></tfoot>'
     +'</table></body></html>');
   w.document.close();
   setTimeout(()=>w.print(),400);
@@ -2453,6 +2551,204 @@ function getMeses(n){
 }
 function nomeMes(ym){const[y,m]=ym.split('-');return new Date(parseInt(y),parseInt(m)-1,1).toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}).replace('.','/');} 
 
+
+// ── CADASTROS ───────────────────────────────────────────────
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function importarCategoriasHistorico(){
+  const jaExiste=new Set([...categorias.map(c=>c.nome.toLowerCase()),...CATEGORIAS.map(n=>n.toLowerCase())]);
+  const novos=[];const vistos=new Set();
+  compras.forEach(x=>{
+    const cat=(x.categoria||'').trim();
+    if(!cat||vistos.has(cat.toLowerCase())||jaExiste.has(cat.toLowerCase()))return;
+    vistos.add(cat.toLowerCase());novos.push({id:uid(),nome:cat});
+  });
+  if(novos.length===0){showToast('Nenhuma categoria nova encontrada no histórico');return;}
+  novos.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  categorias=[...categorias,...novos].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  salvar();renderCadCat();showToast(`${novos.length} categoria${novos.length>1?'s':''} importada${novos.length>1?'s':''} do histórico ✓`);
+}
+function renderCadastros(){
+  renderCadForn();renderCadCart();renderCadCat();
+}
+function showCadSub(sub,btn){
+  ['forn','cart','cat'].forEach(s=>{
+    const el=document.getElementById('cad-'+s);if(el)el.style.display='none';
+  });
+  document.querySelectorAll('.cad-stab').forEach(b=>b.classList.remove('active'));
+  const target=document.getElementById('cad-'+sub);if(target)target.style.display='';
+  btn.classList.add('active');
+}
+
+// FORNECEDORES
+function importarFornecedoresHistorico(){
+  // Coleta nomes únicos dos lançamentos (mesma normalização do renderSecForn)
+  const nomesExistentes=new Set(fornecedores.map(f=>f.nome.toLowerCase()));
+  const novos=[];
+  const vistos=new Set();
+  compras.forEach(x=>{
+    const nome=(x.desc||'').replace(/\s*\(.*?\)\s*$/,'').trim();
+    if(!nome||vistos.has(nome.toLowerCase())||nomesExistentes.has(nome.toLowerCase()))return;
+    vistos.add(nome.toLowerCase());
+    novos.push({id:uid(),nome,obs:''});
+  });
+  if(novos.length===0){showToast('Nenhum fornecedor novo encontrado no histórico');return;}
+  novos.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  fornecedores=[...fornecedores,...novos].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  atualizarDatalistCompras();
+  salvar();renderCadForn();
+  showToast(`${novos.length} fornecedor${novos.length>1?'es':''}  importado${novos.length>1?'s':''} do histórico ✓`);
+}
+function renderCadForn(){
+  const busca=(document.getElementById('cad-forn-busca')?.value||'').toLowerCase().trim();
+  const body=document.getElementById('cad-forn-body');if(!body)return;
+  const lista=fornecedores.filter(f=>!busca||f.nome.toLowerCase().includes(busca)||(f.obs||'').toLowerCase().includes(busca));
+  if(!lista.length){
+    const nHistorico=new Set(compras.map(x=>(x.desc||'').replace(/\s*\(.*?\)\s*$/,'').trim()).filter(Boolean)).size;
+    const msgVazia=fornecedores.length===0
+      ?(nHistorico>0
+        ?`Nenhum fornecedor cadastrado ainda. Você tem <strong>${nHistorico} fornecedor${nHistorico>1?'es':''}</strong> nos lançamentos — clique em <strong>📥 Importar do histórico</strong> para cadastrá-los de uma vez.`
+        :'Nenhum fornecedor cadastrado. Clique em + Novo Fornecedor para começar.')
+      :'Nenhum resultado para a busca.';
+    body.innerHTML=`<tr><td colspan="3" style="padding:24px;text-align:center;color:var(--muted);">${msgVazia}</td></tr>`;
+    return;
+  }
+  body.innerHTML=lista.map(f=>`<tr style="border-top:1px solid var(--border);">
+    <td style="padding:10px 14px;font-weight:600;">${esc(f.nome)}</td>
+    <td style="padding:10px 14px;font-size:.8rem;color:var(--muted);">${esc(f.obs||'—')}</td>
+    <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
+      <button class="icon-btn edit" onclick="abrirCad('forn','${f.id}')">✏️</button>
+      <button class="icon-btn del" onclick="excluirCad('forn','${f.id}')">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+// CARTÕES
+function renderCadCart(){
+  const body=document.getElementById('cad-cart-body');if(!body)return;
+  body.innerHTML=Object.entries(CARTOES).map(([k,c])=>{
+    const lim=limites[k]||{total:0};
+    const builtin=CARTOES_BUILTIN.includes(k);
+    return`<div class="card-chip">
+      <div class="chip-top"><span class="bank-label ${c.tag||'c6'}">${c.banco||c.nome}</span>
+        ${builtin?'<span style="font-size:.6rem;background:var(--surface2);color:var(--muted);padding:1px 6px;border-radius:3px;font-weight:600;">padrão</span>':''}
+      </div>
+      <div class="chip-name">${c.nome}</div>
+      <div style="font-size:.72rem;color:var(--muted);margin:5px 0 3px;">Venc. dia ${c.venc} — fecha ${c.fechDias}d antes</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;">Limite: ${fmt(lim.total||0)}</div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="abrirCad('cart','${k}')">✏️ Editar</button>
+        ${!builtin?`<button class="icon-btn del" onclick="excluirCad('cart','${k}')">🗑</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// CATEGORIAS
+function renderCadCat(){
+  const body=document.getElementById('cad-cat-body');if(!body)return;
+  if(categorias.length===0){
+    // Mostra padrões (somente leitura)
+    const nCatHist=new Set(compras.map(x=>(x.categoria||'').trim()).filter(c=>c&&!CATEGORIAS.map(n=>n.toLowerCase()).includes(c.toLowerCase()))).size;
+    const dica=nCatHist>0?` • <strong>${nCatHist} categoria${nCatHist>1?'s':''} personalizadas</strong> encontradas nos lançamentos — clique em 📥 para importar.`:'';
+    body.innerHTML=CATEGORIAS.map(n=>`<tr style="border-top:1px solid var(--border);">
+      <td style="padding:10px 14px;">${esc(n)}</td>
+      <td style="padding:10px 14px;font-size:.72rem;color:var(--muted);">padrão</td>
+      <td class="no-print"></td>
+    </tr>`).join('')+`<tr><td colspan="3" style="padding:10px 14px;font-size:.75rem;color:var(--muted);">Adicione categorias personalizadas com o botão acima — elas se juntarão às padrão nos formulários.${dica}</td></tr>`;
+    return;
+  }
+  body.innerHTML=categorias.map(c=>`<tr style="border-top:1px solid var(--border);">
+    <td style="padding:10px 14px;font-weight:600;">${esc(c.nome)}</td>
+    <td style="padding:10px 14px;font-size:.72rem;color:var(--muted);">personalizada</td>
+    <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
+      <button class="icon-btn edit" onclick="abrirCad('cat','${c.id}')">✏️</button>
+      <button class="icon-btn del" onclick="excluirCad('cat','${c.id}')">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+// ABRIR MODAL
+function abrirCad(tipo, id){
+  document.getElementById('cad-id').value=id||'';
+  document.getElementById('cad-tipo').value=tipo;
+  const nomes={forn:'Fornecedor',cart:'Cartão',cat:'Categoria'};
+  document.getElementById('modal-cad-titulo').textContent=(id?'Editar ':'Novo ')+nomes[tipo];
+  let html='';
+  const IS=s=>`style="width:100%;padding:8px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:Outfit,sans-serif;font-size:.88rem;"`;
+  if(tipo==='forn'){
+    const f=id?fornecedores.find(x=>x.id===id):{};
+    html=`<div class="form-group"><label>Nome do Fornecedor *</label><input type="text" id="cad-f1" ${IS()} value="${esc(f?.nome||'')}"></div>
+          <div class="form-group"><label>Observação <span style="font-weight:400;font-size:.75rem;color:var(--muted);">(opcional)</span></label><input type="text" id="cad-f2" ${IS()} value="${esc(f?.obs||'')}"></div>`;
+  } else if(tipo==='cart'){
+    const c=id?CARTOES[id]:{};
+    const builtin=id&&CARTOES_BUILTIN.includes(id);
+    html=`<div class="form-group"><label>Chave (ID único) *</label><input type="text" id="cad-f1" ${IS()} value="${esc(id||'')}" ${builtin?'readonly style="opacity:.6;background:var(--surface);"':''}  placeholder="ex: nubank"></div>
+          <div class="form-group"><label>Nome exibido *</label><input type="text" id="cad-f2" ${IS()} value="${esc(c?.nome||'')}"></div>
+          <div class="form-group"><label>Banco / Bandeira</label><input type="text" id="cad-f3" ${IS()} value="${esc(c?.banco||'')}"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Dia de vencimento</label><input type="number" id="cad-f4" ${IS()} min="1" max="28" value="${c?.venc||15}"></div>
+            <div class="form-group"><label>Dias antes p/ fechamento</label><input type="number" id="cad-f5" ${IS()} min="1" max="25" value="${c?.fechDias||10}"></div>
+          </div>
+          <div class="form-group"><label>Tag de cor CSS</label>
+            <select id="cad-f6" ${IS()}>
+              ${['c6','cef','mlivre','santander','bradesco','tag-outros'].map(t=>`<option value="${t}"${(c?.tag||'tag-outros')===t?' selected':''}>${t}</option>`).join('')}
+            </select>
+          </div>`;
+  } else if(tipo==='cat'){
+    const c=id?categorias.find(x=>x.id===id):{};
+    html=`<div class="form-group"><label>Nome da Categoria *</label><input type="text" id="cad-f1" ${IS()} value="${esc(c?.nome||'')}"></div>`;
+  }
+  document.getElementById('modal-cad-campos').innerHTML=html;
+  document.getElementById('modal-cad').classList.add('open');
+  setTimeout(()=>document.getElementById('cad-f1')?.focus(),100);
+}
+
+// SALVAR
+function salvarCad(){
+  const tipo=document.getElementById('cad-tipo').value;
+  const id=document.getElementById('cad-id').value;
+  if(tipo==='forn'){
+    const nome=(document.getElementById('cad-f1')?.value||'').trim();
+    const obs=(document.getElementById('cad-f2')?.value||'').trim();
+    if(!nome){showToast('Nome é obrigatório',true);return;}
+    if(id){const f=fornecedores.find(x=>x.id===id);if(f){f.nome=nome;f.obs=obs;}}
+    else{if(fornecedores.find(f=>f.nome.toLowerCase()===nome.toLowerCase())){showToast('Fornecedor já cadastrado',true);return;}fornecedores.push({id:uid(),nome,obs});}
+    fornecedores.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+    atualizarDatalistCompras();
+  } else if(tipo==='cart'){
+    const key=(document.getElementById('cad-f1')?.value||'').trim().toLowerCase().replace(/\s+/g,'_');
+    const nome=(document.getElementById('cad-f2')?.value||'').trim();
+    const banco=(document.getElementById('cad-f3')?.value||'').trim();
+    const venc=parseInt(document.getElementById('cad-f4')?.value)||15;
+    const fechDias=parseInt(document.getElementById('cad-f5')?.value)||10;
+    const tag=(document.getElementById('cad-f6')?.value||'tag-outros');
+    if(!key||!nome){showToast('Chave e nome são obrigatórios',true);return;}
+    CARTOES[key]={...(CARTOES[key]||{}),nome,banco,venc,fechDias,tag};
+    if(!cartoesCustom)cartoesCustom={};
+    cartoesCustom[key]={nome,banco,venc,fechDias,tag};
+  } else if(tipo==='cat'){
+    const nome=(document.getElementById('cad-f1')?.value||'').trim();
+    if(!nome){showToast('Nome é obrigatório',true);return;}
+    if(id){const c=categorias.find(x=>x.id===id);if(c)c.nome=nome;}
+    else{if(categorias.find(c=>c.nome.toLowerCase()===nome.toLowerCase())){showToast('Categoria já existe',true);return;}categorias.push({id:uid(),nome});}
+    categorias.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  }
+  salvar();fecharModal('modal-cad');renderCadastros();showToast('Salvo com sucesso ✓');
+}
+
+// EXCLUIR
+function excluirCad(tipo,id){
+  const msgs={forn:'Excluir este fornecedor?',cat:'Excluir esta categoria?',cart:'Remover este cartão personalizado?'};
+  ACF(msgs[tipo]||'Excluir?',()=>{
+    if(tipo==='forn')fornecedores=fornecedores.filter(x=>x.id!==id);
+    else if(tipo==='cat')categorias=categorias.filter(x=>x.id!==id);
+    else if(tipo==='cart'){
+      if(CARTOES_BUILTIN.includes(id)){showToast('Cartões padrão não podem ser removidos',true);return;}
+      delete CARTOES[id];if(cartoesCustom)delete cartoesCustom[id];
+    }
+    salvar();renderCadastros();showToast('Removido');
+  });
+}
 
 // ── IMPORTADOR DE EXTRATO ───────────────────────────────────
 let _impLinhas=[];
