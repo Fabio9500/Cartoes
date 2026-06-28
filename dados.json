@@ -10488,6 +10488,19 @@
       "venc": "2026-12-15",
       "categoria": "Diversos",
       "memo": "Mat. Barreiras"
+    },
+    {
+      "uid": "mqydfqenm925",
+      "compraId": "mqydfqenasg7",
+      "desc": "Amazon",
+      "dataCompra": "2026-06-08",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 171.33,
+      "venc": "2026-07-15",
+      "categoria": "Diversos",
+      "memo": "omega Vita For"
     }
   ],
   "limites": {
@@ -10505,7 +10518,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 165899.81999999992
+      "usado": 166071.1499999999
     },
     "picpay": {
       "total": 30000,
