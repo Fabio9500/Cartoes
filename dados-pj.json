@@ -448,7 +448,7 @@
     {
       "uid": "xqm8fn99bi",
       "compraId": "hjb2h6z788",
-      "desc": "TINTAUTO (CEF)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-20",
       "cartao": "cef",
       "nParcelas": 3,
@@ -460,7 +460,7 @@
     {
       "uid": "oni37a577j",
       "compraId": "hjb2h6z788",
-      "desc": "TINTAUTO (CEF)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-20",
       "cartao": "cef",
       "nParcelas": 3,
@@ -890,7 +890,7 @@
     {
       "uid": "61qlce6nca",
       "compraId": "i9rcqxuxe2",
-      "desc": "TINTAUTO (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 4,
@@ -1189,7 +1189,7 @@
     {
       "uid": "c2bpsgbc0j",
       "compraId": "vk5lxr9ufy",
-      "desc": "TINTAUTO B (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 2,
@@ -1597,7 +1597,7 @@
     {
       "uid": "9cnqdgj9sl",
       "compraId": "q2tiioq2d7",
-      "desc": "TINTAUTO A (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-09",
       "cartao": "c6",
       "nParcelas": 2,
@@ -1609,7 +1609,7 @@
     {
       "uid": "guns9slatq",
       "compraId": "q2tiioq2d7",
-      "desc": "TINTAUTO A (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-09",
       "cartao": "c6",
       "nParcelas": 2,
@@ -1621,7 +1621,7 @@
     {
       "uid": "x5mjefpndd",
       "compraId": "2dbdmu5fel",
-      "desc": "TINTAUTO B (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-09",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1633,7 +1633,7 @@
     {
       "uid": "wxqwgdfgog",
       "compraId": "2dbdmu5fel",
-      "desc": "TINTAUTO B (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-09",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1645,7 +1645,7 @@
     {
       "uid": "to8xpioa7a",
       "compraId": "2dbdmu5fel",
-      "desc": "TINTAUTO B (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-09",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1941,7 +1941,7 @@
     {
       "uid": "fktyd1pr3l",
       "compraId": "7vflx1jh41",
-      "desc": "TINTAUTO C (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-03-30",
       "cartao": "c6",
       "nParcelas": 2,
@@ -1953,7 +1953,7 @@
     {
       "uid": "ijn3e70j8n",
       "compraId": "7vflx1jh41",
-      "desc": "TINTAUTO C (C6)",
+      "desc": "Tintauto",
       "dataCompra": "2026-03-30",
       "cartao": "c6",
       "nParcelas": 2,
@@ -2130,7 +2130,7 @@
     {
       "uid": "mohyb6y71yih",
       "compraId": "mohyb6y7a6fo",
-      "desc": "Tintaito",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-22",
       "cartao": "cef",
       "nParcelas": 3,
@@ -2142,7 +2142,7 @@
     {
       "uid": "mohyb6y7lnx8",
       "compraId": "mohyb6y7a6fo",
-      "desc": "Tintaito",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-22",
       "cartao": "cef",
       "nParcelas": 3,
@@ -2154,7 +2154,7 @@
     {
       "uid": "mohyb6y7figy",
       "compraId": "mohyb6y7a6fo",
-      "desc": "Tintaito",
+      "desc": "Tintauto",
       "dataCompra": "2026-04-22",
       "cartao": "cef",
       "nParcelas": 3,
@@ -4869,28 +4869,8 @@
       "obs": ""
     },
     {
-      "id": "mqy6voivi7ug",
-      "nome": "Tintaito",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voivikhp",
-      "nome": "TINTAUTO",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voiv4bxd",
-      "nome": "TINTAUTO A",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voivy4eq",
-      "nome": "TINTAUTO B",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voiv1a8e",
-      "nome": "TINTAUTO C",
+      "id": "mqyhmlkydj1f",
+      "nome": "Tintauto",
       "obs": ""
     }
   ],
