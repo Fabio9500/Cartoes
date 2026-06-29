@@ -9536,7 +9536,7 @@
     {
       "uid": "mqgvme9fnihb",
       "compraId": "mqgvme9f4561",
-      "desc": "Vesuvio",
+      "desc": "Vesúvio",
       "dataCompra": "2026-06-16",
       "cartao": "santander",
       "nParcelas": 1,
@@ -11783,12 +11783,7 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l52nmi",
-      "nome": "Vesuvio",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5cuol",
+      "id": "mqymibeujylj",
       "nome": "Vesúvio",
       "obs": ""
     },
