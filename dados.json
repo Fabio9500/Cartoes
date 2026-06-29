@@ -5993,7 +5993,7 @@
     {
       "uid": "jg09499azy",
       "compraId": "8vee17rvh7",
-      "desc": "VESUVIOPRAIA (BRA10)",
+      "desc": "Vesúvio",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -11783,13 +11783,8 @@
       "obs": ""
     },
     {
-      "id": "mqymibeujylj",
+      "id": "mqymiuh9giq6",
       "nome": "Vesúvio",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4px78",
-      "nome": "VESUVIOPRAIA",
       "obs": ""
     },
     {
