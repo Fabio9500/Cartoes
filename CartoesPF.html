@@ -264,6 +264,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div class="login-logo">🔒</div>
     <div class="login-title" id="login-titulo">Acesso Restrito</div>
     <div class="login-sub" id="login-sub-txt">Cartões PF — Telasul / Construsul</div>
+    <div id="login-versao-txt" style="font-size:10px;color:var(--muted);text-align:center;margin-top:-16px;margin-bottom:18px"></div>
     <div class="login-block-info" id="login-block-info" style="display:none"></div>
     <div id="login-erro" class="erro-box"></div>
     <div class="login-campo">
@@ -278,7 +279,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
 </div>
 
 <header>
-  <div class="logo"><span>💳</span> Controle de Cartões</div>
+  <div class="logo"><span>💳</span> Controle de Cartões <span id="logo-versao" style="font-size:10px;color:var(--muted);font-weight:400;margin-left:4px"></span></div>
   <div class="header-actions">
     <span id="data-atual"></span>
     <div id="sync-status" class="no-print">
@@ -1046,6 +1047,13 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
+const VERSAO = 'v4.1';
+document.addEventListener('DOMContentLoaded', ()=>{
+  ['logo-versao','login-versao-txt'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = VERSAO;
+  });
+});
 const AUTH_BLOCK_MS  =  5 * 60 * 1000; // 5 min de bloqueio após 3 erros
 const AUTH_MAX_TRIES = 3;
 
