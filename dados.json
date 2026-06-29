@@ -251,7 +251,8 @@
       "nParcelas": 12,
       "parcela": 11,
       "valorParcela": 39.7,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "ycc0q2kr29",
@@ -501,7 +502,8 @@
       "nParcelas": 12,
       "parcela": 10,
       "valorParcela": 3333.33,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "jv5x1ht6j7",
@@ -702,7 +704,8 @@
       "nParcelas": 6,
       "parcela": 6,
       "valorParcela": 1766.66,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "t0gcnohzfm",
@@ -833,7 +836,8 @@
       "nParcelas": 6,
       "parcela": 5,
       "valorParcela": 98.16,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "tw4tv5dpg2",
@@ -903,7 +907,8 @@
       "nParcelas": 12,
       "parcela": 5,
       "valorParcela": 77.9,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "p0v2m6hkf5",
@@ -1039,7 +1044,8 @@
       "nParcelas": 12,
       "parcela": 5,
       "valorParcela": 4529.67,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "x6q4udfwt9",
@@ -1175,7 +1181,8 @@
       "nParcelas": 12,
       "parcela": 5,
       "valorParcela": 13.9,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "rdtsk0hqmj",
@@ -1299,7 +1306,8 @@
       "nParcelas": 12,
       "parcela": 4,
       "valorParcela": 14.21,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "hyi7c2czqu",
@@ -1434,7 +1442,8 @@
       "nParcelas": 12,
       "parcela": 4,
       "valorParcela": 42.71,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "qhlm2mezu9",
@@ -1617,7 +1626,8 @@
       "nParcelas": 10,
       "parcela": 3,
       "valorParcela": 364.94,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "0zvm2d9zqr",
@@ -1789,7 +1799,8 @@
       "nParcelas": 12,
       "parcela": 6,
       "valorParcela": 1195.16,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "h1uodjsmf6",
@@ -6367,7 +6378,8 @@
       "nParcelas": 24,
       "parcela": 2,
       "valorParcela": 684.93,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "moghwqzz3n12",
@@ -6633,7 +6645,8 @@
       "nParcelas": 24,
       "parcela": 2,
       "valorParcela": 859.59,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "moghxelxk4w8",
@@ -7153,7 +7166,8 @@
       "nParcelas": 10,
       "parcela": 2,
       "valorParcela": 59.9,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mopycw3zb7w8",
@@ -7264,7 +7278,8 @@
       "nParcelas": 8,
       "parcela": 2,
       "valorParcela": 25.44,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mopyfadbeklp",
@@ -7353,7 +7368,8 @@
       "nParcelas": 6,
       "parcela": 2,
       "valorParcela": 53.78,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mopyglv2sxm5",
@@ -7420,7 +7436,8 @@
       "nParcelas": 8,
       "parcela": 2,
       "valorParcela": 66.9,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mopyhoptqouz",
@@ -7509,7 +7526,8 @@
       "nParcelas": 8,
       "parcela": 2,
       "valorParcela": 82.84,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mopyim8qmyte",
@@ -7598,7 +7616,8 @@
       "nParcelas": 8,
       "parcela": 2,
       "valorParcela": 109.9,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mopyjoru1tsm",
@@ -7699,7 +7718,8 @@
       "nParcelas": 6,
       "parcela": 2,
       "valorParcela": 41.97,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mopzhipkwoef",
@@ -8089,7 +8109,8 @@
       "nParcelas": 7,
       "parcela": 1,
       "valorParcela": 166.66,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mozggl3ibho2",
@@ -9453,7 +9474,8 @@
       "nParcelas": 7,
       "parcela": 1,
       "valorParcela": 100,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mqeozamrmpuc",
@@ -9530,7 +9552,8 @@
       "nParcelas": 2,
       "parcela": 1,
       "valorParcela": 89.64,
-      "venc": "2026-06-15"
+      "venc": "2026-06-15",
+      "pago": true
     },
     {
       "uid": "mqg1qa8wgvx1",
@@ -9553,7 +9576,8 @@
       "parcela": 1,
       "valorParcela": 40.9,
       "venc": "2026-06-15",
-      "categoria": "Entretenimento"
+      "categoria": "Entretenimento",
+      "pago": true
     },
     {
       "uid": "mqgvme9fnihb",
@@ -10913,6 +10937,11 @@
       "valor": 3739.09,
       "data": "2026-06-28",
       "total": 3739.0900000000006
+    },
+    "santander|2026-06-15": {
+      "valor": 13858.79,
+      "data": "2026-06-28",
+      "total": 13858.789999999995
     }
   },
   "fechamentos": {
