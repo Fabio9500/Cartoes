@@ -1711,7 +1711,7 @@
     {
       "uid": "64nir4291v",
       "compraId": "2riyj78wee",
-      "desc": "JIM COM MAILANE COST (7957)",
+      "desc": "Diversos",
       "dataCompra": "2026-04-15",
       "cartao": "santander",
       "nParcelas": 1,
@@ -3600,7 +3600,7 @@
     {
       "uid": "z0bpj4m34y",
       "compraId": "4pnmqvnawh",
-      "desc": "JIM COM TABERNA DO P (BRA01)",
+      "desc": "Diversos",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -3752,7 +3752,7 @@
     {
       "uid": "s0galnrgf3",
       "compraId": "xdejwf23gc",
-      "desc": "JIM COM MAYANA FRANC (BRA01)",
+      "desc": "Diversos",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -3859,7 +3859,7 @@
     {
       "uid": "x94qhjlq7t",
       "compraId": "a46bo5f52l",
-      "desc": "JIM COM LUANA MOREIR (BRA01)",
+      "desc": "Diversos",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -5661,7 +5661,7 @@
     {
       "uid": "sultzrilmd",
       "compraId": "gv9i732byn",
-      "desc": "JIM COM DYEGO LACERDA (BRA20)",
+      "desc": "Diversos",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -11330,31 +11330,6 @@
     {
       "id": "mqy7a5l5u4hn",
       "nome": "Itabuna tecidos",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4ar8j",
-      "nome": "JIM COM DYEGO LACERDA",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4fbtf",
-      "nome": "JIM COM LUANA MOREIR",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l3ro5z",
-      "nome": "JIM COM MAILANE COST",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4u5kb",
-      "nome": "JIM COM MAYANA FRANC",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4a2d6",
-      "nome": "JIM COM TABERNA DO P",
       "obs": ""
     },
     {
