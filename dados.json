@@ -3907,7 +3907,7 @@
     {
       "uid": "2uiw6h4n18",
       "compraId": "hrix24ai57",
-      "desc": "ATAKADAO ATAKAREJO (BRA01)",
+      "desc": "Atakarejo",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -5481,7 +5481,7 @@
     {
       "uid": "3cs0hsrpzv",
       "compraId": "u6jokc4bk2",
-      "desc": "ATAKADAO ATAKAREJO 2 (BRA20)",
+      "desc": "Atakarejo",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -5861,7 +5861,7 @@
     {
       "uid": "fger7yhibp",
       "compraId": "knyowqoxlb",
-      "desc": "ATAKADAO ATAKAREJO (BRA10)",
+      "desc": "Atakarejo",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -10998,13 +10998,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l497qx",
-      "nome": "ATAKADAO ATAKAREJO",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4xhbx",
-      "nome": "ATAKADAO ATAKAREJO 2",
+      "id": "mqylrzypgzkp",
+      "nome": "Atakarejo",
       "obs": ""
     },
     {
