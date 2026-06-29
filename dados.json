@@ -2641,7 +2641,7 @@
     {
       "uid": "j31k26yfeb",
       "compraId": "vr3z4uj9w3",
-      "desc": "ATACADO RONDELLI 1 (BRA20)",
+      "desc": "Rondelli",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -2653,7 +2653,7 @@
     {
       "uid": "acka76whbp",
       "compraId": "mzyd1j5neq",
-      "desc": "ATACADO RONDELLI 2 (BRA20)",
+      "desc": "Rondelli",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -2665,7 +2665,7 @@
     {
       "uid": "vn6413ghbm",
       "compraId": "mzyd1j5neq",
-      "desc": "ATACADO RONDELLI 2 (BRA20)",
+      "desc": "Rondelli",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -2677,7 +2677,7 @@
     {
       "uid": "9pa9bvi5d9",
       "compraId": "k1abijlal2",
-      "desc": "ATACADO RONDELLI 3 (BRA20)",
+      "desc": "Rondelli",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -2689,7 +2689,7 @@
     {
       "uid": "jwmtr13ztp",
       "compraId": "k1abijlal2",
-      "desc": "ATACADO RONDELLI 3 (BRA20)",
+      "desc": "Rondelli",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -10998,21 +10998,6 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l4j7io",
-      "nome": "ATACADO RONDELLI 1",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4f1ly",
-      "nome": "ATACADO RONDELLI 2",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l41zud",
-      "nome": "ATACADO RONDELLI 3",
-      "obs": ""
-    },
-    {
       "id": "mqy7a5l497qx",
       "nome": "ATAKADAO ATAKAREJO",
       "obs": ""
@@ -11805,6 +11790,11 @@
     {
       "id": "mqy7a5l4fzfl",
       "nome": "RESTAURANTE ECOLOGIA",
+      "obs": ""
+    },
+    {
+      "id": "mqylrhoxvltx",
+      "nome": "Rondelli",
       "obs": ""
     },
     {
