@@ -281,7 +281,7 @@
     {
       "uid": "jltvmha5ri",
       "compraId": "jvkep5v71s",
-      "desc": "COMERCIO MS (CEF)",
+      "desc": "Comercio MS",
       "dataCompra": "2026-04-20",
       "cartao": "cef",
       "nParcelas": 4,
@@ -293,7 +293,7 @@
     {
       "uid": "pqdju1a3zj",
       "compraId": "jvkep5v71s",
-      "desc": "COMERCIO MS (CEF)",
+      "desc": "Comercio MS",
       "dataCompra": "2026-04-20",
       "cartao": "cef",
       "nParcelas": 4,
@@ -902,7 +902,7 @@
     {
       "uid": "q4sfomn2vi",
       "compraId": "3lmotc2l5h",
-      "desc": "COMERCIO MS A (C6)",
+      "desc": "Comercio MS",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 5,
@@ -914,7 +914,7 @@
     {
       "uid": "ha8mor7zv2",
       "compraId": "3lmotc2l5h",
-      "desc": "COMERCIO MS A (C6)",
+      "desc": "Comercio MS",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 5,
@@ -962,7 +962,7 @@
     {
       "uid": "prbl1241k3",
       "compraId": "itby4s0gw6",
-      "desc": "COMERCIO MS B (C6)",
+      "desc": "Comercio MS",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 5,
@@ -974,7 +974,7 @@
     {
       "uid": "6q0uymnngi",
       "compraId": "itby4s0gw6",
-      "desc": "COMERCIO MS B (C6)",
+      "desc": "Comercio MS",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 5,
@@ -986,7 +986,7 @@
     {
       "uid": "n0w31j5jtp",
       "compraId": "itby4s0gw6",
-      "desc": "COMERCIO MS B (C6)",
+      "desc": "Comercio MS",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 5,
@@ -4614,18 +4614,8 @@
       "obs": ""
     },
     {
-      "id": "mqy6voivorvl",
-      "nome": "COMERCIO MS",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djnfjsc",
-      "nome": "COMERCIO MS A",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djn3j57",
-      "nome": "COMERCIO MS B",
+      "id": "mqyhid3cn39b",
+      "nome": "Comercio MS",
       "obs": ""
     },
     {
