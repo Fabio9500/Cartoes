@@ -5601,7 +5601,7 @@
     {
       "uid": "f47dtsqz48",
       "compraId": "5fsp0gwwa3",
-      "desc": "DRA DOS PETS (BRA20)",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -8422,7 +8422,7 @@
     {
       "uid": "mp8pfvbntj6z",
       "compraId": "mp8pfvbn8f6q",
-      "desc": "Dra. Pets",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-15",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -8433,7 +8433,7 @@
     {
       "uid": "mp8pfvbng1m9",
       "compraId": "mp8pfvbn8f6q",
-      "desc": "Dra. Pets",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-15",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -8444,7 +8444,7 @@
     {
       "uid": "mp8pgdtqakpe",
       "compraId": "mp8pgdtqlfek",
-      "desc": "Dra. Pets",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-16",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -8455,7 +8455,7 @@
     {
       "uid": "mp8pgdtquq60",
       "compraId": "mp8pgdtqlfek",
-      "desc": "Dra. Pets",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-16",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -8466,7 +8466,7 @@
     {
       "uid": "mp8pgdtq594q",
       "compraId": "mp8pgdtqlfek",
-      "desc": "Dra. Pets",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-16",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -8632,7 +8632,7 @@
     {
       "uid": "mpbzn381hj0q",
       "compraId": "mpbzn381u6ck",
-      "desc": "Dra Pets - Internamento",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-18",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -8643,7 +8643,7 @@
     {
       "uid": "mpbzn381m438",
       "compraId": "mpbzn381u6ck",
-      "desc": "Dra Pets - Internamento",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-18",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -8654,7 +8654,7 @@
     {
       "uid": "mpbzn381z2aq",
       "compraId": "mpbzn381u6ck",
-      "desc": "Dra Pets - Internamento",
+      "desc": "Dra. Dos Petis",
       "dataCompra": "2026-05-18",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -11178,18 +11178,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l4kxp2",
-      "nome": "DRA DOS PETS",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5hum1",
-      "nome": "Dra Pets - Internamento",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l55fb6",
-      "nome": "Dra. Pets",
+      "id": "mqylzbv020x1",
+      "nome": "Dra. Dos Petis",
       "obs": ""
     },
     {
