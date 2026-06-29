@@ -3588,7 +3588,7 @@
     {
       "uid": "5pwc57ykfo",
       "compraId": "ou49qshn6n",
-      "desc": "13025175 GIORLANDO (BRA01)",
+      "desc": "Diversos",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -5649,7 +5649,7 @@
     {
       "uid": "plncyy88qx",
       "compraId": "86e4y22t68",
-      "desc": "58097962ROSELYDOS (BRA20)",
+      "desc": "Diversos",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -10893,16 +10893,6 @@
   },
   "fornecedores": [
     {
-      "id": "mqy7a5l4gqmo",
-      "nome": "13025175 GIORLANDO",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l44htf",
-      "nome": "58097962ROSELYDOS",
-      "obs": ""
-    },
-    {
       "id": "mqy7a5l4xrkz",
       "nome": "ADAPTAORG",
       "obs": ""
@@ -11395,6 +11385,11 @@
     {
       "id": "mqy7a5l5yzhg",
       "nome": "Diverso",
+      "obs": ""
+    },
+    {
+      "id": "mqylmwi0zmm2",
+      "nome": "Diversos",
       "obs": ""
     },
     {
