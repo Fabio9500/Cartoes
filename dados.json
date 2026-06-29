@@ -7925,7 +7925,7 @@
     {
       "uid": "moyk1isqcgj3",
       "compraId": "moyk1isqefc8",
-      "desc": "Rondelli - Congelamento",
+      "desc": "Rondelli",
       "dataCompra": "2026-05-09",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -7936,7 +7936,7 @@
     {
       "uid": "moyk1isqjm27",
       "compraId": "moyk1isqefc8",
-      "desc": "Rondelli - Congelamento",
+      "desc": "Rondelli",
       "dataCompra": "2026-05-09",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -11668,13 +11668,8 @@
       "obs": ""
     },
     {
-      "id": "mqylrhoxvltx",
+      "id": "mqymeo29wjpi",
       "nome": "Rondelli",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5qxyr",
-      "nome": "Rondelli - Congelamento",
       "obs": ""
     },
     {
