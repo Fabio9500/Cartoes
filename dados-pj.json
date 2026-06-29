@@ -1069,7 +1069,7 @@
     {
       "uid": "8oln6lqp7k",
       "compraId": "u2dieppelf",
-      "desc": "RURAL QUIMICA (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 4,
@@ -1081,7 +1081,7 @@
     {
       "uid": "st38p4lnvx",
       "compraId": "u2dieppelf",
-      "desc": "RURAL QUIMICA (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 4,
@@ -1093,7 +1093,7 @@
     {
       "uid": "qzv1xwfbtp",
       "compraId": "u2dieppelf",
-      "desc": "RURAL QUIMICA (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 4,
@@ -1261,7 +1261,7 @@
     {
       "uid": "fhyss39jxu",
       "compraId": "zcv6537od8",
-      "desc": "RURAL QUIMICA B (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1273,7 +1273,7 @@
     {
       "uid": "g10ujfnquj",
       "compraId": "zcv6537od8",
-      "desc": "RURAL QUIMICA B (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1285,7 +1285,7 @@
     {
       "uid": "jh5hwp7e5r",
       "compraId": "zcv6537od8",
-      "desc": "RURAL QUIMICA B (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-05",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1716,7 +1716,7 @@
     {
       "uid": "e4afdbc0l8",
       "compraId": "s5wc0kq4ff",
-      "desc": "RURAL QUIMICA A (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-06",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1728,7 +1728,7 @@
     {
       "uid": "ebuxwhahqg",
       "compraId": "s5wc0kq4ff",
-      "desc": "RURAL QUIMICA A (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-06",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1740,7 +1740,7 @@
     {
       "uid": "xxy66zdpex",
       "compraId": "s5wc0kq4ff",
-      "desc": "RURAL QUIMICA A (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-06",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1751,7 +1751,7 @@
     {
       "uid": "umteecc6bb",
       "compraId": "yefvca1rz9",
-      "desc": "RURAL QUIMICA B (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-06",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1763,7 +1763,7 @@
     {
       "uid": "9ktpsilumc",
       "compraId": "yefvca1rz9",
-      "desc": "RURAL QUIMICA B (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-06",
       "cartao": "c6",
       "nParcelas": 3,
@@ -1775,7 +1775,7 @@
     {
       "uid": "opegzvup06",
       "compraId": "yefvca1rz9",
-      "desc": "RURAL QUIMICA B (C6)",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-04-06",
       "cartao": "c6",
       "nParcelas": 3,
@@ -3753,7 +3753,7 @@
     {
       "uid": "mqfd6ntz5pbp",
       "compraId": "mqfd6ntzrrvt",
-      "desc": "Rural química",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-06-15",
       "cartao": "cef",
       "nParcelas": 3,
@@ -3764,7 +3764,7 @@
     {
       "uid": "mqfd6nu0tcs2",
       "compraId": "mqfd6ntzrrvt",
-      "desc": "Rural química",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-06-15",
       "cartao": "cef",
       "nParcelas": 3,
@@ -3775,7 +3775,7 @@
     {
       "uid": "mqfd6nu097wa",
       "compraId": "mqfd6ntzrrvt",
-      "desc": "Rural química",
+      "desc": "Rural Quimica",
       "dataCompra": "2026-06-15",
       "cartao": "cef",
       "nParcelas": 3,
@@ -4834,23 +4834,8 @@
       "obs": ""
     },
     {
-      "id": "mqy6voivq0es",
-      "nome": "RURAL QUIMICA",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voiwabgq",
-      "nome": "Rural química",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voiv0mcq",
-      "nome": "RURAL QUIMICA A",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voivhvll",
-      "nome": "RURAL QUIMICA B",
+      "id": "mqyhlob7fjn1",
+      "nome": "Rural Quimica",
       "obs": ""
     },
     {
