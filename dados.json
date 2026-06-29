@@ -10934,7 +10934,7 @@
     },
     {
       "id": "mqy7a5l58qrb",
-      "nome": "ARENA ITB",
+      "nome": "Arena ITB",
       "obs": ""
     },
     {
@@ -11000,11 +11000,6 @@
     {
       "id": "mqy7a5l4y9d1",
       "nome": "AUTO POSTO VIP",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4xcey",
-      "nome": "B91 HORTIFRUT CG",
       "obs": ""
     },
     {
@@ -11265,6 +11260,11 @@
     {
       "id": "mqy7a5l49yw9",
       "nome": "HERING LIGHT ITABUNA",
+      "obs": ""
+    },
+    {
+      "id": "mqy7a5l4xcey",
+      "nome": "Hortifruti",
       "obs": ""
     },
     {
