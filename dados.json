@@ -2546,7 +2546,7 @@
     {
       "uid": "abkj6klhlh",
       "compraId": "soh6ot3eyh",
-      "desc": "MURI CULINARIA ORIENT (BRA20)",
+      "desc": "Muri Japonês",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -5529,7 +5529,7 @@
     {
       "uid": "6vvfgfok2m",
       "compraId": "5iiyk8p428",
-      "desc": "MURI RESTAURANTE (BRA20)",
+      "desc": "Muri Japonês",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -5685,7 +5685,7 @@
     {
       "uid": "43tycr63af",
       "compraId": "nxv853x131",
-      "desc": "MURI CULINARIA ORIENT 2 (BRA20)",
+      "desc": "Muri Japonês",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -11443,18 +11443,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l4j85h",
-      "nome": "MURI CULINARIA ORIENT",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4y0t2",
-      "nome": "MURI CULINARIA ORIENT 2",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4cmsj",
-      "nome": "MURI RESTAURANTE",
+      "id": "mqymosy24j3r",
+      "nome": "Muri Japonês",
       "obs": ""
     },
     {
