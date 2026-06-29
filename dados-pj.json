@@ -65,7 +65,7 @@
     {
       "uid": "wmse2obymf",
       "compraId": "30uf311evl",
-      "desc": "POSTO MILENIO (CEF)",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-04-20",
       "cartao": "cef",
       "nParcelas": 1,
@@ -185,7 +185,7 @@
     {
       "uid": "07xd4j6f9g",
       "compraId": "fgj271nkur",
-      "desc": "POSTO JARDIM DO O (CEF)",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-04-20",
       "cartao": "cef",
       "nParcelas": 1,
@@ -1869,7 +1869,7 @@
     {
       "uid": "kw7c1m9m5i",
       "compraId": "cyxu1fnfwb",
-      "desc": "POSTO JARDIM DO O (C6)",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-03-31",
       "cartao": "c6",
       "nParcelas": 1,
@@ -2022,7 +2022,7 @@
     {
       "uid": "fvvllnrcy1",
       "compraId": "y7e8emoef4",
-      "desc": "POSTO D PASSAGEM (C6)",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-03-27",
       "cartao": "c6",
       "nParcelas": 1,
@@ -2261,7 +2261,7 @@
     {
       "uid": "mohz0qtue230",
       "compraId": "mohz0qtucw32",
-      "desc": "Posto",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-04-13",
       "cartao": "cef",
       "nParcelas": 1,
@@ -2309,7 +2309,7 @@
     {
       "uid": "mongby18secb",
       "compraId": "mongby18y7yh",
-      "desc": "Posto",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-05-28",
       "cartao": "c6",
       "nParcelas": 1,
@@ -2766,7 +2766,7 @@
     {
       "uid": "mp8tox3c9zs8",
       "compraId": "mp8tox3cphrv",
-      "desc": "Posto",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-05-14",
       "cartao": "cef",
       "nParcelas": 1,
@@ -3121,7 +3121,7 @@
     {
       "uid": "mpkavcs198w5",
       "compraId": "mpkavcs1a0m4",
-      "desc": "Posto - Adeilton",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-05-19",
       "cartao": "cef",
       "nParcelas": 1,
@@ -3179,7 +3179,7 @@
     {
       "uid": "mpkb1c5ms8rs",
       "compraId": "mpkb1c5m546o",
-      "desc": "Posto Riquelme",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-05-20",
       "cartao": "cef",
       "nParcelas": 1,
@@ -3191,7 +3191,7 @@
     {
       "uid": "mpkb2ajlmy2v",
       "compraId": "mpkb2ajla3yy",
-      "desc": "Posto Jeovane",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-05-20",
       "cartao": "cef",
       "nParcelas": 1,
@@ -3309,7 +3309,7 @@
     {
       "uid": "mpvyeppe5qa9",
       "compraId": "mpvyepperiut",
-      "desc": "Posto",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-05-28",
       "cartao": "cef",
       "nParcelas": 1,
@@ -3388,7 +3388,7 @@
     {
       "uid": "mpvynogvj7a8",
       "compraId": "mpvynogvkiqk",
-      "desc": "Posto",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-05-28",
       "cartao": "c6",
       "nParcelas": 1,
@@ -3432,7 +3432,7 @@
     {
       "uid": "mpvyrfu05wmw",
       "compraId": "mpvyrfu02tee",
-      "desc": "Posto",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-06-01",
       "cartao": "c6",
       "nParcelas": 1,
@@ -3819,7 +3819,7 @@
     {
       "uid": "mqn9bmr0odg7",
       "compraId": "mqn9bmr0uknm",
-      "desc": "Posto Jeovane",
+      "desc": "Posto Combustivel",
       "dataCompra": "2026-06-16",
       "cartao": "cef",
       "nParcelas": 1,
@@ -4784,18 +4784,8 @@
       "obs": ""
     },
     {
-      "id": "mqy6voiwgc76",
-      "nome": "Posto",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voiwroha",
-      "nome": "Posto - Adeilton",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djnibmt",
-      "nome": "POSTO D PASSAGEM",
+      "id": "mqyhkxlpztzr",
+      "nome": "Posto Combustivel",
       "obs": ""
     },
     {
@@ -4804,28 +4794,8 @@
       "obs": ""
     },
     {
-      "id": "mqy6voiv1o42",
-      "nome": "POSTO JARDIM DO O",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djnzb3n",
-      "nome": "Posto Jeovane",
-      "obs": ""
-    },
-    {
       "id": "mqy6voivozfl",
       "nome": "POSTO JOCEL V LTDA EPP",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voivahoq",
-      "nome": "POSTO MILENIO",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djn4p3v",
-      "nome": "Posto Riquelme",
       "obs": ""
     },
     {
