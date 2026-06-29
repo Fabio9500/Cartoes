@@ -616,7 +616,7 @@
     {
       "uid": "1uquv6zmlo",
       "compraId": "rq490ij7nu",
-      "desc": "GABAGE SOLDAS E FERRAMENT (CEF)",
+      "desc": "Gabage",
       "dataCompra": "2026-04-20",
       "cartao": "cef",
       "nParcelas": 2,
@@ -628,7 +628,7 @@
     {
       "uid": "xy12joqxox",
       "compraId": "rq490ij7nu",
-      "desc": "GABAGE SOLDAS E FERRAMENT (CEF)",
+      "desc": "Gabage",
       "dataCompra": "2026-04-20",
       "cartao": "cef",
       "nParcelas": 2,
@@ -2297,7 +2297,7 @@
     {
       "uid": "mongbb46ol1o",
       "compraId": "mongbb46yfak",
-      "desc": "Gabage - Lentes",
+      "desc": "Gabage",
       "dataCompra": "2026-04-27",
       "cartao": "c6",
       "nParcelas": 1,
@@ -4684,18 +4684,8 @@
       "obs": ""
     },
     {
-      "id": "mqy6voiwh4td",
+      "id": "mqyhiwvb7v7h",
       "nome": "Gabage",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djnituo",
-      "nome": "Gabage - Lentes",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djn9xye",
-      "nome": "GABAGE SOLDAS E FERRAMENT",
       "obs": ""
     },
     {
