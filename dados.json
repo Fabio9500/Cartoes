@@ -9825,7 +9825,7 @@
     {
       "uid": "mqn89sd0ja5t",
       "compraId": "mqn89sd0c0hl",
-      "desc": "Cond Jardim 1102 - 1/10",
+      "desc": "Cond. C. Jardim 1102",
       "dataCompra": "2026-06-21",
       "cartao": "santander",
       "nParcelas": 1,
@@ -9837,7 +9837,7 @@
     {
       "uid": "mqn8alzwi4uc",
       "compraId": "mqn8alzw6iov",
-      "desc": "Cond. Cidade 1102 - 2/10",
+      "desc": "Cond. C. Jardim 1102",
       "dataCompra": "2026-06-21",
       "cartao": "santander",
       "nParcelas": 1,
@@ -11103,13 +11103,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l5b72q",
-      "nome": "Cond Jardim 1102 - 1/10",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5n418",
-      "nome": "Cond. Cidade 1102 - 2/10",
+      "id": "mqylxg8dfvkw",
+      "nome": "Cond. C. Jardim 1102",
       "obs": ""
     },
     {
