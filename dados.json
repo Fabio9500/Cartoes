@@ -2558,7 +2558,7 @@
     {
       "uid": "3fi4e5aie1",
       "compraId": "ty69q9t52n",
-      "desc": "POSTO D PASSAGEM (BRA20)",
+      "desc": "Posto",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -2713,7 +2713,7 @@
     {
       "uid": "evq3iqslyp",
       "compraId": "w1wfsvlyt9",
-      "desc": "POSTO ALIANCA (BRA20)",
+      "desc": "Posto",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -3764,7 +3764,7 @@
     {
       "uid": "gzvcfa5i7e",
       "compraId": "6k9pqn6r31",
-      "desc": "POSTO JARDIM DO O (BRA01)",
+      "desc": "Posto",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -3824,7 +3824,7 @@
     {
       "uid": "3g1b8oj387",
       "compraId": "31qjv2s53u",
-      "desc": "POSTO UNIVERSAL I (BRA01)",
+      "desc": "Posto",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -3836,7 +3836,7 @@
     {
       "uid": "ysd59o354g",
       "compraId": "31qjv2s53u",
-      "desc": "POSTO UNIVERSAL I (BRA01)",
+      "desc": "Posto",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -3848,7 +3848,7 @@
     {
       "uid": "v4h6bx2nl9",
       "compraId": "31qjv2s53u",
-      "desc": "POSTO UNIVERSAL I (BRA01)",
+      "desc": "Posto",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -3943,7 +3943,7 @@
     {
       "uid": "wn5mifrscb",
       "compraId": "8xg4mt4y5e",
-      "desc": "POSTO GRAPIUNA (BRA01)",
+      "desc": "Posto",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -6215,7 +6215,7 @@
     {
       "uid": "moggnhyef6dx",
       "compraId": "moggnhye1it4",
-      "desc": "Posto Hormet",
+      "desc": "Posto",
       "dataCompra": "2026-04-24",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -7105,7 +7105,7 @@
     {
       "uid": "mon39ob992nt",
       "compraId": "mon39ob9fe32",
-      "desc": "Posto Univesal",
+      "desc": "Posto",
       "dataCompra": "2026-04-28",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -7914,7 +7914,7 @@
     {
       "uid": "moxkkjrcksfh",
       "compraId": "moxkkjrcmovx",
-      "desc": "Posto Jequitiba",
+      "desc": "Posto",
       "dataCompra": "2026-05-08",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -9789,7 +9789,7 @@
     {
       "uid": "mqn850hv61os",
       "compraId": "mqn850hv0fcu",
-      "desc": "Posto Combustível",
+      "desc": "Posto",
       "dataCompra": "2026-06-17",
       "cartao": "santander",
       "nParcelas": 1,
@@ -11528,43 +11528,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l511av",
+      "id": "mqymkiqmzrbt",
       "nome": "Posto",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4prgh",
-      "nome": "POSTO ALIANCA",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5f870",
-      "nome": "Posto Combustível",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4g1vr",
-      "nome": "POSTO D PASSAGEM",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4svd9",
-      "nome": "POSTO GRAPIUNA",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l40htu",
-      "nome": "Posto Hormet",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4sp5o",
-      "nome": "POSTO JARDIM DO O",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5smcg",
-      "nome": "Posto Jequitiba",
       "obs": ""
     },
     {
@@ -11625,16 +11590,6 @@
     {
       "id": "mqy7a5l4od3s",
       "nome": "POSTO O MAIS QUERIDO",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l48r1a",
-      "nome": "POSTO UNIVERSAL I",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5uta6",
-      "nome": "Posto Univesal",
       "obs": ""
     },
     {
