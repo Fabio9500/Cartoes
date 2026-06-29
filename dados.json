@@ -9849,7 +9849,7 @@
     {
       "uid": "mqn8uxzd2r7k",
       "compraId": "mqn8uxzdm7gv",
-      "desc": "Telasul - Alumifer Postes",
+      "desc": "Telasul",
       "dataCompra": "2026-06-17",
       "cartao": "santander",
       "nParcelas": 5,
@@ -9861,7 +9861,7 @@
     {
       "uid": "mqn8uxzd2g4j",
       "compraId": "mqn8uxzdm7gv",
-      "desc": "Telasul - Alumifer Postes",
+      "desc": "Telasul",
       "dataCompra": "2026-06-17",
       "cartao": "santander",
       "nParcelas": 5,
@@ -9873,7 +9873,7 @@
     {
       "uid": "mqn8uxzdbl1m",
       "compraId": "mqn8uxzdm7gv",
-      "desc": "Telasul - Alumifer Postes",
+      "desc": "Telasul",
       "dataCompra": "2026-06-17",
       "cartao": "santander",
       "nParcelas": 5,
@@ -9885,7 +9885,7 @@
     {
       "uid": "mqn8uxzdyc4w",
       "compraId": "mqn8uxzdm7gv",
-      "desc": "Telasul - Alumifer Postes",
+      "desc": "Telasul",
       "dataCompra": "2026-06-17",
       "cartao": "santander",
       "nParcelas": 5,
@@ -9897,7 +9897,7 @@
     {
       "uid": "mqn8uxzd422i",
       "compraId": "mqn8uxzdm7gv",
-      "desc": "Telasul - Alumifer Postes",
+      "desc": "Telasul",
       "dataCompra": "2026-06-17",
       "cartao": "santander",
       "nParcelas": 5,
@@ -10416,7 +10416,7 @@
     {
       "uid": "mqyd8n2xis3s",
       "compraId": "mqyd8n2x0u1k",
-      "desc": "Telasul - Batele",
+      "desc": "Telasul",
       "dataCompra": "2026-06-19",
       "cartao": "santander",
       "nParcelas": 6,
@@ -10429,7 +10429,7 @@
     {
       "uid": "mqyd8n2xqbv6",
       "compraId": "mqyd8n2x0u1k",
-      "desc": "Telasul - Batele",
+      "desc": "Telasul",
       "dataCompra": "2026-06-19",
       "cartao": "santander",
       "nParcelas": 6,
@@ -10442,7 +10442,7 @@
     {
       "uid": "mqyd8n2x93az",
       "compraId": "mqyd8n2x0u1k",
-      "desc": "Telasul - Batele",
+      "desc": "Telasul",
       "dataCompra": "2026-06-19",
       "cartao": "santander",
       "nParcelas": 6,
@@ -10455,7 +10455,7 @@
     {
       "uid": "mqyd8n2xn7y4",
       "compraId": "mqyd8n2x0u1k",
-      "desc": "Telasul - Batele",
+      "desc": "Telasul",
       "dataCompra": "2026-06-19",
       "cartao": "santander",
       "nParcelas": 6,
@@ -10468,7 +10468,7 @@
     {
       "uid": "mqyd8n2yao71",
       "compraId": "mqyd8n2x0u1k",
-      "desc": "Telasul - Batele",
+      "desc": "Telasul",
       "dataCompra": "2026-06-19",
       "cartao": "santander",
       "nParcelas": 6,
@@ -10481,7 +10481,7 @@
     {
       "uid": "mqyd8n2ymlxw",
       "compraId": "mqyd8n2x0u1k",
-      "desc": "Telasul - Batele",
+      "desc": "Telasul",
       "dataCompra": "2026-06-19",
       "cartao": "santander",
       "nParcelas": 6,
@@ -10507,7 +10507,7 @@
     {
       "uid": "mqydhf62mttq",
       "compraId": "mqydhf62vg24",
-      "desc": "Telasul - Churrascaria",
+      "desc": "Telasul",
       "dataCompra": "2026-06-10",
       "cartao": "santander",
       "nParcelas": 1,
@@ -11738,8 +11738,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l590xw",
-      "nome": "Telasul - Alumifer Postes",
+      "id": "mqymgc7x1t57",
+      "nome": "Telasul",
       "obs": ""
     },
     {
