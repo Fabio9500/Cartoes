@@ -3671,7 +3671,7 @@
     {
       "uid": "620tt6sul5",
       "compraId": "pil09jamu3",
-      "desc": "ALVARUS ESTETICA MASCU (BRA01)",
+      "desc": "Alvarus",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -5613,7 +5613,7 @@
     {
       "uid": "84yiknydzj",
       "compraId": "b5ibu862g8",
-      "desc": "ALVARUS ESTETICA 2 (BRA20)",
+      "desc": "Alvarus",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -10913,13 +10913,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l4g8r3",
-      "nome": "ALVARUS ESTETICA 2",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l462x7",
-      "nome": "ALVARUS ESTETICA MASCU",
+      "id": "mqylp1zqqwal",
+      "nome": "Alvarus",
       "obs": ""
     },
     {
