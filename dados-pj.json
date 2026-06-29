@@ -3167,7 +3167,7 @@
     {
       "uid": "mpkaxevnayur",
       "compraId": "mpkaxevnhtyx",
-      "desc": "Rota",
+      "desc": "Rota Transporte",
       "dataCompra": "2026-05-20",
       "cartao": "cef",
       "nParcelas": 1,
@@ -3261,7 +3261,7 @@
     {
       "uid": "mpkb6pm75vct",
       "compraId": "mpkb6pm7ki1b",
-      "desc": "Rota",
+      "desc": "Rota Transporte",
       "dataCompra": "2026-05-22",
       "cartao": "cef",
       "nParcelas": 1,
@@ -3808,7 +3808,7 @@
     {
       "uid": "mqfd7twgpxcl",
       "compraId": "mqfd7twgj4up",
-      "desc": "Rota transpoete",
+      "desc": "Rota Transporte",
       "dataCompra": "2026-06-15",
       "cartao": "cef",
       "nParcelas": 1,
@@ -3843,7 +3843,7 @@
     {
       "uid": "mqn9dmc9ajeo",
       "compraId": "mqn9dmc9tddg",
-      "desc": "Rota transporte",
+      "desc": "Rota Transporte",
       "dataCompra": "2026-06-17",
       "cartao": "cef",
       "nParcelas": 1,
@@ -4302,7 +4302,7 @@
     {
       "uid": "mqyal11ztrqx",
       "compraId": "mqyal11zqmim",
-      "desc": "Rota transpoete",
+      "desc": "Rota Transporte",
       "dataCompra": "2026-06-28",
       "cartao": "cef",
       "nParcelas": 1,
@@ -4824,17 +4824,7 @@
       "obs": ""
     },
     {
-      "id": "mqy6voiwemai",
-      "nome": "Rota",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djnf4wv",
-      "nome": "Rota transpoete",
-      "obs": ""
-    },
-    {
-      "id": "mqy6voiwtxfw",
+      "id": "mqyhlaa8zoni",
       "nome": "Rota Transporte",
       "obs": ""
     },
