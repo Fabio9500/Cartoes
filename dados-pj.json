@@ -724,7 +724,7 @@
     {
       "uid": "2saaxntvfm",
       "compraId": "qgm393ywsu",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 12,
@@ -736,7 +736,7 @@
     {
       "uid": "kmykslkrg4",
       "compraId": "9i9r59d6vx",
-      "desc": "MERCADO LIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 12,
@@ -748,7 +748,7 @@
     {
       "uid": "pwiiiag5rb",
       "compraId": "foo9dlz082",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 10,
@@ -760,7 +760,7 @@
     {
       "uid": "2y2exqrpdx",
       "compraId": "foo9dlz082",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 10,
@@ -772,7 +772,7 @@
     {
       "uid": "k9o9iwc1y7",
       "compraId": "foo9dlz082",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 10,
@@ -784,7 +784,7 @@
     {
       "uid": "q24zq3re6x",
       "compraId": "tss3jpeyd9",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 5,
@@ -796,7 +796,7 @@
     {
       "uid": "gs55f3ndf5",
       "compraId": "tss3jpeyd9",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 5,
@@ -808,7 +808,7 @@
     {
       "uid": "7wj2wo0m5o",
       "compraId": "tss3jpeyd9",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 5,
@@ -820,7 +820,7 @@
     {
       "uid": "cwgtmf0rdu",
       "compraId": "tss3jpeyd9",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 5,
@@ -831,7 +831,7 @@
     {
       "uid": "hbop6559by",
       "compraId": "ia0v3xo6mc",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 5,
@@ -843,7 +843,7 @@
     {
       "uid": "4wup9dhzgw",
       "compraId": "ia0v3xo6mc",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 5,
@@ -855,7 +855,7 @@
     {
       "uid": "jjbxrm9oey",
       "compraId": "ia0v3xo6mc",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 5,
@@ -867,7 +867,7 @@
     {
       "uid": "ftozb3o1no",
       "compraId": "ia0v3xo6mc",
-      "desc": "MERCADOLIVRE",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-22",
       "cartao": "mlivre",
       "nParcelas": 5,
@@ -2285,7 +2285,7 @@
     {
       "uid": "mohztp870unf",
       "compraId": "mohztp87phb6",
-      "desc": "Mercado livre",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-04-27",
       "cartao": "mlivre",
       "nParcelas": 1,
@@ -2883,7 +2883,7 @@
     {
       "uid": "mpb2eewtvgkr",
       "compraId": "mpb2eewthebc",
-      "desc": "Mercado livre - Vinho",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-14",
       "cartao": "mlivre",
       "nParcelas": 1,
@@ -2895,7 +2895,7 @@
     {
       "uid": "mpb2facvj8kr",
       "compraId": "mpb2facvjkny",
-      "desc": "Mercado livre - Liminarias",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 1,
@@ -2907,7 +2907,7 @@
     {
       "uid": "mpb2ghjsyj75",
       "compraId": "mpb2ghjsorao",
-      "desc": "Mercado Livre - Capacetes",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 8,
@@ -2919,7 +2919,7 @@
     {
       "uid": "mpb2ghjswsu1",
       "compraId": "mpb2ghjsorao",
-      "desc": "Mercado Livre - Capacetes",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 8,
@@ -2930,7 +2930,7 @@
     {
       "uid": "mpb2ghjsjt98",
       "compraId": "mpb2ghjsorao",
-      "desc": "Mercado Livre - Capacetes",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 8,
@@ -2941,7 +2941,7 @@
     {
       "uid": "mpb2ghjs8cj2",
       "compraId": "mpb2ghjsorao",
-      "desc": "Mercado Livre - Capacetes",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 8,
@@ -2952,7 +2952,7 @@
     {
       "uid": "mpb2ghjsaqil",
       "compraId": "mpb2ghjsorao",
-      "desc": "Mercado Livre - Capacetes",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 8,
@@ -2963,7 +2963,7 @@
     {
       "uid": "mpb2ghjsow66",
       "compraId": "mpb2ghjsorao",
-      "desc": "Mercado Livre - Capacetes",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 8,
@@ -2974,7 +2974,7 @@
     {
       "uid": "mpb2ghjsobnk",
       "compraId": "mpb2ghjsorao",
-      "desc": "Mercado Livre - Capacetes",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 8,
@@ -2985,7 +2985,7 @@
     {
       "uid": "mpb2ghjsv88u",
       "compraId": "mpb2ghjsorao",
-      "desc": "Mercado Livre - Capacetes",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-05-18",
       "cartao": "mlivre",
       "nParcelas": 8,
@@ -4367,7 +4367,7 @@
     {
       "uid": "mqybu5bl4sm4",
       "compraId": "mqybu5bl79cz",
-      "desc": "Mercado livre",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-06-23",
       "cartao": "mlivre",
       "nParcelas": 1,
@@ -4380,7 +4380,7 @@
     {
       "uid": "mqybvao9bcjz",
       "compraId": "mqybvao94kbp",
-      "desc": "Mercado livre",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-06-25",
       "cartao": "mlivre",
       "nParcelas": 3,
@@ -4393,7 +4393,7 @@
     {
       "uid": "mqybvao9albz",
       "compraId": "mqybvao94kbp",
-      "desc": "Mercado livre",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-06-25",
       "cartao": "mlivre",
       "nParcelas": 3,
@@ -4406,7 +4406,7 @@
     {
       "uid": "mqybvao9nryj",
       "compraId": "mqybvao94kbp",
-      "desc": "Mercado livre",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-06-25",
       "cartao": "mlivre",
       "nParcelas": 3,
@@ -4419,7 +4419,7 @@
     {
       "uid": "mqybwn3jihgt",
       "compraId": "mqybwn3jmocv",
-      "desc": "Mercado livre",
+      "desc": "Mercado Livre",
       "dataCompra": "2026-06-26",
       "cartao": "mlivre",
       "nParcelas": 1,
@@ -4734,28 +4734,8 @@
       "obs": ""
     },
     {
-      "id": "mqy6voiv0lva",
-      "nome": "MERCADO LIVRE",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djndfbu",
-      "nome": "Mercado Livre - Capacetes",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djn5qkh",
-      "nome": "Mercado livre - Liminarias",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djnrxfs",
-      "nome": "Mercado livre - Vinho",
-      "obs": ""
-    },
-    {
-      "id": "mqyh3djn0qaj",
-      "nome": "MERCADOLIVRE",
+      "id": "mqyhjhqxtl0a",
+      "nome": "Mercado Livre",
       "obs": ""
     },
     {
