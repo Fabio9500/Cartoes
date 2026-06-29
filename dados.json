@@ -2072,7 +2072,7 @@
     {
       "uid": "qp06dwvi9i",
       "compraId": "vo6ivb6x1u",
-      "desc": "JACQUELINE DE OLIVEI (BRA20)",
+      "desc": "Itabuna tecidos",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -2084,7 +2084,7 @@
     {
       "uid": "imtwgxe35v",
       "compraId": "vo6ivb6x1u",
-      "desc": "JACQUELINE DE OLIVEI (BRA20)",
+      "desc": "Itabuna tecidos",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -2096,7 +2096,7 @@
     {
       "uid": "tkdvhjol0h",
       "compraId": "vo6ivb6x1u",
-      "desc": "JACQUELINE DE OLIVEI (BRA20)",
+      "desc": "Itabuna tecidos",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -5505,7 +5505,7 @@
     {
       "uid": "v4q9hwg3am",
       "compraId": "gff6rask67",
-      "desc": "JACQUELINE DE OLIVEIRA 2 (BRA20)",
+      "desc": "Itabuna tecidos",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -11330,16 +11330,6 @@
     {
       "id": "mqy7a5l5u4hn",
       "nome": "Itabuna tecidos",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l32hzg",
-      "nome": "JACQUELINE DE OLIVEI",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4u2cr",
-      "nome": "JACQUELINE DE OLIVEIRA 2",
       "obs": ""
     },
     {
