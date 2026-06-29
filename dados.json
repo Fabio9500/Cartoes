@@ -2252,7 +2252,7 @@
     {
       "uid": "dak7xy9sps",
       "compraId": "e9xiqr5hvw",
-      "desc": "DROGASIL 2182 (BRA20)",
+      "desc": "Drogasil",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -2264,7 +2264,7 @@
     {
       "uid": "wrtrhbgoy2",
       "compraId": "e9xiqr5hvw",
-      "desc": "DROGASIL 2182 (BRA20)",
+      "desc": "Drogasil",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -2276,7 +2276,7 @@
     {
       "uid": "43o14df1wz",
       "compraId": "e9xiqr5hvw",
-      "desc": "DROGASIL 2182 (BRA20)",
+      "desc": "Drogasil",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 3,
@@ -9073,7 +9073,7 @@
     {
       "uid": "mq1qxvnfhp4k",
       "compraId": "mq1qxvnflxan",
-      "desc": "Drogasil Fabio",
+      "desc": "Drogasil",
       "dataCompra": "2026-06-05",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -9084,7 +9084,7 @@
     {
       "uid": "mq1qxvnfaw6p",
       "compraId": "mq1qxvnflxan",
-      "desc": "Drogasil Fabio",
+      "desc": "Drogasil",
       "dataCompra": "2026-06-05",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -9095,7 +9095,7 @@
     {
       "uid": "mq1qxvnfsb2d",
       "compraId": "mq1qxvnflxan",
-      "desc": "Drogasil Fabio",
+      "desc": "Drogasil",
       "dataCompra": "2026-06-05",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -11183,18 +11183,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l5r5is",
+      "id": "mqym6p0cfpc7",
       "nome": "Drogasil",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5fspi",
-      "nome": "Drogasil",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l44944",
-      "nome": "DROGASIL 2182",
       "obs": ""
     },
     {
