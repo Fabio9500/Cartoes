@@ -5078,7 +5078,7 @@
     {
       "uid": "lu3edi4hha",
       "compraId": "crzx3dp7yy",
-      "desc": "AMAZON BR 1 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -5090,7 +5090,7 @@
     {
       "uid": "ajp6kwplaz",
       "compraId": "crzx3dp7yy",
-      "desc": "AMAZON BR 1 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -5102,7 +5102,7 @@
     {
       "uid": "wcextct83r",
       "compraId": "crzx3dp7yy",
-      "desc": "AMAZON BR 1 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -5114,7 +5114,7 @@
     {
       "uid": "bwgyqzwrw8",
       "compraId": "crzx3dp7yy",
-      "desc": "AMAZON BR 1 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -5125,7 +5125,7 @@
     {
       "uid": "4dcekf2vql",
       "compraId": "crzx3dp7yy",
-      "desc": "AMAZON BR 1 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -5136,7 +5136,7 @@
     {
       "uid": "y74pu27lps",
       "compraId": "crzx3dp7yy",
-      "desc": "AMAZON BR 1 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -5397,7 +5397,7 @@
     {
       "uid": "ae8xbmp08i",
       "compraId": "gbt62nyo3r",
-      "desc": "AMAZON BR 2 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -5409,7 +5409,7 @@
     {
       "uid": "7lczn1essf",
       "compraId": "z1tmb5cgm8",
-      "desc": "AMAZON BR 3 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -5421,7 +5421,7 @@
     {
       "uid": "325bqq0qix",
       "compraId": "1zgn3fy4e7",
-      "desc": "AMAZON BR 4 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -5789,7 +5789,7 @@
     {
       "uid": "1qbc8xrcnz",
       "compraId": "xq2xzgdzsb",
-      "desc": "AMAZON BR 5 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -5801,7 +5801,7 @@
     {
       "uid": "r6w30lca16",
       "compraId": "bzgzujq0g6",
-      "desc": "AMAZON BR 6 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -5813,7 +5813,7 @@
     {
       "uid": "suzznxdgdi",
       "compraId": "gisacve9jx",
-      "desc": "AMAZON BR 7 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -5825,7 +5825,7 @@
     {
       "uid": "nathxq47kt",
       "compraId": "psk9nr3pgq",
-      "desc": "AMAZON BR 8 (BRA10)",
+      "desc": "Amazon",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -6227,7 +6227,7 @@
     {
       "uid": "moggpi7k53eb",
       "compraId": "moggpi7kocpf",
-      "desc": "Amazon - Piscina",
+      "desc": "Amazon",
       "dataCompra": "2026-04-26",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -6239,7 +6239,7 @@
     {
       "uid": "moggqfyhf61l",
       "compraId": "moggqfyheksu",
-      "desc": "Amazon - Piscina",
+      "desc": "Amazon",
       "dataCompra": "2026-04-28",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -6251,7 +6251,7 @@
     {
       "uid": "moghc0scf6ji",
       "compraId": "moghc0sc953m",
-      "desc": "Amazon - Capacete",
+      "desc": "Amazon",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -6263,7 +6263,7 @@
     {
       "uid": "moghc0sce7uf",
       "compraId": "moghc0sc953m",
-      "desc": "Amazon - Capacete",
+      "desc": "Amazon",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -6275,7 +6275,7 @@
     {
       "uid": "moghc0scqb8b",
       "compraId": "moghc0sc953m",
-      "desc": "Amazon - Capacete",
+      "desc": "Amazon",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -6286,7 +6286,7 @@
     {
       "uid": "moghc0scaefh",
       "compraId": "moghc0sc953m",
-      "desc": "Amazon - Capacete",
+      "desc": "Amazon",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -6297,7 +6297,7 @@
     {
       "uid": "moghc0scyswz",
       "compraId": "moghc0sc953m",
-      "desc": "Amazon - Capacete",
+      "desc": "Amazon",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -6308,7 +6308,7 @@
     {
       "uid": "moghc0scl3ci",
       "compraId": "moghc0sc953m",
-      "desc": "Amazon - Capacete",
+      "desc": "Amazon",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco10",
       "nParcelas": 6,
@@ -6319,7 +6319,7 @@
     {
       "uid": "moghfj9gt075",
       "compraId": "moghfj9g8s9e",
-      "desc": "Amazon - Luva",
+      "desc": "Amazon",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -6875,7 +6875,7 @@
     {
       "uid": "mogi6rxioa7q",
       "compraId": "mogi6rxien1p",
-      "desc": "Amazon - Mix",
+      "desc": "Amazon",
       "dataCompra": "2026-04-26",
       "cartao": "santander",
       "nParcelas": 1,
@@ -6911,7 +6911,7 @@
     {
       "uid": "mon2qc6lh98h",
       "compraId": "mon2qc6jg4s1",
-      "desc": "Amazon - Audublet",
+      "desc": "Amazon",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -7980,7 +7980,7 @@
     {
       "uid": "moyk52d60ekd",
       "compraId": "moyk52d6vw8j",
-      "desc": "Amazon - Papel",
+      "desc": "Amazon",
       "dataCompra": "2026-05-09",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -7992,7 +7992,7 @@
     {
       "uid": "moyk5p7eypi2",
       "compraId": "moyk5p7ekj9y",
-      "desc": "Amazon - Trident",
+      "desc": "Amazon",
       "dataCompra": "2026-05-09",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -8488,7 +8488,7 @@
     {
       "uid": "mpbze18m1udx",
       "compraId": "mpbze18mte7d",
-      "desc": "Amazon - Pastas",
+      "desc": "Amazon",
       "dataCompra": "2026-05-18",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -10918,98 +10918,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l5qx5x",
+      "id": "mqylpnc542p6",
       "nome": "Amazon",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5g4dk",
-      "nome": "Amazon",
-      "obs": ""
-    },
-    {
-      "id": "mqy7qaai80bm",
-      "nome": "Amazon - Audublet",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4znzh",
-      "nome": "Amazon - Capacete",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l44nbv",
-      "nome": "Amazon - Luva",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4wmua",
-      "nome": "Amazon - Mix",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5oxf3",
-      "nome": "Amazon - Papel",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5pebu",
-      "nome": "Amazon - Pastas",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4lbd1",
-      "nome": "Amazon - Piscina",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5ne6y",
-      "nome": "Amazon - Trident",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4v7ru",
-      "nome": "AMAZON BR 1",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l41wap",
-      "nome": "AMAZON BR 2",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4mkve",
-      "nome": "AMAZON BR 3",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l46jee",
-      "nome": "AMAZON BR 4",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4vwjb",
-      "nome": "AMAZON BR 5",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4rkmp",
-      "nome": "AMAZON BR 6",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4zee9",
-      "nome": "AMAZON BR 7",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4obji",
-      "nome": "AMAZON BR 8",
-      "obs": ""
-    },
-    {
-      "id": "mqy7pytmopa8",
-      "nome": "AMAZON Teste",
       "obs": ""
     },
     {
