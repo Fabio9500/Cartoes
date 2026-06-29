@@ -3576,7 +3576,7 @@
     {
       "uid": "81pin5co9g",
       "compraId": "8cnmjdnd5w",
-      "desc": "RESTAURANTE DO GUIDO (BRA01)",
+      "desc": "Restaurante",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -3612,7 +3612,7 @@
     {
       "uid": "ljho3fjbjg",
       "compraId": "5z9kv17l3u",
-      "desc": "RESTAURANTE ECOLOGIA (BRA01)",
+      "desc": "Restaurante",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -3800,7 +3800,7 @@
     {
       "uid": "4ju3a412ex",
       "compraId": "ipzyef5b04",
-      "desc": "RESTAURANTE CHURRASC (BRA01)",
+      "desc": "Restaurante",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -8332,7 +8332,7 @@
     {
       "uid": "mp4hhg1qbrdg",
       "compraId": "mp4hhg1qoxpv",
-      "desc": "Restaurante Canto do Lazer",
+      "desc": "Restaurante",
       "dataCompra": "2026-05-08",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -9381,7 +9381,7 @@
     {
       "uid": "mqeoaml8rxe8",
       "compraId": "mqeoaml8onp0",
-      "desc": "Rest. Lê Bostro",
+      "desc": "Restaurante",
       "dataCompra": "2026-06-12",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -11543,28 +11543,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l52r8n",
-      "nome": "Rest. Lê Bostro",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l52o8j",
-      "nome": "Restaurante Canto do Lazer",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l49grw",
-      "nome": "RESTAURANTE CHURRASC",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l40urk",
-      "nome": "RESTAURANTE DO GUIDO",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4fzfl",
-      "nome": "RESTAURANTE ECOLOGIA",
+      "id": "mqymo22zyil4",
+      "nome": "Restaurante",
       "obs": ""
     },
     {
