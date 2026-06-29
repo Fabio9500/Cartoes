@@ -1884,7 +1884,7 @@
     {
       "uid": "8hhhalzgkq",
       "compraId": "m5drzwes8s",
-      "desc": "AGUIA BRANCA (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -1896,7 +1896,7 @@
     {
       "uid": "nye0tyzk0m",
       "compraId": "m5drzwes8s",
-      "desc": "AGUIA BRANCA (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -1908,7 +1908,7 @@
     {
       "uid": "ckwn49up7c",
       "compraId": "m5drzwes8s",
-      "desc": "AGUIA BRANCA (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -1920,7 +1920,7 @@
     {
       "uid": "7d8nsuwz69",
       "compraId": "m5drzwes8s",
-      "desc": "AGUIA BRANCA (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -1932,7 +1932,7 @@
     {
       "uid": "yyw5m3rxd2",
       "compraId": "m5drzwes8s",
-      "desc": "AGUIA BRANCA (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -1944,7 +1944,7 @@
     {
       "uid": "1eoupp4zjl",
       "compraId": "m5drzwes8s",
-      "desc": "AGUIA BRANCA (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -2312,7 +2312,7 @@
     {
       "uid": "kenquproqd",
       "compraId": "er9ugkhpiv",
-      "desc": "AGUIA BRANCA P (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -2324,7 +2324,7 @@
     {
       "uid": "zmb3ydahyc",
       "compraId": "er9ugkhpiv",
-      "desc": "AGUIA BRANCA P (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -2336,7 +2336,7 @@
     {
       "uid": "ou6zunpuuj",
       "compraId": "er9ugkhpiv",
-      "desc": "AGUIA BRANCA P (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -2348,7 +2348,7 @@
     {
       "uid": "4ifapkhi7i",
       "compraId": "er9ugkhpiv",
-      "desc": "AGUIA BRANCA P (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -2359,7 +2359,7 @@
     {
       "uid": "wa5y7cr2gq",
       "compraId": "er9ugkhpiv",
-      "desc": "AGUIA BRANCA P (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -2370,7 +2370,7 @@
     {
       "uid": "1cu59ur4pk",
       "compraId": "er9ugkhpiv",
-      "desc": "AGUIA BRANCA P (BRA20)",
+      "desc": "Águia Branca",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 6,
@@ -10903,13 +10903,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l3wrk3",
-      "nome": "AGUIA BRANCA",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4h8tz",
-      "nome": "AGUIA BRANCA P",
+      "id": "mqymq089tzxv",
+      "nome": "Águia Branca",
       "obs": ""
     },
     {
