@@ -5457,7 +5457,7 @@
     {
       "uid": "emxuwcyum7",
       "compraId": "9innrvrtge",
-      "desc": "UNOSSO BAR (BRA20)",
+      "desc": "UnossoBar",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -9813,7 +9813,7 @@
     {
       "uid": "mqn870afaor0",
       "compraId": "mqn870afo5lu",
-      "desc": "Unossobar",
+      "desc": "UnossoBar",
       "dataCompra": "2026-06-21",
       "cartao": "santander",
       "nParcelas": 1,
@@ -11668,13 +11668,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l4p5l4",
-      "nome": "UNOSSO BAR",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5p0kd",
-      "nome": "Unossobar",
+      "id": "mqymnbwf3wnp",
+      "nome": "UnossoBar",
       "obs": ""
     },
     {
