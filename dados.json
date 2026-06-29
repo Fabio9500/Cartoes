@@ -5981,7 +5981,7 @@
     {
       "uid": "35q2d2da24",
       "compraId": "75g3nljwuv",
-      "desc": "HORTI SUPERMERCADOS (BRA10)",
+      "desc": "Hortifrúti",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -7766,7 +7766,7 @@
     {
       "uid": "morrp4tjdqzy",
       "compraId": "morrp4tjp9l6",
-      "desc": "Hortifruti",
+      "desc": "Hortifrúti",
       "dataCompra": "2026-05-04",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -8296,7 +8296,7 @@
     {
       "uid": "mp3xhuc7y4oq",
       "compraId": "mp3xhuc72luc",
-      "desc": "Hortifruti",
+      "desc": "Hortifrúti",
       "dataCompra": "2026-05-08",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -11283,17 +11283,7 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l4asti",
-      "nome": "HORTI SUPERMERCADOS",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l51lqj",
-      "nome": "Hortifruti",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5hh93",
+      "id": "mqym07cxgsx8",
       "nome": "Hortifrúti",
       "obs": ""
     },
