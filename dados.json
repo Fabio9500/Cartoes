@@ -3126,7 +3126,7 @@
     {
       "uid": "dv9ufjjc0u",
       "compraId": "u7x9kgydik",
-      "desc": "RDSAUDE ONLINE 1 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 6,
@@ -3138,7 +3138,7 @@
     {
       "uid": "zjfmow0l1r",
       "compraId": "u7x9kgydik",
-      "desc": "RDSAUDE ONLINE 1 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 6,
@@ -3150,7 +3150,7 @@
     {
       "uid": "6dhnc2tkrq",
       "compraId": "u7x9kgydik",
-      "desc": "RDSAUDE ONLINE 1 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 6,
@@ -3162,7 +3162,7 @@
     {
       "uid": "twvn3y8cl5",
       "compraId": "u7x9kgydik",
-      "desc": "RDSAUDE ONLINE 1 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 6,
@@ -3174,7 +3174,7 @@
     {
       "uid": "wnkgg17x4u",
       "compraId": "u7x9kgydik",
-      "desc": "RDSAUDE ONLINE 1 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 6,
@@ -3186,7 +3186,7 @@
     {
       "uid": "c3hriee235",
       "compraId": "u7x9kgydik",
-      "desc": "RDSAUDE ONLINE 1 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 6,
@@ -3955,7 +3955,7 @@
     {
       "uid": "nq8y9fqu23",
       "compraId": "w6lg4r6q07",
-      "desc": "RDSAUDE ONLINE 2 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -4014,7 +4014,7 @@
     {
       "uid": "rsfp39xhc5",
       "compraId": "pko2ejr4tw",
-      "desc": "RDSAUDE ONLINE 3 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -4026,7 +4026,7 @@
     {
       "uid": "d8q0ebcezy",
       "compraId": "c69y8a0ocb",
-      "desc": "RDSAUDE ONLINE 4 (BRA01)",
+      "desc": "Drogasil",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -11640,26 +11640,6 @@
     {
       "id": "mqy7a5l32luh",
       "nome": "PRODUTOSUOL",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4jsvs",
-      "nome": "RDSAUDE ONLINE 1",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4l0r4",
-      "nome": "RDSAUDE ONLINE 2",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4cq02",
-      "nome": "RDSAUDE ONLINE 3",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4euwt",
-      "nome": "RDSAUDE ONLINE 4",
       "obs": ""
     },
     {
