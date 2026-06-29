@@ -707,7 +707,7 @@
     {
       "uid": "t0gcnohzfm",
       "compraId": "i7dq7s4ldj",
-      "desc": "SUPERMERCADO CONCEIC (3363)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-04-15",
       "cartao": "santander",
       "nParcelas": 3,
@@ -719,7 +719,7 @@
     {
       "uid": "am8v0350mu",
       "compraId": "i7dq7s4ldj",
-      "desc": "SUPERMERCADO CONCEIC (3363)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-04-15",
       "cartao": "santander",
       "nParcelas": 3,
@@ -731,7 +731,7 @@
     {
       "uid": "lo35kqr1zx",
       "compraId": "i7dq7s4ldj",
-      "desc": "SUPERMERCADO CONCEIC (3363)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-04-15",
       "cartao": "santander",
       "nParcelas": 3,
@@ -5325,7 +5325,7 @@
     {
       "uid": "frlesn9x5y",
       "compraId": "ehsgng00sc",
-      "desc": "SUPERMERCADO CONCEIC (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -5337,7 +5337,7 @@
     {
       "uid": "c5u71ccod0",
       "compraId": "ehsgng00sc",
-      "desc": "SUPERMERCADO CONCEIC (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -5349,7 +5349,7 @@
     {
       "uid": "x0lm0fh0o1",
       "compraId": "ehsgng00sc",
-      "desc": "SUPERMERCADO CONCEIC (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -6017,7 +6017,7 @@
     {
       "uid": "uqpr91ol4c",
       "compraId": "uha3p2n1zf",
-      "desc": "SUPERMERCADO CONCEIC A (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -6029,7 +6029,7 @@
     {
       "uid": "5yo0u5h1os",
       "compraId": "uha3p2n1zf",
-      "desc": "SUPERMERCADO CONCEIC A (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -6041,7 +6041,7 @@
     {
       "uid": "ygop20c5c8",
       "compraId": "uha3p2n1zf",
-      "desc": "SUPERMERCADO CONCEIC A (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -6098,7 +6098,7 @@
     {
       "uid": "f3ij9rrmbi",
       "compraId": "vs3as0sxyw",
-      "desc": "SUPERMERCADO CONCEIC B (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -6110,7 +6110,7 @@
     {
       "uid": "k3vg37uf8x",
       "compraId": "vs3as0sxyw",
-      "desc": "SUPERMERCADO CONCEIC B (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -6122,7 +6122,7 @@
     {
       "uid": "njo5xwi78e",
       "compraId": "vs3as0sxyw",
-      "desc": "SUPERMERCADO CONCEIC B (BRA10)",
+      "desc": "Supermercado Conceição",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 3,
@@ -11728,22 +11728,7 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l3tmtp",
-      "nome": "SUPERMERCADO CONCEIC",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l45u57",
-      "nome": "SUPERMERCADO CONCEIC A",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4dcpa",
-      "nome": "SUPERMERCADO CONCEIC B",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5w4tq",
+      "id": "mqymfo0l2mzg",
       "nome": "Supermercado Conceição",
       "obs": ""
     },
