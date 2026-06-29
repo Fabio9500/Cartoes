@@ -2288,7 +2288,7 @@
     {
       "uid": "a65ybzo4bs",
       "compraId": "0ougned234",
-      "desc": "CASA BOM SABOR 1 (BRA20)",
+      "desc": "Bom sabor",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -2300,7 +2300,7 @@
     {
       "uid": "g7otgw5wjj",
       "compraId": "0ougned234",
-      "desc": "CASA BOM SABOR 1 (BRA20)",
+      "desc": "Bom sabor",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -2617,7 +2617,7 @@
     {
       "uid": "lw6720x615",
       "compraId": "6nzg3y8l3l",
-      "desc": "CASAS BOM SABOR 2 (BRA20)",
+      "desc": "Bom sabor",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -2629,7 +2629,7 @@
     {
       "uid": "kbt2u5nrl9",
       "compraId": "6nzg3y8l3l",
-      "desc": "CASAS BOM SABOR 2 (BRA20)",
+      "desc": "Bom sabor",
       "dataCompra": "2026-04-20",
       "cartao": "bradesco20",
       "nParcelas": 2,
@@ -3624,7 +3624,7 @@
     {
       "uid": "19kmmbpnz2",
       "compraId": "zuqrdxvqta",
-      "desc": "CASAS BOM SABOR (BRA01)",
+      "desc": "Bom sabor",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -5289,7 +5289,7 @@
     {
       "uid": "s20rei0wdr",
       "compraId": "0pfh7bk7ox",
-      "desc": "CASA BOM SABOR (BRA10)",
+      "desc": "Bom sabor",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 2,
@@ -5301,7 +5301,7 @@
     {
       "uid": "ta067jg1lr",
       "compraId": "0pfh7bk7ox",
-      "desc": "CASA BOM SABOR (BRA10)",
+      "desc": "Bom sabor",
       "dataCompra": "2026-04-10",
       "cartao": "bradesco10",
       "nParcelas": 2,
@@ -11033,7 +11033,7 @@
       "obs": ""
     },
     {
-      "id": "mqylsjsxovt8",
+      "id": "mqylv92iq4pz",
       "nome": "Bom sabor",
       "obs": ""
     },
@@ -11045,16 +11045,6 @@
     {
       "id": "mqy7a5l4gsyv",
       "nome": "BS COMERCIO DE GAS",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4ompw",
-      "nome": "CASA BOM SABOR",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l41qxu",
-      "nome": "CASA BOM SABOR 1",
       "obs": ""
     },
     {
@@ -11070,16 +11060,6 @@
     {
       "id": "mqy7a5l5f7fr",
       "nome": "Casas Bahia",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l49jpu",
-      "nome": "CASAS BOM SABOR",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l48q2v",
-      "nome": "CASAS BOM SABOR 2",
       "obs": ""
     },
     {
