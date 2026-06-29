@@ -3316,7 +3316,7 @@
     {
       "uid": "t4a5fklgoy",
       "compraId": "v1ngc8s130",
-      "desc": "MANUAL SAUDE BRASIL (BRA01)",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -3328,7 +3328,7 @@
     {
       "uid": "6pnp8fdc84",
       "compraId": "v1ngc8s130",
-      "desc": "MANUAL SAUDE BRASIL (BRA01)",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -3340,7 +3340,7 @@
     {
       "uid": "jgd6vgkxx8",
       "compraId": "v1ngc8s130",
-      "desc": "MANUAL SAUDE BRASIL (BRA01)",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -3871,7 +3871,7 @@
     {
       "uid": "mw15qycywo",
       "compraId": "yohm5273o2",
-      "desc": "SUPER PAO (BRA01)",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-01",
       "cartao": "bradesco1",
       "nParcelas": 1,
@@ -5493,7 +5493,7 @@
     {
       "uid": "626p2a8b8n",
       "compraId": "jpbge2g384",
-      "desc": "SUPER PAO 3 (BRA20)",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -5589,7 +5589,7 @@
     {
       "uid": "3gefvs26b4",
       "compraId": "19wew48j27",
-      "desc": "SUPER PAO 4 (BRA20)",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-20",
       "cartao": "bradesco20",
       "nParcelas": 1,
@@ -5777,7 +5777,7 @@
     {
       "uid": "uaoeyoyhy4",
       "compraId": "l330rnca94",
-      "desc": "SUPER PAO 2 (BRA10)",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-10",
       "cartao": "bradesco10",
       "nParcelas": 1,
@@ -8159,7 +8159,7 @@
     {
       "uid": "mp39m0vhhx88",
       "compraId": "mp39m0vhtpn8",
-      "desc": "Manual Tratamento Capilar",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-12",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -8171,7 +8171,7 @@
     {
       "uid": "mp39m0vh328f",
       "compraId": "mp39m0vhtpn8",
-      "desc": "Manual Tratamento Capilar",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-12",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -8182,7 +8182,7 @@
     {
       "uid": "mp39m0vhll98",
       "compraId": "mp39m0vhtpn8",
-      "desc": "Manual Tratamento Capilar",
+      "desc": "Manual Tratamento",
       "dataCompra": "2026-05-12",
       "cartao": "bradesco1",
       "nParcelas": 3,
@@ -11383,13 +11383,8 @@
       "obs": ""
     },
     {
-      "id": "mqy7a5l43ow6",
-      "nome": "MANUAL SAUDE BRASIL",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l5j4w2",
-      "nome": "Manual Tratamento Capilar",
+      "id": "mqymbdy9qiyc",
+      "nome": "Manual Tratamento",
       "obs": ""
     },
     {
@@ -11755,26 +11750,6 @@
     {
       "id": "mqy7a5l4dicx",
       "nome": "SIMOES MATERIAIS PCO",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l41qa4",
-      "nome": "SUPER PAO",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4c9fy",
-      "nome": "SUPER PAO 2",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4vbuz",
-      "nome": "SUPER PAO 3",
-      "obs": ""
-    },
-    {
-      "id": "mqy7a5l4t05k",
-      "nome": "SUPER PAO 4",
       "obs": ""
     },
     {
