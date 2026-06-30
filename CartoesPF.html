@@ -260,34 +260,48 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
 
 <!-- ── TELA DE LOGIN ──────────────────────────────────────── -->
 <div class="fullscreen-cover" id="login-screen" style="display:none">
-  <div class="setup-card" style="max-width:360px;">
-    <div class="login-logo">🔒</div>
-    <div class="login-title" id="login-titulo">Acesso Restrito</div>
-    <div class="login-sub" id="login-sub-txt">Cartões PF — Telasul / Construsul</div>
-    <div id="login-versao-txt" style="font-size:10px;color:var(--muted);text-align:center;margin-top:-16px;margin-bottom:18px"></div>
-    <div class="login-block-info" id="login-block-info" style="display:none"></div>
-    <div id="login-erro" class="erro-box"></div>
-    <div class="login-campo">
-      <input type="password" id="login-senha" placeholder="••••••••"
-             autocomplete="current-password"
-             onkeydown="if(event.key==='Enter')verificarSenha()">
-      <button class="login-olho" onclick="toggleSenhaVisivel()" id="login-olho-btn" title="Mostrar/ocultar senha">👁</button>
+  <div class="setup-card" style="max-width:400px;">
+    <div class="login-logo">💳</div>
+    <div class="login-title">Controle de Cartões PF</div>
+    <div class="login-sub" id="login-sub-txt">Telasul / Construsul</div>
+    <div id="login-versao-txt" style="font-size:10px;color:var(--muted);text-align:center;margin-top:-10px;margin-bottom:18px"></div>
+    <!-- Etapa 1: escolher usuário -->
+    <div id="pf-usu-e1">
+      <p style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px;text-align:center">Quem está acessando?</p>
+      <div id="pf-usu-lista" style="display:flex;flex-direction:column;gap:8px;margin-bottom:4px"></div>
     </div>
-    <button class="btn-login" id="btn-login" onclick="verificarSenha()">🔓 Entrar</button>
-    <span class="login-link" onclick="esqueceuSenha()" id="login-link-esqueceu">Esqueci minha senha</span>
+    <!-- Etapa 2: senha -->
+    <div id="pf-usu-e2" style="display:none">
+      <div id="pf-usu-nome-sel" style="font-weight:700;font-size:16px;margin-bottom:16px;color:var(--accent);text-align:center"></div>
+      <div class="login-campo">
+        <input type="password" id="pf-login-senha" placeholder="••••••••" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')loginUsuarioPF()">
+        <button class="login-olho" onclick="(function(i,b){const e=document.getElementById(i);e.type=e.type==='password'?'text':'password';b.textContent=e.type==='password'?'👁':'🙈';}('pf-login-senha',this))">👁</button>
+      </div>
+      <div id="pf-login-erro" style="color:var(--danger);font-size:12px;margin-bottom:10px;display:none;text-align:center">Senha incorreta. Tente novamente.</div>
+      <button class="btn-login" onclick="loginUsuarioPF()">🔓 Entrar</button>
+      <span class="login-link" onclick="voltarEscolhaPF()" style="display:block;text-align:center;margin-top:10px;cursor:pointer;color:var(--muted);font-size:12px">← Voltar para usuários</span>
+    </div>
   </div>
 </div>
 
 <header>
   <div class="logo"><span>💳</span> Controle de Cartões <span id="logo-versao" style="font-size:10px;color:var(--muted);font-weight:400;margin-left:4px"></span></div>
   <div class="header-actions">
+    <div id="pf-usu-badge" class="no-print" style="display:none;align-items:center;gap:6px;margin-right:4px">
+      <div id="pf-usu-avatar" style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:#000;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center"></div>
+      <div style="font-size:10px;line-height:1.2">
+        <div id="pf-usu-nome" style="font-weight:700;color:#fff"></div>
+        <div id="pf-usu-perfil" style="color:rgba(255,255,255,.6);font-size:9px"></div>
+      </div>
+    </div>
     <span id="data-atual"></span>
     <div id="sync-status" class="no-print">
       <span class="sync-dot ok" id="sync-dot"></span>
       <span id="sync-txt">Sync</span>
     </div>
     <button class="dark-toggle no-print" onclick="toggleDark()" id="dark-btn">🌙</button>
-    <button class="btn-lock no-print" onclick="bloquearManualmente()" title="Bloquear o sistema">🔒</button>
+    <button class="btn-lock no-print" onclick="sairUsuarioPF()" title="Trocar usuário">↩ Sair</button>
     <button onclick="abrirModalBackup()" title="Fazer backup dos dados" style="background:#2ea043;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif;" class="no-print">💾 Backup</button>
     <button class="btn btn-outline btn-sm no-print" onclick="abrirModalFala()">🎤 Falar/Texto</button>
     <button class="btn btn-primary btn-sm no-print" onclick="abrirModalCompra()">＋ Nova</button>
@@ -1172,17 +1186,155 @@ function esqueceuSenha(){
   mostrarLoginScreen(true);
 }
 
-function bloquearManualmente(){
-  localStorage.removeItem(AUTH_TS);
-  location.reload();
+async function verificarAuth(){ await bootAposAuth(); }
+
+// ── BIOMETRIA PF (WebAuthn / Face ID / Touch ID) ──
+const BIO_KEY_PF = 'cc_pf_bio';
+async function bioPFDisp(){ try{return !!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());}catch(e){return false;} }
+function _pfB64A(b64){return Uint8Array.from(atob(b64),c=>c.charCodeAt(0));}
+function _pfAB64(a){return btoa(String.fromCharCode(...new Uint8Array(a)));}
+
+async function registrarBioPF(userId){
+  const u=usuarios.find(x=>x.id===userId); if(!u) return false;
+  try{
+    const cred=await navigator.credentials.create({publicKey:{
+      challenge:crypto.getRandomValues(new Uint8Array(32)),
+      rp:{name:'Cartões PF',id:location.hostname||'localhost'},
+      user:{id:new TextEncoder().encode(userId),name:u.login||u.nome,displayName:u.nome},
+      pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+      authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required'},
+      timeout:60000
+    }});
+    localStorage.setItem(BIO_KEY_PF,JSON.stringify({credId:_pfAB64(cred.rawId),userId}));
+    return true;
+  }catch(e){if(e.name!=='NotAllowedError')console.warn('WebAuthn PF:',e);return false;}
 }
 
-async function verificarAuth(){
-  const hashSalvo = localStorage.getItem(AUTH_KEY);
-  if(!hashSalvo){ mostrarLoginScreen(true); return; }
-  if(authValido()){ refreshAuth(); await bootAposAuth(); return; }
-  mostrarLoginScreen(false);
+async function entrarComBioPF(){
+  const stored=localStorage.getItem(BIO_KEY_PF); if(!stored)return;
+  const {credId,userId}=JSON.parse(stored);
+  const u=usuarios.find(x=>x.id===userId&&x.ativo!==false); if(!u)return;
+  const btn=document.getElementById('btn-bio-pf');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Aguardando...';}
+  try{
+    await navigator.credentials.get({publicKey:{
+      challenge:crypto.getRandomValues(new Uint8Array(32)),
+      allowCredentials:[{id:_pfB64A(credId),type:'public-key',transports:['internal']}],
+      userVerification:'required',timeout:60000
+    }});
+    USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
+    sessionStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
+    document.getElementById('login-screen').style.display='none';
+    atualizarBadgePF();
+    renderDashboard();
+  }catch(e){
+    if(btn){btn.disabled=false;btn.textContent='🔒 Entrar com Face ID / Touch ID';}
+    if(e.name!=='NotAllowedError')console.warn('WebAuthn PF auth:',e);
+  }
 }
+
+async function _oferecerBioPF(userId){
+  if(localStorage.getItem(BIO_KEY_PF))return;
+  if(!await bioPFDisp())return;
+  if(typeof AM==='function') AM('🔒 Ativar Face ID / Touch ID?',`
+    <div style="text-align:center;padding:10px 0">
+      <div style="font-size:48px;margin-bottom:10px">🔒</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:8px">Entrar sem senha no próximo acesso</div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Use Face ID ou Touch ID neste dispositivo.</p>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button onclick="ativarBioPF('${userId}')" style="flex:1;padding:10px;background:#2ea043;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif">✅ Ativar Agora</button>
+        <button onclick="fecharModal&&fecharModal()" style="flex:1;padding:10px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">Agora não</button>
+      </div>
+    </div>
+  `);
+}
+
+async function ativarBioPF(userId){
+  if(typeof FM==='function')FM(); if(typeof fecharModal==='function')fecharModal();
+  const ok=await registrarBioPF(userId);
+  showToast(ok?'✅ Face ID / Touch ID ativado!':'⚠ Não foi possível ativar biometria.',!ok);
+}
+
+function removerBioPF(){
+  if(!confirm('Remover Face ID / Touch ID deste dispositivo?'))return;
+  localStorage.removeItem(BIO_KEY_PF); showToast('Biometria removida deste dispositivo.');
+}
+
+// ── SISTEMA DE USUÁRIOS PF ──
+async function seedUsuariosPF(){
+  usuarios=[
+    {id:uid(),nome:'Fabio',login:'fabio',hash:await sha256('master'),perfil:'master',ativo:true},
+    {id:uid(),nome:'Alice',login:'alice',hash:await sha256('alice'),perfil:'operador',ativo:true},
+    {id:uid(),nome:'Bruno',login:'bruno',hash:await sha256('bruno'),perfil:'operador',ativo:true},
+  ];
+  await saveToGitHub(montarPayload());
+}
+function mostrarLoginPF(){
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('pf-usu-e1').style.display='block';
+  document.getElementById('pf-usu-e2').style.display='none';
+  const lista=usuarios.filter(u=>u.ativo!==false);
+  let bioHtml='';
+  const bioStored=localStorage.getItem(BIO_KEY_PF);
+  if(bioStored){try{const{userId}=JSON.parse(bioStored);const bu=lista.find(u=>u.id===userId);if(bu)bioHtml=`<button type="button" id="btn-bio-pf" onclick="entrarComBioPF()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;background:linear-gradient(135deg,#1a7a3c,#25a058);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif;width:100%;font-weight:700;font-size:14px;margin-bottom:10px">🔒 Entrar como <strong>&nbsp;${bu.nome}&nbsp;</strong> com Face ID</button><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:11px;color:var(--muted)">ou escolha o usuário</span><div style="flex:1;height:1px;background:var(--border)"></div></div>`;}catch(e){}}
+  document.getElementById('pf-usu-lista').innerHTML=bioHtml+lista.map(u=>`
+    <button onclick="selecionarUsuarioPF('${u.id}')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-card,#f9f9f9);border:1px solid var(--border,#ddd);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif;width:100%;text-align:left">
+      <div style="width:34px;height:34px;border-radius:50%;background:${PF_CORES[u.perfil]||'#888'};color:${u.perfil==='master'?'#000':'#fff'};font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${u.nome.charAt(0).toUpperCase()}</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px">${u.nome}</div><div style="font-size:11px;color:#888">${PF_LABELS[u.perfil]||u.perfil}</div></div>
+      <div style="color:#bbb;font-size:16px">›</div>
+    </button>`).join('');
+  document.getElementById('login-versao-txt').textContent=VERSAO||'';
+}
+function selecionarUsuarioPF(id){
+  _pfSelId=id;
+  const u=usuarios.find(x=>x.id===id); if(!u)return;
+  document.getElementById('pf-usu-e1').style.display='none';
+  document.getElementById('pf-usu-e2').style.display='block';
+  document.getElementById('pf-usu-nome-sel').textContent=u.nome;
+  document.getElementById('pf-login-erro').style.display='none';
+  document.getElementById('pf-login-senha').value='';
+  setTimeout(()=>document.getElementById('pf-login-senha').focus(),150);
+}
+function voltarEscolhaPF(){
+  document.getElementById('pf-usu-e1').style.display='block';
+  document.getElementById('pf-usu-e2').style.display='none';
+  _pfSelId=null;
+}
+async function loginUsuarioPF(){
+  const u=usuarios.find(x=>x.id===_pfSelId); if(!u)return;
+  const hash=await sha256(document.getElementById('pf-login-senha').value||'');
+  if(hash!==u.hash){document.getElementById('pf-login-erro').style.display='block';return;}
+  USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
+  sessionStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
+  document.getElementById('login-screen').style.display='none';
+  atualizarBadgePF();
+  renderDashboard();
+  setTimeout(()=>_oferecerBioPF(u.id),1500);
+}
+function sairUsuarioPF(){
+  USUARIO_ATUAL=null;
+  sessionStorage.removeItem('cc_pf_usu');
+  document.getElementById('pf-usu-badge').style.display='none';
+  mostrarLoginPF();
+}
+function atualizarBadgePF(){
+  if(!USUARIO_ATUAL)return;
+  const badge=document.getElementById('pf-usu-badge');
+  badge.style.display='flex';
+  document.getElementById('pf-usu-avatar').textContent=USUARIO_ATUAL.nome.charAt(0).toUpperCase();
+  document.getElementById('pf-usu-avatar').style.background=PF_CORES[USUARIO_ATUAL.perfil]||'#888';
+  document.getElementById('pf-usu-avatar').style.color=USUARIO_ATUAL.perfil==='master'?'#000':'#fff';
+  document.getElementById('pf-usu-nome').textContent=USUARIO_ATUAL.nome;
+  document.getElementById('pf-usu-perfil').textContent=PF_LABELS[USUARIO_ATUAL.perfil]||'';
+}
+function verificarSessaoPF(){
+  const s=sessionStorage.getItem('cc_pf_usu');
+  if(s){try{const p=JSON.parse(s);const u=usuarios.find(x=>x.id===p.id&&x.ativo!==false);if(u){USUARIO_ATUAL=p;atualizarBadgePF();return true;}}catch(e){}}
+  sessionStorage.removeItem('cc_pf_usu');
+  return false;
+}
+function bloquearManualmente(){sairUsuarioPF();}
 
 // ── GITHUB ──────────────────────────────────────────────────
 const GH_OWNER='Fabio9500', GH_REPO='Cartoes', GH_FILE='dados.json', GH_BRANCH='main', GH_TOKEN_KEY='cc_pf_gh_token';
@@ -1206,7 +1358,7 @@ function setFila(payload){try{localStorage.setItem(PREFIX+'_fila',JSON.stringify
 function limparFila(){localStorage.removeItem(PREFIX+'_fila');}
 function getLastSha(){return localStorage.getItem(PREFIX+'_last_sha')||'';}
 function setLastSha(sha){if(sha)localStorage.setItem(PREFIX+'_last_sha',sha);}
-function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,categorias,cartoesCustom};}
+function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,categorias,cartoesCustom,usuarios};}
 
 function atualizarIndicadorConexao(){
   const el=document.getElementById('conn-indicator');
@@ -1261,6 +1413,19 @@ const CARTOES_BUILTIN=Object.keys(CARTOES);
 const DEFAULT_LIMITES={bradesco1:{total:170000,usado:0},bradesco10:{total:170000,usado:0},bradesco20:{total:170000,usado:0},santander:{total:250000,usado:0},picpay:{total:30000,usado:0}};
 
 let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={};
+let usuarios=[];
+let USUARIO_ATUAL=null, _pfSelId=null;
+const PF_LABELS={master:'Master',operador:'Operador',consulta:'Consulta'};
+const PF_CORES={master:'#f0a500',operador:'#1a5ba8',consulta:'#888'};
+const PF_BLOQ_OP=new Set(['excluir','config']);
+const PF_BLOQ_CO=new Set(['excluir','config','lancamentos']);
+function temPermPF(a){
+  if(!USUARIO_ATUAL)return false;
+  if(USUARIO_ATUAL.perfil==='master')return true;
+  if(USUARIO_ATUAL.perfil==='operador')return !PF_BLOQ_OP.has(a);
+  if(USUARIO_ATUAL.perfil==='consulta')return !PF_BLOQ_CO.has(a);
+  return false;
+}
 
 // ── STORAGE ─────────────────────────────────────────────────
 async function salvar(){
@@ -1340,10 +1505,13 @@ async function initData(){
         await resolverFilaPendente(fila,data,ghSha);
       } else {
         compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; categorias=data.categorias||[]; cartoesCustom=data.cartoesCustom||{};
+        usuarios=data.usuarios||[];
+        if(!usuarios.length) await seedUsuariosPF();
         Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
         setSyncStatus('ok');
       }
+      if(!verificarSessaoPF()){mostrarLoginPF();return;}
       document.getElementById('loading-screen').style.display='none';
       renderDashboard();
     } else {
