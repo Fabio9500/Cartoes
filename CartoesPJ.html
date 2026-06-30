@@ -1493,8 +1493,13 @@ async function initData(){
     const dados=fila||(bkp?JSON.parse(bkp):null);
     if(dados){
       compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
+      fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; categorias=dados.categorias||[]; cartoesCustom=dados.cartoesCustom||{};
+      usuarios=dados.usuarios||[];
       document.getElementById('loading-screen').style.display='none';
-      setSyncStatus('queued'); renderDashboard();
+      setSyncStatus('queued');
+      if(!usuarios.length){ document.getElementById('loading-msg').textContent='📴 Sem conexão e usuários ainda não configurados neste dispositivo.'; return; }
+      if(!verificarSessaoPJ()){mostrarLoginPJ();return;}
+      renderDashboard();
     } else {
       document.getElementById('loading-msg').textContent='📴 Sem conexão e sem dados salvos neste dispositivo ainda.';
       setSyncStatus('queued');
@@ -1508,14 +1513,15 @@ async function initData(){
       if(fila){
         setSyncStatus('saving');
         await resolverFilaPendente(fila,data,ghSha);
+        usuarios=data.usuarios||usuarios||[];
       } else {
         compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; categorias=data.categorias||[]; cartoesCustom=data.cartoesCustom||{};
         usuarios=data.usuarios||[];
-        if(!usuarios.length) await seedUsuariosPJ();
         Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
         setSyncStatus('ok');
       }
+      if(!usuarios.length) await seedUsuariosPJ();
       if(!verificarSessaoPJ()){mostrarLoginPJ();return;}
       document.getElementById('loading-screen').style.display='none';
       renderDashboard();
