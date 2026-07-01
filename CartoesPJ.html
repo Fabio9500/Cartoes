@@ -1065,7 +1065,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.1';
+const VERSAO = 'v4.2';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -3312,7 +3312,48 @@ function confirmarImportacao(){
 
 
 // ── LANÇAMENTO POR VOZ / TEXTO LIVRE ─────────────────────────
+// Motor de números por extenso (fala → dígitos)
+const NUMS_EXT={
+  'zero':0,'um':1,'uma':1,'dois':2,'duas':2,'tres':3,'três':3,'quatro':4,'cinco':5,'seis':6,'sete':7,'oito':8,'nove':9,'dez':10,
+  'onze':11,'doze':12,'treze':13,'quatorze':14,'catorze':14,'quinze':15,'dezesseis':16,'dezessete':17,'dezoito':18,'dezenove':19,
+  'vinte':20,'trinta':30,'quarenta':40,'cinquenta':50,'sessenta':60,'setenta':70,'oitenta':80,'noventa':90,
+  'cem':100,'cento':100,'duzentos':200,'duzentas':200,'trezentos':300,'trezentas':300,'quatrocentos':400,'quinhentos':500,'seiscentos':600,'setecentos':700,'oitocentos':800,'novecentos':900,
+  'mil':1000,'milhão':1000000,'milhao':1000000,'milhões':1000000,'milhoes':1000000
+};
+function _tokVF(t){return t.toLowerCase().replace(/[.,](?=\s|$)/g,' ').split(/\s+/).filter(Boolean);}
+function _ehNumTok(tok){return (tok in NUMS_EXT)||/^\d+([.,]\d+)?$/.test(tok);}
+function _seqToNum(seq){
+  if(seq.length===1&&/^\d/.test(seq[0])){const l=seq[0].replace(/\.(?=\d{3})/g,'').replace(',','.');return parseFloat(l);}
+  let total=0,atual=0;
+  for(const p of seq){
+    if(p==='e')continue;
+    if(/^\d/.test(p)){atual+=parseFloat(p.replace(',','.'));continue;}
+    const v=NUMS_EXT[p];if(v===undefined)continue;
+    if(v===1000||v===1000000){atual=(atual===0?1:atual)*v;total+=atual;atual=0;}
+    else atual+=v;
+  }
+  return total+atual;
+}
+function extrairValorVoz(texto){
+  const t=texto.toLowerCase();
+  const toks=_tokVF(t);
+  const idxR=toks.findIndex(x=>x==='reais'||x==='real');
+  if(idxR>0){
+    let i=idxR-1;const seq=[];
+    while(i>=0&&(_ehNumTok(toks[i])||toks[i]==='e')){seq.unshift(toks[i]);i--;}
+    if(seq.length>0){const v=_seqToNum(seq);if(v>0)return v;}
+  }
+  const idxM=toks.findIndex(x=>/^mil(h[aã]o|h[oõ]es)?$/.test(x));
+  if(idxM>=0){
+    let ini=idxM,fim=idxM;
+    while(ini>0&&(_ehNumTok(toks[ini-1])||toks[ini-1]==='e'))ini--;
+    while(fim<toks.length-1&&(_ehNumTok(toks[fim+1])||toks[fim+1]==='e'))fim++;
+    const v=_seqToNum(toks.slice(ini,fim+1));if(v>0)return v;
+  }
+  return null;
+}
 function isoDateLocal(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+
 
 function parseDataFala(t){
   if(/\bhoje\b/.test(t))return{iso:isoDateLocal(hoje),achou:true};
@@ -3343,6 +3384,10 @@ function parseParcelasFala(t){
 }
 
 function parseValorFala(tOriginal){
+  // 1. Tenta números por extenso ("cinco mil reais", "duzentos e cinquenta")
+  const vExt=extrairValorVoz(tOriginal);
+  if(vExt!==null)return vExt;
+  // 2. Fallback: extrai dígitos do texto limpo
   let m=tOriginal.match(/r\$\s*([\d.,]+)/);
   if(!m)m=tOriginal.match(/([\d.,]+)\s*reais/);
   if(!m){
