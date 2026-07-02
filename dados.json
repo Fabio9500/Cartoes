@@ -11861,6 +11861,13 @@
       "venc": 15,
       "fechDias": 5,
       "tag": "santander"
+    },
+    "cartão_american": {
+      "nome": "American",
+      "banco": "Bradesco",
+      "venc": 7,
+      "fechDias": 8,
+      "tag": "bradesco"
     }
   },
   "usuarios": [
