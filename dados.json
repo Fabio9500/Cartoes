@@ -10718,6 +10718,19 @@
       "venc": "2026-07-15",
       "categoria": "Diversos",
       "memo": "Trident"
+    },
+    {
+      "uid": "mr3jkr6gzskd",
+      "compraId": "mr3jkr6g61bh",
+      "desc": "Cond. C. Jardim 1102",
+      "dataCompra": "2026-06-30",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 712.43,
+      "venc": "2026-08-10",
+      "categoria": "Diversos",
+      "memo": "Mes de Junho (acordo)"
     }
   ],
   "limites": {
@@ -10727,7 +10740,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 45769.430000000015
+      "usado": 46481.860000000015
     },
     "bradesco20": {
       "total": 170000,
