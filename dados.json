@@ -10796,6 +10796,19 @@
       "venc": "2026-12-10",
       "categoria": "Diversos",
       "memo": "Assinatura iffod"
+    },
+    {
+      "uid": "mr3kld0hkp6d",
+      "compraId": "mr3kld0hwt4m",
+      "desc": "BRADESCO Capitalizacao",
+      "dataCompra": "2026-07-02",
+      "cartao": "bradesco20",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 109.46,
+      "venc": "2026-07-20",
+      "categoria": "Outros",
+      "memo": "Ecopremeavel Capitalizacao"
     }
   ],
   "limites": {
@@ -10809,7 +10822,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 19832.289999999994
+      "usado": 19941.749999999993
     },
     "santander": {
       "total": 250000,
