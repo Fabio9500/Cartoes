@@ -11854,7 +11854,15 @@
       "nome": "Diversos"
     }
   ],
-  "cartoesCustom": {},
+  "cartoesCustom": {
+    "santander": {
+      "nome": "Santander",
+      "banco": "Santander",
+      "venc": 15,
+      "fechDias": 5,
+      "tag": "santander"
+    }
+  },
   "usuarios": [
     {
       "id": "mr016f6govir",
