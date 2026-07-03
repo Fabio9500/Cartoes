@@ -11145,6 +11145,150 @@
       "valorParcela": 2916.66,
       "venc": "2027-07-10",
       "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rcetf",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 1,
+      "valorParcela": 1791.74,
+      "venc": "2026-07-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rbbdf",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 2,
+      "valorParcela": 1791.66,
+      "venc": "2026-08-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rpl8z",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 3,
+      "valorParcela": 1791.66,
+      "venc": "2026-09-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5r9cud",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 4,
+      "valorParcela": 1791.66,
+      "venc": "2026-10-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rbpjx",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 5,
+      "valorParcela": 1791.66,
+      "venc": "2026-11-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rod95",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 6,
+      "valorParcela": 1791.66,
+      "venc": "2026-12-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rpchi",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 7,
+      "valorParcela": 1791.66,
+      "venc": "2027-01-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rpj3h",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 8,
+      "valorParcela": 1791.66,
+      "venc": "2027-02-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5r8e34",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 9,
+      "valorParcela": 1791.66,
+      "venc": "2027-03-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5re56o",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 10,
+      "valorParcela": 1791.66,
+      "venc": "2027-04-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rqlic",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 11,
+      "valorParcela": 1791.66,
+      "venc": "2027-05-15",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46wb5rerb9",
+      "compraId": "mr46wb5rdmra",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 12,
+      "parcela": 12,
+      "valorParcela": 1791.66,
+      "venc": "2027-06-15",
+      "memo": "Capitação de Capital"
     }
   ],
   "limites": {
@@ -11162,7 +11306,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 168991.4599999999
+      "usado": 190491.4599999999
     },
     "picpay": {
       "total": 30000,
