@@ -11001,6 +11001,150 @@
       "venc": "2026-08-10",
       "categoria": "Diversos",
       "memo": "Folhas de Eternit"
+    },
+    {
+      "uid": "mr46o247o8js",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 1,
+      "valorParcela": 2916.74,
+      "venc": "2026-08-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247d824",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 2,
+      "valorParcela": 2916.66,
+      "venc": "2026-09-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247d4d8",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 3,
+      "valorParcela": 2916.66,
+      "venc": "2026-10-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247uveq",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 4,
+      "valorParcela": 2916.66,
+      "venc": "2026-11-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247gsss",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 5,
+      "valorParcela": 2916.66,
+      "venc": "2026-12-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247rt9n",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 6,
+      "valorParcela": 2916.66,
+      "venc": "2027-01-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247a8h6",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 7,
+      "valorParcela": 2916.66,
+      "venc": "2027-02-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247qsfo",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 8,
+      "valorParcela": 2916.66,
+      "venc": "2027-03-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247eoot",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 9,
+      "valorParcela": 2916.66,
+      "venc": "2027-04-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o247pl5k",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 10,
+      "valorParcela": 2916.66,
+      "venc": "2027-05-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o24781jm",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 11,
+      "valorParcela": 2916.66,
+      "venc": "2027-06-10",
+      "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46o2475mim",
+      "compraId": "mr46o247fqy6",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-10",
+      "cartao": "bradesco10",
+      "nParcelas": 12,
+      "parcela": 12,
+      "valorParcela": 2916.66,
+      "venc": "2027-07-10",
+      "memo": "Capitação de Capital"
     }
   ],
   "limites": {
@@ -11010,7 +11154,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 46599.48000000002
+      "usado": 81599.48000000001
     },
     "bradesco20": {
       "total": 170000,
