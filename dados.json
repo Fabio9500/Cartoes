@@ -11868,6 +11868,13 @@
       "venc": 7,
       "fechDias": 8,
       "tag": "bradesco"
+    },
+    "picpay": {
+      "nome": "American",
+      "banco": "Bradesco",
+      "venc": 7,
+      "fechDias": 8,
+      "tag": "bradesco"
     }
   },
   "usuarios": [
