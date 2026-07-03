@@ -10975,6 +10975,19 @@
       "valorParcela": 1958.37,
       "venc": "2027-07-07",
       "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mr46hzwcjo0y",
+      "compraId": "mr46hzwc4z4l",
+      "desc": "Dengo",
+      "dataCompra": "2026-07-02",
+      "cartao": "picpay",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 95.5,
+      "venc": "2026-08-07",
+      "categoria": "Entretenimento",
+      "memo": "Lanche"
     }
   ],
   "limites": {
@@ -10996,7 +11009,7 @@
     },
     "picpay": {
       "total": 30000,
-      "usado": 23500.000000000004
+      "usado": 23595.500000000004
     }
   },
   "pagamentos": {
