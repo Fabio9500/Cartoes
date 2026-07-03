@@ -10988,6 +10988,19 @@
       "venc": "2026-08-07",
       "categoria": "Entretenimento",
       "memo": "Lanche"
+    },
+    {
+      "uid": "mr46k2gumpg6",
+      "compraId": "mr46k2gtiwl6",
+      "desc": "Hidroplastik",
+      "dataCompra": "2026-07-01",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 77.87,
+      "venc": "2026-08-10",
+      "categoria": "Diversos",
+      "memo": "Folhas de Eternit"
     }
   ],
   "limites": {
@@ -10997,7 +11010,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 46521.610000000015
+      "usado": 46599.48000000002
     },
     "bradesco20": {
       "total": 170000,
