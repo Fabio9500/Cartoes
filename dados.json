@@ -10981,11 +10981,11 @@
       "compraId": "mr46hzwc4z4l",
       "desc": "Dengo",
       "dataCompra": "2026-07-02",
-      "cartao": "picpay",
+      "cartao": "bradesco1",
       "nParcelas": 1,
       "parcela": 1,
       "valorParcela": 95.5,
-      "venc": "2026-08-07",
+      "venc": "2026-08-01",
       "categoria": "Entretenimento",
       "memo": "Lanche"
     },
