@@ -1061,7 +1061,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.2';
+const VERSAO = 'v4.3';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1490,6 +1490,7 @@ async function initData(){
       compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
       fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; categorias=dados.categorias||[]; cartoesCustom=dados.cartoesCustom||{};
       usuarios=dados.usuarios||[];
+      Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       document.getElementById('loading-screen').style.display='none';
       setSyncStatus('queued');
       if(!usuarios.length){ document.getElementById('loading-msg').textContent='📴 Sem conexão e usuários ainda não configurados neste dispositivo.'; return; }
@@ -1509,6 +1510,8 @@ async function initData(){
         setSyncStatus('saving');
         await resolverFilaPendente(fila,data,ghSha);
         usuarios=data.usuarios||usuarios||[];
+        cartoesCustom=data.cartoesCustom||cartoesCustom||{};
+        Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       } else {
         compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; categorias=data.categorias||[]; cartoesCustom=data.cartoesCustom||{};
         usuarios=data.usuarios||[];
@@ -1652,7 +1655,7 @@ function calcVenc(dataCompraStr,cartaoKey,numParcela){
   const c=CARTOES[cartaoKey], dc=new Date(dataCompraStr+'T12:00:00');
   const fechOverride=(fechamentos&&fechamentos[cartaoKey])||null;
   let fechBase=fechOverride
-    ?new Date(fechOverride+'T23:59:59')
+    ?new Date(fechOverride+'T00:00:00')
     :new Date(dc.getFullYear(),dc.getMonth(),c.venc-c.fechDias);
   let vencBase=new Date(dc.getFullYear(),dc.getMonth(),c.venc);
   if(dc>fechBase){vencBase.setMonth(vencBase.getMonth()+1);}
@@ -1709,7 +1712,7 @@ function renderDashboard(){
     <div class="total-card"><div class="label">Limite disponível</div><div class="valor success">${fmt(tDisp)}</div></div>`;
   const usadoBT=usoFuturo.bradesco1+usoFuturo.bradesco10+usoFuturo.bradesco20;
   const grid=document.getElementById('cards-grid'); grid.innerHTML='';
-  Object.entries(CARTOES).forEach(([k,c])=>{
+  Object.entries(CARTOES).sort((a,b)=>a[1].venc-b[1].venc).forEach(([k,c])=>{
     const l=limites[k]||{total:0}, isBra=k.startsWith('bradesco');
     const usado=isBra?usadoBT:(usoFuturo[k]||0), total=l.total||0;
     const pct=total>0?Math.min(100,(usado/total)*100):0, cor=corLimite(pct);
@@ -1795,20 +1798,46 @@ function reabrirFatura(k){
 // ── LANÇAMENTOS ─────────────────────────────────────────────
 let filtroAtivo='todos';
 function filtrar(f,btn){filtroAtivo=f;document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLancamentos(f);}
+let _expandidos=new Set();
+function toggleParcelas(compraId){
+  if(_expandidos.has(compraId))_expandidos.delete(compraId);
+  else _expandidos.add(compraId);
+  renderLancamentos(filtroAtivo);
+}
 function renderLancamentos(filtro){
   const tbody=document.getElementById('tbody-lanc'),empty=document.getElementById('empty-lanc');
   let lista=[...compras].sort((a,b)=>{const da=a.dataCompra||a.venc,db=b.dataCompra||b.venc;return db.localeCompare(da)||b.venc.localeCompare(a.venc)||a.parcela-b.parcela;});
   if(filtro!=='todos')lista=lista.filter(c=>c.cartao===filtro);
   if(!lista.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  tbody.innerHTML=lista.map(c=>{
+  // Agrupar por compraId para collapse de parcelas
+  const seen=new Set();
+  const linhas=[];
+  lista.forEach(c=>{
+    const isParc=c.nParcelas>1;
+    if(!isParc){
+      linhas.push({tipo:'simples',c});
+      return;
+    }
+    if(c.parcela===1){
+      seen.add(c.compraId);
+      linhas.push({tipo:'grupo-header',c});
+    }
+    if(_expandidos.has(c.compraId)){
+      linhas.push({tipo:'grupo-parcela',c});
+    }
+  });
+  const mkRow=(c,opcoes={})=>{
     const dias=diasAte(c.venc),passada=dias<0;
     const dStr=passada?`<span style="color:#aaa;font-size:.7rem">Paga</span>`:dias===0?`<span style="color:var(--warn)">Hoje</span>`:dias<=5?`<span style="color:var(--warn)">${dias}d</span>`:`<span style="color:var(--muted)">${dias}d</span>`;
-    const card=CARTOES[c.cartao],pTag=`<span class="parc-tag${passada?' passada':''}">${c.parcela}/${c.nParcelas}</span>`;
+    const card=CARTOES[c.cartao]||{nome:c.cartao,tag:'tag-outros'};
     const dtC=c.dataCompra?new Date(c.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'-';
-    return `<tr style="${passada?'opacity:.55':''}">
+    const pTag=`<span class="parc-tag${passada?' passada':''}">${c.parcela}/${c.nParcelas}</span>`;
+    const indent=opcoes.indent?'padding-left:18px;':'';
+    const seta=opcoes.seta||'';
+    return `<tr style="${passada?'opacity:.55':''}${opcoes.destaque?'background:var(--surface2,#f7f7f7);':''}">
       <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${dtC}</td>
-      <td style="font-weight:600;">${c.desc}</td>
+      <td style="font-weight:600;${indent}">${seta}${c.desc}</td>
       <td style="font-size:.75rem;color:var(--muted);">${c.memo||'<span style="opacity:.3">—</span>'}</td>
       <td><span class="tag ${card.tag}">${card.nome}</span></td>
       <td>${pTag}</td><td style="font-weight:600">${fmt(c.valorParcela)}</td>
@@ -1818,6 +1847,21 @@ function renderLancamentos(filtro){
         <button class="icon-btn edit" onclick="editarParcela('${c.uid}')">✏️</button>
         <button class="icon-btn del" onclick="deletarCompra('${c.compraId}')">🗑</button>
       </div></td></tr>`;
+  };
+  tbody.innerHTML=linhas.map(({tipo,c})=>{
+    if(tipo==='simples') return mkRow(c);
+    if(tipo==='grupo-header'){
+      const exp=_expandidos.has(c.compraId);
+      const grupo=compras.filter(x=>x.compraId===c.compraId);
+      const total=grupo.reduce((s,x)=>s+x.valorParcela,0);
+      const seta=`<span onclick="toggleParcelas('${c.compraId}')" style="cursor:pointer;margin-right:5px;font-size:.85rem;display:inline-block;width:16px;text-align:center;">${exp?'▼':'▶'}</span>`;
+      const totalTag=`<span style="font-size:.68rem;color:var(--muted);font-weight:400;margin-left:6px;">(${c.nParcelas}x ${fmt(c.valorParcela)} = ${fmt(total)})</span>`;
+      return mkRow({...c,desc:c.desc+totalTag.replace(/'/g,"&#39;")},{seta,destaque:false});
+    }
+    if(tipo==='grupo-parcela'){
+      return mkRow(c,{indent:true,destaque:true});
+    }
+    return '';
   }).join('');
 }
 function editarParcela(u){
@@ -2259,7 +2303,9 @@ function imprimirSecao(secId, titulo){
   </head><body>
     <h2>${titulo}</h2>
     ${el.outerHTML}
-  </body></html>`);
+  <!-- Gerado em 02/07/2026 03:00 -->
+<!-- Gerado em 02/07/2026 23:23 -->
+</body></html>`);
   w.document.close();
   setTimeout(()=>w.print(), 500);
 }
@@ -3838,5 +3884,7 @@ boot();
   </div>
 </div>
 
+<!-- Gerado em 02/07/2026 03:00 -->
+<!-- Gerado em 02/07/2026 23:23 -->
 </body>
 </html>
