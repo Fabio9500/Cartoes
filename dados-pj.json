@@ -4519,12 +4519,38 @@
       "venc": "2026-09-05",
       "categoria": "Interno",
       "memo": "Mat. Limpeza"
+    },
+    {
+      "uid": "mr6hh37fvnvh",
+      "compraId": "mr6hh37fwu0j",
+      "desc": "Serbri",
+      "dataCompra": "2026-06-30",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 40.8,
+      "venc": "2026-08-05",
+      "categoria": "Interno",
+      "memo": "Alicate de corte"
+    },
+    {
+      "uid": "mr6hh37fomro",
+      "compraId": "mr6hh37fwu0j",
+      "desc": "Serbri",
+      "dataCompra": "2026-06-30",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 40.8,
+      "venc": "2026-09-05",
+      "categoria": "Interno",
+      "memo": "Alicate de corte"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3009105.15
+      "usado": 3009186.75
     },
     "cef": {
       "total": 20000,
