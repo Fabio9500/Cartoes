@@ -4558,12 +4558,25 @@
       "venc": "2026-08-05",
       "categoria": "Desp. Obras",
       "memo": "Discos de corte"
+    },
+    {
+      "uid": "mr6hjvr0bxtp",
+      "compraId": "mr6hjvr0q7l6",
+      "desc": "Loja Mat. Construção",
+      "dataCompra": "2026-07-01",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 159,
+      "venc": "2026-08-05",
+      "categoria": "Interno",
+      "memo": "Cimento"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3009221.62
+      "usado": 3009380.62
     },
     "cef": {
       "total": 20000,
