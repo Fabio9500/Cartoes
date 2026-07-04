@@ -4597,12 +4597,51 @@
       "venc": "2026-08-05",
       "categoria": "Interno",
       "memo": "Sepultamento (Jailton)"
+    },
+    {
+      "uid": "mr6hmcaqubwd",
+      "compraId": "mr6hmcaqxq5c",
+      "desc": "Eternity Gardem",
+      "dataCompra": "2026-07-03",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 142,
+      "venc": "2026-08-05",
+      "categoria": "Outros",
+      "memo": "Sepultamento (Jailton)"
+    },
+    {
+      "uid": "mr6hmcaqegfy",
+      "compraId": "mr6hmcaqxq5c",
+      "desc": "Eternity Gardem",
+      "dataCompra": "2026-07-03",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 142,
+      "venc": "2026-09-05",
+      "categoria": "Outros",
+      "memo": "Sepultamento (Jailton)"
+    },
+    {
+      "uid": "mr6hmcaq6wnk",
+      "compraId": "mr6hmcaqxq5c",
+      "desc": "Eternity Gardem",
+      "dataCompra": "2026-07-03",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 142,
+      "venc": "2026-10-05",
+      "categoria": "Outros",
+      "memo": "Sepultamento (Jailton)"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3009580.62
+      "usado": 3010006.62
     },
     "cef": {
       "total": 20000,
