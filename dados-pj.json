@@ -4467,12 +4467,25 @@
       "venc": "2026-10-05",
       "categoria": "Pro-Labore",
       "memo": "Mat. Ilumicação"
+    },
+    {
+      "uid": "mr6hcnp13oqa",
+      "compraId": "mr6hcnp1kh0e",
+      "desc": "Mirasul",
+      "dataCompra": "2026-06-26",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 77.19,
+      "venc": "2026-08-05",
+      "categoria": "Desp. Obras",
+      "memo": "Eletroldo"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3008837.92
+      "usado": 3008915.11
     },
     "cef": {
       "total": 20000,
