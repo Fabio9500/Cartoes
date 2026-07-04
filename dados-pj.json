@@ -4493,12 +4493,38 @@
       "venc": "2026-08-05",
       "categoria": "Desp. Obras",
       "memo": "Func. Jeovane"
+    },
+    {
+      "uid": "mr6hfa6hsorx",
+      "compraId": "mr6hfa6hyglj",
+      "desc": "Supermercado",
+      "dataCompra": "2026-06-29",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 85,
+      "venc": "2026-08-05",
+      "categoria": "Interno",
+      "memo": "Mat. Limpeza"
+    },
+    {
+      "uid": "mr6hfa6hd487",
+      "compraId": "mr6hfa6hyglj",
+      "desc": "Supermercado",
+      "dataCompra": "2026-06-29",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 85,
+      "venc": "2026-09-05",
+      "categoria": "Interno",
+      "memo": "Mat. Limpeza"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3008935.15
+      "usado": 3009105.15
     },
     "cef": {
       "total": 20000,
