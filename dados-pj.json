@@ -4571,12 +4571,25 @@
       "venc": "2026-08-05",
       "categoria": "Interno",
       "memo": "Cimento"
+    },
+    {
+      "uid": "mr6hkhpd1v59",
+      "compraId": "mr6hkhpd041e",
+      "desc": "Posto Combustivel",
+      "dataCompra": "2026-07-03",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 20,
+      "venc": "2026-08-05",
+      "categoria": "Interno",
+      "memo": "a rever"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3009380.62
+      "usado": 3009400.62
     },
     "cef": {
       "total": 20000,
