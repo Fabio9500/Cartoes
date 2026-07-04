@@ -4584,12 +4584,25 @@
       "venc": "2026-08-05",
       "categoria": "Interno",
       "memo": "a rever"
+    },
+    {
+      "uid": "mr6hlazdeosb",
+      "compraId": "mr6hlazd5cxi",
+      "desc": "Floricultura",
+      "dataCompra": "2026-07-02",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 180,
+      "venc": "2026-08-05",
+      "categoria": "Interno",
+      "memo": "Sepultamento (Jailton)"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3009400.62
+      "usado": 3009580.62
     },
     "cef": {
       "total": 20000,
