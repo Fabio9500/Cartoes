@@ -4480,12 +4480,25 @@
       "venc": "2026-08-05",
       "categoria": "Desp. Obras",
       "memo": "Eletroldo"
+    },
+    {
+      "uid": "mr6he14uspfh",
+      "compraId": "mr6he14t7hpn",
+      "desc": "Posto Combustivel",
+      "dataCompra": "2026-06-29",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 20.04,
+      "venc": "2026-08-05",
+      "categoria": "Desp. Obras",
+      "memo": "Func. Jeovane"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3008915.11
+      "usado": 3008935.15
     },
     "cef": {
       "total": 20000,
