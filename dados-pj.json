@@ -4545,12 +4545,25 @@
       "venc": "2026-09-05",
       "categoria": "Interno",
       "memo": "Alicate de corte"
+    },
+    {
+      "uid": "mr6hik33aen6",
+      "compraId": "mr6hik33a3wm",
+      "desc": "Mirasul",
+      "dataCompra": "2026-06-30",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 34.87,
+      "venc": "2026-08-05",
+      "categoria": "Desp. Obras",
+      "memo": "Discos de corte"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3009186.75
+      "usado": 3009221.62
     },
     "cef": {
       "total": 20000,
