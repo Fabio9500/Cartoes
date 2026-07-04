@@ -4428,12 +4428,51 @@
       "venc": "2026-07-20",
       "categoria": "Pro-Labore",
       "memo": "07 Balizadores"
+    },
+    {
+      "uid": "mr6hb87oe41e",
+      "compraId": "mr6hb87o3px1",
+      "desc": "Eletroled",
+      "dataCompra": "2026-06-26",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 55.98,
+      "venc": "2026-08-05",
+      "categoria": "Pro-Labore",
+      "memo": "Mat. Ilumicação"
+    },
+    {
+      "uid": "mr6hb87ogn8p",
+      "compraId": "mr6hb87o3px1",
+      "desc": "Eletroled",
+      "dataCompra": "2026-06-26",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 55.98,
+      "venc": "2026-09-05",
+      "categoria": "Pro-Labore",
+      "memo": "Mat. Ilumicação"
+    },
+    {
+      "uid": "mr6hb87orili",
+      "compraId": "mr6hb87o3px1",
+      "desc": "Eletroled",
+      "dataCompra": "2026-06-26",
+      "cartao": "c6",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 55.98,
+      "venc": "2026-10-05",
+      "categoria": "Pro-Labore",
+      "memo": "Mat. Ilumicação"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3008669.98
+      "usado": 3008837.92
     },
     "cef": {
       "total": 20000,
