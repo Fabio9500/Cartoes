@@ -11276,6 +11276,19 @@
       "venc": "2026-08-10",
       "categoria": "Entretenimento",
       "memo": "Retiro de Matheus"
+    },
+    {
+      "uid": "mra1kexzy890",
+      "compraId": "mra1kexzlwds",
+      "desc": "Atacadao",
+      "dataCompra": "2026-07-06",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 33.86,
+      "venc": "2026-08-10",
+      "categoria": "Supermercado",
+      "memo": "Red Bull"
     }
   ],
   "limites": {
@@ -11285,7 +11298,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 82569.54000000002
+      "usado": 82603.40000000002
     },
     "bradesco20": {
       "total": 170000,
