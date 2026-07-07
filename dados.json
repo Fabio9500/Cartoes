@@ -11289,6 +11289,19 @@
       "venc": "2026-08-10",
       "categoria": "Supermercado",
       "memo": "Red Bull"
+    },
+    {
+      "uid": "mra1l6oqdhtw",
+      "compraId": "mra1l6oqio72",
+      "desc": "Ass. Sportify",
+      "dataCompra": "2026-07-06",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 40.9,
+      "venc": "2026-08-10",
+      "categoria": "Entretenimento",
+      "memo": "Asinatura mensal"
     }
   ],
   "limites": {
@@ -11298,7 +11311,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 82603.40000000002
+      "usado": 82644.30000000002
     },
     "bradesco20": {
       "total": 170000,
