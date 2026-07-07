@@ -11211,6 +11211,45 @@
       "valorParcela": 1791.66,
       "venc": "2027-06-15",
       "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mra1gd7cazxq",
+      "compraId": "mra1gd7clxvf",
+      "desc": "Atacadao",
+      "dataCompra": "2026-07-04",
+      "cartao": "bradesco10",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 168.82,
+      "venc": "2026-08-10",
+      "categoria": "Supermercado",
+      "memo": "Compras mes"
+    },
+    {
+      "uid": "mra1gd7c6qju",
+      "compraId": "mra1gd7clxvf",
+      "desc": "Atacadao",
+      "dataCompra": "2026-07-04",
+      "cartao": "bradesco10",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 168.82,
+      "venc": "2026-09-10",
+      "categoria": "Supermercado",
+      "memo": "Compras mes"
+    },
+    {
+      "uid": "mra1gd7cfwz1",
+      "compraId": "mra1gd7clxvf",
+      "desc": "Atacadao",
+      "dataCompra": "2026-07-04",
+      "cartao": "bradesco10",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 168.82,
+      "venc": "2026-10-10",
+      "categoria": "Supermercado",
+      "memo": "Compras mes"
     }
   ],
   "limites": {
@@ -11220,7 +11259,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 81599.48000000001
+      "usado": 82105.94000000002
     },
     "bradesco20": {
       "total": 170000,
