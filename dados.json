@@ -11302,6 +11302,45 @@
       "venc": "2026-08-10",
       "categoria": "Entretenimento",
       "memo": "Asinatura mensal"
+    },
+    {
+      "uid": "mrcxm106bzvy",
+      "compraId": "mrcxm106pipe",
+      "desc": "Posto Jocel",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 150,
+      "venc": "2026-08-20",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
+    },
+    {
+      "uid": "mrcxm10666a6",
+      "compraId": "mrcxm106pipe",
+      "desc": "Posto Jocel",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 150,
+      "venc": "2026-09-20",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
+    },
+    {
+      "uid": "mrcxm1064cpx",
+      "compraId": "mrcxm106pipe",
+      "desc": "Posto Jocel",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 150,
+      "venc": "2026-10-20",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
     }
   ],
   "limites": {
@@ -11315,7 +11354,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 19941.749999999993
+      "usado": 20391.749999999993
     },
     "santander": {
       "total": 250000,
