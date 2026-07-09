@@ -11535,7 +11535,8 @@
   },
   "fechamentos": {
     "bradesco1": "2026-06-28",
-    "bradesco10": "2026-07-02"
+    "bradesco10": "2026-07-02",
+    "santander": "2026-07-09"
   },
   "fornecedores": [
     {
