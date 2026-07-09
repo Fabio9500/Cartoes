@@ -11497,6 +11497,58 @@
       "venc": "2027-07-20",
       "categoria": "Outros",
       "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mrcxqaxdnkvw",
+      "compraId": "mrcxqaxdafdr",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 1,
+      "valorParcela": 136.04,
+      "venc": "2026-08-20",
+      "categoria": "Entretenimento",
+      "memo": "Compra de vinhos"
+    },
+    {
+      "uid": "mrcxqaxdfzsd",
+      "compraId": "mrcxqaxdafdr",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 2,
+      "valorParcela": 136.04,
+      "venc": "2026-09-20",
+      "categoria": "Entretenimento",
+      "memo": "Compra de vinhos"
+    },
+    {
+      "uid": "mrcxqaxdowo8",
+      "compraId": "mrcxqaxdafdr",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 3,
+      "valorParcela": 136.04,
+      "venc": "2026-10-20",
+      "categoria": "Entretenimento",
+      "memo": "Compra de vinhos"
+    },
+    {
+      "uid": "mrcxqaxd199c",
+      "compraId": "mrcxqaxdafdr",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 4,
+      "valorParcela": 136.04,
+      "venc": "2026-11-20",
+      "categoria": "Entretenimento",
+      "memo": "Compra de vinhos"
     }
   ],
   "limites": {
@@ -11510,7 +11562,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 58391.749999999985
+      "usado": 58935.90999999999
     },
     "santander": {
       "total": 250000,
