@@ -11861,6 +11861,45 @@
       "venc": "2026-11-20",
       "categoria": "Diversos",
       "memo": "Compra de vinhos (Suilan)"
+    },
+    {
+      "uid": "mre92pqfnv1g",
+      "compraId": "mre92pqfmr1e",
+      "desc": "Posto Jocel",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 150,
+      "venc": "2026-08-20",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
+    },
+    {
+      "uid": "mre92pqfrcv1",
+      "compraId": "mre92pqfmr1e",
+      "desc": "Posto Jocel",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 150,
+      "venc": "2026-09-20",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
+    },
+    {
+      "uid": "mre92pqfbdho",
+      "compraId": "mre92pqfmr1e",
+      "desc": "Posto Jocel",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 150,
+      "venc": "2026-10-20",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
     }
   ],
   "limites": {
@@ -11874,7 +11913,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 99272.42999999998
+      "usado": 99722.42999999998
     },
     "santander": {
       "total": 250000,
