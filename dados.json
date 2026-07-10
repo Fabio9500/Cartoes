@@ -11925,6 +11925,19 @@
       "venc": "2026-08-10",
       "categoria": "Combustível",
       "memo": "Abastecimento"
+    },
+    {
+      "uid": "mre9gy4r8dzv",
+      "compraId": "mre9gy4rec53",
+      "desc": "Bira Queijos",
+      "dataCompra": "2026-07-07",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 100,
+      "venc": "2026-08-10",
+      "categoria": "Supermercado",
+      "memo": "Compra Manteiga"
     }
   ],
   "limites": {
@@ -11934,7 +11947,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 83005.05000000002
+      "usado": 83105.05000000002
     },
     "bradesco20": {
       "total": 170000,
