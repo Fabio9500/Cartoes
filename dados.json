@@ -11757,6 +11757,58 @@
       "venc": "2027-07-20",
       "categoria": "Outros",
       "memo": "Capitação de Capital"
+    },
+    {
+      "uid": "mre90t7ovunw",
+      "compraId": "mre90t7ogl7d",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 1,
+      "valorParcela": 448.09,
+      "venc": "2026-08-20",
+      "categoria": "Diversos",
+      "memo": "Compra de vinhos (Alcantara)"
+    },
+    {
+      "uid": "mre90t7oobuw",
+      "compraId": "mre90t7ogl7d",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 2,
+      "valorParcela": 448.09,
+      "venc": "2026-09-20",
+      "categoria": "Diversos",
+      "memo": "Compra de vinhos (Alcantara)"
+    },
+    {
+      "uid": "mre90t7otmno",
+      "compraId": "mre90t7ogl7d",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 3,
+      "valorParcela": 448.09,
+      "venc": "2026-10-20",
+      "categoria": "Diversos",
+      "memo": "Compra de vinhos (Alcantara)"
+    },
+    {
+      "uid": "mre90t7oalsm",
+      "compraId": "mre90t7ogl7d",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-09",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 4,
+      "valorParcela": 448.09,
+      "venc": "2026-11-20",
+      "categoria": "Diversos",
+      "memo": "Compra de vinhos (Alcantara)"
     }
   ],
   "limites": {
@@ -11770,7 +11822,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 96935.90999999997
+      "usado": 98728.26999999997
     },
     "santander": {
       "total": 250000,
