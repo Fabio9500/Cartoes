@@ -11900,6 +11900,18 @@
       "venc": "2026-10-20",
       "categoria": "Combustível",
       "memo": "Abastecimento"
+    },
+    {
+      "uid": "mre9cz9b02p5",
+      "compraId": "mre9cz9b1mys",
+      "desc": "Cond. C. Jardim 1102",
+      "dataCompra": "2026-07-07",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 310.75,
+      "venc": "2026-08-10",
+      "memo": "Acordo"
     }
   ],
   "limites": {
@@ -11909,7 +11921,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 82644.30000000002
+      "usado": 82955.05000000002
     },
     "bradesco20": {
       "total": 170000,
