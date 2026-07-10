@@ -11938,6 +11938,32 @@
       "venc": "2026-08-10",
       "categoria": "Supermercado",
       "memo": "Compra Manteiga"
+    },
+    {
+      "uid": "mre9io2by08i",
+      "compraId": "mre9io2byud2",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-07",
+      "cartao": "bradesco10",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 365.27,
+      "venc": "2026-08-10",
+      "categoria": "Entretenimento",
+      "memo": "Compra de vinhos (Sogra)"
+    },
+    {
+      "uid": "mre9io2b5jno",
+      "compraId": "mre9io2byud2",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-07",
+      "cartao": "bradesco10",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 365.27,
+      "venc": "2026-09-10",
+      "categoria": "Entretenimento",
+      "memo": "Compra de vinhos (Sogra)"
     }
   ],
   "limites": {
@@ -11947,7 +11973,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 83105.05000000002
+      "usado": 83835.59000000001
     },
     "bradesco20": {
       "total": 170000,
