@@ -11912,6 +11912,19 @@
       "valorParcela": 310.75,
       "venc": "2026-08-10",
       "memo": "Acordo"
+    },
+    {
+      "uid": "mre9g05w6t3w",
+      "compraId": "mre9g05wz90q",
+      "desc": "Posto",
+      "dataCompra": "2026-07-07",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 50,
+      "venc": "2026-08-10",
+      "categoria": "Combustível",
+      "memo": "Abastecimento"
     }
   ],
   "limites": {
@@ -11921,7 +11934,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 82955.05000000002
+      "usado": 83005.05000000002
     },
     "bradesco20": {
       "total": 170000,
