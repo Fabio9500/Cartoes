@@ -11964,6 +11964,32 @@
       "venc": "2026-09-10",
       "categoria": "Entretenimento",
       "memo": "Compra de vinhos (Sogra)"
+    },
+    {
+      "uid": "mre9k94yy7mm",
+      "compraId": "mre9k94ycc1h",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-07",
+      "cartao": "bradesco10",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 537.98,
+      "venc": "2026-08-10",
+      "categoria": "Entretenimento",
+      "memo": "Compra de vinhos"
+    },
+    {
+      "uid": "mre9k94yquql",
+      "compraId": "mre9k94ycc1h",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-07",
+      "cartao": "bradesco10",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 537.98,
+      "venc": "2026-09-10",
+      "categoria": "Entretenimento",
+      "memo": "Compra de vinhos"
     }
   ],
   "limites": {
@@ -11973,7 +11999,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 83835.59000000001
+      "usado": 84911.55000000002
     },
     "bradesco20": {
       "total": 170000,
