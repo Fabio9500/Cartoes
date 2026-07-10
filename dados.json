@@ -11549,6 +11549,58 @@
       "venc": "2026-11-20",
       "categoria": "Entretenimento",
       "memo": "Compra de vinhos"
+    },
+    {
+      "uid": "mre8xco25tjc",
+      "compraId": "mre8xco2nge2",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-07",
+      "cartao": "picpay",
+      "nParcelas": 4,
+      "parcela": 1,
+      "valorParcela": 404.46,
+      "venc": "2026-08-07",
+      "categoria": "Diversos",
+      "memo": "Compra de vinhos (Gilson)"
+    },
+    {
+      "uid": "mre8xco2p83n",
+      "compraId": "mre8xco2nge2",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-07",
+      "cartao": "picpay",
+      "nParcelas": 4,
+      "parcela": 2,
+      "valorParcela": 404.45,
+      "venc": "2026-09-07",
+      "categoria": "Diversos",
+      "memo": "Compra de vinhos (Gilson)"
+    },
+    {
+      "uid": "mre8xco24ovf",
+      "compraId": "mre8xco2nge2",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-07",
+      "cartao": "picpay",
+      "nParcelas": 4,
+      "parcela": 3,
+      "valorParcela": 404.45,
+      "venc": "2026-10-07",
+      "categoria": "Diversos",
+      "memo": "Compra de vinhos (Gilson)"
+    },
+    {
+      "uid": "mre8xco2h8vq",
+      "compraId": "mre8xco2nge2",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-07",
+      "cartao": "picpay",
+      "nParcelas": 4,
+      "parcela": 4,
+      "valorParcela": 404.45,
+      "venc": "2026-11-07",
+      "categoria": "Diversos",
+      "memo": "Compra de vinhos (Gilson)"
     }
   ],
   "limites": {
@@ -11570,7 +11622,7 @@
     },
     "picpay": {
       "total": 30000,
-      "usado": 23595.500000000004
+      "usado": 25213.310000000005
     }
   },
   "pagamentos": {
