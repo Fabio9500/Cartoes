@@ -4608,12 +4608,24 @@
       "parcela": 1,
       "valorParcela": 35,
       "venc": "2026-08-05"
+    },
+    {
+      "uid": "mrh7mj5yo6j9",
+      "compraId": "mrh7mj5yzd8h",
+      "desc": "Gabage",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 33.5,
+      "venc": "2026-08-05",
+      "categoria": "Serviços"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3010041.62
+      "usado": 3010075.12
     },
     "cef": {
       "total": 20000,
