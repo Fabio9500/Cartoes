@@ -4771,12 +4771,34 @@
       "parcela": 1,
       "valorParcela": 42,
       "venc": "2026-08-05"
+    },
+    {
+      "uid": "mrh7v2rzuowz",
+      "compraId": "mrh7v2rzccg4",
+      "desc": "Mirasul",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 65.1,
+      "venc": "2026-08-05"
+    },
+    {
+      "uid": "mrh7v2rzsilo",
+      "compraId": "mrh7v2rzccg4",
+      "desc": "Mirasul",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 65.1,
+      "venc": "2026-09-05"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3010979.59
+      "usado": 3011109.79
     },
     "cef": {
       "total": 20000,
