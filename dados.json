@@ -6422,11 +6422,11 @@
       "uid": "moghwqzzxu6t",
       "compraId": "moghwqzznn60",
       "desc": "Cyntia - Compras do mes",
-      "dataCompra": "2026-06-19",
+      "dataCompra": "2026-07-10",
       "cartao": "santander",
       "nParcelas": 24,
       "parcela": 4,
-      "valorParcela": 1,
+      "valorParcela": 602.3,
       "venc": "2026-08-15",
       "memo": ""
     },
