@@ -4866,6 +4866,19 @@
       "venc": "2026-09-20",
       "categoria": "Serviços",
       "memo": "Chaoas portao  Andre"
+    },
+    {
+      "uid": "mrh88rjneufo",
+      "compraId": "mrh88rjncjir",
+      "desc": "Gabage",
+      "dataCompra": "2026-07-12",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 12,
+      "venc": "2026-08-20",
+      "categoria": "Serviços",
+      "memo": "Thiner"
     }
   ],
   "limites": {
@@ -4875,7 +4888,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 20527.38000000001
+      "usado": 20539.38000000001
     },
     "mlivre": {
       "total": 20700,
