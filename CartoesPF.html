@@ -136,6 +136,43 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 .btn-pagar{background:var(--success);color:#fff;border:none;}.btn-pagar:hover{background:#155a3a;}
 .pago-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;background:#d4edda;color:var(--success);}
 .fatura-detalhe.paga{opacity:.6;}.fatura-detalhe.paga .fatura-detalhe-hd{background:#f0faf4;}
+
+/* ══════════════════════════════════════════
+   📱 RESPONSIVO — MOBILE (até 768px)
+   Mesmo código/dado do notebook — só a apresentação se adapta ao
+   tamanho da tela. Padrão já validado no ChequeSys.
+   ══════════════════════════════════════════ */
+@media (max-width: 768px){
+  header{padding:0 12px;height:52px}
+  .logo{font-size:.82rem}
+  main{padding:12px 10px}
+  .tab{padding:10px 12px;font-size:.76rem}
+
+  /* Formulários: campos lado a lado passam a empilhar */
+  .form-row{grid-template-columns:1fr!important}
+
+  /* Botões com alvo de toque maior */
+  .icon-btn{width:32px;height:32px;font-size:.9rem}
+  .btn{min-height:36px}
+
+  /* Modal com mais espaço de toque */
+  .modal{border-radius:14px}
+  .modal-hd h2{font-size:.92rem}
+
+  /* Tabelas de lançamentos viram cartões empilhados — mais fácil de ler
+     e tocar que rolar uma tabela apertada de lado */
+  .tabela-mobile-cards table,.tabela-mobile-cards thead,.tabela-mobile-cards tbody,
+  .tabela-mobile-cards th,.tabela-mobile-cards td,.tabela-mobile-cards tr{display:block}
+  .tabela-mobile-cards thead{position:absolute;top:-9999px;left:-9999px}
+  .tabela-mobile-cards tbody tr{margin-bottom:10px;border:1px solid var(--border);border-radius:var(--radius);padding:10px;background:var(--surface)}
+  .tabela-mobile-cards tbody tr:hover{background:var(--surface)}
+  .tabela-mobile-cards td{border-top:none!important;padding:5px 2px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.82rem;white-space:normal!important}
+  .tabela-mobile-cards td::before{content:attr(data-label);font-weight:700;color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
+  .tabela-mobile-cards td:last-child{justify-content:flex-start;padding-top:8px;margin-top:4px;border-top:1px solid var(--border)!important}
+  .tabela-mobile-cards td:last-child::before{display:none}
+  .tabela-mobile-cards td:last-child .action-btns{width:100%;justify-content:flex-start}
+}
+
 @media print{
   header,.tabs,.table-toolbar,.action-btns,.btn,.icon-btn,.modal-overlay,.no-print{display:none!important;}
   body{background:#fff!important;font-size:11px;}main{padding:0!important;max-width:none!important;}
@@ -347,7 +384,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div style="flex:1"></div>
     <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button>
   </div>
-  <div class="tbl-wrap">
+  <div class="tbl-wrap tabela-mobile-cards">
     <table>
       <thead><tr><th>Dt. Compra</th><th>Fornecedor</th><th>Memorando</th><th>Cartão</th><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Status</th><th class="no-print"></th></tr></thead>
       <tbody id="tbody-lanc"></tbody>
@@ -1061,7 +1098,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.3';
+const VERSAO = 'v4.4';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1836,14 +1873,14 @@ function renderLancamentos(filtro){
     const indent=opcoes.indent?'padding-left:18px;':'';
     const seta=opcoes.seta||'';
     return `<tr style="${passada?'opacity:.55':''}${opcoes.destaque?'background:var(--surface2,#f7f7f7);':''}">
-      <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${dtC}</td>
-      <td style="font-weight:600;${indent}">${seta}${c.desc}</td>
-      <td style="font-size:.75rem;color:var(--muted);">${c.memo||'<span style="opacity:.3">—</span>'}</td>
-      <td><span class="tag ${card.tag}">${card.nome}</span></td>
-      <td>${pTag}</td><td style="font-weight:600">${fmt(c.valorParcela)}</td>
-      <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;white-space:nowrap">${new Date(c.venc+'T12:00:00').toLocaleDateString('pt-BR')}</td>
-      <td>${dStr}</td>
-      <td class="no-print"><div class="action-btns">
+      <td data-label="Dt. Compra" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${dtC}</td>
+      <td data-label="Fornecedor" style="font-weight:600;${indent}">${seta}${c.desc}</td>
+      <td data-label="Memorando" style="font-size:.75rem;color:var(--muted);">${c.memo||'<span style="opacity:.3">—</span>'}</td>
+      <td data-label="Cartão"><span class="tag ${card.tag}">${card.nome}</span></td>
+      <td data-label="Parcela">${pTag}</td><td data-label="Valor" style="font-weight:600">${fmt(c.valorParcela)}</td>
+      <td data-label="Vencimento" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;white-space:nowrap">${new Date(c.venc+'T12:00:00').toLocaleDateString('pt-BR')}</td>
+      <td data-label="Status">${dStr}</td>
+      <td data-label="" class="no-print"><div class="action-btns">
         <button class="icon-btn edit" onclick="editarParcela('${c.uid}')">✏️</button>
         <button class="icon-btn del" onclick="deletarCompra('${c.compraId}')">🗑</button>
       </div></td></tr>`;
@@ -3886,5 +3923,6 @@ boot();
 
 <!-- Gerado em 02/07/2026 03:00 -->
 <!-- Gerado em 02/07/2026 23:23 -->
+<!-- Gerado em 11/07/2026 15:10 -->
 </body>
 </html>
