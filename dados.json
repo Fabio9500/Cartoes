@@ -11860,6 +11860,19 @@
       "venc": "2026-08-10",
       "categoria": "Supermercado",
       "memo": "Papel Higienico"
+    },
+    {
+      "uid": "mrh6wsyabo0k",
+      "compraId": "mrh6wsyaurnu",
+      "desc": "Amazon",
+      "dataCompra": "2026-07-11",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 88.18,
+      "venc": "2026-08-10",
+      "categoria": "Supermercado",
+      "memo": "Trident"
     }
   ],
   "limites": {
@@ -11869,7 +11882,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 84970.56000000003
+      "usado": 85058.74000000002
     },
     "bradesco20": {
       "total": 170000,
