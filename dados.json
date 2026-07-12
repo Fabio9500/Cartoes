@@ -8179,7 +8179,8 @@
       "parcela": 1,
       "valorParcela": 166.66,
       "venc": "2026-06-15",
-      "pago": true
+      "pago": true,
+      "memo": ""
     },
     {
       "uid": "mozggl3ibho2",
@@ -8189,8 +8190,9 @@
       "cartao": "santander",
       "nParcelas": 7,
       "parcela": 2,
-      "valorParcela": 166.66,
-      "venc": "2026-07-15"
+      "valorParcela": 1,
+      "venc": "2026-07-15",
+      "memo": ""
     },
     {
       "uid": "mozggl3i1ljs",
@@ -8201,7 +8203,8 @@
       "nParcelas": 7,
       "parcela": 3,
       "valorParcela": 166.66,
-      "venc": "2026-08-15"
+      "venc": "2026-08-15",
+      "memo": ""
     },
     {
       "uid": "mozggl3i9k2p",
@@ -8212,7 +8215,8 @@
       "nParcelas": 7,
       "parcela": 4,
       "valorParcela": 166.66,
-      "venc": "2026-09-15"
+      "venc": "2026-09-15",
+      "memo": ""
     },
     {
       "uid": "mozggl3iwf2d",
@@ -8223,7 +8227,8 @@
       "nParcelas": 7,
       "parcela": 5,
       "valorParcela": 166.66,
-      "venc": "2026-10-15"
+      "venc": "2026-10-15",
+      "memo": ""
     },
     {
       "uid": "mozggl3ij4sw",
@@ -8234,7 +8239,8 @@
       "nParcelas": 7,
       "parcela": 6,
       "valorParcela": 166.66,
-      "venc": "2026-11-15"
+      "venc": "2026-11-15",
+      "memo": ""
     },
     {
       "uid": "mozggl3ibmle",
@@ -8245,7 +8251,8 @@
       "nParcelas": 7,
       "parcela": 7,
       "valorParcela": 166.66,
-      "venc": "2026-12-15"
+      "venc": "2026-12-15",
+      "memo": ""
     },
     {
       "uid": "mozgjcv7mqjb",
