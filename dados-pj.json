@@ -4694,12 +4694,34 @@
       "parcela": 2,
       "valorParcela": 41,
       "venc": "2026-09-05"
+    },
+    {
+      "uid": "mrh7powg05xf",
+      "compraId": "mrh7powgivv4",
+      "desc": "Gabage",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 31.2,
+      "venc": "2026-08-05"
+    },
+    {
+      "uid": "mrh7powgong7",
+      "compraId": "mrh7powgivv4",
+      "desc": "Gabage",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 31.2,
+      "venc": "2026-09-05"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3010510.12
+      "usado": 3010572.52
     },
     "cef": {
       "total": 20000,
