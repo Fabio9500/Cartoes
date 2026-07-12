@@ -9847,18 +9847,6 @@
       "categoria": "Combustível"
     },
     {
-      "uid": "mqn860jwd3h3",
-      "compraId": "mqn860jwtuoq",
-      "desc": "Claude credito",
-      "dataCompra": "2026-06-16",
-      "cartao": "santander",
-      "nParcelas": 1,
-      "parcela": 1,
-      "valorParcela": 21.33,
-      "venc": "2026-07-15",
-      "categoria": "Educação"
-    },
-    {
       "uid": "mqn870afaor0",
       "compraId": "mqn870afo5lu",
       "desc": "UnossoBar",
