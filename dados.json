@@ -12094,6 +12094,84 @@
       "venc": "2026-07-15",
       "categoria": "Supermercado",
       "memo": "Compras Semana"
+    },
+    {
+      "uid": "mrhrzg1vx4d7",
+      "compraId": "mrhrzg1vpnkp",
+      "desc": "Apple",
+      "dataCompra": "2026-07-03",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 1,
+      "valorParcela": 29.9,
+      "venc": "2026-07-15",
+      "categoria": "Entretenimento",
+      "memo": "Ass. Apple TV"
+    },
+    {
+      "uid": "mrhrzg1vfagn",
+      "compraId": "mrhrzg1vpnkp",
+      "desc": "Apple",
+      "dataCompra": "2026-07-03",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 2,
+      "valorParcela": 29.9,
+      "venc": "2026-08-15",
+      "categoria": "Entretenimento",
+      "memo": "Ass. Apple TV"
+    },
+    {
+      "uid": "mrhrzg1vk8nx",
+      "compraId": "mrhrzg1vpnkp",
+      "desc": "Apple",
+      "dataCompra": "2026-07-03",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 3,
+      "valorParcela": 29.9,
+      "venc": "2026-09-15",
+      "categoria": "Entretenimento",
+      "memo": "Ass. Apple TV"
+    },
+    {
+      "uid": "mrhrzg1vsfyq",
+      "compraId": "mrhrzg1vpnkp",
+      "desc": "Apple",
+      "dataCompra": "2026-07-03",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 4,
+      "valorParcela": 29.9,
+      "venc": "2026-10-15",
+      "categoria": "Entretenimento",
+      "memo": "Ass. Apple TV"
+    },
+    {
+      "uid": "mrhrzg1vkys6",
+      "compraId": "mrhrzg1vpnkp",
+      "desc": "Apple",
+      "dataCompra": "2026-07-03",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 5,
+      "valorParcela": 29.9,
+      "venc": "2026-11-15",
+      "categoria": "Entretenimento",
+      "memo": "Ass. Apple TV"
+    },
+    {
+      "uid": "mrhrzg1vt1zq",
+      "compraId": "mrhrzg1vpnkp",
+      "desc": "Apple",
+      "dataCompra": "2026-07-03",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 6,
+      "valorParcela": 29.9,
+      "venc": "2026-12-15",
+      "categoria": "Entretenimento",
+      "memo": "Ass. Apple TV"
     }
   ],
   "limites": {
@@ -12111,7 +12189,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 191410.9099999999
+      "usado": 191590.30999999988
     },
     "picpay": {
       "total": 30000,
