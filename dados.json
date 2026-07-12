@@ -11873,6 +11873,19 @@
       "venc": "2026-08-10",
       "categoria": "Supermercado",
       "memo": "Trident"
+    },
+    {
+      "uid": "mrh6y2286toh",
+      "compraId": "mrh6y228hwhr",
+      "desc": "Amazon",
+      "dataCompra": "2026-07-11",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 181.8,
+      "venc": "2026-08-10",
+      "categoria": "Farmácia",
+      "memo": "Centrium 50+"
     }
   ],
   "limites": {
@@ -11882,7 +11895,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 85058.74000000002
+      "usado": 85240.54000000002
     },
     "bradesco20": {
       "total": 170000,
