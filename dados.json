@@ -11834,6 +11834,19 @@
       "venc": "2026-09-10",
       "categoria": "Entretenimento",
       "memo": "Compra de vinhos"
+    },
+    {
+      "uid": "mrh6uj6ihl84",
+      "compraId": "mrh6uj6izlo2",
+      "desc": "Amazon",
+      "dataCompra": "2026-07-11",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 41.02,
+      "venc": "2026-08-10",
+      "categoria": "Supermercado",
+      "memo": "Pasta"
     }
   ],
   "limites": {
@@ -11843,7 +11856,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 84911.55000000002
+      "usado": 84952.57000000002
     },
     "bradesco20": {
       "total": 170000,
