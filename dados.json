@@ -12042,6 +12042,32 @@
       "venc": "2026-12-15",
       "categoria": "Serviços",
       "memo": "04 Lixadeiras Peq.  6X"
+    },
+    {
+      "uid": "mrhrvrm1ve4x",
+      "compraId": "mrhrvrm14ta6",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-06-30",
+      "cartao": "santander",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 88.49,
+      "venc": "2026-07-15",
+      "categoria": "Moradia",
+      "memo": "Liquidificador  2X"
+    },
+    {
+      "uid": "mrhrvrm1klc3",
+      "compraId": "mrhrvrm14ta6",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-06-30",
+      "cartao": "santander",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 88.48,
+      "venc": "2026-08-15",
+      "categoria": "Moradia",
+      "memo": "Liquidificador  2X"
     }
   ],
   "limites": {
@@ -12059,7 +12085,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 191134.9799999999
+      "usado": 191311.9499999999
     },
     "picpay": {
       "total": 30000,
