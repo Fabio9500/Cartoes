@@ -4884,5 +4884,35 @@
       "data": "2026-06-22",
       "total": 4136.7699999999995
     }
-  }
+  },
+  "fechamentos": {},
+  "fornecedores": [],
+  "categorias": [],
+  "cartoesCustom": {},
+  "usuarios": [
+    {
+      "id": "mrh7zpwh0cdu",
+      "nome": "Fabio",
+      "login": "fabio",
+      "hash": "fc613b4dfd6736a7bd268c8a0e74ed0d1c04a959f59dd74ef2874983fd443fc9",
+      "perfil": "master",
+      "ativo": true
+    },
+    {
+      "id": "mrh7zpwsudv5",
+      "nome": "Alice",
+      "login": "alice",
+      "hash": "2bd806c97f0e00af1a1fc3328fa763a9269723c8db8fac4f93af71db186d6e90",
+      "perfil": "operador",
+      "ativo": true
+    },
+    {
+      "id": "mrh7zpwtkkeq",
+      "nome": "Bruno",
+      "login": "bruno",
+      "hash": "ccc68482d9e0eee0789e64c7674421076738f8836857ea89bcd0afb832bf3fc3",
+      "perfil": "operador",
+      "ativo": true
+    }
+  ]
 }
