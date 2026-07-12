@@ -11899,6 +11899,19 @@
       "venc": "2026-08-20",
       "categoria": "Entretenimento",
       "memo": "Pizzaria"
+    },
+    {
+      "uid": "mrh71p7ypdkw",
+      "compraId": "mrh71p7ycizy",
+      "desc": "Rest. Jandis",
+      "dataCompra": "2026-07-11",
+      "cartao": "bradesco20",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 155.5,
+      "venc": "2026-08-20",
+      "categoria": "Entretenimento",
+      "memo": "Almoco Familia"
     }
   ],
   "limites": {
@@ -11912,7 +11925,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 99924.42999999998
+      "usado": 100079.92999999998
     },
     "santander": {
       "total": 250000,
