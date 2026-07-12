@@ -12068,6 +12068,19 @@
       "venc": "2026-08-15",
       "categoria": "Moradia",
       "memo": "Liquidificador  2X"
+    },
+    {
+      "uid": "mrhrwxww3cw6",
+      "compraId": "mrhrwxwwm2oa",
+      "desc": "Atacadão",
+      "dataCompra": "2026-06-30",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 52.31,
+      "venc": "2026-07-15",
+      "categoria": "Supermercado",
+      "memo": "Compras semana"
     }
   ],
   "limites": {
@@ -12085,7 +12098,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 191311.9499999999
+      "usado": 191364.2599999999
     },
     "picpay": {
       "total": 30000,
