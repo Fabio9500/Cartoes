@@ -4817,6 +4817,18 @@
       "valorParcela": 239,
       "venc": "2026-08-20",
       "memo": "Agua mineral"
+    },
+    {
+      "uid": "mrh84534lbrf",
+      "compraId": "mrh84534llzu",
+      "desc": "DAVILLA CAMISETAS",
+      "dataCompra": "2026-07-12",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 16.9,
+      "venc": "2026-08-20",
+      "memo": "Camisa"
     }
   ],
   "limites": {
@@ -4826,7 +4838,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 19697.930000000008
+      "usado": 19714.83000000001
     },
     "mlivre": {
       "total": 20700,
