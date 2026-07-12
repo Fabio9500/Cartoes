@@ -4727,12 +4727,34 @@
       "parcela": 1,
       "valorParcela": 77.19,
       "venc": "2026-08-05"
+    },
+    {
+      "uid": "mrh7sj8dx0xi",
+      "compraId": "mrh7sj8dybu9",
+      "desc": "Alumifer",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 128.94,
+      "venc": "2026-08-05"
+    },
+    {
+      "uid": "mrh7sj8dsn1y",
+      "compraId": "mrh7sj8dybu9",
+      "desc": "Alumifer",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 128.94,
+      "venc": "2026-09-05"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3010649.71
+      "usado": 3010907.59
     },
     "cef": {
       "total": 20000,
