@@ -4829,6 +4829,17 @@
       "valorParcela": 16.9,
       "venc": "2026-08-20",
       "memo": "Camisa"
+    },
+    {
+      "uid": "mrh86g0dhrm3",
+      "compraId": "mrh86g0d7ogy",
+      "desc": "PDV MATIZ TINTAS",
+      "dataCompra": "2026-07-09",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 9.03,
+      "venc": "2026-08-20"
     }
   ],
   "limites": {
@@ -4838,7 +4849,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 19714.83000000001
+      "usado": 19723.860000000008
     },
     "mlivre": {
       "total": 20700,
