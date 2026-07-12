@@ -12264,6 +12264,45 @@
       "venc": "2026-10-15",
       "categoria": "Saúde",
       "memo": "Creme Facial   3X"
+    },
+    {
+      "uid": "mrhss0yvktrr",
+      "compraId": "mrhss0yvza60",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-12",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 35.93,
+      "venc": "2026-08-15",
+      "categoria": "Supermercado",
+      "memo": "Café Gourmet    3X"
+    },
+    {
+      "uid": "mrhss0yvlb6n",
+      "compraId": "mrhss0yvza60",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-12",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 35.92,
+      "venc": "2026-09-15",
+      "categoria": "Supermercado",
+      "memo": "Café Gourmet    3X"
+    },
+    {
+      "uid": "mrhss0yvzpxb",
+      "compraId": "mrhss0yvza60",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-12",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 35.92,
+      "venc": "2026-10-15",
+      "categoria": "Supermercado",
+      "memo": "Café Gourmet    3X"
     }
   ],
   "limites": {
@@ -12281,7 +12320,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 191893.46999999988
+      "usado": 192001.23999999987
     },
     "picpay": {
       "total": 30000,
