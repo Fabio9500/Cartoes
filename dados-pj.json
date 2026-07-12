@@ -4793,6 +4793,17 @@
       "parcela": 2,
       "valorParcela": 65.1,
       "venc": "2026-09-05"
+    },
+    {
+      "uid": "mrh7z0pnt40m",
+      "compraId": "mrh7z0pn5lz2",
+      "desc": "Restaurante",
+      "dataCompra": "2026-07-09",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 327,
+      "venc": "2026-08-20"
     }
   ],
   "limites": {
@@ -4802,7 +4813,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 19131.930000000008
+      "usado": 19458.930000000008
     },
     "mlivre": {
       "total": 20700,
