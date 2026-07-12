@@ -6712,11 +6712,11 @@
       "uid": "moghxelxzkxd",
       "compraId": "moghxelwl2aw",
       "desc": "Matheus - Compras do mês",
-      "dataCompra": "2026-06-19",
+      "dataCompra": "2026-07-12",
       "cartao": "santander",
       "nParcelas": 24,
       "parcela": 4,
-      "valorParcela": 1,
+      "valorParcela": 88.84,
       "venc": "2026-08-15",
       "memo": ""
     },
