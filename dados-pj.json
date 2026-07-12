@@ -4804,6 +4804,18 @@
       "parcela": 1,
       "valorParcela": 327,
       "venc": "2026-08-20"
+    },
+    {
+      "uid": "mrh826wcy7ps",
+      "compraId": "mrh826wc8gks",
+      "desc": "Distribuidora de Agua",
+      "dataCompra": "2026-07-09",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 239,
+      "venc": "2026-08-20",
+      "memo": "Agua mineral"
     }
   ],
   "limites": {
@@ -4813,7 +4825,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 19458.930000000008
+      "usado": 19697.930000000008
     },
     "mlivre": {
       "total": 20700,
