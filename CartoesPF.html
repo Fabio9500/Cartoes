@@ -339,7 +339,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
     <button class="dark-toggle no-print" onclick="toggleDark()" id="dark-btn">🌙</button>
     <button class="btn-lock no-print" onclick="sairUsuarioPF()" title="Trocar usuário">↩ Sair</button>
-    <button id="btn-ativar-bio-pf" onclick="_oferecerBioPF(USUARIO_ATUAL?.id)" title="Ativar Face ID / Touch ID neste dispositivo" style="display:none;background:#7c3fbf;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif;" class="no-print">🔒 Ativar Face ID</button>
+    <button id="btn-ativar-bio-pf" onclick="_oferecerBioPF(USUARIO_ATUAL?.id, true)" title="Ativar Face ID / Touch ID neste dispositivo" style="display:none;background:#7c3fbf;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif;" class="no-print">🔒 Ativar Face ID</button>
     <button onclick="abrirModalBackup()" title="Fazer backup dos dados" style="background:#2ea043;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif;" class="no-print">💾 Backup</button>
     <button class="btn btn-outline btn-sm no-print" onclick="abrirModalFala()">🎤 Falar/Texto</button>
     <button class="btn btn-primary btn-sm no-print" onclick="abrirModalCompra()">＋ Nova</button>
@@ -1099,7 +1099,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.4.1';
+const VERSAO = 'v4.4.2';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1271,9 +1271,21 @@ async function entrarComBioPF(){
   }
 }
 
-async function _oferecerBioPF(userId){
-  if(localStorage.getItem(BIO_KEY_PF))return;
-  if(!await bioPFDisp())return;
+async function _oferecerBioPF(userId, manual){
+  const stored = localStorage.getItem(BIO_KEY_PF);
+  if(stored){
+    try{
+      if(JSON.parse(stored).userId===userId){
+        if(manual) alert('✅ O Face ID / Touch ID já está ativado neste dispositivo para este usuário.');
+        return;
+      }
+    }catch(e){}
+  }
+  const disponivel = await bioPFDisp();
+  if(!disponivel){
+    if(manual) alert('⚠ Não foi possível ativar o Face ID / Touch ID neste dispositivo.\n\nPossíveis motivos:\n• O navegador usado não suporta essa função\n• Não há Face ID/Touch ID configurado no aparelho\n• A página precisa estar em conexão segura (https)');
+    return;
+  }
   if(typeof AM==='function') AM('🔒 Ativar Face ID / Touch ID?',`
     <div style="text-align:center;padding:10px 0">
       <div style="font-size:48px;margin-bottom:10px">🔒</div>
@@ -3928,6 +3940,6 @@ boot();
 
 <!-- Gerado em 02/07/2026 03:00 -->
 <!-- Gerado em 02/07/2026 23:23 -->
-<!-- Gerado em 12/07/2026 09:00 -->
+<!-- Gerado em 12/07/2026 10:30 -->
 </body>
 </html>
