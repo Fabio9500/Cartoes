@@ -4620,12 +4620,64 @@
       "valorParcela": 33.5,
       "venc": "2026-08-05",
       "categoria": "Serviços"
+    },
+    {
+      "uid": "mrh7o62f3r67",
+      "compraId": "mrh7o62fi17b",
+      "desc": "Tintauto",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 4,
+      "parcela": 1,
+      "valorParcela": 88.25,
+      "venc": "2026-08-05",
+      "categoria": "Serviços",
+      "memo": "Tinta"
+    },
+    {
+      "uid": "mrh7o62fpeg7",
+      "compraId": "mrh7o62fi17b",
+      "desc": "Tintauto",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 4,
+      "parcela": 2,
+      "valorParcela": 88.25,
+      "venc": "2026-09-05",
+      "categoria": "Serviços",
+      "memo": "Tinta"
+    },
+    {
+      "uid": "mrh7o62f11c2",
+      "compraId": "mrh7o62fi17b",
+      "desc": "Tintauto",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 4,
+      "parcela": 3,
+      "valorParcela": 88.25,
+      "venc": "2026-10-05",
+      "categoria": "Serviços",
+      "memo": "Tinta"
+    },
+    {
+      "uid": "mrh7o62fnyan",
+      "compraId": "mrh7o62fi17b",
+      "desc": "Tintauto",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 4,
+      "parcela": 4,
+      "valorParcela": 88.25,
+      "venc": "2026-11-05",
+      "categoria": "Serviços",
+      "memo": "Tinta"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3010075.12
+      "usado": 3010428.12
     },
     "cef": {
       "total": 20000,
