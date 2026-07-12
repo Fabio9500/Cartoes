@@ -4716,12 +4716,23 @@
       "parcela": 2,
       "valorParcela": 31.2,
       "venc": "2026-09-05"
+    },
+    {
+      "uid": "mrh7qglx6klr",
+      "compraId": "mrh7qglxlxt7",
+      "desc": "Mirasul",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 77.19,
+      "venc": "2026-08-05"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3010572.52
+      "usado": 3010649.71
     },
     "cef": {
       "total": 20000,
