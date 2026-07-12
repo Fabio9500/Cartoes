@@ -12081,6 +12081,19 @@
       "venc": "2026-07-15",
       "categoria": "Supermercado",
       "memo": "Compras semana"
+    },
+    {
+      "uid": "mrhrxqgmvwj7",
+      "compraId": "mrhrxqgl39uk",
+      "desc": "Atacadão",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 46.65,
+      "venc": "2026-07-15",
+      "categoria": "Supermercado",
+      "memo": "Compras Semana"
     }
   ],
   "limites": {
@@ -12098,7 +12111,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 191364.2599999999
+      "usado": 191410.9099999999
     },
     "picpay": {
       "total": 30000,
