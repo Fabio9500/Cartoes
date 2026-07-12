@@ -1407,7 +1407,8 @@
       "parcela": 1,
       "valorParcela": 42.71,
       "venc": "2026-03-15",
-      "pago": true
+      "pago": true,
+      "memo": ""
     },
     {
       "uid": "b4wdocmvjh",
@@ -1419,7 +1420,8 @@
       "parcela": 2,
       "valorParcela": 42.71,
       "venc": "2026-04-15",
-      "pago": true
+      "pago": true,
+      "memo": ""
     },
     {
       "uid": "iqg7dlgd8h",
@@ -1431,7 +1433,8 @@
       "parcela": 3,
       "valorParcela": 42.65,
       "venc": "2026-05-15",
-      "pago": true
+      "pago": true,
+      "memo": ""
     },
     {
       "uid": "hkw0jfrb25",
@@ -1443,7 +1446,8 @@
       "parcela": 4,
       "valorParcela": 42.71,
       "venc": "2026-06-15",
-      "pago": true
+      "pago": true,
+      "memo": ""
     },
     {
       "uid": "qhlm2mezu9",
@@ -1453,8 +1457,9 @@
       "cartao": "santander",
       "nParcelas": 12,
       "parcela": 5,
-      "valorParcela": 42.71,
-      "venc": "2026-07-15"
+      "valorParcela": 42.65,
+      "venc": "2026-07-15",
+      "memo": ""
     },
     {
       "uid": "r5ux0mtgkf",
@@ -1465,7 +1470,8 @@
       "nParcelas": 12,
       "parcela": 6,
       "valorParcela": 42.71,
-      "venc": "2026-08-15"
+      "venc": "2026-08-15",
+      "memo": ""
     },
     {
       "uid": "bi06bqhw1p",
@@ -1476,7 +1482,8 @@
       "nParcelas": 12,
       "parcela": 7,
       "valorParcela": 42.71,
-      "venc": "2026-09-15"
+      "venc": "2026-09-15",
+      "memo": ""
     },
     {
       "uid": "a3lxnv87o8",
@@ -1487,7 +1494,8 @@
       "nParcelas": 12,
       "parcela": 8,
       "valorParcela": 42.71,
-      "venc": "2026-10-15"
+      "venc": "2026-10-15",
+      "memo": ""
     },
     {
       "uid": "wipiccwwpx",
@@ -1498,7 +1506,8 @@
       "nParcelas": 12,
       "parcela": 9,
       "valorParcela": 42.71,
-      "venc": "2026-11-15"
+      "venc": "2026-11-15",
+      "memo": ""
     },
     {
       "uid": "0qjn01km9h",
@@ -1509,7 +1518,8 @@
       "nParcelas": 12,
       "parcela": 10,
       "valorParcela": 42.71,
-      "venc": "2026-12-15"
+      "venc": "2026-12-15",
+      "memo": ""
     },
     {
       "uid": "q720i37yl0",
@@ -1520,7 +1530,8 @@
       "nParcelas": 12,
       "parcela": 11,
       "valorParcela": 42.71,
-      "venc": "2027-01-15"
+      "venc": "2027-01-15",
+      "memo": ""
     },
     {
       "uid": "6oykh4rorp",
@@ -1531,7 +1542,8 @@
       "nParcelas": 12,
       "parcela": 12,
       "valorParcela": 42.71,
-      "venc": "2027-02-15"
+      "venc": "2027-02-15",
+      "memo": ""
     },
     {
       "uid": "lui55r2vbc",
