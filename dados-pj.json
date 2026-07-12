@@ -4749,12 +4749,23 @@
       "parcela": 2,
       "valorParcela": 128.94,
       "venc": "2026-09-05"
+    },
+    {
+      "uid": "mrh7tjt3iu9n",
+      "compraId": "mrh7tjt2u7cz",
+      "desc": "Mercado",
+      "dataCompra": "2026-07-09",
+      "cartao": "c6",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 30,
+      "venc": "2026-08-05"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3010907.59
+      "usado": 3010937.59
     },
     "cef": {
       "total": 20000,
