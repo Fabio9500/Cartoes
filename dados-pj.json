@@ -4890,6 +4890,19 @@
       "parcela": 1,
       "valorParcela": 36,
       "venc": "2026-08-20"
+    },
+    {
+      "uid": "mrh8b1jmnlhb",
+      "compraId": "mrh8b1jm388t",
+      "desc": "Itao supermercado",
+      "dataCompra": "2026-07-10",
+      "cartao": "cef",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 13.75,
+      "venc": "2026-08-20",
+      "categoria": "Supermercado",
+      "memo": "RedBull"
     }
   ],
   "limites": {
@@ -4899,7 +4912,7 @@
     },
     "cef": {
       "total": 20000,
-      "usado": 20575.38000000001
+      "usado": 20589.13000000001
     },
     "mlivre": {
       "total": 20700,
