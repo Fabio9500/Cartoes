@@ -4672,12 +4672,34 @@
       "venc": "2026-11-05",
       "categoria": "Serviços",
       "memo": "Tinta"
+    },
+    {
+      "uid": "mrh7ox1awx9r",
+      "compraId": "mrh7ox1a1rox",
+      "desc": "Casa forte",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 41,
+      "venc": "2026-08-05"
+    },
+    {
+      "uid": "mrh7ox1a5yng",
+      "compraId": "mrh7ox1a1rox",
+      "desc": "Casa forte",
+      "dataCompra": "2026-07-11",
+      "cartao": "c6",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 41,
+      "venc": "2026-09-05"
     }
   ],
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 3010428.12
+      "usado": 3010510.12
     },
     "cef": {
       "total": 20000,
