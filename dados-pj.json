@@ -4885,7 +4885,9 @@
       "total": 4136.7699999999995
     }
   },
-  "fechamentos": {},
+  "fechamentos": {
+    "cef": "2026-07-12"
+  },
   "fornecedores": [],
   "categorias": [],
   "cartoesCustom": {},
