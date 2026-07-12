@@ -6668,7 +6668,8 @@
       "parcela": 1,
       "valorParcela": 813.73,
       "venc": "2026-05-15",
-      "pago": true
+      "pago": true,
+      "memo": ""
     },
     {
       "uid": "moghxelxtdxf",
@@ -6680,7 +6681,8 @@
       "parcela": 2,
       "valorParcela": 859.59,
       "venc": "2026-06-15",
-      "pago": true
+      "pago": true,
+      "memo": ""
     },
     {
       "uid": "moghxelxk4w8",
@@ -6690,8 +6692,9 @@
       "cartao": "santander",
       "nParcelas": 24,
       "parcela": 3,
-      "valorParcela": 485.6,
-      "venc": "2026-07-15"
+      "valorParcela": 1,
+      "venc": "2026-07-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxzkxd",
@@ -6702,7 +6705,8 @@
       "nParcelas": 24,
       "parcela": 4,
       "valorParcela": 1,
-      "venc": "2026-08-15"
+      "venc": "2026-08-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxcu8l",
@@ -6713,7 +6717,8 @@
       "nParcelas": 24,
       "parcela": 5,
       "valorParcela": 1,
-      "venc": "2026-09-15"
+      "venc": "2026-09-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxy5os",
@@ -6724,7 +6729,8 @@
       "nParcelas": 24,
       "parcela": 6,
       "valorParcela": 1,
-      "venc": "2026-10-15"
+      "venc": "2026-10-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxaqtn",
@@ -6735,7 +6741,8 @@
       "nParcelas": 24,
       "parcela": 7,
       "valorParcela": 1,
-      "venc": "2026-11-15"
+      "venc": "2026-11-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxgud5",
@@ -6746,7 +6753,8 @@
       "nParcelas": 24,
       "parcela": 8,
       "valorParcela": 1,
-      "venc": "2026-12-15"
+      "venc": "2026-12-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxosc7",
@@ -6757,7 +6765,8 @@
       "nParcelas": 24,
       "parcela": 9,
       "valorParcela": 1,
-      "venc": "2027-01-15"
+      "venc": "2027-01-15",
+      "memo": ""
     },
     {
       "uid": "moghxelx14x3",
@@ -6768,7 +6777,8 @@
       "nParcelas": 24,
       "parcela": 10,
       "valorParcela": 1,
-      "venc": "2027-02-15"
+      "venc": "2027-02-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxpf0i",
@@ -6779,7 +6789,8 @@
       "nParcelas": 24,
       "parcela": 11,
       "valorParcela": 1,
-      "venc": "2027-03-15"
+      "venc": "2027-03-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxbhgs",
@@ -6790,7 +6801,8 @@
       "nParcelas": 24,
       "parcela": 12,
       "valorParcela": 1,
-      "venc": "2027-04-15"
+      "venc": "2027-04-15",
+      "memo": ""
     },
     {
       "uid": "moghxelx5qml",
@@ -6801,7 +6813,8 @@
       "nParcelas": 24,
       "parcela": 13,
       "valorParcela": 1,
-      "venc": "2027-05-15"
+      "venc": "2027-05-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxzqf4",
@@ -6812,7 +6825,8 @@
       "nParcelas": 24,
       "parcela": 14,
       "valorParcela": 1,
-      "venc": "2027-06-15"
+      "venc": "2027-06-15",
+      "memo": ""
     },
     {
       "uid": "moghxelx2u0k",
@@ -6835,7 +6849,8 @@
       "nParcelas": 24,
       "parcela": 16,
       "valorParcela": 1,
-      "venc": "2027-08-15"
+      "venc": "2027-08-15",
+      "memo": ""
     },
     {
       "uid": "moghxelx9i1h",
@@ -6846,7 +6861,8 @@
       "nParcelas": 24,
       "parcela": 17,
       "valorParcela": 1,
-      "venc": "2027-09-15"
+      "venc": "2027-09-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxddjw",
@@ -6857,7 +6873,8 @@
       "nParcelas": 24,
       "parcela": 18,
       "valorParcela": 1,
-      "venc": "2027-10-15"
+      "venc": "2027-10-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxu7ve",
@@ -6868,7 +6885,8 @@
       "nParcelas": 24,
       "parcela": 19,
       "valorParcela": 1,
-      "venc": "2027-11-15"
+      "venc": "2027-11-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxlo2j",
@@ -6879,7 +6897,8 @@
       "nParcelas": 24,
       "parcela": 20,
       "valorParcela": 1,
-      "venc": "2027-12-15"
+      "venc": "2027-12-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxu16n",
@@ -6890,7 +6909,8 @@
       "nParcelas": 24,
       "parcela": 21,
       "valorParcela": 1,
-      "venc": "2028-01-15"
+      "venc": "2028-01-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxcw9m",
@@ -6901,7 +6921,8 @@
       "nParcelas": 24,
       "parcela": 22,
       "valorParcela": 1,
-      "venc": "2028-02-15"
+      "venc": "2028-02-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxc7m5",
@@ -6912,7 +6933,8 @@
       "nParcelas": 24,
       "parcela": 23,
       "valorParcela": 1,
-      "venc": "2028-03-15"
+      "venc": "2028-03-15",
+      "memo": ""
     },
     {
       "uid": "moghxelxtr7x",
@@ -6923,7 +6945,8 @@
       "nParcelas": 24,
       "parcela": 24,
       "valorParcela": 1,
-      "venc": "2028-04-15"
+      "venc": "2028-04-15",
+      "memo": ""
     },
     {
       "uid": "mogi6rxioa7q",
