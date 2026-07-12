@@ -11847,6 +11847,19 @@
       "venc": "2026-08-10",
       "categoria": "Supermercado",
       "memo": "Pasta"
+    },
+    {
+      "uid": "mrh6vfkarkhm",
+      "compraId": "mrh6vfka8j8q",
+      "desc": "Amazon",
+      "dataCompra": "2026-07-11",
+      "cartao": "bradesco10",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 17.99,
+      "venc": "2026-08-10",
+      "categoria": "Supermercado",
+      "memo": "Papel Higienico"
     }
   ],
   "limites": {
@@ -11856,7 +11869,7 @@
     },
     "bradesco10": {
       "total": 170000,
-      "usado": 84952.57000000002
+      "usado": 84970.56000000003
     },
     "bradesco20": {
       "total": 170000,
