@@ -4802,8 +4802,9 @@
       "cartao": "cef",
       "nParcelas": 1,
       "parcela": 1,
-      "valorParcela": 327,
-      "venc": "2026-08-20"
+      "valorParcela": 347,
+      "venc": "2026-08-20",
+      "memo": ""
     },
     {
       "uid": "mrh826wcy7ps",
