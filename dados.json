@@ -11912,6 +11912,58 @@
       "venc": "2026-08-20",
       "categoria": "Entretenimento",
       "memo": "Almoco Familia"
+    },
+    {
+      "uid": "mrhrs2lcy3j2",
+      "compraId": "mrhrs2lc1ajf",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 4,
+      "parcela": 1,
+      "valorParcela": 60.38,
+      "venc": "2026-07-15",
+      "categoria": "Serviços",
+      "memo": "Furadeira em 4X"
+    },
+    {
+      "uid": "mrhrs2lcy7wc",
+      "compraId": "mrhrs2lc1ajf",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 4,
+      "parcela": 2,
+      "valorParcela": 60.38,
+      "venc": "2026-08-15",
+      "categoria": "Serviços",
+      "memo": "Furadeira em 4X"
+    },
+    {
+      "uid": "mrhrs2lc7jys",
+      "compraId": "mrhrs2lc1ajf",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 4,
+      "parcela": 3,
+      "valorParcela": 60.38,
+      "venc": "2026-09-15",
+      "categoria": "Serviços",
+      "memo": "Furadeira em 4X"
+    },
+    {
+      "uid": "mrhrs2lcq12p",
+      "compraId": "mrhrs2lc1ajf",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-01",
+      "cartao": "santander",
+      "nParcelas": 4,
+      "parcela": 4,
+      "valorParcela": 60.38,
+      "venc": "2026-10-15",
+      "categoria": "Serviços",
+      "memo": "Furadeira em 4X"
     }
   ],
   "limites": {
@@ -11929,7 +11981,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 190491.4599999999
+      "usado": 190732.9799999999
     },
     "picpay": {
       "total": 30000,
