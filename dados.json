@@ -12212,6 +12212,19 @@
       "venc": "2026-12-15",
       "categoria": "Entretenimento",
       "memo": "Ass. Apple TV"
+    },
+    {
+      "uid": "mrhsn5zkdtki",
+      "compraId": "mrhsn5zkcylh",
+      "desc": "Apple",
+      "dataCompra": "2026-07-08",
+      "cartao": "santander",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 199.9,
+      "venc": "2026-08-15",
+      "categoria": "Serviços",
+      "memo": "Ass. SERASA"
     }
   ],
   "limites": {
@@ -12229,7 +12242,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 191590.30999999988
+      "usado": 191790.20999999988
     },
     "picpay": {
       "total": 30000,
