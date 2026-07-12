@@ -11964,6 +11964,84 @@
       "venc": "2026-10-15",
       "categoria": "Serviços",
       "memo": "Furadeira em 4X"
+    },
+    {
+      "uid": "mrhru81mogsm",
+      "compraId": "mrhru81m870p",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-04",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 1,
+      "valorParcela": 67,
+      "venc": "2026-07-15",
+      "categoria": "Serviços",
+      "memo": "04 Lixadeiras Peq.  6X"
+    },
+    {
+      "uid": "mrhru81mp9ip",
+      "compraId": "mrhru81m870p",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-04",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 2,
+      "valorParcela": 67,
+      "venc": "2026-08-15",
+      "categoria": "Serviços",
+      "memo": "04 Lixadeiras Peq.  6X"
+    },
+    {
+      "uid": "mrhru81m8c39",
+      "compraId": "mrhru81m870p",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-04",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 3,
+      "valorParcela": 67,
+      "venc": "2026-09-15",
+      "categoria": "Serviços",
+      "memo": "04 Lixadeiras Peq.  6X"
+    },
+    {
+      "uid": "mrhru81m5rw2",
+      "compraId": "mrhru81m870p",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-04",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 4,
+      "valorParcela": 67,
+      "venc": "2026-10-15",
+      "categoria": "Serviços",
+      "memo": "04 Lixadeiras Peq.  6X"
+    },
+    {
+      "uid": "mrhru81mdobv",
+      "compraId": "mrhru81m870p",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-04",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 5,
+      "valorParcela": 67,
+      "venc": "2026-11-15",
+      "categoria": "Serviços",
+      "memo": "04 Lixadeiras Peq.  6X"
+    },
+    {
+      "uid": "mrhru81mmbxt",
+      "compraId": "mrhru81m870p",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-04",
+      "cartao": "santander",
+      "nParcelas": 6,
+      "parcela": 6,
+      "valorParcela": 67,
+      "venc": "2026-12-15",
+      "categoria": "Serviços",
+      "memo": "04 Lixadeiras Peq.  6X"
     }
   ],
   "limites": {
@@ -11981,7 +12059,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 190732.9799999999
+      "usado": 191134.9799999999
     },
     "picpay": {
       "total": 30000,
