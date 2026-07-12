@@ -12225,6 +12225,45 @@
       "venc": "2026-08-15",
       "categoria": "Serviços",
       "memo": "Ass. SERASA"
+    },
+    {
+      "uid": "mrhspycas4e7",
+      "compraId": "mrhspycalwxy",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-12",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 34.42,
+      "venc": "2026-08-15",
+      "categoria": "Saúde",
+      "memo": "Creme Facial   3X"
+    },
+    {
+      "uid": "mrhspycas24x",
+      "compraId": "mrhspycalwxy",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-12",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 34.42,
+      "venc": "2026-09-15",
+      "categoria": "Saúde",
+      "memo": "Creme Facial   3X"
+    },
+    {
+      "uid": "mrhspycao2v7",
+      "compraId": "mrhspycalwxy",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-12",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 34.42,
+      "venc": "2026-10-15",
+      "categoria": "Saúde",
+      "memo": "Creme Facial   3X"
     }
   ],
   "limites": {
@@ -12242,7 +12281,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 191790.20999999988
+      "usado": 191893.46999999988
     },
     "picpay": {
       "total": 30000,
