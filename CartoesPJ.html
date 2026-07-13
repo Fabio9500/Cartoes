@@ -458,6 +458,10 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         <option value="bradesco">Bradesco</option>
       </select>
     </div>
+    <div>
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:4px;">Direcionamento</label>
+      <input type="text" id="rel-direcionamento" list="dl-direcionamento" placeholder="Todos" oninput="renderRelatorios()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;">
+    </div>
     <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button>
   </div>
 
@@ -953,11 +957,13 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div class="modal-bd">
       <div class="info-box" id="fala-resumo" style="display:none;"></div>
       <div class="info-box" id="fechamento-info">Selecione o cartão e a data para ver a fatura de destino.</div>
-      <div class="form-group"><label>Fornecedor</label><input type="text" id="c-desc" list="dl-fornecedor" placeholder="Ex: Leroy Merlin" autocomplete="off"></div>
+      <div class="form-group"><label>Fornecedor</label><input type="text" id="c-desc" list="dl-fornecedor" placeholder="Ex: Leroy Merlin" autocomplete="off" onchange="sugerirMemorando()"></div>
       <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="c-memo" list="dl-memorando" placeholder="Ex: Furadeira para a obra" autocomplete="off"></div>
       <datalist id="dl-fornecedor"></datalist>
       <datalist id="dl-memorando"></datalist>
       <div class="form-group"><label>Categoria</label><select id="c-categoria"><option value="">Sem categoria</option><option>Alimentação</option><option>Combustível</option><option>Educação</option><option>Entretenimento</option><option>Farmácia</option><option>Moradia</option><option>Saúde</option><option>Serviços</option><option>Supermercado</option><option>Transporte</option><option>Vestuário</option><option>Outros</option></select></div>
+      <div class="form-group"><label>Direcionamento</label><input type="text" id="c-direcionamento" list="dl-direcionamento" placeholder="Ex: Pessoal, Obra X, Empresa Y" autocomplete="off"></div>
+      <datalist id="dl-direcionamento"></datalist>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="c-data" onchange="calcularFechamento()"></div>
         <div class="form-group"><label>Valor Total (R$)</label><input type="number" id="c-valor" placeholder="0.00" step="0.01" oninput="calcularParcelas()"></div>
@@ -1008,6 +1014,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
       <div class="form-group"><label>Fornecedor</label><input type="text" id="ep-desc"></div>
       <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="ep-memo"></div>
+      <div class="form-group"><label>Direcionamento <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="ep-direcionamento" list="dl-direcionamento"></div>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="ep-datacompra"></div>
         <div class="form-group"><label>Vencimento</label><input type="date" id="ep-venc"></div>
@@ -1103,7 +1110,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.5';
+const VERSAO = 'v4.6';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1945,9 +1952,10 @@ function editarParcela(u){
   document.getElementById('ep-uid').value=u;document.getElementById('ep-compraid').value=c.compraId;
   document.getElementById('ep-desc').value=c.desc;document.getElementById('ep-valor').value=c.valorParcela;
   document.getElementById('ep-memo').value=c.memo||'';
+  const epDirecEl=document.getElementById('ep-direcionamento'); if(epDirecEl) epDirecEl.value=c.direcionamento||'';
   document.getElementById('ep-venc').value=c.venc;document.getElementById('ep-datacompra').value=c.dataCompra||'';
   document.getElementById('ep-cartao').value=c.cartao;document.getElementById('ep-cartao-original').value=c.cartao;
-  document.getElementById('ep-trocar-escopo').value='todas';
+  document.getElementById('ep-trocar-escopo').value='parcela';
   const grupo=compras.filter(x=>x.compraId===c.compraId);
   const totalAtual=grupo.reduce((a,x)=>a+x.valorParcela,0);
   const algumPago=grupo.some(x=>x.pago);
@@ -1986,6 +1994,7 @@ function atualizarReparcelarPreview(){
 function salvarEdicao(){
   const u=document.getElementById('ep-uid').value,desc=document.getElementById('ep-desc').value.trim();
   const memo=document.getElementById('ep-memo')?.value.trim()||'';
+  const direcionamento=document.getElementById('ep-direcionamento')?.value.trim()||'';
   const val=parseFloat(document.getElementById('ep-valor').value),venc=document.getElementById('ep-venc').value;
   const dataCompra=document.getElementById('ep-datacompra').value,novoCartao=document.getElementById('ep-cartao').value;
   const cartaoOrig=document.getElementById('ep-cartao-original').value,escopo=document.getElementById('ep-trocar-escopo').value;
@@ -2000,7 +2009,7 @@ function salvarEdicao(){
       const valEl=document.getElementById('ep-pe-val-'+i),vencEl=document.getElementById('ep-pe-venc-'+i);
       const vp=parseFloat(valEl&&valEl.value)||0,vc=vencEl&&vencEl.value;
       if(!vp||!vc){showToast('Preencha valor e vencimento de todas as parcelas',true);return;}
-      novosRegistros.push({uid:uid(),compraId,desc,cartao:novoCartao,dataCompra,nParcelas:nNovo,parcela:i,valorParcela:vp,venc:vc,...(memo?{memo}:{})});
+      novosRegistros.push({uid:uid(),compraId,desc,cartao:novoCartao,dataCompra,nParcelas:nNovo,parcela:i,valorParcela:vp,venc:vc,...(memo?{memo}:{}),...(direcionamento?{direcionamento}:{})});
     }
     compras=compras.filter(x=>x.compraId!==compraId).concat(novosRegistros);
     salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
@@ -2011,9 +2020,9 @@ function salvarEdicao(){
   const idx=compras.findIndex(x=>x.uid===u);if(idx<0)return;
   const trocou=novoCartao!==cartaoOrig;
   if(escopo==='todas'){
-    compras=compras.map(c=>c.compraId!==compraId?c:{...c,desc,dataCompra,cartao:novoCartao,memo});
+    compras=compras.map(c=>c.compraId!==compraId?c:{...c,desc,dataCompra,cartao:novoCartao,memo,direcionamento});
     const i2=compras.findIndex(x=>x.uid===u);if(i2>=0)compras[i2]={...compras[i2],valorParcela:val,venc};
-  }else{compras[idx]={...compras[idx],desc,valorParcela:val,venc,dataCompra,cartao:novoCartao,memo};}
+  }else{compras[idx]={...compras[idx],desc,valorParcela:val,venc,dataCompra,cartao:novoCartao,memo,direcionamento};}
   salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
   showToast(trocou?`Cartão alterado para ${CARTOES[novoCartao].nome} ✓`:'Atualizado ✓');
 }
@@ -2176,6 +2185,10 @@ function atualizarDatalistCompras(){
   compras.forEach(x=>{const m=(x.memo||'').trim();if(m)memoSet.add(m);});
   const dlM=document.getElementById('dl-memorando');
   if(dlM)dlM.innerHTML=[...memoSet].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
+  const direcSet=new Set();
+  compras.forEach(x=>{const d=(x.direcionamento||'').trim();if(d)direcSet.add(d);});
+  const dlD=document.getElementById('dl-direcionamento');
+  if(dlD)dlD.innerHTML=[...direcSet].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
 }
 function listaCats(){
   const customs=categorias.map(c=>c.nome);
@@ -2187,6 +2200,15 @@ function popularCatSelect(selId, selVal){
   const el=document.getElementById(selId);if(!el)return;
   el.innerHTML=`<option value="">Sem categoria</option>`+listaCats().map(n=>`<option${n===selVal?' selected':''}>${n}</option>`).join('');
 }
+function sugerirMemorando(){
+  const desc = document.getElementById('c-desc')?.value?.trim();
+  const campoMemo = document.getElementById('c-memo');
+  if(!desc || !campoMemo || campoMemo.value.trim()) return;
+  const doMesmoFornecedor = compras
+    .filter(c=>c.desc && c.desc.trim().toLowerCase()===desc.toLowerCase() && c.memo)
+    .sort((a,b)=>(b.dataCompra||b.venc||'').localeCompare(a.dataCompra||a.venc||''));
+  if(doMesmoFornecedor.length) campoMemo.value = doMesmoFornecedor[0].memo;
+}
 function abrirModalCompra(){
   atualizarDatalistCompras();
   popularCatSelect('c-categoria','');
@@ -2194,6 +2216,7 @@ function abrirModalCompra(){
   document.getElementById('c-desc').value='';document.getElementById('c-valor').value='';document.getElementById('c-parcelas').value='1';
   const catEl=document.getElementById('c-categoria');if(catEl)catEl.value='';
   const memoEl=document.getElementById('c-memo');if(memoEl)memoEl.value='';
+  const direcEl=document.getElementById('c-direcionamento');if(direcEl)direcEl.value='';
   const resumo=document.getElementById('fala-resumo');if(resumo){resumo.style.display='none';resumo.innerHTML='';}
   calcularFechamento();calcularParcelas();document.getElementById('modal-compra').classList.add('open');
 }
@@ -2226,8 +2249,9 @@ function salvarCompra(){
   if(!desc||!data||!valor||valor<=0){showToast('Preencha todos os campos',true);return;}
   const compraId=uid();let totalReal=0;
   const memo=document.getElementById('c-memo')?.value.trim()||'';
+  const direcionamento=document.getElementById('c-direcionamento')?.value.trim()||'';
   for(let i=1;i<=n;i++){const vVal=parseFloat(document.getElementById('pe-val-'+i).value)||0,vVenc=document.getElementById('pe-venc-'+i).value;const cat=document.getElementById("c-categoria")?.value||"";
-    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,...(cat?{categoria:cat}:{}),...(memo?{memo}:{})});totalReal+=vVal;}
+    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,...(cat?{categoria:cat}:{}),...(memo?{memo}:{}),...(direcionamento?{direcionamento}:{})});totalReal+=vVal;}
   if(!limites[cartao])limites[cartao]={total:0,usado:0};limites[cartao].usado=(limites[cartao].usado||0)+totalReal;
   salvar();fecharModal('modal-compra');renderDashboard();showToast('Compra lançada ✓');
 }
@@ -2288,6 +2312,7 @@ function renderLancamentosRel(){
   const ini=document.getElementById('sf-lanc-ini')?.value||'';
   const fim=document.getElementById('sf-lanc-fim')?.value||'9999-99-99';
   const cartao=document.getElementById('rel-cartao')?.value||'todos';
+  const direc=(document.getElementById('rel-direcionamento')?.value||'').trim().toLowerCase();
   const ordem=document.getElementById('sf-lanc-ordem')?.value||'data_desc';
   // Filtrar compras (agrupa por compraId, usa dataCompra para filtro)
   const grupos={};
@@ -2297,9 +2322,10 @@ function renderLancamentosRel(){
     if(iniF&&dc<iniF)return;
     if(dc>fim)return;
     if(cartao!=='todos'&&x.cartao!==cartao)return;
+    if(direc&&!(x.direcionamento||'').toLowerCase().includes(direc))return;
     if(busca&&!x.desc.toLowerCase().includes(busca)&&!(x.memo||'').toLowerCase().includes(busca))return;
     if(!grupos[x.compraId])grupos[x.compraId]={
-      compraId:x.compraId,desc:x.desc,memo:x.memo||'',categoria:x.categoria||'',cartao:x.cartao,
+      compraId:x.compraId,desc:x.desc,memo:x.memo||'',categoria:x.categoria||'',direcionamento:x.direcionamento||'',cartao:x.cartao,
       dataCompra:x.dataCompra||x.venc,nParcelas:x.nParcelas,
       valorParcela:x.valorParcela,total:0,
       vencMin:x.venc,vencMax:x.venc,restante:0
@@ -3759,6 +3785,67 @@ function abrirModalBackup(){
   document.getElementById('backup-ultimo').textContent=ultimoBkp?'Último backup: '+ultimoBkp:'Nenhum backup registrado ainda.';
 }
 
+// ══════════════════════════════════════════
+// 📥 IMPORTAR BACKUP
+// ══════════════════════════════════════════
+let _backupParaImportarCartoes = null;
+function abrirImportarBackupCartoes(){
+  if(!temPermPJ('excluir')){ alert('Apenas o usuário Master pode importar um backup.'); return; }
+  fecharModal('modal-backup');
+  document.getElementById('imp-passo-1').style.display='block';
+  document.getElementById('imp-passo-2').style.display='none';
+  document.getElementById('imp-btn-passo-1').style.display='inline-flex';
+  document.getElementById('imp-btn-passo-2').style.display='none';
+  document.getElementById('imp-erro-cartoes').style.display='none';
+  const arqEl=document.getElementById('imp-arquivo-cartoes'); if(arqEl) arqEl.value='';
+  document.getElementById('modal-importar-backup').classList.add('open');
+}
+function lerArquivoImportacaoCartoes(){
+  const input=document.getElementById('imp-arquivo-cartoes');
+  const arquivo=input?.files?.[0];
+  const erroEl=document.getElementById('imp-erro-cartoes');
+  erroEl.style.display='none';
+  if(!arquivo){ erroEl.textContent='Escolha um arquivo .json primeiro.'; erroEl.style.display='block'; return; }
+  const leitor=new FileReader();
+  leitor.onload=(e)=>{
+    let dados;
+    try{ dados=JSON.parse(e.target.result); }
+    catch(err){ erroEl.textContent='Este arquivo não é um JSON válido.'; erroEl.style.display='block'; return; }
+    const camposEsperados=['compras','fornecedores','categorias'];
+    const pareceValido=camposEsperados.some(c=>Array.isArray(dados[c]));
+    if(!pareceValido){ erroEl.textContent='Este arquivo não parece ser um backup deste sistema (faltam os campos esperados).'; erroEl.style.display='block'; return; }
+    _backupParaImportarCartoes=dados;
+    mostrarComparacaoImportacaoCartoes(dados);
+  };
+  leitor.onerror=()=>{ erroEl.textContent='Não foi possível ler o arquivo.'; erroEl.style.display='block'; };
+  leitor.readAsText(arquivo,'UTF-8');
+}
+function mostrarComparacaoImportacaoCartoes(dados){
+  const atual={ 'Compras/Lançamentos':(compras||[]).length, 'Fornecedores':(fornecedores||[]).length, 'Categorias':(categorias||[]).length, 'Usuários':(usuarios||[]).length };
+  const novo={ 'Compras/Lançamentos':(dados.compras||[]).length, 'Fornecedores':(dados.fornecedores||[]).length, 'Categorias':(dados.categorias||[]).length, 'Usuários':(dados.usuarios||[]).length };
+  const linhas=Object.keys(atual).map(k=>{
+    const mudou=atual[k]!==novo[k];
+    return `<tr><td>${k}</td><td style="text-align:center">${atual[k]}</td><td style="text-align:center;font-weight:${mudou?800:400};color:${mudou?'#f0a500':'inherit'}">${novo[k]}</td></tr>`;
+  }).join('');
+  document.getElementById('imp-tabela-comparacao-cartoes').innerHTML=linhas;
+  document.getElementById('imp-passo-1').style.display='none';
+  document.getElementById('imp-passo-2').style.display='block';
+  document.getElementById('imp-btn-passo-1').style.display='none';
+  document.getElementById('imp-btn-passo-2').style.display='inline-flex';
+}
+async function confirmarImportacaoCartoes(){
+  const dados=_backupParaImportarCartoes;
+  if(!dados) return;
+  if(!confirm('Tem certeza? Essa ação não pode ser desfeita pelo sistema (só restaurando outro backup depois).')) return;
+  compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
+  fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; categorias=dados.categorias||[];
+  cartoesCustom=dados.cartoesCustom||{}; if(dados.usuarios) usuarios=dados.usuarios;
+  await salvar();
+  fecharModal('modal-importar-backup');
+  renderDashboard();
+  showToast('✅ Backup importado e salvo no GitHub!');
+}
+
 function iniciarSincronizacaoAutomatica(){
   if(_intervaloSync)clearInterval(_intervaloSync);
   _intervaloSync=setInterval(verificarAtualizacaoRemota,30000);
@@ -3970,6 +4057,12 @@ boot();
         </button>
       </div>
       <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px;">
+        <button class="btn btn-danger" style="justify-content:center;width:100%;" onclick="abrirImportarBackupCartoes()">
+          📥 &nbsp;Importar Backup (substitui os dados atuais)
+        </button>
+        <p style="font-size:.68rem;color:var(--muted);margin:6px 0 0;">Restrito ao usuário Master — é uma ação que substitui todos os dados do sistema.</p>
+      </div>
+      <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px;">
         <p style="font-size:.72rem;color:var(--muted);margin:0;line-height:1.6;">
           ☁️ <strong>GitHub:</strong> salva em <code style="background:var(--surface);padding:1px 5px;border-radius:4px;">Cartoes/backups/backup_data_hora.json</code> — histórico completo de versões no repositório.<br>
           💾 <strong>Local:</strong> baixa arquivo no seu computador — ideal para guardar cópia offline.<br>
@@ -3980,8 +4073,37 @@ boot();
   </div>
 </div>
 
+<!-- MODAL IMPORTAR BACKUP -->
+<div class="modal-overlay" id="modal-importar-backup">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-hd"><h2>📥 Importar Backup</h2><button class="close-btn" onclick="fecharModal('modal-importar-backup')">✕</button></div>
+    <div class="modal-bd">
+      <div id="imp-passo-1">
+        <div style="background:#da363322;border:1px solid #da3633;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.75rem;color:#da3633;font-weight:700;line-height:1.5;">
+          ⚠️ Isso vai SUBSTITUIR todos os dados atuais do sistema pelos dados do arquivo escolhido. Use apenas se tiver certeza.
+        </div>
+        <div class="form-group"><label>Arquivo de backup (.json)</label><input type="file" id="imp-arquivo-cartoes" accept=".json,application/json"></div>
+        <div id="imp-erro-cartoes" style="color:#da3633;font-size:.75rem;margin-top:6px;display:none;"></div>
+      </div>
+      <div id="imp-passo-2" style="display:none;">
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:10px;">Compare o que existe agora com o que está no arquivo escolhido:</p>
+        <table style="width:100%;font-size:.78rem;"><thead><tr><th style="text-align:left;">Coleção</th><th>Atual</th><th>No Arquivo</th></tr></thead>
+        <tbody id="imp-tabela-comparacao-cartoes"></tbody></table>
+        <div style="background:#da363322;border:1px solid #da3633;border-radius:8px;padding:10px 14px;margin-top:14px;font-size:.75rem;color:#da3633;font-weight:700;">
+          ⚠️ Ao confirmar, os dados atuais serão substituídos pelos do arquivo e isso será salvo no GitHub imediatamente.
+        </div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-outline" onclick="fecharModal('modal-importar-backup')">Cancelar</button>
+      <button class="btn btn-primary" id="imp-btn-passo-1" onclick="lerArquivoImportacaoCartoes()">📂 Ler Arquivo e Conferir</button>
+      <button class="btn btn-danger" id="imp-btn-passo-2" style="display:none;" onclick="confirmarImportacaoCartoes()">✅ Confirmar Importação</button>
+    </div>
+  </div>
+</div>
+
 <!-- Gerado em 02/07/2026 03:00 -->
 <!-- Gerado em 02/07/2026 23:23 -->
-<!-- Gerado em 12/07/2026 12:00 -->
+<!-- Gerado em 12/07/2026 20:30 -->
 </body>
 </html>
