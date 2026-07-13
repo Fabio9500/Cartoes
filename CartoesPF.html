@@ -789,7 +789,9 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <button class="cad-stab active" id="stb-forn" onclick="showCadSub('forn',this)">🏪 Fornecedores</button>
       <button class="cad-stab" id="stb-cart" onclick="showCadSub('cart',this)">💳 Cartões</button>
       <button class="cad-stab" id="stb-cat" onclick="showCadSub('cat',this)">🏷 Categorias</button>
+      <button class="cad-stab" id="stb-direc" onclick="showCadSub('direc',this)">🧭 Direcionamento</button>
     </div>
+
     <div id="cad-forn">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
         <input type="text" id="cad-forn-busca" placeholder="🔍 Buscar fornecedor..." oninput="renderCadForn()"
@@ -832,10 +834,24 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         </table>
       </div>
     </div>
+    <div id="cad-direc" style="display:none;">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <span style="font-size:.82rem;color:var(--muted);flex:1;">O direcionamento funciona igual à categoria e aparece em todos os formulários do sistema.</span>
+        <button class="btn btn-primary btn-sm" onclick="abrirCad('direc')">+ Novo Direcionamento</button>
+        <button class="btn btn-outline btn-sm" onclick="importarDirecionamentosHistorico()" title="Importa direcionamentos já usados nos lançamentos">📥 Importar do histórico</button>
+      </div>
+      <div class="tbl-wrap">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+          <thead><tr style="background:var(--surface2);">
+            <th style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);">Direcionamento</th>
+            <th style="padding:10px 14px;width:80px;" class="no-print"></th>
+          </tr></thead>
+          <tbody id="cad-direc-body"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
-
-<!-- MODAL UNIFICAR FORNECEDORES -->
 <div class="modal-overlay" id="modal-unificar">
   <div class="modal" style="max-width:500px;">
     <div class="modal-hd"><h2>🔗 Unificar Fornecedores</h2><button class="close-btn" onclick="fecharModal('modal-unificar')">✕</button></div>
@@ -959,7 +975,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <datalist id="dl-fornecedor"></datalist>
       <datalist id="dl-memorando"></datalist>
       <div class="form-group"><label>Categoria</label><select id="c-categoria"><option value="">Sem categoria</option><option>Alimentação</option><option>Combustível</option><option>Educação</option><option>Entretenimento</option><option>Farmácia</option><option>Moradia</option><option>Saúde</option><option>Serviços</option><option>Supermercado</option><option>Transporte</option><option>Vestuário</option><option>Outros</option></select></div>
-      <div class="form-group"><label>Direcionamento</label><input type="text" id="c-direcionamento" list="dl-direcionamento" placeholder="Ex: Pessoal, Obra X, Empresa Y" autocomplete="off"></div>
+      <div class="form-group"><label>Direcionamento</label><select id="c-direcionamento"><option value="">Sem direcionamento</option></select></div>
       <datalist id="dl-direcionamento"></datalist>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="c-data" onchange="calcularFechamento()"></div>
@@ -1010,7 +1026,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
       <div class="form-group"><label>Fornecedor</label><input type="text" id="ep-desc"></div>
       <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="ep-memo"></div>
-      <div class="form-group"><label>Direcionamento <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="ep-direcionamento" list="dl-direcionamento"></div>
+      <div class="form-group"><label>Direcionamento <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><select id="ep-direcionamento"><option value="">Sem direcionamento</option></select></div>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="ep-datacompra"></div>
         <div class="form-group"><label>Vencimento</label><input type="date" id="ep-venc"></div>
@@ -1106,7 +1122,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.6';
+const VERSAO = 'v4.7';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1446,7 +1462,7 @@ function setFila(payload){try{localStorage.setItem(PREFIX+'_fila',JSON.stringify
 function limparFila(){localStorage.removeItem(PREFIX+'_fila');}
 function getLastSha(){return localStorage.getItem(PREFIX+'_last_sha')||'';}
 function setLastSha(sha){if(sha)localStorage.setItem(PREFIX+'_last_sha',sha);}
-function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,categorias,cartoesCustom,usuarios};}
+function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,categorias,cartoesCustom,usuarios,direcionamentos};}
 
 function atualizarIndicadorConexao(){
   const el=document.getElementById('conn-indicator');
@@ -1500,7 +1516,7 @@ let CARTOES={
 const CARTOES_BUILTIN=Object.keys(CARTOES);
 const DEFAULT_LIMITES={bradesco1:{total:170000,usado:0},bradesco10:{total:170000,usado:0},bradesco20:{total:170000,usado:0},santander:{total:250000,usado:0},picpay:{total:30000,usado:0}};
 
-let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={};
+let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={}, direcionamentos=[];
 let usuarios=[];
 let USUARIO_ATUAL=null, _pfSelId=null;
 const PF_LABELS={master:'Master',operador:'Operador',consulta:'Consulta'};
@@ -1577,6 +1593,7 @@ async function initData(){
     if(dados){
       compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
       fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; categorias=dados.categorias||[]; cartoesCustom=dados.cartoesCustom||{};
+      direcionamentos=dados.direcionamentos||[];
       usuarios=dados.usuarios||[];
       Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       document.getElementById('loading-screen').style.display='none';
@@ -1957,7 +1974,7 @@ function editarParcela(u){
   document.getElementById('ep-uid').value=u;document.getElementById('ep-compraid').value=c.compraId;
   document.getElementById('ep-desc').value=c.desc;document.getElementById('ep-valor').value=c.valorParcela;
   document.getElementById('ep-memo').value=c.memo||'';
-  const epDirecEl=document.getElementById('ep-direcionamento'); if(epDirecEl) epDirecEl.value=c.direcionamento||'';
+  popularDirecSelect('ep-direcionamento', c.direcionamento||'');
   document.getElementById('ep-venc').value=c.venc;document.getElementById('ep-datacompra').value=c.dataCompra||'';
   document.getElementById('ep-cartao').value=c.cartao;document.getElementById('ep-cartao-original').value=c.cartao;
   document.getElementById('ep-trocar-escopo').value='parcela';
@@ -2214,6 +2231,13 @@ function popularCatSelect(selId, selVal){
   const el=document.getElementById(selId);if(!el)return;
   el.innerHTML=`<option value="">Sem categoria</option>`+listaCats().map(n=>`<option${n===selVal?' selected':''}>${n}</option>`).join('');
 }
+function listaDirec(){
+  return direcionamentos.map(d=>d.nome).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+}
+function popularDirecSelect(selId, selVal){
+  const el=document.getElementById(selId);if(!el)return;
+  el.innerHTML=`<option value="">Sem direcionamento</option>`+listaDirec().map(n=>`<option${n===selVal?' selected':''}>${n}</option>`).join('');
+}
 
 function sugerirMemorando(){
   const desc = document.getElementById('c-desc')?.value?.trim();
@@ -2228,6 +2252,7 @@ function sugerirMemorando(){
 function abrirModalCompra(){
   atualizarDatalistCompras();
   popularCatSelect('c-categoria','');
+  popularDirecSelect('c-direcionamento','');
   document.getElementById('c-data').value=hoje.toISOString().split('T')[0];
   document.getElementById('c-desc').value='';document.getElementById('c-valor').value='';document.getElementById('c-parcelas').value='1';
   const memoEl=document.getElementById('c-memo');if(memoEl)memoEl.value='';
@@ -3011,10 +3036,10 @@ function importarCategoriasHistorico(){
   salvar();renderCadCat();showToast(`${novos.length} categoria${novos.length>1?'s':''} importada${novos.length>1?'s':''} do histórico ✓`);
 }
 function renderCadastros(){
-  renderCadForn();renderCadCart();renderCadCat();
+  renderCadForn();renderCadCart();renderCadCat();renderCadDirec();
 }
 function showCadSub(sub,btn){
-  ['forn','cart','cat'].forEach(s=>{
+  ['forn','cart','cat','direc'].forEach(s=>{
     const el=document.getElementById('cad-'+s);if(el)el.style.display='none';
   });
   document.querySelectorAll('.cad-stab').forEach(b=>b.classList.remove('active'));
@@ -3101,10 +3126,39 @@ function renderCadCat(){
     </div></td>
   </tr>`).join('');
 }
+function renderCadDirec(){
+  const body=document.getElementById('cad-direc-body');if(!body)return;
+  if(direcionamentos.length===0){
+    const nDirecHist=new Set(compras.map(x=>(x.direcionamento||'').trim()).filter(Boolean)).size;
+    const dica=nDirecHist>0?`<strong>${nDirecHist} direcionamento${nDirecHist>1?'s':''}</strong> encontrados nos lançamentos — clique em 📥 para importar.`:'Nenhum direcionamento cadastrado ainda. Clique em + Novo Direcionamento para começar.';
+    body.innerHTML=`<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">${dica}</td></tr>`;
+    return;
+  }
+  body.innerHTML=direcionamentos.map(d=>`<tr style="border-top:1px solid var(--border);">
+    <td style="padding:10px 14px;font-weight:600;">${esc(d.nome)}</td>
+    <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
+      <button class="icon-btn edit" onclick="abrirCad('direc','${d.id}')">✏️</button>
+      <button class="icon-btn del" onclick="excluirCad('direc','${d.id}')">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+function importarDirecionamentosHistorico(){
+  const existentes=new Set(direcionamentos.map(d=>d.nome.toLowerCase()));
+  const novos=[];const vistos=new Set();
+  compras.forEach(x=>{
+    const nome=(x.direcionamento||'').trim();
+    if(!nome||vistos.has(nome.toLowerCase())||existentes.has(nome.toLowerCase()))return;
+    vistos.add(nome.toLowerCase());novos.push({id:uid(),nome});
+  });
+  if(novos.length===0){showToast('Nenhum direcionamento novo encontrado no histórico');return;}
+  direcionamentos=[...direcionamentos,...novos].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  salvar();renderCadDirec();
+  showToast(`${novos.length} direcionamento${novos.length>1?'s':''} importado${novos.length>1?'s':''} do histórico ✓`);
+}
 function abrirCad(tipo, id){
   document.getElementById('cad-id').value=id||'';
   document.getElementById('cad-tipo').value=tipo;
-  const nomes={forn:'Fornecedor',cart:'Cartão',cat:'Categoria'};
+  const nomes={forn:'Fornecedor',cart:'Cartão',cat:'Categoria',direc:'Direcionamento'};
   document.getElementById('modal-cad-titulo').textContent=(id?'Editar ':'Novo ')+nomes[tipo];
   const IS=()=>`style="width:100%;padding:8px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:Outfit,sans-serif;font-size:.88rem;"`;
   let html='';
@@ -3128,6 +3182,9 @@ function abrirCad(tipo, id){
   } else if(tipo==='cat'){
     const c=id?categorias.find(x=>x.id===id):{};
     html=`<div class="form-group"><label>Nome da Categoria *</label><input type="text" id="cad-f1" ${IS()} value="${esc(c?.nome||'')}"></div>`;
+  } else if(tipo==='direc'){
+    const d=id?direcionamentos.find(x=>x.id===id):{};
+    html=`<div class="form-group"><label>Nome do Direcionamento *</label><input type="text" id="cad-f1" ${IS()} value="${esc(d?.nome||'')}" placeholder="Ex: Pessoal, Obra X, Empresa Y"></div>`;
   }
   document.getElementById('modal-cad-campos').innerHTML=html;
   document.getElementById('modal-cad').classList.add('open');
@@ -3161,14 +3218,21 @@ function salvarCad(){
     if(id){const c=categorias.find(x=>x.id===id);if(c)c.nome=nome;}
     else{if(categorias.find(c=>c.nome.toLowerCase()===nome.toLowerCase())){showToast('Categoria já existe',true);return;}categorias.push({id:uid(),nome});}
     categorias.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  } else if(tipo==='direc'){
+    const nome=(document.getElementById('cad-f1')?.value||'').trim();
+    if(!nome){showToast('Nome é obrigatório',true);return;}
+    if(id){const d=direcionamentos.find(x=>x.id===id);if(d)d.nome=nome;}
+    else{if(direcionamentos.find(d=>d.nome.toLowerCase()===nome.toLowerCase())){showToast('Direcionamento já existe',true);return;}direcionamentos.push({id:uid(),nome});}
+    direcionamentos.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
   }
   salvar();fecharModal('modal-cad');renderCadastros();showToast('Salvo com sucesso ✓');
 }
 function excluirCad(tipo,id){
-  const msgs={forn:'Excluir este fornecedor?',cat:'Excluir esta categoria?',cart:'Remover este cartão personalizado?'};
+  const msgs={forn:'Excluir este fornecedor?',cat:'Excluir esta categoria?',cart:'Remover este cartão personalizado?',direc:'Excluir este direcionamento?'};
   ACF(msgs[tipo]||'Excluir?',()=>{
     if(tipo==='forn')fornecedores=fornecedores.filter(x=>x.id!==id);
     else if(tipo==='cat')categorias=categorias.filter(x=>x.id!==id);
+    else if(tipo==='direc')direcionamentos=direcionamentos.filter(x=>x.id!==id);
     else if(tipo==='cart'){
       if(CARTOES_BUILTIN.includes(id)){showToast('Cartões padrão não podem ser removidos',true);return;}
       delete CARTOES[id];if(cartoesCustom)delete cartoesCustom[id];
@@ -3826,7 +3890,7 @@ async function confirmarImportacaoCartoes(){
   if(!confirm('Tem certeza? Essa ação não pode ser desfeita pelo sistema (só restaurando outro backup depois).')) return;
   compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
   fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; categorias=dados.categorias||[];
-  cartoesCustom=dados.cartoesCustom||{}; if(dados.usuarios) usuarios=dados.usuarios;
+  cartoesCustom=dados.cartoesCustom||{}; direcionamentos=dados.direcionamentos||[]; if(dados.usuarios) usuarios=dados.usuarios;
   await salvar();
   fecharModal('modal-importar-backup');
   renderDashboard();
@@ -4091,6 +4155,6 @@ boot();
 
 <!-- Gerado em 02/07/2026 03:00 -->
 <!-- Gerado em 02/07/2026 23:23 -->
-<!-- Gerado em 12/07/2026 20:30 -->
+<!-- Gerado em 13/07/2026 08:30 -->
 </body>
 </html>
