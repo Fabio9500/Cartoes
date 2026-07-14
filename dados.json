@@ -11695,45 +11695,6 @@
       "memo": "Compra de vinhos (Suilan)"
     },
     {
-      "uid": "mre92pqfnv1g",
-      "compraId": "mre92pqfmr1e",
-      "desc": "Posto Jocel",
-      "dataCompra": "2026-07-09",
-      "cartao": "bradesco20",
-      "nParcelas": 3,
-      "parcela": 1,
-      "valorParcela": 150,
-      "venc": "2026-08-20",
-      "categoria": "Combustível",
-      "memo": "Abastecimento"
-    },
-    {
-      "uid": "mre92pqfrcv1",
-      "compraId": "mre92pqfmr1e",
-      "desc": "Posto Jocel",
-      "dataCompra": "2026-07-09",
-      "cartao": "bradesco20",
-      "nParcelas": 3,
-      "parcela": 2,
-      "valorParcela": 150,
-      "venc": "2026-09-20",
-      "categoria": "Combustível",
-      "memo": "Abastecimento"
-    },
-    {
-      "uid": "mre92pqfbdho",
-      "compraId": "mre92pqfmr1e",
-      "desc": "Posto Jocel",
-      "dataCompra": "2026-07-09",
-      "cartao": "bradesco20",
-      "nParcelas": 3,
-      "parcela": 3,
-      "valorParcela": 150,
-      "venc": "2026-10-20",
-      "categoria": "Combustível",
-      "memo": "Abastecimento"
-    },
-    {
       "uid": "mre9cz9b02p5",
       "compraId": "mre9cz9b1mys",
       "desc": "Cond. C. Jardim 1102",
