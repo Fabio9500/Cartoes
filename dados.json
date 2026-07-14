@@ -12343,6 +12343,19 @@
       "venc": "2026-09-20",
       "categoria": "Alimentação",
       "memo": "Recarga de 02 botijões"
+    },
+    {
+      "uid": "mrl9f9raimp6",
+      "compraId": "mrl9f9rav0x0",
+      "desc": "Atacadão",
+      "dataCompra": "2026-07-14",
+      "cartao": "bradesco20",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 148.11,
+      "venc": "2026-08-20",
+      "categoria": "Supermercado",
+      "memo": "Compras semana"
     }
   ],
   "limites": {
@@ -12356,7 +12369,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 100414.97999999998
+      "usado": 100563.08999999998
     },
     "santander": {
       "total": 250000,
