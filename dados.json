@@ -13454,5 +13454,11 @@
       "perfil": "operador",
       "ativo": true
     }
+  ],
+  "direcionamentos": [
+    {
+      "id": "mrl984d8sxcp",
+      "nome": "Telasul"
+    }
   ]
 }
