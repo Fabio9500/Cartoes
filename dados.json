@@ -12303,6 +12303,20 @@
       "venc": "2026-10-15",
       "categoria": "Supermercado",
       "memo": "Café Gourmet    3X"
+    },
+    {
+      "uid": "mrl9bj1l4vsp",
+      "compraId": "mrl9bj1lor82",
+      "desc": "Atacadão",
+      "dataCompra": "2026-07-14",
+      "cartao": "bradesco20",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 51.05,
+      "venc": "2026-08-20",
+      "categoria": "Supermercado",
+      "memo": "Compras semana",
+      "direcionamento": "Desp. Fixas (Mensais)"
     }
   ],
   "limites": {
@@ -12316,7 +12330,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 100079.92999999998
+      "usado": 100130.97999999998
     },
     "santander": {
       "total": 250000,
