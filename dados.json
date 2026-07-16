@@ -10887,9 +10887,10 @@
       "cartao": "picpay",
       "nParcelas": 12,
       "parcela": 1,
-      "valorParcela": 1958.33,
+      "valorParcela": 1958.48,
       "venc": "2026-08-07",
-      "memo": "Capitação de Capital"
+      "memo": "Capitação de Capital",
+      "direcionamento": ""
     },
     {
       "uid": "mr46gvd0j9z5",
