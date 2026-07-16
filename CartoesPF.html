@@ -952,6 +952,12 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <button class="btn btn-primary" onclick="abrirImportador()">Importar Extrato</button>
   </div>
   <div class="backup-section">
+    <h3>🔗 Integração com TesourariaSys</h3>
+    <p>Ao marcar uma fatura como paga, você pode debitar automaticamente uma conta do TesourariaSys — sem precisar registrar de novo lá. Precisa de um token do GitHub com permissão de escrita no repositório <code style="background:var(--surface2);padding:1px 5px;border-radius:4px">Fabio9500/tesourariasys</code>.</p>
+    <div id="tsr-token-status" style="font-size:.78rem;color:var(--muted);margin-bottom:10px;"></div>
+    <button class="btn btn-outline" onclick="configurarTokenTesouraria();atualizarStatusTokenTesouraria()">⚙ Configurar Token</button>
+  </div>
+  <div class="backup-section">
     <h3>🔔 Notificações</h3>
     <p>Receba alertas sobre faturas próximas do vencimento.</p>
     <button class="btn btn-outline" onclick="pedirPermissaoNotificacao()">Ativar Notificações</button>
@@ -1102,6 +1108,11 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
       <div class="form-group"><label>Valor Pago (R$)</label><input type="number" id="pag-valor" step="0.01" placeholder="0,00"></div>
       <div class="form-group"><label>Data do Pagamento</label><input type="date" id="pag-data"></div>
+      <div class="form-group">
+        <label>Debitar automaticamente de qual conta do TesourariaSys? <span style="font-weight:400;color:var(--muted);font-size:.68rem;">(opcional)</span></label>
+        <select id="pag-conta-tsr"><option value="">Não debitar automaticamente</option></select>
+        <div id="pag-tsr-info" style="font-size:.68rem;color:var(--muted);margin-top:4px;"></div>
+      </div>
       <input type="hidden" id="pag-cartao"><input type="hidden" id="pag-venc"><input type="hidden" id="pag-total">
     </div>
     <div class="modal-ft">
@@ -1122,7 +1133,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.7';
+const VERSAO = 'v4.8';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1785,6 +1796,7 @@ function showPage(id){
   if(id==='limites')renderLimites();
   if(id==='relatorios')renderRelatorios();
   if(id==='cadastros')renderCadastros();
+  if(id==='backup')atualizarStatusTokenTesouraria();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function irInicio(){showPage('dashboard');}
@@ -2141,6 +2153,99 @@ function renderFaturas(){
 }
 
 // ── PAGAMENTOS ──────────────────────────────────────────────
+// ══════════════════════════════════════════
+// INTEGRAÇÃO COM TESOURARIASYS — grava direto o lançamento de débito
+// quando a fatura é marcada como paga aqui no CartoesPF. É a ÚNICA
+// integração de ESCRITA entre sistemas (todas as outras são leitura).
+// Exige token com permissão de escrita no repo Fabio9500/tesourariasys.
+// ══════════════════════════════════════════
+function getTokenTesouraria(){ return localStorage.getItem('cc_pf_tsr_token') || localStorage.getItem('tsr_gh_token') || ''; }
+function setTokenTesouraria(t){ localStorage.setItem('cc_pf_tsr_token', t); }
+
+let _contasTesouraria = null;
+async function carregarContasTesouraria(){
+  const token = getTokenTesouraria();
+  const sel = document.getElementById('pag-conta-tsr');
+  const info = document.getElementById('pag-tsr-info');
+  if(!sel) return;
+  if(!token){
+    sel.innerHTML = '<option value="">Não debitar automaticamente</option>';
+    if(info) info.innerHTML = 'Token do TesourariaSys não configurado. <a href="#" onclick="configurarTokenTesouraria();return false;" style="color:var(--accent)">Configurar</a>';
+    return;
+  }
+  try{
+    const url = 'https://api.github.com/repos/Fabio9500/tesourariasys/contents/dados.json';
+    const r = await fetch(url, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    let dados;
+    if(!j.content || j.content.trim()===''){
+      const r2 = await fetch(j.download_url);
+      dados = await r2.json();
+    } else {
+      dados = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+    }
+    _contasTesouraria = (dados.contas||[]).filter(c=>c.ativa!==false);
+    sel.innerHTML = '<option value="">Não debitar automaticamente</option>' +
+      _contasTesouraria.map(c=>`<option value="${c.id}">${esc(c.titular)} (${c.tipo})</option>`).join('');
+    if(info) info.textContent = _contasTesouraria.length ? '' : 'Nenhuma conta ativa encontrada no TesourariaSys.';
+  }catch(e){
+    sel.innerHTML = '<option value="">Não debitar automaticamente</option>';
+    if(info) info.textContent = 'Não foi possível conectar ao TesourariaSys (verifique o token).';
+  }
+}
+function configurarTokenTesouraria(){
+  const atual = getTokenTesouraria();
+  const t = prompt('Token do GitHub para o TesourariaSys (com permissão de escrita):', atual);
+  if(t===null) return;
+  setTokenTesouraria(t.trim());
+  carregarContasTesouraria();
+}
+function atualizarStatusTokenTesouraria(){
+  const el = document.getElementById('tsr-token-status');
+  if(!el) return;
+  el.textContent = getTokenTesouraria() ? '✅ Token configurado.' : '⚠ Token não configurado ainda.';
+}
+// Grava o lançamento de saída direto no dados.json do TesourariaSys.
+// Refaz o fetch do sha logo antes de gravar, reduz risco de conflito 409
+// (mesmo cuidado que o próprio TesourariaSys já toma ao salvar sozinho).
+async function registrarDebitoTesouraria(contaId, valor, data, descricao){
+  const token = getTokenTesouraria();
+  if(!token || !contaId) return {ok:false};
+  const url = 'https://api.github.com/repos/Fabio9500/tesourariasys/contents/dados.json';
+  try{
+    const rGet = await fetch(url, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
+    if(!rGet.ok) return {ok:false, erro:'Não foi possível acessar o TesourariaSys (HTTP '+rGet.status+').'};
+    const jGet = await rGet.json();
+    let dados;
+    if(!jGet.content || jGet.content.trim()===''){
+      const r2 = await fetch(jGet.download_url);
+      dados = await r2.json();
+    } else {
+      dados = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
+    }
+    const catFatCartao = (dados.categorias||[]).find(c=>c.nome==='Fatura Cartão de Crédito'&&c.tipo==='despesa');
+    const novoLanc = {
+      id: uid(), contaId, data, tipo:'saida', valor,
+      categoriaId: catFatCartao?catFatCartao.id:'', centroCustoId:'',
+      contraparte: 'CartoesPF', descricao,
+      origem:'manual', contaPagarId:null,
+      criadoEm: new Date().toISOString()
+    };
+    dados.lancamentos = [...(dados.lancamentos||[]), novoLanc];
+    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(dados,null,2))));
+    const rPut = await fetch(url, {
+      method:'PUT',
+      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body: JSON.stringify({ message:'Débito automático — fatura CartoesPF', content:conteudo, sha:jGet.sha })
+    });
+    if(!rPut.ok) return {ok:false, erro:'Erro ao gravar no TesourariaSys (HTTP '+rPut.status+').'};
+    return {ok:true};
+  }catch(e){
+    return {ok:false, erro:e.message};
+  }
+}
+
 function abrirPagamento(cartao,venc,total){
   const card=CARTOES[cartao],dv=new Date(venc+'T12:00:00');
   document.getElementById('pag-cartao').value=cartao;document.getElementById('pag-venc').value=venc;
@@ -2150,16 +2255,26 @@ function abrirPagamento(cartao,venc,total){
   document.getElementById('pag-info-venc').textContent='Vencimento: '+dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
   document.getElementById('pag-info-total').textContent='Total da fatura: '+fmt(total);
   document.getElementById('modal-pagamento').classList.add('open');
+  carregarContasTesouraria();
 }
-function confirmarPagamento(){
+async function confirmarPagamento(){
   const cartao=document.getElementById('pag-cartao').value,venc=document.getElementById('pag-venc').value;
   const total=parseFloat(document.getElementById('pag-total').value),valor=parseFloat(document.getElementById('pag-valor').value);
   const data=document.getElementById('pag-data').value;
+  const contaTsr=document.getElementById('pag-conta-tsr')?.value||'';
   if(!valor||valor<=0||!data){showToast('Preencha valor e data',true);return;}
   pagamentos[cartao+'|'+venc]={valor,data,total};
   compras.forEach(c=>{if(c.cartao===cartao&&c.venc===venc)c.pago=true;});
   salvar();fecharModal('modal-pagamento');renderFaturas();renderDashboard();renderLimites();
-  showToast(`Pagamento de ${fmt(valor)} registrado ✓`);
+  if(contaTsr){
+    showToast(`Pagamento registrado — gravando débito no TesourariaSys...`);
+    const card=CARTOES[cartao];
+    const res = await registrarDebitoTesouraria(contaTsr, valor, data, `Pagamento fatura ${card.nome} (CartoesPF)`);
+    if(res.ok) showToast('✅ Pagamento registrado e débito lançado no TesourariaSys!');
+    else showToast('⚠ Pagamento registrado aqui, mas não deu para gravar no TesourariaSys: '+(res.erro||''), true);
+  } else {
+    showToast(`Pagamento de ${fmt(valor)} registrado ✓`);
+  }
 }
 function desfazerPagamento(key){
   const[cartao,venc]=key.split('|');
@@ -4155,6 +4270,6 @@ boot();
 
 <!-- Gerado em 02/07/2026 03:00 -->
 <!-- Gerado em 02/07/2026 23:23 -->
-<!-- Gerado em 13/07/2026 08:30 -->
+<!-- Gerado em 16/07/2026 10:00 -->
 </body>
 </html>
