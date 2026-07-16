@@ -12882,6 +12882,34 @@
       "categoria": "Vinhos",
       "memo": "Compra de vinhos (Pessoal)",
       "direcionamento": "Desp. Sociais"
+    },
+    {
+      "uid": "mrnxpipm77sq",
+      "compraId": "mrnxpipm472g",
+      "desc": "Açougue Premium",
+      "dataCompra": "2026-07-13",
+      "cartao": "bradesco20",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 120.28,
+      "venc": "2026-08-20",
+      "categoria": "Supermercado",
+      "memo": "Compras Congelamento",
+      "direcionamento": "Desp. Fixas (Mensais)"
+    },
+    {
+      "uid": "mrnxpipmvqll",
+      "compraId": "mrnxpipm472g",
+      "desc": "Açougue Premium",
+      "dataCompra": "2026-07-13",
+      "cartao": "bradesco20",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 120.28,
+      "venc": "2026-09-20",
+      "categoria": "Supermercado",
+      "memo": "Compras Congelamento",
+      "direcionamento": "Desp. Fixas (Mensais)"
     }
   ],
   "limites": {
@@ -12895,7 +12923,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 106304.99999999997
+      "usado": 106545.55999999997
     },
     "santander": {
       "total": 250000,
