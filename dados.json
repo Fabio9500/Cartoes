@@ -12744,6 +12744,45 @@
       "venc": "2028-07-15",
       "categoria": "Entretenimento",
       "memo": "Asinatura mensal"
+    },
+    {
+      "uid": "mrnvff564ry5",
+      "compraId": "mrnvff568qon",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-14",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 1,
+      "valorParcela": 42.52,
+      "venc": "2026-08-15",
+      "categoria": "Moradia",
+      "memo": "Panela Pressão 3x"
+    },
+    {
+      "uid": "mrnvff56co5w",
+      "compraId": "mrnvff568qon",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-14",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 2,
+      "valorParcela": 42.51,
+      "venc": "2026-09-15",
+      "categoria": "Moradia",
+      "memo": "Panela Pressão 3x"
+    },
+    {
+      "uid": "mrnvff56tmj0",
+      "compraId": "mrnvff568qon",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-14",
+      "cartao": "santander",
+      "nParcelas": 3,
+      "parcela": 3,
+      "valorParcela": 42.51,
+      "venc": "2026-10-15",
+      "categoria": "Moradia",
+      "memo": "Panela Pressão 3x"
     }
   ],
   "limites": {
@@ -12761,7 +12800,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 192001.24999999988
+      "usado": 192128.7899999999
     },
     "picpay": {
       "total": 30000,
