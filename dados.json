@@ -11491,10 +11491,11 @@
       "cartao": "picpay",
       "nParcelas": 4,
       "parcela": 2,
-      "valorParcela": 404.45,
+      "valorParcela": 404.46,
       "venc": "2026-09-07",
       "categoria": "Diversos",
-      "memo": "Compra de vinhos (Gilson)"
+      "memo": "Compra de vinhos (Gilson)",
+      "direcionamento": ""
     },
     {
       "uid": "mre8xco24ovf",
