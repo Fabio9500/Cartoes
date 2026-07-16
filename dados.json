@@ -13971,5 +13971,10 @@
       "ativo": true
     }
   ],
-  "direcionamentos": []
+  "direcionamentos": [
+    {
+      "id": "mrnvlf9ce9hn",
+      "nome": "Pro-Labore"
+    }
+  ]
 }
