@@ -8606,7 +8606,7 @@
       "cartao": "bradesco20",
       "nParcelas": 11,
       "parcela": 2,
-      "valorParcela": 0.01,
+      "valorParcela": 0.001,
       "venc": "2026-07-20",
       "memo": "Nao foi debitada",
       "direcionamento": ""
