@@ -6736,13 +6736,14 @@
       "uid": "moghxelxzkxd",
       "compraId": "moghxelwl2aw",
       "desc": "Matheus - Compras do mês",
-      "dataCompra": "2026-07-12",
+      "dataCompra": "2026-07-16",
       "cartao": "santander",
       "nParcelas": 24,
       "parcela": 4,
-      "valorParcela": 88.84,
+      "valorParcela": 275.84,
       "venc": "2026-08-15",
-      "memo": ""
+      "memo": "Compras ate: Alvarus",
+      "direcionamento": ""
     },
     {
       "uid": "moghxelxcu8l",
