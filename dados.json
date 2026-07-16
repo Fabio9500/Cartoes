@@ -263,7 +263,8 @@
       "nParcelas": 12,
       "parcela": 12,
       "valorParcela": 39.7,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "pa16bkj2hm",
@@ -514,7 +515,8 @@
       "nParcelas": 12,
       "parcela": 11,
       "valorParcela": 3333.33,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "gsuoc3ppgb",
@@ -848,7 +850,8 @@
       "nParcelas": 6,
       "parcela": 6,
       "valorParcela": 98.16,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "rte5u2f3sz",
@@ -919,7 +922,8 @@
       "nParcelas": 12,
       "parcela": 6,
       "valorParcela": 77.9,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mar7f1jozp",
@@ -1056,7 +1060,8 @@
       "nParcelas": 12,
       "parcela": 6,
       "valorParcela": 4529.67,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "1wspbq4sq6",
@@ -1193,7 +1198,8 @@
       "nParcelas": 12,
       "parcela": 6,
       "valorParcela": 13.9,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "gbd7zdumjd",
@@ -1318,7 +1324,8 @@
       "nParcelas": 12,
       "parcela": 5,
       "valorParcela": 14.21,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "n4ntrrw5b9",
@@ -1459,7 +1466,8 @@
       "parcela": 5,
       "valorParcela": 42.65,
       "venc": "2026-07-15",
-      "memo": ""
+      "memo": "",
+      "pago": true
     },
     {
       "uid": "r5ux0mtgkf",
@@ -1650,7 +1658,8 @@
       "nParcelas": 10,
       "parcela": 4,
       "valorParcela": 364.94,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "vban0j6b1n",
@@ -1823,7 +1832,8 @@
       "nParcelas": 12,
       "parcela": 7,
       "valorParcela": 1195.16,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "7wnyvqn4ka",
@@ -6428,7 +6438,8 @@
       "parcela": 3,
       "valorParcela": 668.93,
       "venc": "2026-07-15",
-      "memo": ""
+      "memo": "",
+      "pago": true
     },
     {
       "uid": "moghwqzzxu6t",
@@ -6718,7 +6729,8 @@
       "parcela": 3,
       "valorParcela": 1021.47,
       "venc": "2026-07-15",
-      "memo": ""
+      "memo": "",
+      "pago": true
     },
     {
       "uid": "moghxelxzkxd",
@@ -7262,7 +7274,8 @@
       "nParcelas": 10,
       "parcela": 3,
       "valorParcela": 59.9,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mopycw3z166v",
@@ -7374,7 +7387,8 @@
       "nParcelas": 8,
       "parcela": 3,
       "valorParcela": 25.44,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mopyfadbbb8n",
@@ -7464,7 +7478,8 @@
       "nParcelas": 6,
       "parcela": 3,
       "valorParcela": 53.78,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mopyglv20dvo",
@@ -7532,7 +7547,8 @@
       "nParcelas": 8,
       "parcela": 3,
       "valorParcela": 66.9,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mopyhoptoxme",
@@ -7622,7 +7638,8 @@
       "nParcelas": 8,
       "parcela": 3,
       "valorParcela": 82.84,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mopyim8qs5y8",
@@ -7712,7 +7729,8 @@
       "nParcelas": 8,
       "parcela": 3,
       "valorParcela": 109.9,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mopyjorutbn7",
@@ -7814,7 +7832,8 @@
       "nParcelas": 6,
       "parcela": 3,
       "valorParcela": 41.97,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mopzhipk3pps",
@@ -8208,7 +8227,8 @@
       "parcela": 2,
       "valorParcela": 183.33,
       "venc": "2026-07-15",
-      "memo": ""
+      "memo": "",
+      "pago": true
     },
     {
       "uid": "mozggl3i1ljs",
@@ -9527,7 +9547,8 @@
       "nParcelas": 7,
       "parcela": 2,
       "valorParcela": 100,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mqeozamrg91o",
@@ -9605,7 +9626,8 @@
       "nParcelas": 2,
       "parcela": 2,
       "valorParcela": 89.64,
-      "venc": "2026-07-15"
+      "venc": "2026-07-15",
+      "pago": true
     },
     {
       "uid": "mqg1shd0kj8e",
@@ -9631,7 +9653,8 @@
       "valorParcela": 54.21,
       "venc": "2026-07-15",
       "categoria": "Alimentação",
-      "memo": ""
+      "memo": "",
+      "pago": true
     },
     {
       "uid": "mqn7w4c1rcur",
@@ -9643,7 +9666,8 @@
       "parcela": 1,
       "valorParcela": 123.35,
       "venc": "2026-07-15",
-      "categoria": "Entretenimento"
+      "categoria": "Entretenimento",
+      "pago": true
     },
     {
       "uid": "mqn7w4c1bnmz",
@@ -9715,7 +9739,8 @@
       "parcela": 1,
       "valorParcela": 150,
       "venc": "2026-07-15",
-      "categoria": "Combustível"
+      "categoria": "Combustível",
+      "pago": true
     },
     {
       "uid": "mqn7x0lqlcbz",
@@ -9751,7 +9776,8 @@
       "parcela": 1,
       "valorParcela": 806.06,
       "venc": "2026-07-15",
-      "categoria": "Outros"
+      "categoria": "Outros",
+      "pago": true
     },
     {
       "uid": "mqn7yurr6rrs",
@@ -9787,7 +9813,8 @@
       "parcela": 1,
       "valorParcela": 518.51,
       "venc": "2026-07-15",
-      "categoria": "Alimentação"
+      "categoria": "Alimentação",
+      "pago": true
     },
     {
       "uid": "mqn7zuu5hrwe",
@@ -9823,7 +9850,8 @@
       "parcela": 1,
       "valorParcela": 73.68,
       "venc": "2026-07-15",
-      "categoria": "Alimentação"
+      "categoria": "Alimentação",
+      "pago": true
     },
     {
       "uid": "mqn81mpxptv7",
@@ -9835,7 +9863,8 @@
       "parcela": 1,
       "valorParcela": 7,
       "venc": "2026-07-15",
-      "categoria": "Alimentação"
+      "categoria": "Alimentação",
+      "pago": true
     },
     {
       "uid": "mqn82l8im3cs",
@@ -9847,7 +9876,8 @@
       "parcela": 1,
       "valorParcela": 73.99,
       "venc": "2026-07-15",
-      "categoria": "Alimentação"
+      "categoria": "Alimentação",
+      "pago": true
     },
     {
       "uid": "mqn83hk0kd52",
@@ -9859,7 +9889,8 @@
       "parcela": 1,
       "valorParcela": 171.27,
       "venc": "2026-07-15",
-      "categoria": "Alimentação"
+      "categoria": "Alimentação",
+      "pago": true
     },
     {
       "uid": "mqn844zss851",
@@ -9871,7 +9902,8 @@
       "parcela": 1,
       "valorParcela": 67.11,
       "venc": "2026-07-15",
-      "categoria": "Alimentação"
+      "categoria": "Alimentação",
+      "pago": true
     },
     {
       "uid": "mqn850hv61os",
@@ -9883,7 +9915,8 @@
       "parcela": 1,
       "valorParcela": 100,
       "venc": "2026-07-15",
-      "categoria": "Combustível"
+      "categoria": "Combustível",
+      "pago": true
     },
     {
       "uid": "mqn870afaor0",
@@ -9895,7 +9928,8 @@
       "parcela": 1,
       "valorParcela": 126,
       "venc": "2026-07-15",
-      "categoria": "Alimentação"
+      "categoria": "Alimentação",
+      "pago": true
     },
     {
       "uid": "mqn89sd0ja5t",
@@ -9907,7 +9941,8 @@
       "parcela": 1,
       "valorParcela": 310.77,
       "venc": "2026-07-15",
-      "categoria": "Serviços"
+      "categoria": "Serviços",
+      "pago": true
     },
     {
       "uid": "mqn8alzwi4uc",
@@ -9919,7 +9954,8 @@
       "parcela": 1,
       "valorParcela": 310.75,
       "venc": "2026-07-15",
-      "categoria": "Serviços"
+      "categoria": "Serviços",
+      "pago": true
     },
     {
       "uid": "mqn8uxzd2r7k",
@@ -9931,7 +9967,8 @@
       "parcela": 1,
       "valorParcela": 1507,
       "venc": "2026-07-15",
-      "categoria": "Outros"
+      "categoria": "Outros",
+      "pago": true
     },
     {
       "uid": "mqn8uxzd2g4j",
@@ -10148,7 +10185,8 @@
       "valorParcela": 64,
       "venc": "2026-07-15",
       "categoria": "Moradia",
-      "memo": "Água mineral"
+      "memo": "Água mineral",
+      "pago": true
     },
     {
       "uid": "mqu95mwva0rx",
@@ -10161,7 +10199,8 @@
       "valorParcela": 49.71,
       "venc": "2026-07-15",
       "categoria": "Supermercado",
-      "memo": "Compras Semana"
+      "memo": "Compras Semana",
+      "pago": true
     },
     {
       "uid": "mqu96h4mfswp",
@@ -10174,7 +10213,8 @@
       "valorParcela": 6.58,
       "venc": "2026-07-15",
       "categoria": "Supermercado",
-      "memo": "Compras semana"
+      "memo": "Compras semana",
+      "pago": true
     },
     {
       "uid": "mqu9fmado1l6",
@@ -10187,7 +10227,8 @@
       "valorParcela": 222.22,
       "venc": "2026-07-15",
       "categoria": "Moradia",
-      "memo": "Roupas de vama"
+      "memo": "Roupas de vama",
+      "pago": true
     },
     {
       "uid": "mqu9fmaekqbd",
@@ -10304,7 +10345,8 @@
       "valorParcela": 121.83,
       "venc": "2026-07-15",
       "categoria": "Supermercado",
-      "memo": "Compras semana"
+      "memo": "Compras semana",
+      "pago": true
     },
     {
       "uid": "mqu9gihwcleq",
@@ -10500,7 +10542,8 @@
       "valorParcela": 1333.35,
       "venc": "2026-07-15",
       "categoria": "Diversos",
-      "memo": "Mat. Barreiras"
+      "memo": "Mat. Barreiras",
+      "pago": true
     },
     {
       "uid": "mqyd8n2xqbv6",
@@ -10578,7 +10621,8 @@
       "valorParcela": 171.33,
       "venc": "2026-07-15",
       "categoria": "Diversos",
-      "memo": "omega Vita For"
+      "memo": "omega Vita For",
+      "pago": true
     },
     {
       "uid": "mqydhf62mttq",
@@ -10591,7 +10635,8 @@
       "valorParcela": 1000,
       "venc": "2026-07-15",
       "categoria": "Diversos",
-      "memo": "Almoço Travessão"
+      "memo": "Almoço Travessão",
+      "pago": true
     },
     {
       "uid": "mqydk6bwwhhg",
@@ -10604,7 +10649,8 @@
       "valorParcela": 911.31,
       "venc": "2026-07-15",
       "categoria": "Diversos",
-      "memo": "Cond. E15"
+      "memo": "Cond. E15",
+      "pago": true
     },
     {
       "uid": "mqydl029ua1j",
@@ -10617,7 +10663,8 @@
       "valorParcela": 150,
       "venc": "2026-07-15",
       "categoria": "Diversos",
-      "memo": "Amarok"
+      "memo": "Amarok",
+      "pago": true
     },
     {
       "uid": "mqydl02apae7",
@@ -10656,7 +10703,8 @@
       "valorParcela": 64.18,
       "venc": "2026-07-15",
       "categoria": "Diversos",
-      "memo": "Panelas"
+      "memo": "Panelas",
+      "pago": true
     },
     {
       "uid": "mqydm77utytd",
@@ -11151,7 +11199,8 @@
       "parcela": 1,
       "valorParcela": 1791.74,
       "venc": "2026-07-15",
-      "memo": "Capitação de Capital"
+      "memo": "Capitação de Capital",
+      "pago": true
     },
     {
       "uid": "mr46wb5rbbdf",
@@ -11906,7 +11955,8 @@
       "valorParcela": 60.38,
       "venc": "2026-07-15",
       "categoria": "Serviços",
-      "memo": "Furadeira em 4X"
+      "memo": "Furadeira em 4X",
+      "pago": true
     },
     {
       "uid": "mrhrs2lcy7wc",
@@ -11958,7 +12008,8 @@
       "valorParcela": 67,
       "venc": "2026-07-15",
       "categoria": "Serviços",
-      "memo": "04 Lixadeiras Peq.  6X"
+      "memo": "04 Lixadeiras Peq.  6X",
+      "pago": true
     },
     {
       "uid": "mrhru81mp9ip",
@@ -12036,7 +12087,8 @@
       "valorParcela": 88.49,
       "venc": "2026-07-15",
       "categoria": "Moradia",
-      "memo": "Liquidificador  2X"
+      "memo": "Liquidificador  2X",
+      "pago": true
     },
     {
       "uid": "mrhrvrm1klc3",
@@ -12062,7 +12114,8 @@
       "valorParcela": 52.31,
       "venc": "2026-07-15",
       "categoria": "Supermercado",
-      "memo": "Compras semana"
+      "memo": "Compras semana",
+      "pago": true
     },
     {
       "uid": "mrhrxqgmvwj7",
@@ -12075,7 +12128,8 @@
       "valorParcela": 46.65,
       "venc": "2026-07-15",
       "categoria": "Supermercado",
-      "memo": "Compras Semana"
+      "memo": "Compras Semana",
+      "pago": true
     },
     {
       "uid": "mrhrzg1vx4d7",
@@ -12088,7 +12142,8 @@
       "valorParcela": 29.9,
       "venc": "2026-07-15",
       "categoria": "Entretenimento",
-      "memo": "Ass. Apple TV"
+      "memo": "Ass. Apple TV",
+      "pago": true
     },
     {
       "uid": "mrhrzg1vfagn",
@@ -12610,6 +12665,11 @@
       "valor": 5631.51,
       "data": "2026-07-16",
       "total": 5631.509999999998
+    },
+    "santander|2026-07-15": {
+      "valor": 22844.4,
+      "data": "2026-07-16",
+      "total": 22844.400000000012
     }
   },
   "fechamentos": {
