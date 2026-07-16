@@ -12783,6 +12783,32 @@
       "venc": "2026-10-15",
       "categoria": "Moradia",
       "memo": "Panela Pressão 3x"
+    },
+    {
+      "uid": "mrnvh5kjqzo0",
+      "compraId": "mrnvh5kjakwx",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-14",
+      "cartao": "santander",
+      "nParcelas": 2,
+      "parcela": 1,
+      "valorParcela": 62.96,
+      "venc": "2026-08-15",
+      "categoria": "Moradia",
+      "memo": "Panela Pressão 2x"
+    },
+    {
+      "uid": "mrnvh5kjrh0s",
+      "compraId": "mrnvh5kjakwx",
+      "desc": "Tik Tok",
+      "dataCompra": "2026-07-14",
+      "cartao": "santander",
+      "nParcelas": 2,
+      "parcela": 2,
+      "valorParcela": 62.95,
+      "venc": "2026-09-15",
+      "categoria": "Moradia",
+      "memo": "Panela Pressão 2x"
     }
   ],
   "limites": {
@@ -12800,7 +12826,7 @@
     },
     "santander": {
       "total": 250000,
-      "usado": 192128.7899999999
+      "usado": 192254.6999999999
     },
     "picpay": {
       "total": 30000,
