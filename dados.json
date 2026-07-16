@@ -12440,10 +12440,11 @@
       "cartao": "santander",
       "nParcelas": 24,
       "parcela": 1,
-      "valorParcela": 0,
+      "valorParcela": 97.07,
       "venc": "2026-08-15",
       "categoria": "Entretenimento",
-      "memo": "Asinatura mensal"
+      "memo": "Asinatura mensal",
+      "direcionamento": ""
     },
     {
       "uid": "mrnv3ws7603v",
