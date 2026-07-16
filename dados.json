@@ -10822,10 +10822,11 @@
       "cartao": "bradesco10",
       "nParcelas": 5,
       "parcela": 2,
-      "valorParcela": 7.95,
+      "valorParcela": 0.001,
       "venc": "2026-09-10",
       "categoria": "Diversos",
-      "memo": "Assinatura iffod"
+      "memo": "Assinatura iffod",
+      "direcionamento": ""
     },
     {
       "uid": "mr3jn6jjut1e",
