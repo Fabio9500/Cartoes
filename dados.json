@@ -12811,6 +12811,19 @@
       "venc": "2026-09-15",
       "categoria": "Moradia",
       "memo": "Panela Pressão 2x"
+    },
+    {
+      "uid": "mrnx5szbfhge",
+      "compraId": "mrnx5szb6tqi",
+      "desc": "Emp. MS Cosmético",
+      "dataCompra": "2026-07-15",
+      "cartao": "bradesco20",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 1800,
+      "venc": "2026-08-20",
+      "memo": "Capitação de Capital (Biorela)",
+      "direcionamento": "Facktory"
     }
   ],
   "limites": {
@@ -12824,7 +12837,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 104097.84999999998
+      "usado": 105897.84999999998
     },
     "santander": {
       "total": 250000,
