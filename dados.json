@@ -12824,6 +12824,62 @@
       "venc": "2026-08-20",
       "memo": "Capitação de Capital (Biorela)",
       "direcionamento": "Facktory"
+    },
+    {
+      "uid": "mrnx6s7gh17v",
+      "compraId": "mrnx6s7gcktb",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-16",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 1,
+      "valorParcela": 101.78,
+      "venc": "2026-08-20",
+      "categoria": "Vinhos",
+      "memo": "Compra de vinhos (Pessoal)",
+      "direcionamento": "Desp. Sociais"
+    },
+    {
+      "uid": "mrnx6s7g7si4",
+      "compraId": "mrnx6s7gcktb",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-16",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 2,
+      "valorParcela": 101.78,
+      "venc": "2026-09-20",
+      "categoria": "Vinhos",
+      "memo": "Compra de vinhos (Pessoal)",
+      "direcionamento": "Desp. Sociais"
+    },
+    {
+      "uid": "mrnx6s7gq9h3",
+      "compraId": "mrnx6s7gcktb",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-16",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 3,
+      "valorParcela": 101.78,
+      "venc": "2026-10-20",
+      "categoria": "Vinhos",
+      "memo": "Compra de vinhos (Pessoal)",
+      "direcionamento": "Desp. Sociais"
+    },
+    {
+      "uid": "mrnx6s7gma4v",
+      "compraId": "mrnx6s7gcktb",
+      "desc": "Paradaise Vinho",
+      "dataCompra": "2026-07-16",
+      "cartao": "bradesco20",
+      "nParcelas": 4,
+      "parcela": 4,
+      "valorParcela": 101.81,
+      "venc": "2026-11-20",
+      "categoria": "Vinhos",
+      "memo": "Compra de vinhos (Pessoal)",
+      "direcionamento": "Desp. Sociais"
     }
   ],
   "limites": {
@@ -12837,7 +12893,7 @@
     },
     "bradesco20": {
       "total": 170000,
-      "usado": 105897.84999999998
+      "usado": 106304.99999999997
     },
     "santander": {
       "total": 250000,
