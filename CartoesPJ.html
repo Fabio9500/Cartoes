@@ -375,11 +375,9 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
 <div class="page" id="page-lancamentos">
   <div class="table-toolbar">
     <button class="filter-chip active" onclick="filtrar('todos',this)">Todos</button>
-    <button class="filter-chip" onclick="filtrar('c6',this)">C6</button>
-    <button class="filter-chip" onclick="filtrar('cef',this)">CEF</button>
-    <button class="filter-chip" onclick="filtrar('mlivre',this)">M.Livre</button>
-    <button class="filter-chip" onclick="filtrar('santander',this)">Santander</button>
-    <button class="filter-chip" onclick="filtrar('bradesco',this)">Bradesco</button>
+    <span id="filter-chips-cartoes"></span>
+    <input type="text" id="lanc-filtro-forn" list="dl-lanc-forn" placeholder="🔍 Fornecedor" oninput="renderLancamentos(filtroAtivo)" class="no-print" style="padding:5px 12px;border-radius:20px;font-size:.73rem;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;min-width:150px;">
+    <datalist id="dl-lanc-forn"></datalist>
     <div style="flex:1"></div>
     <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button>
   </div>
@@ -489,6 +487,41 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
           <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Vencimentos</th>
         </tr></thead>
         <tbody id="busca-geral-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FATURAS -->
+  <div class="backup-section" style="max-width:100%;margin-bottom:14px;" id="sec-faturas">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h3>🧾 Faturas por Cartão</h3>
+      <button class="btn btn-outline btn-sm no-print" onclick="imprimirSecao('sec-faturas','Faturas por Cartão')">🖨 Imprimir</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span style="font-size:.72rem;font-weight:700;color:var(--muted);">Período:</span>
+      <select id="sf-faturas" onchange="handleSecPeriodo('faturas')" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
+        <option value="1">1 mês</option>
+        <option value="3">3 meses</option>
+        <option value="6" selected>6 meses</option>
+        <option value="12">12 meses</option>
+        <option value="24">24 meses</option>
+        <option value="0">Todos</option>
+        <option value="custom">Personalizado</option>
+      </select>
+      <input type="date" id="sf-faturas-ini" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('faturas')">
+      <span id="sf-faturas-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
+      <input type="date" id="sf-faturas-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('faturas')">
+    </div>
+    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+        <thead><tr style="background:var(--surface2);">
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Vencimento</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Itens</th>
+          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
+          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Status</th>
+        </tr></thead>
+        <tbody id="rel-faturas-body"></tbody>
       </table>
     </div>
   </div>
@@ -1138,7 +1171,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.8';
+const VERSAO = 'v4.9';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1930,8 +1963,27 @@ function toggleParcelas(compraId){
 }
 function renderLancamentos(filtro){
   const tbody=document.getElementById('tbody-lanc'),empty=document.getElementById('empty-lanc');
+  // Chips de cartão gerados dinamicamente — acompanham qualquer cartão criado, renomeado ou removido em Cadastros.
+  const chipsEl=document.getElementById('filter-chips-cartoes');
+  if(chipsEl){
+    chipsEl.innerHTML=Object.keys(CARTOES).map(k=>{
+      const c=CARTOES[k];
+      return `<button class="filter-chip${filtro===k?' active':''}" onclick="filtrar('${k}',this)">${esc(c.nome||k)}</button>`;
+    }).join('');
+    const btnTodos=document.querySelector('.table-toolbar .filter-chip');
+    if(btnTodos)btnTodos.classList.toggle('active',filtro==='todos');
+  }
+  // Popula datalist de fornecedores (nomes já usados nos lançamentos)
+  const dlLF=document.getElementById('dl-lanc-forn');
+  if(dlLF){
+    const ns=new Set();
+    compras.forEach(x=>{const n=(x.desc||'').replace(/\s*\(.*?\)\s*$/,'').trim();if(n)ns.add(n);});
+    dlLF.innerHTML=[...ns].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
+  }
+  const filForn=(document.getElementById('lanc-filtro-forn')?.value||'').toLowerCase().trim();
   let lista=[...compras].sort((a,b)=>{const da=a.dataCompra||a.venc,db=b.dataCompra||b.venc;return db.localeCompare(da)||b.venc.localeCompare(a.venc)||a.parcela-b.parcela;});
   if(filtro!=='todos')lista=lista.filter(c=>c.cartao===filtro);
+  if(filForn)lista=lista.filter(c=>(c.desc||'').toLowerCase().includes(filForn));
   if(!lista.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   const seen=new Set();
@@ -2917,7 +2969,7 @@ function handleSecPeriodo(secId){
 }
 function aplicarGlobal(){
   const n=document.getElementById('rel-periodo-global')?.value||'6';
-  ['mensal','pagos','forn','lanc','parc','graficos','projecao'].forEach(id=>{
+  ['faturas','mensal','pagos','forn','lanc','parc','graficos','projecao'].forEach(id=>{
     const el=document.getElementById('sf-'+id);
     if(el){el.value=n;}
     const iniEl=document.getElementById('sf-'+id+'-ini');
@@ -2929,11 +2981,39 @@ function aplicarGlobal(){
   });
   renderRelatorios();
 }
+function renderSecFaturas(lista,meses){
+  if(!lista)lista=getSecData('faturas');
+  const body=document.getElementById('rel-faturas-body');if(!body)return;
+  const hj=hoje.toISOString().split('T')[0];
+  const grupos={};
+  lista.forEach(c=>{
+    const key=c.cartao+'|'+c.venc;
+    if(!grupos[key])grupos[key]={cartao:c.cartao,venc:c.venc,itens:0,total:0,pago:true};
+    grupos[key].itens++;grupos[key].total+=c.valorParcela;
+    if(!c.pago)grupos[key].pago=false;
+  });
+  const sorted=Object.values(grupos).sort((a,b)=>b.venc.localeCompare(a.venc));
+  if(!sorted.length){body.innerHTML='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--muted)">Nenhuma fatura no período</td></tr>';return;}
+  body.innerHTML=sorted.map(g=>{
+    const card=CARTOES[g.cartao]||{nome:g.cartao,tag:'tag-outros'};
+    const statusStr=g.pago?`<span style="color:var(--success);font-weight:600">✓ Paga</span>`
+      :g.venc<hj?`<span style="color:var(--danger);font-weight:600">Vencida</span>`
+      :`<span style="color:var(--warn);font-weight:600">Em aberto</span>`;
+    return `<tr style="border-top:1px solid var(--border);">
+      <td style="padding:8px 12px;"><span class="tag ${card.tag}">${card.nome}</span></td>
+      <td style="padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:.78rem;">${new Date(g.venc+'T12:00:00').toLocaleDateString('pt-BR')}</td>
+      <td style="padding:8px 12px;text-align:right;">${g.itens}</td>
+      <td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(g.total)}</td>
+      <td style="padding:8px 12px;">${statusStr}</td>
+    </tr>`;
+  }).join('');
+}
 function renderSecao(secId){
   const lista=getSecData(secId);
   const meses=getSecMeses(secId);
   switch(secId){
     case 'busca-geral': renderBuscaGeral(); break;
+    case 'faturas':  renderSecFaturas(lista,meses); break;
     case 'mensal':   renderSecMensal(lista,meses); break;
     case 'pagos':    renderSecPagos(lista,meses); break;
     case 'forn':     renderSecForn(lista); break;
@@ -2944,7 +3024,7 @@ function renderSecao(secId){
   }
 }
 function initAccordion(){
-  const IDS=['busca-geral','mensal','pagos','forn','lanc','projecao','graficos','parc'];
+  const IDS=['busca-geral','faturas','mensal','pagos','forn','lanc','projecao','graficos','parc'];
   IDS.forEach(id=>{
     const sec=document.getElementById('sec-'+id);
     if(!sec||sec.dataset.acc==='1')return;
@@ -3018,7 +3098,7 @@ function renderRelatorios(){
     <div class="total-card"><div class="label">Compras</div><div class="valor">${nCompras}</div></div>`;
   // Inicializa accordion (idempotente) e re-renderiza seções já abertas
   initAccordion();
-  ['busca-geral','mensal','pagos','forn','lanc','parc','graficos','projecao'].forEach(id=>{
+  ['busca-geral','faturas','mensal','pagos','forn','lanc','parc','graficos','projecao'].forEach(id=>{
     const body=document.getElementById('acc-body-'+id);
     if(body&&body.style.display!=='none')renderSecao(id);
   });
@@ -3285,8 +3365,8 @@ function abrirCad(tipo, id){
           <div class="form-group"><label>Observação <span style="font-weight:400;font-size:.75rem;color:var(--muted);">(opcional)</span></label><input type="text" id="cad-f2" ${IS()} value="${esc(f?.obs||'')}"></div>`;
   } else if(tipo==='cart'){
     const c=id?CARTOES[id]:{};
-    const builtin=id&&CARTOES_BUILTIN.includes(id);
-    html=`<div class="form-group"><label>Chave (ID único) *</label><input type="text" id="cad-f1" ${IS()} value="${esc(id||'')}" ${builtin?'readonly style="opacity:.6;background:var(--surface);"':''}  placeholder="ex: nubank"></div>
+    html=`<div class="form-group"><label>Chave (ID único) *</label><input type="text" id="cad-f1" ${IS()} value="${esc(id||'')}" placeholder="ex: nubank">
+          ${id?'<div style="font-size:.7rem;color:var(--warn);margin-top:4px;">⚠ Trocar a chave atualiza automaticamente todos os lançamentos, limites e pagamentos já registrados nesse cartão.</div>':''}</div>
           <div class="form-group"><label>Nome exibido *</label><input type="text" id="cad-f2" ${IS()} value="${esc(c?.nome||'')}"></div>
           <div class="form-group"><label>Banco / Bandeira</label><input type="text" id="cad-f3" ${IS()} value="${esc(c?.banco||'')}"></div>
           <div class="form-row">
@@ -3330,9 +3410,32 @@ function salvarCad(){
     const fechDias=parseInt(document.getElementById('cad-f5')?.value)||10;
     const tag=(document.getElementById('cad-f6')?.value||'tag-outros');
     if(!key||!nome){showToast('Chave e nome são obrigatórios',true);return;}
-    CARTOES[key]={...(CARTOES[key]||{}),nome,banco,venc,fechDias,tag};
-    if(!cartoesCustom)cartoesCustom={};
-    cartoesCustom[key]={nome,banco,venc,fechDias,tag};
+    const oldKey=id; // id do cartão sendo editado (vazio = cartão novo)
+    if(oldKey&&oldKey!==key){
+      // Trocando o ID único de um cartão existente — migra tudo que referenciava a chave antiga.
+      if(CARTOES[key]){showToast('Já existe um cartão com essa chave',true);return;}
+      compras.forEach(c=>{if(c.cartao===oldKey)c.cartao=key;});
+      if(limites[oldKey]){limites[key]=limites[oldKey];delete limites[oldKey];}
+      Object.keys(pagamentos).forEach(pk=>{
+        if(pk===oldKey||pk.startsWith(oldKey+'|')){
+          const novaChave=key+pk.slice(oldKey.length);
+          pagamentos[novaChave]=pagamentos[pk];
+          delete pagamentos[pk];
+        }
+      });
+      CARTOES[key]={...(CARTOES[oldKey]||{}),nome,banco,venc,fechDias,tag};
+      delete CARTOES[oldKey];
+      if(!cartoesCustom)cartoesCustom={};
+      if(cartoesCustom[oldKey])delete cartoesCustom[oldKey];
+      cartoesCustom[key]={nome,banco,venc,fechDias,tag};
+      const biIdx=CARTOES_BUILTIN.indexOf(oldKey);
+      if(biIdx>=0)CARTOES_BUILTIN[biIdx]=key;
+      showToast(`Cartão renomeado — lançamentos, limites e pagamentos atualizados ✓`);
+    } else {
+      CARTOES[key]={...(CARTOES[key]||{}),nome,banco,venc,fechDias,tag};
+      if(!cartoesCustom)cartoesCustom={};
+      cartoesCustom[key]={nome,banco,venc,fechDias,tag};
+    }
   } else if(tipo==='cat'){
     const nome=(document.getElementById('cad-f1')?.value||'').trim();
     if(!nome){showToast('Nome é obrigatório',true);return;}
@@ -4283,6 +4386,6 @@ boot();
 
 <!-- Gerado em 02/07/2026 03:00 -->
 <!-- Gerado em 02/07/2026 23:23 -->
-<!-- Gerado em 16/07/2026 10:00 -->
+<!-- Gerado em 16/07/2026 23:50 -->
 </body>
 </html>
