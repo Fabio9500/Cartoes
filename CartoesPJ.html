@@ -1171,7 +1171,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.9';
+const VERSAO = 'v4.10';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2102,8 +2102,11 @@ function salvarEdicao(){
   const idx=compras.findIndex(x=>x.uid===u);if(idx<0)return;
   const trocou=novoCartao!==cartaoOrig;
   if(escopo==='todas'){
-    compras=compras.map(c=>c.compraId!==compraId?c:{...c,desc,dataCompra,cartao:novoCartao,memo,direcionamento});
-    const i2=compras.findIndex(x=>x.uid===u);if(i2>=0)compras[i2]={...compras[i2],valorParcela:val,venc};
+    // Aplica descrição/cartão/memo/direcionamento E o valor a TODAS as parcelas do grupo.
+    // O vencimento NÃO é replicado pra todas (cada parcela tem seu próprio mês) — só a
+    // parcela que estava sendo editada tem o vencimento atualizado.
+    compras=compras.map(c=>c.compraId!==compraId?c:{...c,desc,dataCompra,cartao:novoCartao,memo,direcionamento,valorParcela:val});
+    const i2=compras.findIndex(x=>x.uid===u);if(i2>=0)compras[i2]={...compras[i2],venc};
   }else{compras[idx]={...compras[idx],desc,valorParcela:val,venc,dataCompra,cartao:novoCartao,memo,direcionamento};}
   salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
   showToast(trocou?`Cartão alterado para ${CARTOES[novoCartao].nome} ✓`:'Atualizado ✓');
@@ -4386,6 +4389,6 @@ boot();
 
 <!-- Gerado em 02/07/2026 03:00 -->
 <!-- Gerado em 02/07/2026 23:23 -->
-<!-- Gerado em 16/07/2026 23:50 -->
+<!-- Gerado em 16/07/2026 10:00 -->
 </body>
 </html>
