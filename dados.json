@@ -14098,6 +14098,13 @@
       "venc": 1,
       "fechDias": 10,
       "tag": "bradesco"
+    },
+    "bradesco20": {
+      "nome": "BRA (20)",
+      "banco": "Bradesco",
+      "venc": 20,
+      "fechDias": 10,
+      "tag": "bradesco"
     }
   },
   "usuarios": [
