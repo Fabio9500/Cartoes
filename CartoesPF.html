@@ -1328,7 +1328,7 @@ async function entrarComBioPF(){
       userVerification:'required',timeout:60000
     }});
     USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
-    sessionStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
+    localStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
     document.getElementById('login-screen').style.display='none';
     atualizarBadgePF();
     renderDashboard();
@@ -1435,7 +1435,7 @@ async function loginEAtivarBioPF(){
     const ok=await registrarBioPF(u.id);
     if(!ok){ alert('⚠ Não foi possível concluir o cadastro do Face ID / Touch ID. Tente novamente.'); return; }
     USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
-    sessionStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
+    localStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
     document.getElementById('login-screen').style.display='none';
     atualizarBadgePF();
     renderDashboard();
@@ -1454,7 +1454,7 @@ async function loginUsuarioPF(){
   const hash=await sha256(document.getElementById('pf-login-senha').value||'');
   if(hash!==u.hash){document.getElementById('pf-login-erro').style.display='block';return;}
   USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
-  sessionStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
+  localStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
   document.getElementById('login-screen').style.display='none';
   atualizarBadgePF();
   renderDashboard();
@@ -1462,7 +1462,7 @@ async function loginUsuarioPF(){
 }
 function sairUsuarioPF(){
   USUARIO_ATUAL=null;
-  sessionStorage.removeItem('cc_pf_usu');
+  localStorage.removeItem('cc_pf_usu');
   document.getElementById('pf-usu-badge').style.display='none';
   mostrarLoginPF();
 }
@@ -1477,9 +1477,9 @@ function atualizarBadgePF(){
   document.getElementById('pf-usu-perfil').textContent=PF_LABELS[USUARIO_ATUAL.perfil]||'';
 }
 function verificarSessaoPF(){
-  const s=sessionStorage.getItem('cc_pf_usu');
+  const s=localStorage.getItem('cc_pf_usu');
   if(s){try{const p=JSON.parse(s);const u=usuarios.find(x=>x.id===p.id&&x.ativo!==false);if(u){USUARIO_ATUAL=p;atualizarBadgePF();return true;}}catch(e){}}
-  sessionStorage.removeItem('cc_pf_usu');
+  localStorage.removeItem('cc_pf_usu');
   return false;
 }
 function bloquearManualmente(){sairUsuarioPF();}
