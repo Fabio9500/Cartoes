@@ -1338,7 +1338,7 @@ async function entrarComBioPJ(){
       userVerification:'required',timeout:60000
     }});
     USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
-    sessionStorage.setItem('cc_pj_usu',JSON.stringify(USUARIO_ATUAL));
+    localStorage.setItem('cc_pj_usu',JSON.stringify(USUARIO_ATUAL));
     document.getElementById('login-screen').style.display='none';
     atualizarBadgePJ();
     renderDashboard();
@@ -1442,7 +1442,7 @@ async function loginEAtivarBioPJ(){
     const ok=await registrarBioPJ(u.id);
     if(!ok){ alert('⚠ Não foi possível concluir o cadastro do Face ID / Touch ID. Tente novamente.'); return; }
     USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
-    sessionStorage.setItem('cc_pj_usu',JSON.stringify(USUARIO_ATUAL));
+    localStorage.setItem('cc_pj_usu',JSON.stringify(USUARIO_ATUAL));
     document.getElementById('login-screen').style.display='none';
     atualizarBadgePJ();
     renderDashboard();
@@ -1461,14 +1461,14 @@ async function loginUsuarioPJ(){
   const hash=await sha256(document.getElementById('pj-login-senha').value||'');
   if(hash!==u.hash){document.getElementById('pj-login-erro').style.display='block';return;}
   USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
-  sessionStorage.setItem('cc_pj_usu',JSON.stringify(USUARIO_ATUAL));
+  localStorage.setItem('cc_pj_usu',JSON.stringify(USUARIO_ATUAL));
   document.getElementById('login-screen').style.display='none';
   atualizarBadgePJ();
   renderDashboard();
 }
 function sairUsuarioPJ(){
   USUARIO_ATUAL=null;
-  sessionStorage.removeItem('cc_pj_usu');
+  localStorage.removeItem('cc_pj_usu');
   document.getElementById('pj-usu-badge').style.display='none';
   mostrarLoginPJ();
 }
@@ -1483,9 +1483,9 @@ function atualizarBadgePJ(){
   document.getElementById('pj-usu-perfil').textContent=PJ_LABELS[USUARIO_ATUAL.perfil]||'';
 }
 function verificarSessaoPJ(){
-  const s=sessionStorage.getItem('cc_pj_usu');
+  const s=localStorage.getItem('cc_pj_usu');
   if(s){try{const p=JSON.parse(s);const u=usuarios.find(x=>x.id===p.id&&x.ativo!==false);if(u){USUARIO_ATUAL=p;atualizarBadgePJ();return true;}}catch(e){}}
-  sessionStorage.removeItem('cc_pj_usu');
+  localStorage.removeItem('cc_pj_usu');
   return false;
 }
 function bloquearManualmente(){sairUsuarioPJ();}
