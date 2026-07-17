@@ -4956,7 +4956,7 @@
       "cartao": "cef",
       "nParcelas": 3,
       "parcela": 1,
-      "valorParcela": 154.38,
+      "valorParcela": 51.46,
       "venc": "2026-08-20"
     },
     {
@@ -4967,7 +4967,7 @@
       "cartao": "cef",
       "nParcelas": 3,
       "parcela": 2,
-      "valorParcela": 154.38,
+      "valorParcela": 51.46,
       "venc": "2026-09-20"
     },
     {
@@ -4978,7 +4978,7 @@
       "cartao": "cef",
       "nParcelas": 3,
       "parcela": 3,
-      "valorParcela": 154.38,
+      "valorParcela": 51.46,
       "venc": "2026-10-20"
     },
     {
@@ -5022,7 +5022,7 @@
       "cartao": "cef",
       "nParcelas": 5,
       "parcela": 1,
-      "valorParcela": 588,
+      "valorParcela": 117.6,
       "venc": "2026-08-20",
       "memo": "",
       "direcionamento": ""
@@ -5035,7 +5035,7 @@
       "cartao": "cef",
       "nParcelas": 5,
       "parcela": 2,
-      "valorParcela": 588,
+      "valorParcela": 117.6,
       "venc": "2026-09-20",
       "memo": "",
       "direcionamento": ""
@@ -5061,7 +5061,7 @@
       "cartao": "cef",
       "nParcelas": 5,
       "parcela": 4,
-      "valorParcela": 588,
+      "valorParcela": 117.6,
       "venc": "2026-11-20",
       "memo": "",
       "direcionamento": ""
@@ -5074,7 +5074,7 @@
       "cartao": "cef",
       "nParcelas": 5,
       "parcela": 5,
-      "valorParcela": 588,
+      "valorParcela": 117.6,
       "venc": "2026-12-20",
       "memo": "",
       "direcionamento": ""
