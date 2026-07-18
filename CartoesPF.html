@@ -342,6 +342,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <button class="btn-lock no-print" onclick="sairUsuarioPF()" title="Trocar usuário">↩ Sair</button>
     <button onclick="abrirModalBackup()" title="Fazer backup dos dados" style="background:#2ea043;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif;" class="no-print">💾 Backup</button>
     <button class="btn btn-outline btn-sm no-print" onclick="abrirModalFala()">🎤 Falar/Texto</button>
+    <button class="btn btn-outline btn-sm no-print" onclick="abrirImportarOFXCartao()" title="Importar fatura em .ofx">📥 OFX</button>
     <button class="btn btn-primary btn-sm no-print" onclick="abrirModalCompra()">＋ Nova</button>
   </div>
 </header>
@@ -1056,6 +1057,13 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-ofx-cartao">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-hd"><h2 id="modal-ofx-titulo">Importar Fatura (OFX)</h2><button class="close-btn" onclick="fecharModal('modal-ofx-cartao')">✕</button></div>
+    <div class="modal-bd" id="modal-ofx-corpo"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-edit">
   <div class="modal" style="max-width:400px;">
     <div class="modal-hd"><h2>✏️ Editar Lançamento</h2><button class="close-btn" onclick="fecharModal('modal-edit')">✕</button></div>
@@ -1166,7 +1174,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.11';
+const VERSAO = 'v4.12';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2451,6 +2459,163 @@ function calcularParcelas(){
   const base=Math.floor((valor/n)*100)/100,resto=Math.round((valor-base*n)*100)/100;
   tbody.innerHTML='';
   for(let i=1;i<=n;i++){const venc=calcVenc(data,cartao,i),vp=i===n?base+resto:base;tbody.innerHTML+=`<tr><td style="padding:6px 9px;font-weight:600">${i}/${n}</td><td><input type="number" step="0.01" value="${vp.toFixed(2)}" id="pe-val-${i}"></td><td><input type="date" value="${venc}" id="pe-venc-${i}"></td></tr>`;}
+}
+// ══════════════════════════════════════════
+// 📥 IMPORTAR FATURA (OFX) — le o extrato/fatura baixado do banco e ja lanca
+// as compras, reconhecendo cada uma pelo HISTORICO (mesma descricao ja usada
+// antes reaproveita categoria e direcionamento), em vez da descricao crua do
+// banco que muitas vezes nao diz nada.
+// ══════════════════════════════════════════
+function parseOFX(texto){
+  const inicio = texto.search(/<OFX>|<STMTTRN>/i);
+  const corpo = inicio>=0 ? texto.slice(inicio) : texto;
+  const blocos = corpo.match(/<STMTTRN>[\s\S]*?<\/STMTTRN>/gi) || [];
+  function tag(bloco, nome){
+    const m = bloco.match(new RegExp('<'+nome+'>([^<\r\n]*)','i'));
+    return m ? m[1].trim() : '';
+  }
+  return blocos.map(bloco=>{
+    const dt = tag(bloco,'DTPOSTED').replace(/[^0-9]/g,'');
+    const data = dt.length>=8 ? `${dt.slice(0,4)}-${dt.slice(4,6)}-${dt.slice(6,8)}` : '';
+    const valorRaw = tag(bloco,'TRNAMT').replace(',','.');
+    const valor = parseFloat(valorRaw)||0;
+    const memo = tag(bloco,'MEMO') || tag(bloco,'NAME') || '';
+    return { data, valor: Math.abs(valor), fitid: tag(bloco,'FITID'), memoOriginal: memo };
+  }).filter(t=>t.data && t.valor>0);
+}
+function normalizarTextoOFX(s){
+  return (s||'')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toUpperCase()
+    .replace(/\b(COMPRA|PARCELA|DE|DA|DO|LTDA|ME|EIRELI|S\/A|SA|CARTAO|DEBITO|CREDITO)\b/g,'')
+    .replace(/\b\d{6,}\b/g,'')
+    .replace(/[^A-Z0-9 ]/g,'')
+    .replace(/\s+/g,' ').trim();
+}
+function construirDicionarioCompras(){
+  const dic = {};
+  compras.forEach(c=>{
+    if(!c.desc) return;
+    const chave = normalizarTextoOFX(c.desc);
+    if(!chave) return;
+    const dataRef = c.dataCompra||c.venc||'';
+    if(!dic[chave] || dataRef>dic[chave]._dataRef){
+      dic[chave] = { desc:c.desc, categoria:c.categoria||'', direcionamento:c.direcionamento||'', _dataRef:dataRef };
+    }
+  });
+  return dic;
+}
+function casarComHistoricoCompra(memoOriginal, dicionario){
+  const chaveOfx = normalizarTextoOFX(memoOriginal);
+  if(!chaveOfx) return null;
+  if(dicionario[chaveOfx]) return dicionario[chaveOfx];
+  let melhor = null, melhorTam = 0;
+  Object.keys(dicionario).forEach(chave=>{
+    if(chave.length<4) return;
+    if(chaveOfx.includes(chave) || chave.includes(chaveOfx)){
+      if(chave.length>melhorTam){ melhorTam = chave.length; melhor = dicionario[chave]; }
+    }
+  });
+  return melhor;
+}
+let _ofxPendenteCartao = [];
+let _ofxCartaoAlvo = '';
+function abrirImportarOFXCartao(){
+  const opcoesCartao = Object.keys(CARTOES).map(k=>`<option value="${k}">${esc(CARTOES[k].nome)} — ${esc(CARTOES[k].banco)}</option>`).join('');
+  document.getElementById('modal-ofx-titulo').textContent = '📥 Importar Fatura (OFX)';
+  document.getElementById('modal-ofx-corpo').innerHTML = `
+    <div id="erro-ofx" style="display:none;background:#fee;border:1px solid #f99;color:#900;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:10px"></div>
+    <div style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.5">
+      Baixe o arquivo <strong>.ofx</strong> da fatura no site/app do banco e escolha ele aqui. O sistema tenta reconhecer cada compra pelo que você já categorizou antes.
+    </div>
+    <div class="form-group"><label>Cartão *</label><select id="ofxc-cartao">${opcoesCartao}</select></div>
+    <div class="form-group"><label>Arquivo (.ofx)</label><input type="file" id="ofxc-arquivo" accept=".ofx,.qfx,text/plain" style="padding:8px"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button type="button" class="btn btn-primary" onclick="processarArquivoOFXCartao()">📂 Ler e Conferir</button>
+      <button type="button" class="btn btn-outline" onclick="fecharModal('modal-ofx-cartao')">Cancelar</button>
+    </div>
+  `;
+  document.getElementById('modal-ofx-cartao').classList.add('open');
+}
+function processarArquivoOFXCartao(){
+  const cartao = document.getElementById('ofxc-cartao').value;
+  const input = document.getElementById('ofxc-arquivo');
+  const arquivo = input?.files?.[0];
+  const errEl = document.getElementById('erro-ofx');
+  const mostrarErro = msg => { if(errEl){ errEl.textContent = msg; errEl.style.display = 'block'; } };
+  if(!arquivo){ mostrarErro('Escolha um arquivo .ofx primeiro.'); return; }
+  const leitor = new FileReader();
+  leitor.onload = (e) => {
+    let transacoes;
+    try{ transacoes = parseOFX(e.target.result); }
+    catch(err){ mostrarErro('Não consegui ler este arquivo. Confira se é um .ofx válido.'); return; }
+    if(!transacoes.length){ mostrarErro('Nenhuma compra encontrada neste arquivo.'); return; }
+    const idsExistentes = new Set(compras.filter(c=>c.fitid).map(c=>c.fitid));
+    const dicionario = construirDicionarioCompras();
+    _ofxCartaoAlvo = cartao;
+    _ofxPendenteCartao = transacoes.map(t=>{
+      const jaExiste = t.fitid && idsExistentes.has(t.fitid);
+      const match = casarComHistoricoCompra(t.memoOriginal, dicionario);
+      const venc = calcVenc(t.data, cartao, 1);
+      return {
+        ...t, incluir: !jaExiste, jaExiste, venc,
+        desc: match?match.desc:t.memoOriginal,
+        categoria: match?match.categoria:'', direcionamento: match?match.direcionamento:'',
+        reconhecido: !!match,
+      };
+    });
+    mostrarRevisaoOFXCartao();
+  };
+  leitor.onerror = () => mostrarErro('Não foi possível ler o arquivo. Tente novamente.');
+  leitor.readAsText(arquivo, 'UTF-8');
+}
+function mostrarRevisaoOFXCartao(){
+  const reconhecidos = _ofxPendenteCartao.filter(t=>t.reconhecido).length;
+  const duplicados = _ofxPendenteCartao.filter(t=>t.jaExiste).length;
+  const linhas = _ofxPendenteCartao.map((t,i)=>`<tr style="${t.jaExiste?'opacity:.5':''}">
+    <td><input type="checkbox" ${t.incluir?'checked':''} onchange="_ofxPendenteCartao[${i}].incluir=this.checked">${t.jaExiste?' <span style="font-size:10px;color:#999">(já importado)</span>':''}</td>
+    <td>${new Date(t.data+'T12:00:00').toLocaleDateString('pt-BR')}</td>
+    <td><input type="text" value="${esc(t.desc)}" style="width:100%;font-size:11px" onchange="_ofxPendenteCartao[${i}].desc=this.value">${t.reconhecido?' <span title="Reconhecido pelo histórico">✓</span>':''}</td>
+    <td><select style="font-size:11px" onchange="_ofxPendenteCartao[${i}].categoria=this.value">${['<option value="">Sem categoria</option>'].concat(listaCats().map(n=>`<option${n===t.categoria?' selected':''}>${esc(n)}</option>`)).join('')}</select></td>
+    <td><select style="font-size:11px" onchange="_ofxPendenteCartao[${i}].direcionamento=this.value">${['<option value="">Sem direcionamento</option>'].concat(listaDirec().map(n=>`<option${n===t.direcionamento?' selected':''}>${esc(n)}</option>`)).join('')}</select></td>
+    <td style="text-align:right;font-weight:700">R$ ${t.valor.toFixed(2).replace('.',',')}</td>
+  </tr>`).join('');
+  document.getElementById('modal-ofx-titulo').textContent = '🔍 Conferir Antes de Importar';
+  document.getElementById('modal-ofx-corpo').innerHTML = `
+    <div style="font-size:12px;color:#666;margin-bottom:10px">
+      ${_ofxPendenteCartao.length} compra(s) encontrada(s) ·
+      <span style="color:#0a7d33">${reconhecidos} reconhecida(s) pelo histórico</span>
+      ${duplicados?` · <span style="color:#b58900">${duplicados} já importada(s) antes (desmarcadas)</span>`:''}
+    </div>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr><th></th><th>Data</th><th>Descrição</th><th>Categoria</th><th>Direcionamento</th><th style="text-align:right">Valor</th></tr></thead><tbody>${linhas}</tbody></table></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button type="button" class="btn btn-primary" onclick="confirmarImportacaoOFXCartao()">✅ Confirmar Importação</button>
+      <button type="button" class="btn btn-outline" onclick="fecharModal('modal-ofx-cartao')">Cancelar</button>
+    </div>
+  `;
+  document.getElementById('modal-ofx-cartao').classList.add('open');
+}
+function confirmarImportacaoOFXCartao(){
+  const selecionados = _ofxPendenteCartao.filter(t=>t.incluir);
+  if(!selecionados.length){ fecharModal('modal-ofx-cartao'); return; }
+  let totalReal = 0;
+  selecionados.forEach(t=>{
+    const compraId = uid();
+    compras.push({
+      uid: uid(), compraId, desc: t.desc, dataCompra: t.data, cartao: _ofxCartaoAlvo,
+      nParcelas: 1, parcela: 1, valorParcela: t.valor, venc: t.venc,
+      ...(t.categoria?{categoria:t.categoria}:{}), ...(t.direcionamento?{direcionamento:t.direcionamento}:{}),
+      fitid: t.fitid||null,
+    });
+    totalReal += t.valor;
+  });
+  if(!limites[_ofxCartaoAlvo]) limites[_ofxCartaoAlvo] = {total:0, usado:0};
+  limites[_ofxCartaoAlvo].usado = (limites[_ofxCartaoAlvo].usado||0) + totalReal;
+  salvar();
+  _ofxPendenteCartao = []; _ofxCartaoAlvo = '';
+  fecharModal('modal-ofx-cartao');
+  renderDashboard();
+  showToast(`✅ ${selecionados.length} compra(s) importada(s)`);
 }
 function salvarCompra(){
   const desc=document.getElementById('c-desc').value.trim(),data=document.getElementById('c-data').value;
