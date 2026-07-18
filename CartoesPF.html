@@ -1174,7 +1174,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.12';
+const VERSAO = 'v4.13';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2272,7 +2272,8 @@ function atualizarStatusTokenTesouraria(){
 // Grava o lançamento de saída direto no dados.json do TesourariaSys.
 // Refaz o fetch do sha logo antes de gravar, reduz risco de conflito 409
 // (mesmo cuidado que o próprio TesourariaSys já toma ao salvar sozinho).
-async function registrarDebitoTesouraria(contaId, valor, data, descricao){
+async function registrarDebitoTesouraria(contaId, valor, data, descricao, _tentativa){
+  _tentativa = _tentativa || 1;
   const token = getTokenTesouraria();
   if(!token || !contaId) return {ok:false};
   const url = 'https://api.github.com/repos/Fabio9500/tesourariasys/contents/dados.json';
@@ -2302,9 +2303,21 @@ async function registrarDebitoTesouraria(contaId, valor, data, descricao){
       headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
       body: JSON.stringify({ message:'Débito automático — fatura CartoesPF', content:conteudo, sha:jGet.sha })
     });
-    if(!rPut.ok) return {ok:false, erro:'Erro ao gravar no TesourariaSys (HTTP '+rPut.status+').'};
-    return {ok:true};
+    if(!rPut.ok){
+      // Provável conflito de escrita (409) — outro sistema gravou no meio do caminho.
+      // Busca o SHA atualizado e tenta de novo, uma única vez, antes de desistir.
+      if(_tentativa===1){
+        await new Promise(r=>setTimeout(r,500));
+        return registrarDebitoTesouraria(contaId, valor, data, descricao, 2);
+      }
+      return {ok:false, erro:'Erro ao gravar no TesourariaSys mesmo após tentar de novo (HTTP '+rPut.status+').'};
+    }
+    return {ok:true, tentativas:_tentativa};
   }catch(e){
+    if(_tentativa===1){
+      await new Promise(r=>setTimeout(r,500));
+      return registrarDebitoTesouraria(contaId, valor, data, descricao, 2);
+    }
     return {ok:false, erro:e.message};
   }
 }
