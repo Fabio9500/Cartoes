@@ -14133,5 +14133,18 @@
       "ativo": true
     }
   ],
-  "direcionamentos": []
+  "direcionamentos": [
+    {
+      "id": "mrsewkwzs57h",
+      "nome": "Desp. Fixas (Mensais)"
+    },
+    {
+      "id": "mrsewkwzxg1y",
+      "nome": "Desp. Sociais"
+    },
+    {
+      "id": "mrsewkwzoq87",
+      "nome": "Facktory"
+    }
+  ]
 }
