@@ -994,6 +994,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <p>Ao marcar uma fatura como paga, você pode debitar automaticamente uma conta do TesourariaSys — sem precisar registrar de novo lá. Precisa de um token do GitHub com permissão de escrita no repositório <code style="background:var(--surface2);padding:1px 5px;border-radius:4px">Fabio9500/tesourariasys</code>.</p>
     <div id="tsr-token-status" style="font-size:.78rem;color:var(--muted);margin-bottom:10px;"></div>
     <button class="btn btn-outline" onclick="configurarTokenTesouraria();atualizarStatusTokenTesouraria()">⚙ Configurar Token</button>
+    <button class="btn btn-outline" onclick="processarFilaTesouraria(false)" style="margin-left:6px">🔄 Tentar sincronizar pendentes agora</button>
   </div>
   <div class="backup-section">
     <h3>🔔 Notificações</h3>
@@ -1179,7 +1180,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.13';
+const VERSAO = 'v4.14';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1775,6 +1776,7 @@ window.addEventListener('beforeunload', ev => {
 
 window.addEventListener('online',async()=>{
   atualizarIndicadorConexao();
+  processarFilaTesouraria(true);
   if(_sincronizando)return;
   const fila=getFila();
   if(!fila)return;
@@ -1806,6 +1808,7 @@ async function bootAposAuth(){
   iniciarSincronizacaoAutomatica();
   if(!ghToken){document.getElementById('loading-screen').style.display='none';document.getElementById('setup-screen').style.display='flex';return;}
   await initData();
+  processarFilaTesouraria(true);
 }
 
 
@@ -2263,7 +2266,42 @@ function configurarTokenTesouraria(){
 function atualizarStatusTokenTesouraria(){
   const el = document.getElementById('tsr-token-status');
   if(!el) return;
-  el.textContent = getTokenTesouraria() ? '✅ Token configurado.' : '⚠ Token não configurado ainda.';
+  const base = getTokenTesouraria() ? '✅ Token configurado.' : '⚠ Token não configurado ainda.';
+  const pend = getFilaTesouraria().length;
+  el.textContent = base + (pend ? ` ⏳ ${pend} débito(s) pendente(s) de sincronizar.` : '');
+}
+// ── Fila de débitos pendentes no TesourariaSys — mesmo princípio da fila offline
+// geral do sistema, só que específica pra essa integração de escrita: se o débito
+// automático falhar (sem internet, token errado, GitHub fora do ar etc.), a
+// intenção fica guardada aqui e é tentada de novo sozinha quando a conexão volta
+// (evento 'online'), a cada abertura do app, e também manualmente pelo botão
+// "🔄 Tentar sincronizar pendentes agora" na aba Backup.
+function getFilaTesouraria(){ try{ return JSON.parse(localStorage.getItem(PREFIX+'_fila_tsr')||'[]'); }catch(e){ return []; } }
+function setFilaTesouraria(lista){ try{ localStorage.setItem(PREFIX+'_fila_tsr', JSON.stringify(lista)); }catch(e){} }
+function enfileirarDebitoTesouraria(item){
+  const fila = getFilaTesouraria();
+  fila.push({...item, id:uid(), criadoEm:new Date().toISOString()});
+  setFilaTesouraria(fila);
+  atualizarStatusTokenTesouraria();
+}
+let _processandoFilaTesouraria = false;
+async function processarFilaTesouraria(silencioso){
+  if(_processandoFilaTesouraria) return;
+  const fila = getFilaTesouraria();
+  if(!fila.length){ if(!silencioso) showToast('Nenhum débito pendente de sincronizar.'); return; }
+  if(!isOnline()){ if(!silencioso) showToast('Sem conexão agora — vai tentar de novo assim que voltar.', true); return; }
+  _processandoFilaTesouraria = true;
+  const restantes = [];
+  let sucesso = 0;
+  for(const item of fila){
+    const res = await registrarDebitoTesouraria(item.contaId, item.valor, item.data, item.descricao);
+    if(res.ok) sucesso++; else restantes.push(item);
+  }
+  setFilaTesouraria(restantes);
+  atualizarStatusTokenTesouraria();
+  _processandoFilaTesouraria = false;
+  if(sucesso) showToast(`✅ ${sucesso} débito(s) pendente(s) sincronizado(s) com o TesourariaSys!`);
+  else if(!silencioso) showToast('⚠ Ainda não deu para sincronizar os pendentes — vai tentar de novo mais tarde.', true);
 }
 // Grava o lançamento de saída direto no dados.json do TesourariaSys.
 // Refaz o fetch do sha logo antes de gravar, reduz risco de conflito 409.
@@ -2340,9 +2378,13 @@ async function confirmarPagamento(){
   if(contaTsr){
     showToast(`Pagamento registrado — gravando débito no TesourariaSys...`);
     const card=CARTOES[cartao];
-    const res = await registrarDebitoTesouraria(contaTsr, valor, data, `Pagamento fatura ${card.nome} (CartoesPJ)`);
+    const descricao = `Pagamento fatura ${card.nome} (CartoesPJ)`;
+    const res = await registrarDebitoTesouraria(contaTsr, valor, data, descricao);
     if(res.ok) showToast('✅ Pagamento registrado e débito lançado no TesourariaSys!');
-    else showToast('⚠ Pagamento registrado aqui, mas não deu para gravar no TesourariaSys: '+(res.erro||''), true);
+    else {
+      enfileirarDebitoTesouraria({contaId:contaTsr, valor, data, descricao});
+      showToast('⚠ Pagamento registrado aqui. O débito no TesourariaSys ficou pendente e será sincronizado automaticamente assim que possível.', true);
+    }
   } else {
     showToast(`Pagamento de ${fmt(valor)} registrado ✓`);
   }
