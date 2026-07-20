@@ -341,6 +341,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <button onclick="abrirModalBackup()" title="Fazer backup dos dados" style="background:#2ea043;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif;" class="no-print">💾 Backup</button>
     <button class="btn btn-outline btn-sm no-print" onclick="abrirModalFala()">🎤 Falar/Texto</button>
     <button class="btn btn-outline btn-sm no-print" onclick="abrirImportarOFXCartao()" title="Importar fatura em .ofx">📥 OFX</button>
+    <button class="btn btn-outline btn-sm no-print" onclick="abrirImportarCSVCartao()" title="Importar fatura em .csv (Bradesco)">📄 CSV Bradesco</button>
     <button class="btn btn-primary btn-sm no-print" onclick="abrirModalCompra()">＋ Nova</button>
   </div>
 </header>
@@ -1070,6 +1071,13 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-csv-cartao">
+  <div class="modal" style="max-width:760px;">
+    <div class="modal-hd"><h2 id="modal-csv-titulo">Importar Fatura (CSV Bradesco)</h2><button class="close-btn" onclick="fecharModal('modal-csv-cartao')">✕</button></div>
+    <div class="modal-bd" id="modal-csv-corpo"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-edit">
   <div class="modal" style="max-width:400px;">
     <div class="modal-hd"><h2>✏️ Editar Lançamento</h2><button class="close-btn" onclick="fecharModal('modal-edit')">✕</button></div>
@@ -1191,7 +1199,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.15';
+const VERSAO = 'v4.17';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2026,7 +2034,7 @@ function renderLancamentos(filtro){
     const seta=opcoes.seta||'';
     return `<tr style="${passada?'opacity:.55':''}${opcoes.destaque?'background:var(--surface2,#f7f7f7);':''}">
       <td data-label="Dt. Compra" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${dtC}</td>
-      <td data-label="Fornecedor" style="font-weight:600;${indent}">${seta}${c.desc}</td>
+      <td data-label="Fornecedor" style="font-weight:600;${indent}">${seta}${c.desc}${c.origemImportacao?` <span title="Importado da fatura ${c.origemImportacao==='csv-bradesco'?'CSV Bradesco':'OFX'} em ${c.dataImportacao?new Date(c.dataImportacao).toLocaleDateString('pt-BR'):'-'}" style="display:inline-block;font-size:.62rem;font-weight:700;color:#8a5a00;background:#fff3d6;border:1px solid #f0d896;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle">${c.origemImportacao==='csv-bradesco'?'📄 CSV':'📥 OFX'}</span>`:''}</td>
       <td data-label="Memorando" style="font-size:.75rem;color:var(--muted);">${c.memo||'<span style="opacity:.3">—</span>'}</td>
       <td data-label="Cartão"><span class="tag ${card.tag}">${card.nome}</span></td>
       <td data-label="Parcela">${pTag}</td><td data-label="Valor" style="font-weight:600">${fmt(c.valorParcela)}</td>
@@ -2649,6 +2657,7 @@ function mostrarRevisaoOFXCartao(){
 function confirmarImportacaoOFXCartao(){
   const selecionados = _ofxPendenteCartao.filter(t=>t.incluir);
   if(!selecionados.length){ fecharModal('modal-ofx-cartao'); return; }
+  const agora = new Date().toISOString();
   let totalReal = 0;
   selecionados.forEach(t=>{
     const compraId = uid();
@@ -2656,7 +2665,7 @@ function confirmarImportacaoOFXCartao(){
       uid: uid(), compraId, desc: t.desc, dataCompra: t.data, cartao: _ofxCartaoAlvo,
       nParcelas: 1, parcela: 1, valorParcela: t.valor, venc: t.venc,
       ...(t.categoria?{categoria:t.categoria}:{}), ...(t.direcionamento?{direcionamento:t.direcionamento}:{}),
-      fitid: t.fitid||null,
+      fitid: t.fitid||null, origemImportacao: 'ofx', dataImportacao: agora,
     });
     totalReal += t.valor;
   });
@@ -2668,6 +2677,169 @@ function confirmarImportacaoOFXCartao(){
   renderDashboard();
   showToast(`✅ ${selecionados.length} compra(s) importada(s)`);
 }
+
+// ══════════════════════════════════════════
+// 📄 IMPORTAR FATURA CSV (BRADESCO) — le o arquivo .csv exportado da fatura
+// completa (com secoes por titular/adicional, saldo anterior, lancamentos
+// programados e resumo de taxas), reconhece parcelas pelo sufixo "N/M" da
+// descricao do banco, e evita duplicar comparando data da compra + parcela +
+// total de parcelas + valor (nao usa a descricao, pois o apelido do usuario
+// costuma ser diferente do nome bruto que o banco manda).
+// ══════════════════════════════════════════
+function extrairAnoFaturaCSV(texto){
+  const m = texto.match(/Data:\s*(\d{2})\/(\d{2})\/(\d{4})/);
+  return m ? {mes:parseInt(m[2],10), ano:parseInt(m[3],10)} : null;
+}
+function parseCSVBradesco(texto){
+  const linhas = texto.split(/\r\n|\r|\n/);
+  const cab = extrairAnoFaturaCSV(texto);
+  const anoRef = cab ? cab.ano : new Date().getFullYear();
+  const mesRef = cab ? cab.mes : (new Date().getMonth()+1);
+  let secao = null; // null | 'atual' | 'programado' | 'fim'
+  const registros = [];
+  for(const raw of linhas){
+    const l = raw.trim();
+    if(!l) continue;
+    if(/^Lan[çc]amentos programados/i.test(l)){ secao='programado'; continue; }
+    if(/Total da fatura em Real/i.test(l) || /^\*\s*Fatura em Aberto/i.test(l) || /^Resumo das Despesas/i.test(l)){ secao='fim'; continue; }
+    if(secao==='fim') continue;
+    const mHold = l.match(/^(.+?)\s*;;;\s*\d+\s*$/);
+    if(mHold){ if(secao===null) secao='atual'; continue; }
+    if(/^Data;Hist/i.test(l)) continue;
+    if(secao!=='atual') continue; // ignora a secao "Lancamentos programados" — e redundante com a parcela 1 ja vista na secao atual
+    const partes = l.split(';');
+    if(partes.length<4) continue;
+    const dataStr = partes[0].trim(), hist=(partes[1]||'').trim(), brl=(partes[3]||'').trim();
+    if(/^SALDO ANTERIOR/i.test(hist)) continue;
+    const mData = dataStr.match(/^(\d{2})\/(\d{2})$/);
+    if(!mData) continue;
+    const dia=mData[1], mes=parseInt(mData[2],10);
+    const ano = mes > mesRef ? anoRef - 1 : anoRef; // cobre virada de ano (fatura de jan com compra de dez)
+    const dataCompra = `${ano}-${String(mes).padStart(2,'0')}-${dia}`;
+    const valor = parseFloat(brl.replace(/\./g,'').replace(',','.'));
+    if(isNaN(valor) || valor<=0) continue;
+    const mp = hist.match(/(\d+)\s*\/\s*(\d+)\s*$/);
+    let parcela=1, nParcelas=1, desc=hist;
+    if(mp){ parcela=parseInt(mp[1],10); nParcelas=parseInt(mp[2],10); desc=hist.slice(0,mp.index).trim(); }
+    registros.push({dataCompra, desc, parcela, nParcelas, valor});
+  }
+  return registros;
+}
+function jaExisteLancamentoCSV(cartao, r){
+  return compras.some(c=>c.cartao===cartao && c.dataCompra===r.dataCompra && c.parcela===r.parcela && c.nParcelas===r.nParcelas && Math.abs((c.valorParcela||0)-r.valor)<=0.05);
+}
+let _csvPendenteCartao = [];
+let _csvCartaoAlvo = '';
+function abrirImportarCSVCartao(){
+  const opcoesCartao = Object.keys(CARTOES).map(k=>`<option value="${k}"${k==='bradesco'?' selected':''}>${esc(CARTOES[k].nome)} — ${esc(CARTOES[k].banco)}</option>`).join('');
+  document.getElementById('modal-csv-titulo').textContent = '📄 Importar Fatura (CSV Bradesco)';
+  document.getElementById('modal-csv-corpo').innerHTML = `
+    <div id="erro-csv" style="display:none;background:#fee;border:1px solid #f99;color:#900;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:10px"></div>
+    <div style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.5">
+      Baixe o arquivo <strong>.csv</strong> da fatura no site/app do Bradesco e escolha ele aqui. O sistema separa as compras automaticamente e avisa quais já foram lançadas antes (compara data + parcela + valor, não a descrição — já que o apelido que você usa costuma ser diferente do nome bruto do banco).
+    </div>
+    <div class="form-group"><label>Cartão *</label><select id="csvc-cartao">${opcoesCartao}</select></div>
+    <div class="form-group"><label>Arquivo (.csv)</label><input type="file" id="csvc-arquivo" accept=".csv,text/csv" style="padding:8px"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button type="button" class="btn btn-primary" onclick="processarArquivoCSVCartao()">📂 Ler e Conferir</button>
+      <button type="button" class="btn btn-outline" onclick="fecharModal('modal-csv-cartao')">Cancelar</button>
+    </div>
+  `;
+  document.getElementById('modal-csv-cartao').classList.add('open');
+}
+function processarArquivoCSVCartao(){
+  const cartao = document.getElementById('csvc-cartao').value;
+  const input = document.getElementById('csvc-arquivo');
+  const arquivo = input?.files?.[0];
+  const errEl = document.getElementById('erro-csv');
+  const mostrarErro = msg => { if(errEl){ errEl.textContent = msg; errEl.style.display = 'block'; } };
+  if(!arquivo){ mostrarErro('Escolha um arquivo .csv primeiro.'); return; }
+  const leitor = new FileReader();
+  leitor.onload = (e) => {
+    let registros;
+    try{ registros = parseCSVBradesco(e.target.result); }
+    catch(err){ mostrarErro('Não consegui ler este arquivo. Confira se é o CSV da fatura do Bradesco.'); return; }
+    if(!registros.length){ mostrarErro('Nenhum lançamento encontrado neste arquivo.'); return; }
+    _csvCartaoAlvo = cartao;
+    _csvPendenteCartao = registros.map(r=>({ ...r, incluir: !jaExisteLancamentoCSV(cartao, r), jaExiste: jaExisteLancamentoCSV(cartao, r) }));
+    mostrarRevisaoCSVCartao();
+  };
+  leitor.onerror = () => mostrarErro('Não foi possível ler o arquivo. Tente novamente.');
+  leitor.readAsText(arquivo, 'ISO-8859-1');
+}
+function mostrarRevisaoCSVCartao(){
+  const duplicados = _csvPendenteCartao.filter(t=>t.jaExiste).length;
+  const novos = _csvPendenteCartao.length - duplicados;
+  const linhas = _csvPendenteCartao.map((t,i)=>{
+    const parcTxt = t.nParcelas>1 ? `${t.parcela}/${t.nParcelas}` : 'à vista';
+    const avisoParcial = (t.parcela>1 && !t.jaExiste) ? ' <span style="font-size:10px;color:#b58900" title="Parcelas anteriores desta compra não foram encontradas no sistema — será lançada só esta parcela isolada, sem supor as demais">⚠ parcela avulsa</span>' : '';
+    return `<tr style="${t.jaExiste?'opacity:.5':''}">
+    <td><input type="checkbox" ${t.incluir?'checked':''} onchange="_csvPendenteCartao[${i}].incluir=this.checked">${t.jaExiste?' <span style="font-size:10px;color:#999">(já lançado)</span>':''}</td>
+    <td>${new Date(t.dataCompra+'T12:00:00').toLocaleDateString('pt-BR')}</td>
+    <td><input type="text" value="${esc(t.desc)}" style="width:100%;font-size:11px" onchange="_csvPendenteCartao[${i}].desc=this.value">${avisoParcial}</td>
+    <td><select style="font-size:11px" onchange="_csvPendenteCartao[${i}].categoria=this.value">${['<option value="">Sem categoria</option>'].concat(listaCats().map(n=>`<option${n===t.categoria?' selected':''}>${esc(n)}</option>`)).join('')}</select></td>
+    <td><select style="font-size:11px" onchange="_csvPendenteCartao[${i}].direcionamento=this.value">${['<option value="">Sem direcionamento</option>'].concat(listaDirec().map(n=>`<option${n===t.direcionamento?' selected':''}>${esc(n)}</option>`)).join('')}</select></td>
+    <td style="text-align:center;font-size:11px">${parcTxt}</td>
+    <td style="text-align:right;font-weight:700">R$ ${t.valor.toFixed(2).replace('.',',')}</td>
+  </tr>`;
+  }).join('');
+  document.getElementById('modal-csv-titulo').textContent = '🔍 Conferir Antes de Importar';
+  document.getElementById('modal-csv-corpo').innerHTML = `
+    <div style="font-size:12px;color:#666;margin-bottom:6px">
+      ${_csvPendenteCartao.length} lançamento(s) encontrado(s) na fatura ·
+      <span style="color:#0a7d33">${novos} novo(s)</span>
+      ${duplicados?` · <span style="color:#b58900">${duplicados} já lançado(s) antes (desmarcados)</span>`:''}
+    </div>
+    <div style="font-size:11px;color:#666;margin-bottom:10px">Compras novas com mais de 1 parcela (parcela 1 de N) geram automaticamente todas as parcelas futuras, com vencimentos já calculados. Marcadas "⚠ parcela avulsa" são parcelas do meio/fim de uma compra cujo início não foi encontrado no sistema — são lançadas sozinhas, sem supor as parcelas anteriores.</div>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr><th></th><th>Data</th><th>Descrição</th><th>Categoria</th><th>Direcionamento</th><th>Parcela</th><th style="text-align:right">Valor</th></tr></thead><tbody>${linhas}</tbody></table></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button type="button" class="btn btn-primary" onclick="confirmarImportacaoCSVCartao()">✅ Confirmar Importação</button>
+      <button type="button" class="btn btn-outline" onclick="fecharModal('modal-csv-cartao')">Cancelar</button>
+    </div>
+  `;
+  document.getElementById('modal-csv-cartao').classList.add('open');
+}
+function confirmarImportacaoCSVCartao(){
+  const selecionados = _csvPendenteCartao.filter(t=>t.incluir);
+  if(!selecionados.length){ fecharModal('modal-csv-cartao'); return; }
+  const agora = new Date().toISOString();
+  let totalReal = 0, totalLancamentos = 0, totalCompras = 0;
+  selecionados.forEach(t=>{
+    const compraId = uid();
+    totalCompras++;
+    if(t.nParcelas>1 && t.parcela===1){
+      // compra nova, comecando na parcela 1 — reconstroi todas as N parcelas futuras de uma vez
+      for(let i=1;i<=t.nParcelas;i++){
+        const venc = calcVenc(t.dataCompra, _csvCartaoAlvo, i);
+        compras.push({
+          uid: uid(), compraId, desc: t.desc, dataCompra: t.dataCompra, cartao: _csvCartaoAlvo,
+          nParcelas: t.nParcelas, parcela: i, valorParcela: t.valor, venc,
+          ...(t.categoria?{categoria:t.categoria}:{}), ...(t.direcionamento?{direcionamento:t.direcionamento}:{}),
+          origemImportacao: 'csv-bradesco', dataImportacao: agora,
+        });
+        totalReal += t.valor; totalLancamentos++;
+      }
+    } else {
+      // a vista (1/1) ou parcela avulsa (meio/fim de uma compra sem historico anterior no sistema)
+      const venc = calcVenc(t.dataCompra, _csvCartaoAlvo, t.parcela);
+      compras.push({
+        uid: uid(), compraId, desc: t.desc, dataCompra: t.dataCompra, cartao: _csvCartaoAlvo,
+        nParcelas: t.nParcelas, parcela: t.parcela, valorParcela: t.valor, venc,
+        ...(t.categoria?{categoria:t.categoria}:{}), ...(t.direcionamento?{direcionamento:t.direcionamento}:{}),
+        origemImportacao: 'csv-bradesco', dataImportacao: agora,
+      });
+      totalReal += t.valor; totalLancamentos++;
+    }
+  });
+  if(!limites[_csvCartaoAlvo]) limites[_csvCartaoAlvo] = {total:0, usado:0};
+  limites[_csvCartaoAlvo].usado = (limites[_csvCartaoAlvo].usado||0) + totalReal;
+  salvar();
+  _csvPendenteCartao = []; _csvCartaoAlvo = '';
+  fecharModal('modal-csv-cartao');
+  renderDashboard();
+  showToast(`✅ ${totalCompras} compra(s) da fatura importada(s) (${totalLancamentos} lançamento(s) de parcela)`);
+}
+
 function salvarCompra(){
   const desc=document.getElementById('c-desc').value.trim(),data=document.getElementById('c-data').value;
   const valor=parseFloat(document.getElementById('c-valor').value),cartao=document.getElementById('c-cartao').value;
