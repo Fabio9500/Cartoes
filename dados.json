@@ -12942,6 +12942,17 @@
       "categoria": "Supermercado",
       "memo": "Compras Congelamento",
       "direcionamento": "Desp. Fixas (Mensais)"
+    },
+    {
+      "uid": "mrta0qh27a5x",
+      "compraId": "mrta0qh35wb5",
+      "desc": "Data: 09:06:",
+      "dataCompra": "2026-07-20",
+      "cartao": "bradesco20",
+      "nParcelas": 1,
+      "parcela": 1,
+      "valorParcela": 46,
+      "venc": "2026-08-20"
     }
   ],
   "limites": {
@@ -14133,18 +14144,5 @@
       "ativo": true
     }
   ],
-  "direcionamentos": [
-    {
-      "id": "mrsewkwzs57h",
-      "nome": "Desp. Fixas (Mensais)"
-    },
-    {
-      "id": "mrsewkwzxg1y",
-      "nome": "Desp. Sociais"
-    },
-    {
-      "id": "mrsewkwzoq87",
-      "nome": "Facktory"
-    }
-  ]
+  "direcionamentos": []
 }
