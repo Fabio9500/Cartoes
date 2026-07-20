@@ -1003,8 +1003,8 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
   <div class="backup-section">
     <h3>⚠️ Limpar dados</h3>
-    <p>Remove todos os lançamentos. Faça backup antes!</p>
-    <button class="btn btn-danger" onclick="limparTudo()">Limpar tudo</button>
+    <p>Remove todos os lançamentos. Faça backup antes! Restrito ao usuário Master — pede senha e PIN de segurança.</p>
+    <button class="btn btn-danger" onclick="abrirLimparTudoSeguro()">Limpar tudo</button>
   </div>
 </div>
 </main>
@@ -1144,6 +1144,17 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-limpar-seguro">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-hd"><h2 id="lts-titulo">⚠️ Limpar Todos os Dados</h2><button class="close-btn" onclick="fecharModal('modal-limpar-seguro')">✕</button></div>
+    <div class="modal-bd" id="lts-corpo"></div>
+    <div class="modal-ft">
+      <button class="btn btn-outline" onclick="fecharModal('modal-limpar-seguro')">Cancelar</button>
+      <button class="btn btn-danger" id="lts-btn-confirmar" onclick="confirmarLimparTudoSeguro()">🗑 Confirmar Limpeza</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-pagamento">
   <div class="modal" style="max-width:400px;">
     <div class="modal-hd"><h2>💰 Registrar Pagamento</h2><button class="close-btn" onclick="fecharModal('modal-pagamento')">✕</button></div>
@@ -1180,7 +1191,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.14';
+const VERSAO = 'v4.15';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2684,9 +2695,109 @@ function importar(e){
   reader.readAsText(file);e.target.value='';
 }
 function limparTudo(){
-  if(!confirm('Limpar todos os dados?'))return;
   compras=[];limites=JSON.parse(JSON.stringify(DEFAULT_LIMITES));pagamentos={};
   salvar();renderDashboard();showToast('Dados limpos ✓');
+}
+// ── SEGURANÇA EXTRA PARA "LIMPAR TUDO" — senha + PIN, só Master ──
+// O PIN fica salvo (com hash) somente neste aparelho (localStorage), não vai
+// para a nuvem — é um segundo fator local, independente da senha de login.
+function pinSegConfigurado(){
+  try{ return !!localStorage.getItem(PREFIX+'_pin_seg'); }catch(e){ return false; }
+}
+function abrirLimparTudoSeguro(){
+  if(!USUARIO_ATUAL || USUARIO_ATUAL.perfil!=='master'){
+    alert('⚠ Apenas o usuário Master pode limpar os dados.');
+    return;
+  }
+  const corpo = document.getElementById('lts-corpo');
+  const pinOk = pinSegConfigurado();
+  if(pinOk){
+    corpo.innerHTML = `
+      <div style="background:#fce8e8;border:1px solid #f5c6c6;border-radius:8px;padding:9px 12px;font-size:.78rem;color:var(--danger);margin-bottom:14px;line-height:1.5">
+        ⚠️ Isso remove <strong>todos os lançamentos</strong> deste sistema. Não pode ser desfeito. Faça backup antes.
+      </div>
+      <div class="form-group"><label>Sua senha</label><input type="password" id="lts-senha" autocomplete="current-password"></div>
+      <div class="form-group"><label>PIN de segurança</label><input type="password" id="lts-pin" inputmode="numeric" maxlength="6"></div>
+      <div id="lts-erro" style="color:var(--danger);font-size:12px;display:none;margin-bottom:6px"></div>
+      <div style="text-align:right"><span class="login-link" onclick="abrirRedefinirPin()" style="font-size:11px;display:inline">Esqueci / quero redefinir o PIN</span></div>
+    `;
+    document.getElementById('lts-titulo').textContent = '⚠️ Limpar Todos os Dados';
+    const btn = document.getElementById('lts-btn-confirmar');
+    btn.textContent = '🗑 Confirmar Limpeza';
+    btn.onclick = confirmarLimparTudoSeguro;
+  } else {
+    corpo.innerHTML = `
+      <div style="background:#fff8e8;border:1px solid #f0d070;border-radius:8px;padding:9px 12px;font-size:.78rem;color:#7a5c00;margin-bottom:14px;line-height:1.5">
+        🔑 Antes de poder usar "Limpar Dados", defina um PIN de segurança (4 a 6 números) só seu — ele fica guardado apenas neste aparelho.
+      </div>
+      <div class="form-group"><label>Novo PIN (4 a 6 números)</label><input type="password" id="lts-novo-pin" inputmode="numeric" maxlength="6"></div>
+      <div class="form-group"><label>Confirme o novo PIN</label><input type="password" id="lts-novo-pin2" inputmode="numeric" maxlength="6"></div>
+      <div id="lts-erro" style="color:var(--danger);font-size:12px;display:none;margin-bottom:6px"></div>
+    `;
+    document.getElementById('lts-titulo').textContent = '🔑 Definir PIN de Segurança';
+    const btn = document.getElementById('lts-btn-confirmar');
+    btn.textContent = '💾 Salvar PIN';
+    btn.onclick = salvarNovoPinSeguranca;
+  }
+  document.getElementById('modal-limpar-seguro').classList.add('open');
+}
+function abrirRedefinirPin(){
+  const corpo = document.getElementById('lts-corpo');
+  corpo.innerHTML = `
+    <div class="form-group"><label>Sua senha (para confirmar que é você)</label><input type="password" id="lts-senha-redef" autocomplete="current-password"></div>
+    <div class="form-group"><label>Novo PIN (4 a 6 números)</label><input type="password" id="lts-novo-pin" inputmode="numeric" maxlength="6"></div>
+    <div class="form-group"><label>Confirme o novo PIN</label><input type="password" id="lts-novo-pin2" inputmode="numeric" maxlength="6"></div>
+    <div id="lts-erro" style="color:var(--danger);font-size:12px;display:none;margin-bottom:6px"></div>
+  `;
+  document.getElementById('lts-titulo').textContent = '🔑 Redefinir PIN de Segurança';
+  const btn = document.getElementById('lts-btn-confirmar');
+  btn.textContent = '💾 Salvar Novo PIN';
+  btn.onclick = salvarRedefinicaoPin;
+}
+function mostrarErroLts(msg){
+  const erro=document.getElementById('lts-erro');
+  if(!erro) return;
+  erro.textContent=msg; erro.style.display='block';
+}
+function validarNovoPin(p1,p2){
+  if(!/^\d{4,6}$/.test(p1)){ mostrarErroLts('O PIN deve ter de 4 a 6 números.'); return false; }
+  if(p1!==p2){ mostrarErroLts('Os PINs digitados não conferem.'); return false; }
+  return true;
+}
+async function salvarNovoPinSeguranca(){
+  const p1=(document.getElementById('lts-novo-pin').value||'').trim();
+  const p2=(document.getElementById('lts-novo-pin2').value||'').trim();
+  if(!validarNovoPin(p1,p2)) return;
+  const hash=await sha256(p1);
+  try{ localStorage.setItem(PREFIX+'_pin_seg', hash); }catch(e){}
+  showToast('✅ PIN de segurança definido');
+  fecharModal('modal-limpar-seguro');
+}
+async function salvarRedefinicaoPin(){
+  const senha=document.getElementById('lts-senha-redef').value||'';
+  const p1=(document.getElementById('lts-novo-pin').value||'').trim();
+  const p2=(document.getElementById('lts-novo-pin2').value||'').trim();
+  const u=usuarios.find(x=>x.id===USUARIO_ATUAL?.id);
+  const hashSenha=await sha256(senha);
+  if(!u||hashSenha!==u.hash){ mostrarErroLts('Senha incorreta.'); return; }
+  if(!validarNovoPin(p1,p2)) return;
+  const hash=await sha256(p1);
+  try{ localStorage.setItem(PREFIX+'_pin_seg', hash); }catch(e){}
+  showToast('✅ PIN redefinido');
+  fecharModal('modal-limpar-seguro');
+}
+async function confirmarLimparTudoSeguro(){
+  const senha=document.getElementById('lts-senha').value||'';
+  const pin=(document.getElementById('lts-pin').value||'').trim();
+  const u=usuarios.find(x=>x.id===USUARIO_ATUAL?.id);
+  const hashSenha=await sha256(senha);
+  if(!u||u.perfil!=='master'||hashSenha!==u.hash){ mostrarErroLts('Senha incorreta.'); return; }
+  const hashPinDigitado=await sha256(pin);
+  const hashPinSalvo=(function(){ try{ return localStorage.getItem(PREFIX+'_pin_seg')||''; }catch(e){ return ''; } })();
+  if(!hashPinSalvo||hashPinDigitado!==hashPinSalvo){ mostrarErroLts('PIN incorreto.'); return; }
+  fecharModal('modal-limpar-seguro');
+  if(!confirm('Confirma definitivamente a limpeza de TODOS os dados? Essa ação não pode ser desfeita.')) return;
+  limparTudo();
 }
 function showToast(msg,erro=false){
   const t=document.getElementById('toast');t.textContent=msg;t.style.background=erro?'var(--danger)':'var(--text)';
