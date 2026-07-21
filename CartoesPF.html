@@ -827,6 +827,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <button class="cad-stab active" id="stb-forn" onclick="showCadSub('forn',this)">🏪 Fornecedores</button>
       <button class="cad-stab" id="stb-cart" onclick="showCadSub('cart',this)">💳 Cartões</button>
       <button class="cad-stab" id="stb-cat" onclick="showCadSub('cat',this)">🏷 Categorias</button>
+      <button class="cad-stab" id="stb-cc" onclick="showCadSub('cc',this)">🏢 Centro de Custo</button>
       <button class="cad-stab" id="stb-direc" onclick="showCadSub('direc',this)">🧭 Direcionamento</button>
     </div>
 
@@ -857,9 +858,8 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
     <div id="cad-cat" style="display:none;">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
-        <span style="font-size:.82rem;color:var(--muted);flex:1;">As categorias padrão e as personalizadas aparecem em todos os formulários do sistema.</span>
+        <span style="font-size:.82rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ — o que você criar aqui aparece nos outros sistemas também.</span>
         <button class="btn btn-primary btn-sm" onclick="abrirCad('cat')">+ Nova Categoria</button>
-        <button class="btn btn-outline btn-sm" onclick="importarCategoriasHistorico()" title="Importa categorias usadas nos lançamentos que não estão na lista padrão">📥 Importar do histórico</button>
       </div>
       <div class="tbl-wrap">
         <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
@@ -872,11 +872,25 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         </table>
       </div>
     </div>
+    <div id="cad-cc" style="display:none;">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <span style="font-size:.82rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ — o que você criar aqui aparece nos outros sistemas também.</span>
+        <button class="btn btn-primary btn-sm" onclick="abrirCad('cc')">+ Novo Centro de Custo</button>
+      </div>
+      <div class="tbl-wrap">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+          <thead><tr style="background:var(--surface2);">
+            <th style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);">Centro de Custo</th>
+            <th style="padding:10px 14px;width:80px;" class="no-print"></th>
+          </tr></thead>
+          <tbody id="cad-cc-body"></tbody>
+        </table>
+      </div>
+    </div>
     <div id="cad-direc" style="display:none;">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
-        <span style="font-size:.82rem;color:var(--muted);flex:1;">O direcionamento funciona igual à categoria e aparece em todos os formulários do sistema.</span>
+        <span style="font-size:.82rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ — o que você criar aqui aparece nos outros sistemas também.</span>
         <button class="btn btn-primary btn-sm" onclick="abrirCad('direc')">+ Novo Direcionamento</button>
-        <button class="btn btn-outline btn-sm" onclick="importarDirecionamentosHistorico()" title="Importa direcionamentos já usados nos lançamentos">📥 Importar do histórico</button>
       </div>
       <div class="tbl-wrap">
         <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
@@ -1019,9 +1033,24 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="c-memo" list="dl-memorando" placeholder="Ex: Furadeira para a obra" autocomplete="off"></div>
       <datalist id="dl-fornecedor"></datalist>
       <datalist id="dl-memorando"></datalist>
-      <div class="form-group"><label>Categoria</label><select id="c-categoria"><option value="">Sem categoria</option><option>Alimentação</option><option>Combustível</option><option>Educação</option><option>Entretenimento</option><option>Farmácia</option><option>Moradia</option><option>Saúde</option><option>Serviços</option><option>Supermercado</option><option>Transporte</option><option>Vestuário</option><option>Outros</option></select></div>
-      <div class="form-group"><label>Direcionamento</label><select id="c-direcionamento"><option value="">Sem direcionamento</option></select></div>
-      <datalist id="dl-direcionamento"></datalist>
+      <div class="form-group"><label>Categoria</label>
+        <div class="form-row" style="margin-bottom:0">
+          <select id="c-categoria-mae" onchange="aoMudarMaeCascata('c','categoria')" style="flex:1"></select>
+          <select id="c-categoria-sub" style="flex:1"></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Centro de Custo</label>
+        <div class="form-row" style="margin-bottom:0">
+          <select id="c-cc-mae" onchange="aoMudarMaeCascata('c','cc')" style="flex:1"></select>
+          <select id="c-cc-sub" style="flex:1"></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Direcionamento</label>
+        <div class="form-row" style="margin-bottom:0">
+          <select id="c-direcionamento-mae" onchange="aoMudarMaeCascata('c','direc')" style="flex:1"></select>
+          <select id="c-direcionamento-sub" style="flex:1"></select>
+        </div>
+      </div>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="c-data" onchange="calcularFechamento()"></div>
         <div class="form-group"><label>Valor Total (R$)</label><input type="number" id="c-valor" placeholder="0.00" step="0.01" oninput="calcularParcelas()"></div>
@@ -1085,7 +1114,24 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
       <div class="form-group"><label>Fornecedor</label><input type="text" id="ep-desc"></div>
       <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="ep-memo"></div>
-      <div class="form-group"><label>Direcionamento <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><select id="ep-direcionamento"><option value="">Sem direcionamento</option></select></div>
+      <div class="form-group"><label>Categoria <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label>
+        <div class="form-row" style="margin-bottom:0">
+          <select id="ep-categoria-mae" onchange="aoMudarMaeCascata('ep','categoria')" style="flex:1"></select>
+          <select id="ep-categoria-sub" style="flex:1"></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Centro de Custo <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label>
+        <div class="form-row" style="margin-bottom:0">
+          <select id="ep-cc-mae" onchange="aoMudarMaeCascata('ep','cc')" style="flex:1"></select>
+          <select id="ep-cc-sub" style="flex:1"></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Direcionamento <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label>
+        <div class="form-row" style="margin-bottom:0">
+          <select id="ep-direcionamento-mae" onchange="aoMudarMaeCascata('ep','direc')" style="flex:1"></select>
+          <select id="ep-direcionamento-sub" style="flex:1"></select>
+        </div>
+      </div>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="ep-datacompra"></div>
         <div class="form-group"><label>Vencimento</label><input type="date" id="ep-venc"></div>
@@ -1197,7 +1243,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.18';
+const VERSAO = 'v4.19';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1537,7 +1583,7 @@ function setFila(payload){try{localStorage.setItem(PREFIX+'_fila',JSON.stringify
 function limparFila(){localStorage.removeItem(PREFIX+'_fila');}
 function getLastSha(){return localStorage.getItem(PREFIX+'_last_sha')||'';}
 function setLastSha(sha){if(sha)localStorage.setItem(PREFIX+'_last_sha',sha);}
-function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,categorias,cartoesCustom,usuarios,direcionamentos};}
+function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,cartoesCustom,usuarios};}
 
 function atualizarIndicadorConexao(){
   const el=document.getElementById('conn-indicator');
@@ -1667,9 +1713,9 @@ async function initData(){
     const dados=fila||(bkp?JSON.parse(bkp):null);
     if(dados){
       compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
-      fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; categorias=dados.categorias||[]; cartoesCustom=dados.cartoesCustom||{};
-      direcionamentos=dados.direcionamentos||[];
+      fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; cartoesCustom=dados.cartoesCustom||{};
       usuarios=dados.usuarios||[];
+      carregarCadastrosUnicosOffline();
       Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       document.getElementById('loading-screen').style.display='none';
       setSyncStatus('queued');
@@ -1693,7 +1739,7 @@ async function initData(){
         cartoesCustom=data.cartoesCustom||cartoesCustom||{};
         Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       } else {
-        compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; categorias=data.categorias||[]; cartoesCustom=data.cartoesCustom||{};
+        compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; cartoesCustom=data.cartoesCustom||{};
         usuarios=data.usuarios||[];
         Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
@@ -1701,6 +1747,7 @@ async function initData(){
       }
       if(!usuarios.length) await seedUsuariosPF();
       if(!verificarSessaoPF()){mostrarLoginPF();return;}
+      if(isOnline()) await carregarCadastrosUnicos(); else carregarCadastrosUnicosOffline();
       document.getElementById('loading-screen').style.display='none';
       renderDashboard();
     } else {
@@ -2079,7 +2126,9 @@ function editarParcela(u){
   document.getElementById('ep-uid').value=u;document.getElementById('ep-compraid').value=c.compraId;
   document.getElementById('ep-desc').value=c.desc;document.getElementById('ep-valor').value=c.valorParcela;
   document.getElementById('ep-memo').value=c.memo||'';
-  popularDirecSelect('ep-direcionamento', c.direcionamento||'');
+  popularCascata('ep','categoria', c.categoriaId||'');
+  popularCascata('ep','cc', c.centroCustoId||'');
+  popularCascata('ep','direc', c.direcionamentoId||'');
   document.getElementById('ep-venc').value=c.venc;document.getElementById('ep-datacompra').value=c.dataCompra||'';
   document.getElementById('ep-cartao').value=c.cartao;document.getElementById('ep-cartao-original').value=c.cartao;
   document.getElementById('ep-trocar-escopo').value='parcela';
@@ -2121,7 +2170,9 @@ function atualizarReparcelarPreview(){
 function salvarEdicao(){
   const u=document.getElementById('ep-uid').value,desc=document.getElementById('ep-desc').value.trim();
   const memo=document.getElementById('ep-memo')?.value.trim()||'';
-  const direcionamento=document.getElementById('ep-direcionamento')?.value.trim()||'';
+  const categoriaId=valorFinalCascata('ep','categoria');
+  const centroCustoId=valorFinalCascata('ep','cc');
+  const direcionamentoId=valorFinalCascata('ep','direc');
   const val=parseFloat(document.getElementById('ep-valor').value),venc=document.getElementById('ep-venc').value;
   const dataCompra=document.getElementById('ep-datacompra').value,novoCartao=document.getElementById('ep-cartao').value;
   const cartaoOrig=document.getElementById('ep-cartao-original').value,escopo=document.getElementById('ep-trocar-escopo').value;
@@ -2136,7 +2187,7 @@ function salvarEdicao(){
       const valEl=document.getElementById('ep-pe-val-'+i),vencEl=document.getElementById('ep-pe-venc-'+i);
       const vp=parseFloat(valEl&&valEl.value)||0,vc=vencEl&&vencEl.value;
       if(!vp||!vc){showToast('Preencha valor e vencimento de todas as parcelas',true);return;}
-      novosRegistros.push({uid:uid(),compraId,desc,cartao:novoCartao,dataCompra,nParcelas:nNovo,parcela:i,valorParcela:vp,venc:vc,...(memo?{memo}:{}),...(direcionamento?{direcionamento}:{})});
+      novosRegistros.push({uid:uid(),compraId,desc,cartao:novoCartao,dataCompra,nParcelas:nNovo,parcela:i,valorParcela:vp,venc:vc,...(memo?{memo}:{}),...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(direcionamentoId?{direcionamentoId}:{})});
     }
     compras=compras.filter(x=>x.compraId!==compraId).concat(novosRegistros);
     salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
@@ -2150,9 +2201,9 @@ function salvarEdicao(){
     // Aplica descrição/cartão/memo/direcionamento E o valor a TODAS as parcelas do grupo.
     // O vencimento NÃO é replicado pra todas (cada parcela tem seu próprio mês) — só a
     // parcela que estava sendo editada tem o vencimento atualizado.
-    compras=compras.map(c=>c.compraId!==compraId?c:{...c,desc,dataCompra,cartao:novoCartao,memo,direcionamento,valorParcela:val});
+    compras=compras.map(c=>c.compraId!==compraId?c:{...c,desc,dataCompra,cartao:novoCartao,memo,categoriaId,centroCustoId,direcionamentoId,valorParcela:val});
     const i2=compras.findIndex(x=>x.uid===u);if(i2>=0)compras[i2]={...compras[i2],venc};
-  }else{compras[idx]={...compras[idx],desc,valorParcela:val,venc,dataCompra,cartao:novoCartao,memo,direcionamento};}
+  }else{compras[idx]={...compras[idx],desc,valorParcela:val,venc,dataCompra,cartao:novoCartao,memo,categoriaId,centroCustoId,direcionamentoId};}
   salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
   showToast(trocou?`Cartão alterado para ${CARTOES[novoCartao].nome} ✓`:'Atualizado ✓');
 }
@@ -2231,7 +2282,7 @@ function renderFaturas(){
           <div style="min-width:55px;max-width:55px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${i.dataCompra?new Date(i.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</div>
           <div class="fd-desc">${i.desc}</div>
           <div style="flex:1;min-width:110px;font-size:.75rem;color:var(--muted);padding:0 4px;">${i.memo||'<span style="opacity:.3">—</span>'}</div>
-          <div style="min-width:90px;">${i.categoria?`<span style="display:inline-block;padding:1px 6px;border-radius:10px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--muted);">${i.categoria}</span>`:''}</div>
+          <div style="min-width:90px;">${nomeCatCompra(i)?`<span style="display:inline-block;padding:1px 6px;border-radius:10px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--muted);">${esc(nomeCatCompra(i))}</span>`:''}</div>
           <div class="fd-parc"><span class="parc-tag${g.passada?' passada':''}">${i.parcela}/${i.nParcelas}</span></div>
           <div class="fd-val">${fmt(i.valorParcela)}</div>
           <div style="min-width:60px;display:flex;gap:3px;" class="no-print">
@@ -2257,6 +2308,176 @@ function renderFaturas(){
 // ══════════════════════════════════════════
 function getTokenTesouraria(){ return localStorage.getItem('cc_pf_tsr_token') || localStorage.getItem('tsr_gh_token') || ''; }
 function setTokenTesouraria(t){ localStorage.setItem('cc_pf_tsr_token', t); }
+
+// ══════════════════════════════════════════
+// CADASTRO ÚNICO (Categoria / Centro de Custo / Direcionamento)
+// Vive em cadastros-pf.json e cadastros-pj.json no repo do
+// TesourariaSys (Fabio9500/tesourariasys) — é a mesma fonte usada
+// pelo TesourariaSys e pelo CartoesPJ, pra padronizar os lançamentos
+// que se integram entre os sistemas. Usa o mesmo token de escrita
+// já configurado pra integração com o TesourariaSys.
+// ══════════════════════════════════════════
+function ghCadastroApi(file){ return `https://api.github.com/repos/Fabio9500/tesourariasys/contents/${file}`; }
+let _cadastroSha = { pf:null, pj:null };
+let centrosCusto = [];
+
+async function ghCadastroCarregar(pfpj){
+  const file = pfpj==='pf' ? 'cadastros-pf.json' : 'cadastros-pj.json';
+  const token = getTokenTesouraria();
+  try{
+    const r = await fetch(ghCadastroApi(file), { headers:{ 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } });
+    if(!r.ok){
+      if(r.status===404) return {categorias:[],centrosCusto:[],direcionamentos:[]};
+      throw new Error('HTTP '+r.status);
+    }
+    const j = await r.json();
+    _cadastroSha[pfpj] = j.sha;
+    let dados;
+    if(!j.content || j.content.trim()===''){
+      const r2 = await fetch(j.download_url);
+      dados = await r2.json();
+    } else {
+      dados = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+    }
+    return dados;
+  }catch(e){
+    console.error('Erro ao carregar cadastro único ('+pfpj+')', e);
+    return {categorias:[],centrosCusto:[],direcionamentos:[]};
+  }
+}
+
+async function ghCadastroSalvar(pfpj, dados){
+  const file = pfpj==='pf' ? 'cadastros-pf.json' : 'cadastros-pj.json';
+  const token = getTokenTesouraria();
+  let sha = _cadastroSha[pfpj];
+  try{
+    const rCheck = await fetch(ghCadastroApi(file), { headers:{ 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } });
+    if(rCheck.ok){ const jCheck = await rCheck.json(); sha = jCheck.sha; }
+  }catch(e){}
+  const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(dados, null, 2))));
+  const body = { message:'Atualiza '+file+' via CartõesPF', content:conteudo };
+  if(sha) body.sha = sha;
+  const r = await fetch(ghCadastroApi(file), {
+    method:'PUT',
+    headers:{ 'Authorization': `token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok){ throw new Error('Falha ao salvar '+file+': HTTP '+r.status); }
+  const j = await r.json();
+  _cadastroSha[pfpj] = j.content.sha;
+  return dados;
+}
+
+let CADASTRO_PF = {categorias:[],centrosCusto:[],direcionamentos:[]};
+let CADASTRO_PJ = {categorias:[],centrosCusto:[],direcionamentos:[]};
+
+async function carregarCadastrosUnicos(){
+  const [pf, pj] = await Promise.all([ ghCadastroCarregar('pf'), ghCadastroCarregar('pj') ]);
+  CADASTRO_PF = pf; CADASTRO_PJ = pj;
+  aplicarCadastrosUnicosLocal();
+  try{ localStorage.setItem(PREFIX+'_cadastro_bkp', JSON.stringify({pf:CADASTRO_PF, pj:CADASTRO_PJ})); }catch(e){}
+}
+function carregarCadastrosUnicosOffline(){
+  try{
+    const bkp = JSON.parse(localStorage.getItem(PREFIX+'_cadastro_bkp')||'null');
+    if(!bkp) return;
+    CADASTRO_PF = bkp.pf||{categorias:[],centrosCusto:[],direcionamentos:[]};
+    CADASTRO_PJ = bkp.pj||{categorias:[],centrosCusto:[],direcionamentos:[]};
+    aplicarCadastrosUnicosLocal();
+  }catch(e){}
+}
+function aplicarCadastrosUnicosLocal(){
+  const marcar = (lista, padrao) => (lista||[]).map(i => ({...i, tipoPFPJ: i.tipoPFPJ || padrao}));
+  categorias      = [...marcar(CADASTRO_PF.categorias,'PF'),      ...marcar(CADASTRO_PJ.categorias,'PJ')];
+  centrosCusto    = [...marcar(CADASTRO_PF.centrosCusto,'PF'),    ...marcar(CADASTRO_PJ.centrosCusto,'PJ')];
+  direcionamentos = [...marcar(CADASTRO_PF.direcionamentos,'PF'), ...marcar(CADASTRO_PJ.direcionamentos,'PJ')];
+}
+// Só mostra o que vale pra PF (mais os itens 'ambos', de sistema).
+function itemValidoPF(item){ return !item.tipoPFPJ || item.tipoPFPJ==='PF' || item.tipoPFPJ==='ambos'; }
+// Resolve nome de exibição de categoria/direcionamento de uma compra a partir do ID salvo.
+function nomeCatCompra(x){ return x.categoriaId ? (categoriaById(x.categoriaId)?.nome||'') : ''; }
+function nomeDirecCompra(x){ return x.direcionamentoId ? nomeCompletoCadastro(direcionamentoById(x.direcionamentoId),direcionamentos) : ''; }
+
+// Grava um item (categoria / centro de custo / direcionamento) no(s)
+// arquivo(s) certo(s) — PF, PJ, ou os dois quando tipoPFPJ==='ambos'.
+async function salvarItemCadastroUnico(campo, item, exclusao){
+  const alvos = item.tipoPFPJ==='ambos' ? ['pf','pj'] : [item.tipoPFPJ==='PJ' ? 'pj' : 'pf'];
+  for(const alvo of alvos){
+    const cad = await ghCadastroCarregar(alvo);
+    let lista = cad[campo]||[];
+    if(exclusao){
+      lista = lista.filter(x=>x.id!==item.id);
+    } else {
+      const idx = lista.findIndex(x=>x.id===item.id);
+      if(idx>=0) lista[idx]=item; else lista.push(item);
+    }
+    cad[campo]=lista;
+    await ghCadastroSalvar(alvo, cad);
+  }
+  await carregarCadastrosUnicos();
+}
+
+// ── SELETORES EM CASCATA (Mãe → Sub), mesmo padrão do TesourariaSys ──
+function categoriaById(id){ return categorias.find(c=>c.id===id); }
+function centroCustoById(id){ return centrosCusto.find(c=>c.id===id); }
+function direcionamentoById(id){ return direcionamentos.find(d=>d.id===id); }
+function opcoesCategoriaMae(selMaeId){
+  const maes = categorias.filter(c=>!c.parentId && c.tipo==='despesa' && itemValidoPF(c)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  return '<option value="">Sem categoria</option>' + maes.map(c=>`<option value="${c.id}"${c.id===selMaeId?' selected':''}>${esc(c.nome)}</option>`).join('');
+}
+function opcoesSubcategoria(maeId, selSubId){
+  if(!maeId) return '<option value="">—</option>';
+  const filhos = categorias.filter(c=>c.parentId===maeId).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  if(!filhos.length) return '<option value="">— Nenhuma —</option>';
+  return '<option value="">— Nenhuma (usar a categoria-mãe) —</option>' + filhos.map(c=>`<option value="${c.id}"${c.id===selSubId?' selected':''}>${esc(c.nome)}</option>`).join('');
+}
+function opcoesCentroCustoMae(selMaeId){
+  const maes = centrosCusto.filter(c=>!c.parentId && itemValidoPF(c)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  return '<option value="">Sem centro de custo</option>' + maes.map(c=>`<option value="${c.id}"${c.id===selMaeId?' selected':''}>${esc(c.nome)}</option>`).join('');
+}
+function opcoesSubCentroCusto(maeId, selSubId){
+  if(!maeId) return '<option value="">—</option>';
+  const filhos = centrosCusto.filter(c=>c.parentId===maeId).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  if(!filhos.length) return '<option value="">— Nenhum —</option>';
+  return '<option value="">— Nenhum (usar o centro-mãe) —</option>' + filhos.map(c=>`<option value="${c.id}"${c.id===selSubId?' selected':''}>${esc(c.nome)}</option>`).join('');
+}
+function opcoesDirecionamentoMae(selMaeId){
+  const maes = direcionamentos.filter(d=>!d.parentId && itemValidoPF(d)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  return '<option value="">Sem direcionamento</option>' + maes.map(d=>`<option value="${d.id}"${d.id===selMaeId?' selected':''}>${esc(d.nome)}</option>`).join('');
+}
+function opcoesSubDirecionamento(maeId, selSubId){
+  if(!maeId) return '<option value="">—</option>';
+  const filhos = direcionamentos.filter(d=>d.parentId===maeId).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  if(!filhos.length) return '<option value="">— Nenhum —</option>';
+  return '<option value="">— Nenhum (usar o direcionamento-mãe) —</option>' + filhos.map(d=>`<option value="${d.id}"${d.id===selSubId?' selected':''}>${esc(d.nome)}</option>`).join('');
+}
+function popularCascata(prefixo, campo, selId){
+  const maeSel = document.getElementById(`${prefixo}-${campo}-mae`);
+  const subSel = document.getElementById(`${prefixo}-${campo}-sub`);
+  if(!maeSel||!subSel) return;
+  let maeId='', subId='';
+  const item = campo==='categoria'?categoriaById(selId):campo==='cc'?centroCustoById(selId):direcionamentoById(selId);
+  if(item){ if(item.parentId){ maeId=item.parentId; subId=item.id; } else { maeId=item.id; } }
+  if(campo==='categoria') maeSel.innerHTML = opcoesCategoriaMae(maeId);
+  else if(campo==='cc') maeSel.innerHTML = opcoesCentroCustoMae(maeId);
+  else maeSel.innerHTML = opcoesDirecionamentoMae(maeId);
+  aoMudarMaeCascata(prefixo, campo, subId);
+}
+function aoMudarMaeCascata(prefixo, campo, selSubId){
+  const maeSel = document.getElementById(`${prefixo}-${campo}-mae`);
+  const subSel = document.getElementById(`${prefixo}-${campo}-sub`);
+  if(!maeSel||!subSel) return;
+  const maeId = maeSel.value;
+  if(campo==='categoria') subSel.innerHTML = opcoesSubcategoria(maeId, selSubId||'');
+  else if(campo==='cc') subSel.innerHTML = opcoesSubCentroCusto(maeId, selSubId||'');
+  else subSel.innerHTML = opcoesSubDirecionamento(maeId, selSubId||'');
+}
+function valorFinalCascata(prefixo, campo){
+  const sub = document.getElementById(`${prefixo}-${campo}-sub`)?.value||'';
+  if(sub) return sub;
+  return document.getElementById(`${prefixo}-${campo}-mae`)?.value||'';
+}
+
 
 let _contasTesouraria = null;
 async function carregarContasTesouraria(){
@@ -2356,7 +2577,8 @@ async function registrarDebitoTesouraria(contaId, valor, data, descricao, _tenta
     } else {
       dados = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
     }
-    const catFatCartao = (dados.categorias||[]).find(c=>c.nome==='Fatura Cartão de Crédito'&&c.tipo==='despesa');
+    const catCad = await ghCadastroCarregar('pj');
+    const catFatCartao = (catCad.categorias||[]).find(c=>c.nome==='Fatura Cartão de Crédito'&&c.tipo==='despesa');
     const novoLanc = {
       id: uid(), contaId, data, tipo:'saida', valor,
       categoriaId: catFatCartao?catFatCartao.id:'', centroCustoId:'',
@@ -2480,27 +2702,13 @@ function atualizarDatalistCompras(){
   const dlM=document.getElementById('dl-memorando');
   if(dlM)dlM.innerHTML=[...memoSet].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
   const direcSet=new Set();
-  compras.forEach(x=>{const d=(x.direcionamento||'').trim();if(d)direcSet.add(d);});
+  compras.forEach(x=>{const d=nomeDirecCompra(x).trim();if(d)direcSet.add(d);});
   const dlD=document.getElementById('dl-direcionamento');
   if(dlD)dlD.innerHTML=[...direcSet].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
 }
-function listaCats(){
-  const customs=categorias.map(c=>c.nome);
-  if(customs.length===0)return[...CATEGORIAS].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-  const all=[...new Set([...CATEGORIAS,...customs])];
-  return all.sort((a,b)=>a.localeCompare(b,'pt-BR'));
-}
-function popularCatSelect(selId, selVal){
-  const el=document.getElementById(selId);if(!el)return;
-  el.innerHTML=`<option value="">Sem categoria</option>`+listaCats().map(n=>`<option${n===selVal?' selected':''}>${n}</option>`).join('');
-}
-function listaDirec(){
-  return direcionamentos.map(d=>d.nome).sort((a,b)=>a.localeCompare(b,'pt-BR'));
-}
-function popularDirecSelect(selId, selVal){
-  const el=document.getElementById(selId);if(!el)return;
-  el.innerHTML=`<option value="">Sem direcionamento</option>`+listaDirec().map(n=>`<option${n===selVal?' selected':''}>${n}</option>`).join('');
-}
+// listaCats()/popularCatSelect()/listaDirec()/popularDirecSelect() foram
+// substituídas pelas cascatas Mãe→Sub (popularCascata/opcoesCategoriaMae/etc,
+// definidas perto do carregamento do cadastro único, no topo do arquivo).
 
 function sugerirMemorando(){
   const desc = document.getElementById('c-desc')?.value?.trim();
@@ -2514,12 +2722,12 @@ function sugerirMemorando(){
 
 function abrirModalCompra(){
   atualizarDatalistCompras();
-  popularCatSelect('c-categoria','');
-  popularDirecSelect('c-direcionamento','');
+  popularCascata('c','categoria','');
+  popularCascata('c','cc','');
+  popularCascata('c','direc','');
   document.getElementById('c-data').value=hoje.toISOString().split('T')[0];
   document.getElementById('c-desc').value='';document.getElementById('c-valor').value='';document.getElementById('c-parcelas').value='1';
   const memoEl=document.getElementById('c-memo');if(memoEl)memoEl.value='';
-  const direcEl=document.getElementById('c-direcionamento');if(direcEl)direcEl.value='';
   const resumo=document.getElementById('fala-resumo');if(resumo){resumo.style.display='none';resumo.innerHTML='';}
   calcularFechamento();calcularParcelas();document.getElementById('modal-compra').classList.add('open');
 }
@@ -2585,7 +2793,7 @@ function construirDicionarioCompras(){
     if(!chave) return;
     const dataRef = c.dataCompra||c.venc||'';
     if(!dic[chave] || dataRef>dic[chave]._dataRef){
-      dic[chave] = { desc:c.desc, categoria:c.categoria||'', direcionamento:c.direcionamento||'', _dataRef:dataRef };
+      dic[chave] = { desc:c.desc, categoriaId:c.categoriaId||'', direcionamentoId:c.direcionamentoId||'', _dataRef:dataRef };
     }
   });
   return dic;
@@ -2645,7 +2853,7 @@ function processarArquivoOFXCartao(){
       return {
         ...t, incluir: !jaExiste, jaExiste, venc,
         desc: match?match.desc:t.memoOriginal,
-        categoria: match?match.categoria:'', direcionamento: match?match.direcionamento:'',
+        categoriaId: match?match.categoriaId:'', direcionamentoId: match?match.direcionamentoId:'',
         reconhecido: !!match,
       };
     });
@@ -2661,8 +2869,8 @@ function mostrarRevisaoOFXCartao(){
     <td><input type="checkbox" ${t.incluir?'checked':''} onchange="_ofxPendenteCartao[${i}].incluir=this.checked">${t.jaExiste?' <span style="font-size:10px;color:#999">(já importado)</span>':''}</td>
     <td>${new Date(t.data+'T12:00:00').toLocaleDateString('pt-BR')}</td>
     <td><input type="text" value="${esc(t.desc)}" style="width:100%;font-size:11px" onchange="_ofxPendenteCartao[${i}].desc=this.value">${t.reconhecido?' <span title="Reconhecido pelo histórico">✓</span>':''}</td>
-    <td><select style="font-size:11px" onchange="_ofxPendenteCartao[${i}].categoria=this.value">${['<option value="">Sem categoria</option>'].concat(listaCats().map(n=>`<option${n===t.categoria?' selected':''}>${esc(n)}</option>`)).join('')}</select></td>
-    <td><select style="font-size:11px" onchange="_ofxPendenteCartao[${i}].direcionamento=this.value">${['<option value="">Sem direcionamento</option>'].concat(listaDirec().map(n=>`<option${n===t.direcionamento?' selected':''}>${esc(n)}</option>`)).join('')}</select></td>
+    <td><select style="font-size:11px" onchange="_ofxPendenteCartao[${i}].categoriaId=this.value">${['<option value="">Sem categoria</option>'].concat(categorias.filter(c=>itemValidoPF(c)&&c.tipo==='despesa').map(c=>`<option value="${c.id}"${c.id===t.categoriaId?' selected':''}>${esc(nomeCompletoCadastro(c,categorias))}</option>`)).join('')}</select></td>
+    <td><select style="font-size:11px" onchange="_ofxPendenteCartao[${i}].direcionamentoId=this.value">${['<option value="">Sem direcionamento</option>'].concat(direcionamentos.filter(d=>itemValidoPF(d)).map(d=>`<option value="${d.id}"${d.id===t.direcionamentoId?' selected':''}>${esc(nomeCompletoCadastro(d,direcionamentos))}</option>`)).join('')}</select></td>
     <td style="text-align:right;font-weight:700">R$ ${t.valor.toFixed(2).replace('.',',')}</td>
   </tr>`).join('');
   document.getElementById('modal-ofx-titulo').textContent = '🔍 Conferir Antes de Importar';
@@ -2690,7 +2898,7 @@ function confirmarImportacaoOFXCartao(){
     compras.push({
       uid: uid(), compraId, desc: t.desc, dataCompra: t.data, cartao: _ofxCartaoAlvo,
       nParcelas: 1, parcela: 1, valorParcela: t.valor, venc: t.venc,
-      ...(t.categoria?{categoria:t.categoria}:{}), ...(t.direcionamento?{direcionamento:t.direcionamento}:{}),
+      ...(t.categoriaId?{categoriaId:t.categoriaId}:{}), ...(t.direcionamentoId?{direcionamentoId:t.direcionamentoId}:{}),
       fitid: t.fitid||null, origemImportacao: 'ofx', dataImportacao: agora,
     });
     totalReal += t.valor;
@@ -2803,8 +3011,8 @@ function mostrarRevisaoCSVCartao(){
     <td><input type="checkbox" ${t.incluir?'checked':''} onchange="_csvPendenteCartao[${i}].incluir=this.checked">${t.jaExiste?' <span style="font-size:10px;color:#999">(já lançado)</span>':''}</td>
     <td>${new Date(t.dataCompra+'T12:00:00').toLocaleDateString('pt-BR')}</td>
     <td><input type="text" value="${esc(t.desc)}" style="width:100%;font-size:11px" onchange="_csvPendenteCartao[${i}].desc=this.value">${avisoParcial}</td>
-    <td><select style="font-size:11px" onchange="_csvPendenteCartao[${i}].categoria=this.value">${['<option value="">Sem categoria</option>'].concat(listaCats().map(n=>`<option${n===t.categoria?' selected':''}>${esc(n)}</option>`)).join('')}</select></td>
-    <td><select style="font-size:11px" onchange="_csvPendenteCartao[${i}].direcionamento=this.value">${['<option value="">Sem direcionamento</option>'].concat(listaDirec().map(n=>`<option${n===t.direcionamento?' selected':''}>${esc(n)}</option>`)).join('')}</select></td>
+    <td><select style="font-size:11px" onchange="_csvPendenteCartao[${i}].categoriaId=this.value">${['<option value="">Sem categoria</option>'].concat(categorias.filter(c=>itemValidoPF(c)&&c.tipo==='despesa').map(c=>`<option value="${c.id}"${c.id===t.categoriaId?' selected':''}>${esc(nomeCompletoCadastro(c,categorias))}</option>`)).join('')}</select></td>
+    <td><select style="font-size:11px" onchange="_csvPendenteCartao[${i}].direcionamentoId=this.value">${['<option value="">Sem direcionamento</option>'].concat(direcionamentos.filter(d=>itemValidoPF(d)).map(d=>`<option value="${d.id}"${d.id===t.direcionamentoId?' selected':''}>${esc(nomeCompletoCadastro(d,direcionamentos))}</option>`)).join('')}</select></td>
     <td style="text-align:center;font-size:11px">${parcTxt}</td>
     <td style="text-align:right;font-weight:700">R$ ${t.valor.toFixed(2).replace('.',',')}</td>
   </tr>`;
@@ -2840,7 +3048,7 @@ function confirmarImportacaoCSVCartao(){
         compras.push({
           uid: uid(), compraId, desc: t.desc, dataCompra: t.dataCompra, cartao: _csvCartaoAlvo,
           nParcelas: t.nParcelas, parcela: i, valorParcela: t.valor, venc,
-          ...(t.categoria?{categoria:t.categoria}:{}), ...(t.direcionamento?{direcionamento:t.direcionamento}:{}),
+          ...(t.categoriaId?{categoriaId:t.categoriaId}:{}), ...(t.direcionamentoId?{direcionamentoId:t.direcionamentoId}:{}),
           origemImportacao: 'csv-bradesco', dataImportacao: agora,
         });
         totalReal += t.valor; totalLancamentos++;
@@ -2851,7 +3059,7 @@ function confirmarImportacaoCSVCartao(){
       compras.push({
         uid: uid(), compraId, desc: t.desc, dataCompra: t.dataCompra, cartao: _csvCartaoAlvo,
         nParcelas: t.nParcelas, parcela: t.parcela, valorParcela: t.valor, venc,
-        ...(t.categoria?{categoria:t.categoria}:{}), ...(t.direcionamento?{direcionamento:t.direcionamento}:{}),
+        ...(t.categoriaId?{categoriaId:t.categoriaId}:{}), ...(t.direcionamentoId?{direcionamentoId:t.direcionamentoId}:{}),
         origemImportacao: 'csv-bradesco', dataImportacao: agora,
       });
       totalReal += t.valor; totalLancamentos++;
@@ -2873,9 +3081,11 @@ function salvarCompra(){
   if(!desc||!data||!valor||valor<=0){showToast('Preencha todos os campos',true);return;}
   const compraId=uid();let totalReal=0;
   const memo=document.getElementById('c-memo')?.value.trim()||'';
-  const direcionamento=document.getElementById('c-direcionamento')?.value.trim()||'';
-  for(let i=1;i<=n;i++){const vVal=parseFloat(document.getElementById('pe-val-'+i).value)||0,vVenc=document.getElementById('pe-venc-'+i).value;const cat=document.getElementById("c-categoria")?.value||"";
-    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,...(cat?{categoria:cat}:{}),...(memo?{memo}:{}),...(direcionamento?{direcionamento}:{})});totalReal+=vVal;}
+  const categoriaId=valorFinalCascata('c','categoria');
+  const centroCustoId=valorFinalCascata('c','cc');
+  const direcionamentoId=valorFinalCascata('c','direc');
+  for(let i=1;i<=n;i++){const vVal=parseFloat(document.getElementById('pe-val-'+i).value)||0,vVenc=document.getElementById('pe-venc-'+i).value;
+    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(memo?{memo}:{}),...(direcionamentoId?{direcionamentoId}:{})});totalReal+=vVal;}
   if(!limites[cartao])limites[cartao]={total:0,usado:0};limites[cartao].usado=(limites[cartao].usado||0)+totalReal;
   salvar();fecharModal('modal-compra');renderDashboard();showToast('Compra lançada ✓');
 }
@@ -3046,10 +3256,10 @@ function renderLancamentosRel(){
     if(iniF&&dc<iniF)return;
     if(dc>fim)return;
     if(cartao!=='todos'&&x.cartao!==cartao)return;
-    if(direc&&!(x.direcionamento||'').toLowerCase().includes(direc))return;
+    if(direc&&!nomeDirecCompra(x).toLowerCase().includes(direc))return;
     if(busca&&!x.desc.toLowerCase().includes(busca)&&!(x.memo||'').toLowerCase().includes(busca))return;
     if(!grupos[x.compraId])grupos[x.compraId]={
-      compraId:x.compraId,desc:x.desc,memo:x.memo||'',categoria:x.categoria||'',direcionamento:x.direcionamento||'',cartao:x.cartao,
+      compraId:x.compraId,desc:x.desc,memo:x.memo||'',categoria:nomeCatCompra(x),direcionamento:nomeDirecCompra(x),cartao:x.cartao,
       dataCompra:x.dataCompra||x.venc,nParcelas:x.nParcelas,
       valorParcela:x.valorParcela,total:0,
       vencMin:x.venc,vencMax:x.venc,restante:0
@@ -3318,10 +3528,7 @@ function agendarBackupAuto(){
 }
 
 
-const CATEGORIAS=[
-  'Alimentação','Combustível','Educação','Entretenimento','Farmácia',
-  'Moradia','Outros','Saúde','Serviços','Supermercado','Transporte','Vestuário'
-];
+// CATEGORIAS (lista fixa antiga) removida — categorias agora vêm do cadastro único compartilhado.
 
 // ── MF-01: GRÁFICOS ─────────────────────────────────────────
 function renderGrafico(lista, meses){
@@ -3664,7 +3871,7 @@ function renderSecForn(lista){
   // Preenche select de categorias na primeira vez
   const catSel=document.getElementById('sf-forn-cat');
   if(catSel&&catSel.options.length<=1){
-    CATEGORIAS.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);});
+    categorias.filter(c=>itemValidoPF(c)&&c.tipo==='despesa').forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=nomeCompletoCadastro(c,categorias);catSel.appendChild(o);});
   }
   // Atualiza datalist do filtro de fornecedor
   const dlFF=document.getElementById('dl-forn-filtro');
@@ -3684,7 +3891,7 @@ function renderSecForn(lista){
   let filtrada=lista;
   if(filDe)   filtrada=filtrada.filter(x=>dateRef(x)>=filDe);
   if(filAte)  filtrada=filtrada.filter(x=>dateRef(x)<=filAte);
-  if(filCat)  filtrada=filtrada.filter(x=>(x.categoria||'')===filCat);
+  if(filCat)  filtrada=filtrada.filter(x=>x.categoriaId===filCat);
   if(filMemo) filtrada=filtrada.filter(x=>(x.memo||'').toLowerCase().includes(filMemo));
   // Agrupa por fornecedor (rastreia categorias únicas)
   const forn={};
@@ -3693,7 +3900,7 @@ function renderSecForn(lista){
     if(filNome&&!key.toLowerCase().includes(filNome))return;
     if(!forn[key])forn[key]={total:0,count:0,cats:new Set()};
     forn[key].total+=x.valorParcela;forn[key].count++;
-    if(x.categoria)forn[key].cats.add(x.categoria);
+    if(nomeCatCompra(x))forn[key].cats.add(nomeCatCompra(x));
   });
   const sorted=Object.entries(forn).sort((a,b)=>b[1].total-a[1].total);
   const exibir=temFiltro?sorted:sorted.slice(0,20);
@@ -3734,29 +3941,24 @@ function nomeMes(ym){const[y,m]=ym.split('-');return new Date(parseInt(y),parseI
 
 // ── CADASTROS ───────────────────────────────────────────────
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function importarCategoriasHistorico(){
-  const jaExiste=new Set([...categorias.map(c=>c.nome.toLowerCase()),...CATEGORIAS.map(n=>n.toLowerCase())]);
-  const novos=[];const vistos=new Set();
-  compras.forEach(x=>{
-    const cat=(x.categoria||'').trim();
-    if(!cat||vistos.has(cat.toLowerCase())||jaExiste.has(cat.toLowerCase()))return;
-    vistos.add(cat.toLowerCase());novos.push({id:uid(),nome:cat});
-  });
-  if(novos.length===0){showToast('Nenhuma categoria nova encontrada no histórico');return;}
-  novos.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
-  categorias=[...categorias,...novos].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
-  salvar();renderCadCat();showToast(`${novos.length} categoria${novos.length>1?'s':''} importada${novos.length>1?'s':''} do histórico ✓`);
-}
+// Categoria/Direcionamento agora vêm do cadastro único compartilhado — não
+// há mais "histórico local" pra importar (o cadastro já vem pronto de lá).
 function renderCadastros(){
-  renderCadForn();renderCadCart();renderCadCat();renderCadDirec();
+  renderCadForn();renderCadCart();renderCadCat();renderCadCC();renderCadDirec();
 }
 function showCadSub(sub,btn){
-  ['forn','cart','cat','direc'].forEach(s=>{
+  ['forn','cart','cat','cc','direc'].forEach(s=>{
     const el=document.getElementById('cad-'+s);if(el)el.style.display='none';
   });
   document.querySelectorAll('.cad-stab').forEach(b=>b.classList.remove('active'));
   const target=document.getElementById('cad-'+sub);if(target)target.style.display='';
   btn.classList.add('active');
+}
+function nomeCompletoCadastro(item, lista){
+  if(!item) return '-';
+  if(!item.parentId) return item.nome;
+  const pai=lista.find(x=>x.id===item.parentId);
+  return pai?`${pai.nome}: ${item.nome}`:item.nome;
 }
 function importarFornecedoresHistorico(){
   const nomesExistentes=new Set(fornecedores.map(f=>f.nome.toLowerCase()));
@@ -3819,58 +4021,54 @@ function renderCadCart(){
 }
 function renderCadCat(){
   const body=document.getElementById('cad-cat-body');if(!body)return;
-  if(categorias.length===0){
-    const nCatHist=new Set(compras.map(x=>(x.categoria||'').trim()).filter(c=>c&&!CATEGORIAS.map(n=>n.toLowerCase()).includes(c.toLowerCase()))).size;
-    const dica=nCatHist>0?` • <strong>${nCatHist} categoria${nCatHist>1?'s':''} personalizadas</strong> encontradas nos lançamentos — clique em 📥 para importar.`:'';
-    body.innerHTML=CATEGORIAS.map(n=>`<tr style="border-top:1px solid var(--border);">
-      <td style="padding:10px 14px;">${esc(n)}</td>
-      <td style="padding:10px 14px;font-size:.72rem;color:var(--muted);">padrão</td>
-      <td class="no-print"></td>
-    </tr>`).join('')+`<tr><td colspan="3" style="padding:10px 14px;font-size:.75rem;color:var(--muted);">Adicione categorias personalizadas com o botão acima — elas se juntarão às padrão nos formulários.${dica}</td></tr>`;
+  const lista=categorias.filter(c=>itemValidoPF(c)&&c.tipo==='despesa').sort((a,b)=>nomeCompletoCadastro(a,categorias).localeCompare(nomeCompletoCadastro(b,categorias),'pt-BR'));
+  if(!lista.length){
+    body.innerHTML=`<tr><td colspan="3" style="padding:24px;text-align:center;color:var(--muted);">Nenhuma categoria cadastrada ainda. Clique em + Nova Categoria para começar.</td></tr>`;
     return;
   }
-  body.innerHTML=categorias.map(c=>`<tr style="border-top:1px solid var(--border);">
-    <td style="padding:10px 14px;font-weight:600;">${esc(c.nome)}</td>
-    <td style="padding:10px 14px;font-size:.72rem;color:var(--muted);">personalizada</td>
+  body.innerHTML=lista.map(c=>`<tr style="border-top:1px solid var(--border);">
+    <td style="padding:10px 14px;font-weight:600;">${esc(nomeCompletoCadastro(c,categorias))}</td>
+    <td style="padding:10px 14px;font-size:.72rem;color:var(--muted);">${c.tipoPFPJ==='ambos'?'PF e PJ':'PF'}</td>
     <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
       <button class="icon-btn edit" onclick="abrirCad('cat','${c.id}')">✏️</button>
       <button class="icon-btn del" onclick="excluirCad('cat','${c.id}')">🗑</button>
     </div></td>
   </tr>`).join('');
 }
-function renderCadDirec(){
-  const body=document.getElementById('cad-direc-body');if(!body)return;
-  if(direcionamentos.length===0){
-    const nDirecHist=new Set(compras.map(x=>(x.direcionamento||'').trim()).filter(Boolean)).size;
-    const dica=nDirecHist>0?`<strong>${nDirecHist} direcionamento${nDirecHist>1?'s':''}</strong> encontrados nos lançamentos — clique em 📥 para importar.`:'Nenhum direcionamento cadastrado ainda. Clique em + Novo Direcionamento para começar.';
-    body.innerHTML=`<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">${dica}</td></tr>`;
+function renderCadCC(){
+  const body=document.getElementById('cad-cc-body');if(!body)return;
+  const lista=centrosCusto.filter(c=>itemValidoPF(c)).sort((a,b)=>nomeCompletoCadastro(a,centrosCusto).localeCompare(nomeCompletoCadastro(b,centrosCusto),'pt-BR'));
+  if(!lista.length){
+    body.innerHTML=`<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">Nenhum centro de custo cadastrado ainda. Clique em + Novo Centro de Custo para começar.</td></tr>`;
     return;
   }
-  body.innerHTML=direcionamentos.map(d=>`<tr style="border-top:1px solid var(--border);">
-    <td style="padding:10px 14px;font-weight:600;">${esc(d.nome)}</td>
+  body.innerHTML=lista.map(c=>`<tr style="border-top:1px solid var(--border);">
+    <td style="padding:10px 14px;font-weight:600;">${esc(nomeCompletoCadastro(c,centrosCusto))}</td>
+    <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
+      <button class="icon-btn edit" onclick="abrirCad('cc','${c.id}')">✏️</button>
+      <button class="icon-btn del" onclick="excluirCad('cc','${c.id}')">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+function renderCadDirec(){
+  const body=document.getElementById('cad-direc-body');if(!body)return;
+  const lista=direcionamentos.filter(d=>itemValidoPF(d)).sort((a,b)=>nomeCompletoCadastro(a,direcionamentos).localeCompare(nomeCompletoCadastro(b,direcionamentos),'pt-BR'));
+  if(!lista.length){
+    body.innerHTML=`<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">Nenhum direcionamento cadastrado ainda. Clique em + Novo Direcionamento para começar.</td></tr>`;
+    return;
+  }
+  body.innerHTML=lista.map(d=>`<tr style="border-top:1px solid var(--border);">
+    <td style="padding:10px 14px;font-weight:600;">${esc(nomeCompletoCadastro(d,direcionamentos))}</td>
     <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
       <button class="icon-btn edit" onclick="abrirCad('direc','${d.id}')">✏️</button>
       <button class="icon-btn del" onclick="excluirCad('direc','${d.id}')">🗑</button>
     </div></td>
   </tr>`).join('');
 }
-function importarDirecionamentosHistorico(){
-  const existentes=new Set(direcionamentos.map(d=>d.nome.toLowerCase()));
-  const novos=[];const vistos=new Set();
-  compras.forEach(x=>{
-    const nome=(x.direcionamento||'').trim();
-    if(!nome||vistos.has(nome.toLowerCase())||existentes.has(nome.toLowerCase()))return;
-    vistos.add(nome.toLowerCase());novos.push({id:uid(),nome});
-  });
-  if(novos.length===0){showToast('Nenhum direcionamento novo encontrado no histórico');return;}
-  direcionamentos=[...direcionamentos,...novos].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
-  salvar();renderCadDirec();
-  showToast(`${novos.length} direcionamento${novos.length>1?'s':''} importado${novos.length>1?'s':''} do histórico ✓`);
-}
 function abrirCad(tipo, id){
   document.getElementById('cad-id').value=id||'';
   document.getElementById('cad-tipo').value=tipo;
-  const nomes={forn:'Fornecedor',cart:'Cartão',cat:'Categoria',direc:'Direcionamento'};
+  const nomes={forn:'Fornecedor',cart:'Cartão',cat:'Categoria',cc:'Centro de Custo',direc:'Direcionamento'};
   document.getElementById('modal-cad-titulo').textContent=(id?'Editar ':'Novo ')+nomes[tipo];
   const IS=()=>`style="width:100%;padding:8px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:Outfit,sans-serif;font-size:.88rem;"`;
   let html='';
@@ -3893,18 +4091,54 @@ function abrirCad(tipo, id){
           </div>`;
   } else if(tipo==='cat'){
     const c=id?categorias.find(x=>x.id===id):{};
-    html=`<div class="form-group"><label>Nome da Categoria *</label><input type="text" id="cad-f1" ${IS()} value="${esc(c?.nome||'')}"></div>`;
+    const maesCat=categorias.filter(x=>!x.parentId&&x.id!==id&&x.tipo==='despesa'&&itemValidoPF(x));
+    html=`<div class="form-group"><label>Categoria-mãe (opcional)</label>
+            <select id="cad-f2" ${IS()}><option value="">— Nenhuma (categoria principal) —</option>${maesCat.map(m=>`<option value="${m.id}"${c?.parentId===m.id?' selected':''}>${esc(m.nome)}</option>`).join('')}</select>
+          </div>
+          <div class="form-group"><label>Nome da Categoria *</label><input type="text" id="cad-f1" ${IS()} value="${esc(c?.nome||'')}"></div>`;
+  } else if(tipo==='cc'){
+    const c=id?centrosCusto.find(x=>x.id===id):{};
+    const maesCC=centrosCusto.filter(x=>!x.parentId&&x.id!==id&&itemValidoPF(x));
+    html=`<div class="form-group"><label>Centro de Custo-mãe (opcional)</label>
+            <select id="cad-f2" ${IS()}><option value="">— Nenhum (centro de custo principal) —</option>${maesCC.map(m=>`<option value="${m.id}"${c?.parentId===m.id?' selected':''}>${esc(m.nome)}</option>`).join('')}</select>
+          </div>
+          <div class="form-group"><label>Nome do Centro de Custo *</label><input type="text" id="cad-f1" ${IS()} value="${esc(c?.nome||'')}"></div>`;
   } else if(tipo==='direc'){
     const d=id?direcionamentos.find(x=>x.id===id):{};
-    html=`<div class="form-group"><label>Nome do Direcionamento *</label><input type="text" id="cad-f1" ${IS()} value="${esc(d?.nome||'')}" placeholder="Ex: Pessoal, Obra X, Empresa Y"></div>`;
+    const maesDirec=direcionamentos.filter(x=>!x.parentId&&x.id!==id&&itemValidoPF(x));
+    html=`<div class="form-group"><label>Direcionamento-mãe (opcional)</label>
+            <select id="cad-f2" ${IS()}><option value="">— Nenhum (direcionamento principal) —</option>${maesDirec.map(m=>`<option value="${m.id}"${d?.parentId===m.id?' selected':''}>${esc(m.nome)}</option>`).join('')}</select>
+          </div>
+          <div class="form-group"><label>Nome do Direcionamento *</label><input type="text" id="cad-f1" ${IS()} value="${esc(d?.nome||'')}" placeholder="Ex: Pessoal, Obra X, Empresa Y"></div>`;
   }
   document.getElementById('modal-cad-campos').innerHTML=html;
   document.getElementById('modal-cad').classList.add('open');
   setTimeout(()=>document.getElementById('cad-f1')?.focus(),100);
 }
-function salvarCad(){
+async function salvarCad(){
   const tipo=document.getElementById('cad-tipo').value;
   const id=document.getElementById('cad-id').value;
+  if(tipo==='cat'||tipo==='cc'||tipo==='direc'){
+    const nome=(document.getElementById('cad-f1')?.value||'').trim();
+    const parentId=document.getElementById('cad-f2')?.value||null;
+    if(!nome){showToast('Nome é obrigatório',true);return;}
+    const campo = tipo==='cat'?'categorias':tipo==='cc'?'centrosCusto':'direcionamentos';
+    const listaAtual = tipo==='cat'?categorias:tipo==='cc'?centrosCusto:direcionamentos;
+    const pai = parentId ? listaAtual.find(x=>x.id===parentId) : null;
+    const existente = id ? listaAtual.find(x=>x.id===id) : null;
+    const item = {
+      id: id||uid(), nome, parentId: parentId||null,
+      tipoPFPJ: pai ? (pai.tipoPFPJ||'PF') : (existente?.tipoPFPJ||'PF'),
+      ...(tipo==='cat' ? { tipo: pai ? pai.tipo : 'despesa', centrosCustoIds: existente?.centrosCustoIds||[] } : {}),
+      ...(tipo!=='cat' ? { obs: existente?.obs||'' } : {}),
+    };
+    fecharModal('modal-cad');
+    showToast('Salvando...');
+    await salvarItemCadastroUnico(campo, item, false);
+    renderCadastros();
+    showToast('Salvo com sucesso ✓');
+    return;
+  }
   if(tipo==='forn'){
     const nome=(document.getElementById('cad-f1')?.value||'').trim();
     const obs=(document.getElementById('cad-f2')?.value||'').trim();
@@ -3947,27 +4181,24 @@ function salvarCad(){
       if(!cartoesCustom)cartoesCustom={};
       cartoesCustom[key]={nome,banco,venc,fechDias,tag};
     }
-  } else if(tipo==='cat'){
-    const nome=(document.getElementById('cad-f1')?.value||'').trim();
-    if(!nome){showToast('Nome é obrigatório',true);return;}
-    if(id){const c=categorias.find(x=>x.id===id);if(c)c.nome=nome;}
-    else{if(categorias.find(c=>c.nome.toLowerCase()===nome.toLowerCase())){showToast('Categoria já existe',true);return;}categorias.push({id:uid(),nome});}
-    categorias.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
-  } else if(tipo==='direc'){
-    const nome=(document.getElementById('cad-f1')?.value||'').trim();
-    if(!nome){showToast('Nome é obrigatório',true);return;}
-    if(id){const d=direcionamentos.find(x=>x.id===id);if(d)d.nome=nome;}
-    else{if(direcionamentos.find(d=>d.nome.toLowerCase()===nome.toLowerCase())){showToast('Direcionamento já existe',true);return;}direcionamentos.push({id:uid(),nome});}
-    direcionamentos.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
   }
   salvar();fecharModal('modal-cad');renderCadastros();showToast('Salvo com sucesso ✓');
 }
 function excluirCad(tipo,id){
-  const msgs={forn:'Excluir este fornecedor?',cat:'Excluir esta categoria?',cart:'Remover este cartão personalizado?',direc:'Excluir este direcionamento?'};
+  const msgs={forn:'Excluir este fornecedor?',cat:'Excluir esta categoria?',cc:'Excluir este centro de custo?',cart:'Remover este cartão personalizado?',direc:'Excluir este direcionamento?'};
+  if(tipo==='cat'||tipo==='cc'||tipo==='direc'){
+    const campo = tipo==='cat'?'categorias':tipo==='cc'?'centrosCusto':'direcionamentos';
+    const listaAtual = tipo==='cat'?categorias:tipo==='cc'?centrosCusto:direcionamentos;
+    const item = listaAtual.find(x=>x.id===id); if(!item) return;
+    const temFilhos = listaAtual.some(x=>x.parentId===id);
+    if(temFilhos){ showToast('Este item tem subitens — exclua ou mova os subitens primeiro.',true); return; }
+    const emUso = compras.some(c=>c.categoriaId===id||c.centroCustoId===id||c.direcionamentoId===id);
+    if(emUso){ showToast('Este item já está em uso em lançamentos e não pode ser excluído.',true); return; }
+    ACF(msgs[tipo],async ()=>{ showToast('Excluindo...'); await salvarItemCadastroUnico(campo, item, true); renderCadastros(); showToast('Removido'); });
+    return;
+  }
   ACF(msgs[tipo]||'Excluir?',()=>{
     if(tipo==='forn')fornecedores=fornecedores.filter(x=>x.id!==id);
-    else if(tipo==='cat')categorias=categorias.filter(x=>x.id!==id);
-    else if(tipo==='direc')direcionamentos=direcionamentos.filter(x=>x.id!==id);
     else if(tipo==='cart'){
       if(CARTOES_BUILTIN.includes(id)){showToast('Cartões padrão não podem ser removidos',true);return;}
       delete CARTOES[id];if(cartoesCustom)delete cartoesCustom[id];
@@ -4453,7 +4684,10 @@ function abrirModalCompraComDados(dados){
   abrirModalCompra();
   if(dados.dataCompra)document.getElementById('c-data').value=dados.dataCompra;
   if(dados.desc)document.getElementById('c-desc').value=dados.desc;
-  if(dados.categoria)document.getElementById('c-categoria').value=dados.categoria;
+  if(dados.categoria){
+    const catEncontrada = categorias.find(c=>c.nome.toLowerCase()===dados.categoria.toLowerCase());
+    if(catEncontrada) popularCascata('c','categoria', catEncontrada.id);
+  }
   if(dados.valor!==null&&dados.valor!==undefined)document.getElementById('c-valor').value=dados.valor;
   if(dados.cartao)document.getElementById('c-cartao').value=dados.cartao;
   if(dados.nParcelas)document.getElementById('c-parcelas').value=String(dados.nParcelas);
