@@ -362,17 +362,20 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   <div class="section-head"><div class="section-title">Meus Cartões</div></div>
   <div class="cards-grid" id="cards-grid"></div>
   <div class="section-head">
-    <div class="section-title">Faturas</div>
-    <div class="no-print" style="display:flex;gap:6px;flex-wrap:wrap;">
-      <select id="dash-filtro-cartao" onchange="renderDashboard()" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
-        <option value="todos">Todos os cartões</option>
-      </select>
-      <select id="dash-filtro-periodo" onchange="renderDashboard()" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
-        <option value="todas">Todas as faturas</option>
-        <option value="futuras" selected>Próximas faturas</option>
-        <option value="passadas">Faturas passadas</option>
-      </select>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer" onclick="toggleFaturasDash()">
+      <div class="section-title" style="margin:0">Faturas</div>
+      <div class="no-print" style="display:flex;gap:6px;flex-wrap:wrap;" onclick="event.stopPropagation()">
+        <select id="dash-filtro-cartao" onchange="renderDashboard()" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
+          <option value="todos">Todos os cartões</option>
+        </select>
+        <select id="dash-filtro-periodo" onchange="renderDashboard()" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
+          <option value="todas">Todas as faturas</option>
+          <option value="futuras" selected>Próximas faturas</option>
+          <option value="passadas">Faturas passadas</option>
+        </select>
+      </div>
     </div>
+    <span id="dash-faturas-seta" class="no-print" style="cursor:pointer;font-size:.85rem;color:var(--muted)" onclick="toggleFaturasDash()">▲</span>
   </div>
   <div class="faturas-container" id="faturas-proximas"></div>
 </div>
@@ -1194,7 +1197,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.17';
+const VERSAO = 'v4.18';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1866,6 +1869,14 @@ function irInicio(){showPage('dashboard');}
 function voltarPagina(){showPage(_paginaAnterior!==_paginaAtual?_paginaAnterior:'dashboard');}
 
 // ── DASHBOARD ───────────────────────────────────────────────
+let _faturasDashAberto = true;
+function toggleFaturasDash(){
+  _faturasDashAberto = !_faturasDashAberto;
+  const el = document.getElementById('faturas-proximas');
+  const seta = document.getElementById('dash-faturas-seta');
+  if(el) el.style.display = _faturasDashAberto ? '' : 'none';
+  if(seta) seta.textContent = _faturasDashAberto ? '▲' : '▼';
+}
 function renderDashboard(){
   const periodo=document.getElementById('dash-filtro-periodo').value;
   const cartaoSel=document.getElementById('dash-filtro-cartao');
