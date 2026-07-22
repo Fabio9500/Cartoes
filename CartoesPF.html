@@ -355,6 +355,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   <button class="tab active" onclick="showPage('dashboard')">Dashboard</button>
   <button class="tab" onclick="showPage('lancamentos')">Lançamentos</button>
   <button class="tab" onclick="showPage('faturas')">Faturas</button>
+  <button class="tab" onclick="showPage('compras')">🛒 Compras</button>
   <button class="tab" onclick="showPage('limites')">Limites</button>
   <button class="tab" onclick="showPage('relatorios')">📊 Relatórios</button>
   <button class="tab" onclick="showPage('cadastros')">🗂 Cadastros</button>
@@ -420,6 +421,34 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
   </div>
   <div id="faturas-detalhe-container"></div>
+</div>
+<div class="page" id="page-compras">
+  <div class="section-head">
+    <div class="section-title">🛒 Compras — quanto eu comprei (por data da compra, não do vencimento)</div>
+  </div>
+  <div style="font-size:12px;color:var(--muted);margin:-6px 0 14px;line-height:1.5">Diferente da Fatura (que mostra o que você <strong>paga</strong> por mês, olhando o vencimento), aqui cada linha é uma compra inteira — valor total, mesmo parcelada — organizada pela <strong>data em que você comprou</strong>. Use pra saber quanto gastou no supermercado, no posto etc. num período.</div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="font-weight:700;margin-bottom:8px;font-size:.85rem">Filtros</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Data da compra — De</label><input type="date" id="cf-de" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"></div>
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Data da compra — Até</label><input type="date" id="cf-ate" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"></div>
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Cartão</label><select id="cf-cartao" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"><option value="todos">Todos os cartões</option><option value="bradesco1">BRA 01</option><option value="bradesco10">BRA 10</option><option value="bradesco20">BRA 20</option><option value="santander">Santander</option><option value="picpay">PicPay</option></select></div>
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Tipo</label><select id="cf-tipo" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"><option value="">Despesas + Estornos</option><option value="despesa">Só Despesas</option><option value="estorno">Só Estornos/Créditos</option></select></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Categoria</label><div style="display:flex;gap:5px"><select id="cf-categoria-mae" onchange="aoMudarMaeCascata('cf','categoria','');renderComprasFiltro()" style="padding:6px 8px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.76rem;min-width:130px;"></select><select id="cf-categoria-sub" onchange="renderComprasFiltro()" style="padding:6px 8px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.76rem;min-width:110px;"></select></div></div>
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Centro de Custo</label><div style="display:flex;gap:5px"><select id="cf-cc-mae" onchange="aoMudarMaeCascata('cf','cc','');renderComprasFiltro()" style="padding:6px 8px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.76rem;min-width:130px;"></select><select id="cf-cc-sub" onchange="renderComprasFiltro()" style="padding:6px 8px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.76rem;min-width:110px;"></select></div></div>
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Direcionamento</label><div style="display:flex;gap:5px"><select id="cf-direc-mae" onchange="aoMudarMaeCascata('cf','direc','');renderComprasFiltro()" style="padding:6px 8px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.76rem;min-width:130px;"></select><select id="cf-direc-sub" onchange="renderComprasFiltro()" style="padding:6px 8px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.76rem;min-width:110px;"></select></div></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div style="flex:1;min-width:160px"><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Fornecedor</label><input type="text" id="cf-fornecedor" list="dl-lanc-forn" placeholder="Buscar por nome..." oninput="renderComprasFiltro()" style="width:100%;padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"></div>
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Agrupar por</label><select id="cf-agrupar" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"><option value="">Nenhum (lista simples)</option><option value="categoria">Categoria</option><option value="cc">Centro de Custo</option><option value="direc">Direcionamento</option><option value="cartao">Cartão</option><option value="fornecedor">Fornecedor</option><option value="mes">Mês da compra</option></select></div>
+      <button class="btn btn-outline btn-sm no-print" onclick="limparFiltroCF()">✕ Limpar Filtros</button>
+      <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button>
+      <button class="btn btn-outline btn-sm no-print" onclick="exportarCSVComprasFiltro()">📥 Exportar CSV</button>
+    </div>
+  </div>
+  <div id="cf-resultado"></div>
 </div>
 <div class="page" id="page-limites">
   <div class="section-head"><div class="section-title">Situação dos Limites</div></div>
@@ -1262,7 +1291,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.21';
+const VERSAO = 'v4.22';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1914,7 +1943,7 @@ function diasAte(v){return Math.ceil((new Date(v+'T12:00:00')-hoje)/86400000);}
 function corLimite(p){return p>80?'var(--danger)':p>50?'var(--warn)':'var(--success)';}
 
 // ── TABS ────────────────────────────────────────────────────
-const PAGES=['dashboard','lancamentos','faturas','limites','relatorios','cadastros','backup'];
+const PAGES=['dashboard','lancamentos','faturas','compras','limites','relatorios','cadastros','backup'];
 let _paginaAnterior='dashboard', _paginaAtual='dashboard';
 function showPage(id){
   _paginaAnterior=_paginaAtual; _paginaAtual=id;
@@ -1925,6 +1954,7 @@ function showPage(id){
   if(id==='dashboard')renderDashboard();
   if(id==='lancamentos')renderLancamentos(filtroAtivo);
   if(id==='faturas')renderFaturas();
+  if(id==='compras')renderComprasFiltro();
   if(id==='limites')renderLimites();
   if(id==='relatorios')renderRelatorios();
   if(id==='cadastros')renderCadastros();
@@ -2758,6 +2788,130 @@ function desfazerPagamento(key){
   compras.forEach(c=>{if(c.cartao===cartao&&c.venc===venc)delete c.pago;});
   delete pagamentos[key];
   salvar();renderFaturas();renderDashboard();renderLimites();showToast('Pagamento desfeito');
+}
+
+// ── COMPRAS (relatório de filtragem por data da COMPRA, não vencimento) ──
+// Objetivo do Fabio: a Fatura mostra o que ele PAGA por mês (vencimento).
+// Aqui cada linha é uma compra inteira (soma de todas as parcelas), olhando
+// a data em que ele COMPROU — "quanto gastei no supermercado em julho",
+// independente de estar em 1x ou 10x e de quando cada parcela vence.
+const DIMENSOES_AGRUPAMENTO_CF=[
+  {id:'categoria',label:'Categoria'},{id:'cc',label:'Centro de Custo'},{id:'direc',label:'Direcionamento'},
+  {id:'cartao',label:'Cartão'},{id:'fornecedor',label:'Fornecedor'},{id:'mes',label:'Mês da compra'}
+];
+function _comprasAgregadasPorCompraId(){
+  const porCompra={};
+  compras.forEach(c=>{
+    if(!porCompra[c.compraId]) porCompra[c.compraId]={compraId:c.compraId,desc:c.desc,dataCompra:c.dataCompra||c.venc,cartao:c.cartao,nParcelas:c.nParcelas,tipo:c.tipo||'despesa',categoriaId:c.categoriaId,centroCustoId:c.centroCustoId,direcionamentoId:c.direcionamentoId,memo:c.memo,primeiroUid:c.uid,valorTotal:0};
+    porCompra[c.compraId].valorTotal+=c.valorParcela;
+  });
+  return Object.values(porCompra);
+}
+function _comprasFiltradasCF(){
+  const de=document.getElementById('cf-de')?.value||'', ate=document.getElementById('cf-ate')?.value||'';
+  const cartao=document.getElementById('cf-cartao')?.value||'todos', tipo=document.getElementById('cf-tipo')?.value||'';
+  const forn=(document.getElementById('cf-fornecedor')?.value||'').toLowerCase().trim();
+  const categoriaId=valorFinalCascata('cf','categoria'), ccId=valorFinalCascata('cf','cc'), direcId=valorFinalCascata('cf','direc');
+  let lista=_comprasAgregadasPorCompraId();
+  if(de) lista=lista.filter(x=>x.dataCompra>=de);
+  if(ate) lista=lista.filter(x=>x.dataCompra<=ate);
+  if(cartao!=='todos') lista=lista.filter(x=>x.cartao===cartao);
+  if(tipo) lista=lista.filter(x=>x.tipo===tipo);
+  if(forn) lista=lista.filter(x=>(x.desc||'').toLowerCase().includes(forn));
+  if(categoriaId) lista=lista.filter(x=>x.categoriaId===categoriaId||categoriaById(x.categoriaId)?.parentId===categoriaId);
+  if(ccId) lista=lista.filter(x=>x.centroCustoId===ccId||centroCustoById(x.centroCustoId)?.parentId===ccId);
+  if(direcId) lista=lista.filter(x=>x.direcionamentoId===direcId||direcionamentoById(x.direcionamentoId)?.parentId===direcId);
+  return lista.sort((a,b)=>b.dataCompra.localeCompare(a.dataCompra));
+}
+function _agruparComprasCF(lista, dim){
+  const grupos={};
+  lista.forEach(x=>{
+    let chave,label;
+    if(dim==='categoria'){const it=categoriaById(x.categoriaId);chave=x.categoriaId||'_sem';label=it?nomeCompletoCadastro(it,categorias):'(Sem categoria)';}
+    else if(dim==='cc'){const it=centroCustoById(x.centroCustoId);chave=x.centroCustoId||'_sem';label=it?nomeCompletoCadastro(it,centrosCusto):'(Sem centro de custo)';}
+    else if(dim==='direc'){const it=direcionamentoById(x.direcionamentoId);chave=x.direcionamentoId||'_sem';label=it?nomeCompletoCadastro(it,direcionamentos):'(Sem direcionamento)';}
+    else if(dim==='cartao'){chave=x.cartao;label=CARTOES[x.cartao]?.nome||x.cartao;}
+    else if(dim==='fornecedor'){chave=(x.desc||'').trim().toLowerCase()||'_sem';label=x.desc||'(Sem fornecedor)';}
+    else {chave=x.dataCompra.slice(0,7);label=new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});label=label.charAt(0).toUpperCase()+label.slice(1);}
+    if(!grupos[chave]) grupos[chave]={chave,label,itens:[],total:0};
+    grupos[chave].itens.push(x); grupos[chave].total+=x.valorTotal;
+  });
+  return Object.values(grupos).sort((a,b)=>b.total-a.total);
+}
+let _cfGruposAbertos={};
+function toggleGrupoCF(chave){ _cfGruposAbertos[chave]=!_cfGruposAbertos[chave]; renderComprasFiltro(); }
+function limparFiltroCF(){
+  ['cf-de','cf-ate','cf-fornecedor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const cartaoEl=document.getElementById('cf-cartao');if(cartaoEl)cartaoEl.value='todos';
+  const tipoEl=document.getElementById('cf-tipo');if(tipoEl)tipoEl.value='';
+  const agruparEl=document.getElementById('cf-agrupar');if(agruparEl)agruparEl.value='';
+  popularCascata('cf','categoria','');popularCascata('cf','cc','');popularCascata('cf','direc','');
+  _cfGruposAbertos={};
+  renderComprasFiltro();
+}
+function _linhaCompraCF(x){
+  const card=CARTOES[x.cartao]||{nome:x.cartao,tag:''};
+  const catNome=x.categoriaId?nomeCompletoCadastro(categoriaById(x.categoriaId)||{},categorias):'';
+  const ccNome=x.centroCustoId?nomeCompletoCadastro(centroCustoById(x.centroCustoId)||{},centrosCusto):'';
+  const direcNome=x.direcionamentoId?nomeCompletoCadastro(direcionamentoById(x.direcionamentoId)||{},direcionamentos):'';
+  return `<tr style="cursor:pointer" ondblclick="editarParcela('${x.primeiroUid}')" oncontextmenu="return abrirMenuCompra(event,'${x.primeiroUid}')" title="Duplo clique: editar — Clique direito: mais opções">
+    <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR'):'-'}</td>
+    <td style="font-weight:600">${esc(x.desc)}${x.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}</td>
+    <td style="font-size:.75rem;color:var(--muted)">${catNome||'<span style="opacity:.3">—</span>'}</td>
+    <td style="font-size:.75rem;color:var(--muted)">${ccNome||'<span style="opacity:.3">—</span>'}</td>
+    <td style="font-size:.75rem;color:var(--muted)">${direcNome||'<span style="opacity:.3">—</span>'}</td>
+    <td><span class="tag ${card.tag}">${card.nome}</span></td>
+    <td style="text-align:center;font-size:.75rem">${x.nParcelas>1?x.nParcelas+'x':'à vista'}</td>
+    <td style="text-align:right;font-weight:700;${x.valorTotal<0?'color:#0a7d33':''}">${fmt(x.valorTotal)}</td>
+  </tr>`;
+}
+function renderComprasFiltro(){
+  // Primeira vez que a aba abre: popula os selects em cascata (mãe), senão ficam vazios.
+  if(document.getElementById('cf-categoria-mae') && !document.getElementById('cf-categoria-mae').options.length){
+    popularCascata('cf','categoria','');popularCascata('cf','cc','');popularCascata('cf','direc','');
+  }
+  const cont=document.getElementById('cf-resultado'); if(!cont) return;
+  const lista=_comprasFiltradasCF();
+  const total=lista.reduce((s,x)=>s+x.valorTotal,0);
+  const qtd=lista.length;
+  const ticket=qtd?total/qtd:0;
+  const agrupar=document.getElementById('cf-agrupar')?.value||'';
+  const head=`<tr><th>Data compra</th><th>Fornecedor</th><th>Categoria</th><th>Centro de Custo</th><th>Direcionamento</th><th>Cartão</th><th style="text-align:center">Parcelas</th><th style="text-align:right">Valor total</th></tr>`;
+  let corpo;
+  if(agrupar){
+    const grupos=_agruparComprasCF(lista, agrupar);
+    corpo = grupos.map(g=>{
+      const aberto=!!_cfGruposAbertos[g.chave];
+      return `<tr onclick="toggleGrupoCF('${esc(String(g.chave)).replace(/'/g,"\\'")}')" style="cursor:pointer;background:var(--surface2);font-weight:700">
+        <td colspan="8"><span style="display:inline-block;width:14px">${aberto?'▾':'▸'}</span> ${esc(g.label)} <span style="font-weight:400;color:var(--muted);font-size:.72rem">(${g.itens.length} compra${g.itens.length>1?'s':''})</span>
+        <span style="float:right;${g.total<0?'color:#0a7d33':''}">${fmt(g.total)}</span></td></tr>`
+        + (aberto ? g.itens.map(_linhaCompraCF).join('') : '');
+    }).join('') || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">Nenhuma compra encontrada com esses filtros.</td></tr>`;
+  } else {
+    corpo = lista.map(_linhaCompraCF).join('') || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">Nenhuma compra encontrada com esses filtros.</td></tr>`;
+  }
+  cont.innerHTML = `
+    <div class="kpis" style="margin-bottom:12px">
+      <div class="card kpi"><div class="kpi-l">Total comprado no período</div><div class="kpi-v" style="${total<0?'color:#0a7d33':''}">${fmt(total)}</div></div>
+      <div class="card kpi"><div class="kpi-l">Qtd. de compras</div><div class="kpi-v">${qtd}</div></div>
+      <div class="card kpi"><div class="kpi-l">Ticket médio</div><div class="kpi-v">${fmt(ticket)}</div></div>
+    </div>
+    <div class="card"><div class="tabela-mobile-cards" style="overflow-x:auto"><table><thead>${head}</thead><tbody>${corpo}</tbody></table></div></div>`;
+}
+function exportarCSVComprasFiltro(){
+  const lista=_comprasFiltradasCF();
+  const linhas=[['Data da Compra','Fornecedor','Categoria','Centro de Custo','Direcionamento','Cartão','Parcelas','Tipo','Valor Total'].join(';')];
+  lista.forEach(x=>{
+    const catNome=x.categoriaId?nomeCompletoCadastro(categoriaById(x.categoriaId)||{},categorias):'';
+    const ccNome=x.centroCustoId?nomeCompletoCadastro(centroCustoById(x.centroCustoId)||{},centrosCusto):'';
+    const direcNome=x.direcionamentoId?nomeCompletoCadastro(direcionamentoById(x.direcionamentoId)||{},direcionamentos):'';
+    const card=CARTOES[x.cartao]||{nome:x.cartao};
+    linhas.push([x.dataCompra, x.desc, catNome, ccNome, direcNome, card.nome, x.nParcelas+'x', x.tipo==='estorno'?'Estorno/Crédito':'Despesa', String(x.valorTotal).replace('.',',')].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(';'));
+  });
+  const blob=new Blob(['\ufeff'+linhas.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`compras_filtro_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
 // ── LIMITES ─────────────────────────────────────────────────
