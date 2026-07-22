@@ -28,6 +28,10 @@ body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font
 .sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
 .sync-dot.ok{background:#4ade80;}.sync-dot.saving{background:#fbbf24;animation:pulse 1s infinite;}.sync-dot.error{background:#f87171;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#ctx-menu-compra{display:none;position:fixed;z-index:500;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.3);min-width:230px;max-width:340px;padding:4px;font-size:12px}
+.ctxmenu-item{padding:8px 12px;border-radius:5px;cursor:pointer;white-space:normal;line-height:1.4}
+.ctxmenu-item:hover{background:var(--surface2)}
+.ctxmenu-sep{height:1px;background:var(--border);margin:4px 2px}
 #sync-status{font-size:.66rem;color:#aaa;display:flex;align-items:center;gap:4px;}
 header{background:var(--text);color:#fff;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
 .logo{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:8px;}.logo span{color:var(--accent);font-size:1.2rem;}
@@ -382,6 +386,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <button class="filter-chip active" onclick="filtrar('todos',this)">Todos</button>
     <span id="filter-chips-cartoes"></span>
     <input type="text" id="lanc-filtro-forn" list="dl-lanc-forn" placeholder="🔍 Fornecedor" oninput="renderLancamentos(filtroAtivo)" class="no-print" style="padding:5px 12px;border-radius:20px;font-size:.73rem;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;min-width:150px;">
+    <span id="lanc-filtro-cadastro-ativo" class="no-print" style="display:none;padding:5px 12px;border-radius:20px;font-size:.73rem;border:1px solid var(--accent);background:var(--surface2);color:var(--accent);font-weight:600;"></span>
     <datalist id="dl-lanc-forn"></datalist>
     <div style="flex:1"></div>
     <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button>
@@ -1035,6 +1040,12 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <div class="info-box" id="fala-resumo" style="display:none;"></div>
       <div class="info-box" id="fechamento-info">Selecione o cartão e a data para ver a fatura de destino.</div>
       <div class="form-group"><label>Fornecedor</label><input type="text" id="c-desc" list="dl-fornecedor" placeholder="Ex: Leroy Merlin" autocomplete="off" onchange="sugerirMemorando()"></div>
+      <div class="form-group"><label>Tipo</label>
+        <select id="c-tipo" onchange="aoMudarTipoCompra()">
+          <option value="despesa">Despesa (compra normal)</option>
+          <option value="estorno">↩ Estorno / Crédito</option>
+        </select>
+      </div>
       <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="c-memo" list="dl-memorando" placeholder="Ex: Furadeira para a obra" autocomplete="off"></div>
       <datalist id="dl-fornecedor"></datalist>
       <datalist id="dl-memorando"></datalist>
@@ -1119,6 +1130,12 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         ✏️ Edita apenas <strong>esta parcela</strong>. Para excluir, use o botão 🗑 abaixo.
       </div>
       <div class="form-group"><label>Fornecedor</label><input type="text" id="ep-desc"></div>
+      <div class="form-group"><label>Tipo</label>
+        <select id="ep-tipo" onchange="aoMudarTipoCompra('ep')">
+          <option value="despesa">Despesa (compra normal)</option>
+          <option value="estorno">↩ Estorno / Crédito</option>
+        </select>
+      </div>
       <div class="form-group"><label>Memorando <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label><input type="text" id="ep-memo"></div>
       <div class="form-group"><label>Categoria <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label>
         <div class="form-row" style="margin-bottom:0">
@@ -1191,6 +1208,8 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
 </div>
 
+<div id="ctx-menu-compra" class="no-print"></div>
+
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
     <div class="cb-icon">🗑</div><div class="cb-title">Excluir compra?</div>
@@ -1249,7 +1268,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.20';
+const VERSAO = 'v4.21';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2073,6 +2092,18 @@ function renderLancamentos(filtro){
   let lista=[...compras].sort((a,b)=>{const da=a.dataCompra||a.venc,db=b.dataCompra||b.venc;return db.localeCompare(da)||b.venc.localeCompare(a.venc)||a.parcela-b.parcela;});
   if(filtro!=='todos')lista=lista.filter(c=>c.cartao===filtro);
   if(filForn)lista=lista.filter(c=>(c.desc||'').toLowerCase().includes(filForn));
+  if(_filtroLancCategoriaId)lista=lista.filter(c=>c.categoriaId===_filtroLancCategoriaId||categoriaById(c.categoriaId)?.parentId===_filtroLancCategoriaId);
+  if(_filtroLancCCId)lista=lista.filter(c=>c.centroCustoId===_filtroLancCCId||centroCustoById(c.centroCustoId)?.parentId===_filtroLancCCId);
+  if(_filtroLancDirecId)lista=lista.filter(c=>c.direcionamentoId===_filtroLancDirecId||direcionamentoById(c.direcionamentoId)?.parentId===_filtroLancDirecId);
+  const filtroCadEl=document.getElementById('lanc-filtro-cadastro-ativo');
+  if(filtroCadEl){
+    let txt='';
+    if(_filtroLancCategoriaId) txt=`Categoria: ${nomeCompletoCadastro(categoriaById(_filtroLancCategoriaId)||{},categorias)}`;
+    else if(_filtroLancCCId) txt=`Centro de Custo: ${nomeCompletoCadastro(centroCustoById(_filtroLancCCId)||{},centrosCusto)}`;
+    else if(_filtroLancDirecId) txt=`Direcionamento: ${nomeCompletoCadastro(direcionamentoById(_filtroLancDirecId)||{},direcionamentos)}`;
+    filtroCadEl.style.display=txt?'inline-flex':'none';
+    filtroCadEl.innerHTML=txt?`🔎 ${esc(txt)} <span onclick="limparFiltroLancCadastro()" style="cursor:pointer;margin-left:6px;font-weight:700">✕</span>`:'';
+  }
   if(!lista.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   const seen=new Set();
@@ -2091,12 +2122,12 @@ function renderLancamentos(filtro){
     const pTag=`<span class="parc-tag${passada?' passada':''}">${c.parcela}/${c.nParcelas}</span>`;
     const indent=opcoes.indent?'padding-left:18px;':'';
     const seta=opcoes.seta||'';
-    return `<tr style="${passada?'opacity:.55':''}${opcoes.destaque?'background:var(--surface2,#f7f7f7);':''}">
+    return `<tr style="cursor:pointer;${passada?'opacity:.55':''}${opcoes.destaque?'background:var(--surface2,#f7f7f7);':''}" ondblclick="editarParcela('${c.uid}')" oncontextmenu="return abrirMenuCompra(event,'${c.uid}')" title="Duplo clique: editar — Clique direito: mais opções">
       <td data-label="Dt. Compra" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${dtC}</td>
-      <td data-label="Fornecedor" style="font-weight:600;${indent}">${seta}${c.desc}${c.origemImportacao?` <span title="Importado da fatura ${c.origemImportacao==='csv-bradesco'?'CSV Bradesco':c.origemImportacao==='csv-generico'?'CSV':'OFX'} em ${c.dataImportacao?new Date(c.dataImportacao).toLocaleDateString('pt-BR'):'-'}" style="display:inline-block;font-size:.62rem;font-weight:700;color:#8a5a00;background:#fff3d6;border:1px solid #f0d896;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle">${c.origemImportacao==='ofx'?'📥 OFX':'📄 CSV'}</span>`:''}</td>
+      <td data-label="Fornecedor" style="font-weight:600;${indent}">${seta}${c.desc}${c.tipo==='estorno'?` <span style="display:inline-block;font-size:.62rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle">↩ Estorno</span>`:''}${c.origemImportacao?` <span title="Importado da fatura ${c.origemImportacao==='csv-bradesco'?'CSV Bradesco':c.origemImportacao==='csv-generico'?'CSV':'OFX'} em ${c.dataImportacao?new Date(c.dataImportacao).toLocaleDateString('pt-BR'):'-'}" style="display:inline-block;font-size:.62rem;font-weight:700;color:#8a5a00;background:#fff3d6;border:1px solid #f0d896;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle">${c.origemImportacao==='ofx'?'📥 OFX':'📄 CSV'}</span>`:''}</td>
       <td data-label="Memorando" style="font-size:.75rem;color:var(--muted);">${c.memo||'<span style="opacity:.3">—</span>'}</td>
       <td data-label="Cartão"><span class="tag ${card.tag}">${card.nome}</span></td>
-      <td data-label="Parcela">${pTag}</td><td data-label="Valor" style="font-weight:600">${fmt(c.valorParcela)}</td>
+      <td data-label="Parcela">${pTag}</td><td data-label="Valor" style="font-weight:600;${c.valorParcela<0?'color:#0a7d33':''}">${fmt(c.valorParcela)}</td>
       <td data-label="Vencimento" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;white-space:nowrap">${new Date(c.venc+'T12:00:00').toLocaleDateString('pt-BR')}</td>
       <td data-label="Status">${dStr}</td>
       <td data-label="" class="no-print"><div class="action-btns">
@@ -2118,10 +2149,81 @@ function renderLancamentos(filtro){
     return '';
   }).join('');
 }
+// ── MENU DE CONTEXTO (duplo clique/clique direito) ─────────────
+// Filtro "Ir para" ativo na tela de Lançamentos (Categoria/Centro de
+// Custo/Direcionamento) — estilo Money, igual ao Extrato do TesourariaSys.
+let _filtroLancCategoriaId='', _filtroLancCCId='', _filtroLancDirecId='';
+function limparFiltroLancCadastro(){
+  _filtroLancCategoriaId='';_filtroLancCCId='';_filtroLancDirecId='';
+  renderLancamentos(filtroAtivo);
+}
+function irParaCompra(campo, valor){
+  fecharMenuCompra();
+  if(campo==='categoriaId'){ _filtroLancCategoriaId=valor; _filtroLancCCId=''; _filtroLancDirecId=''; }
+  if(campo==='centroCustoId'){ _filtroLancCCId=valor; _filtroLancCategoriaId=''; _filtroLancDirecId=''; }
+  if(campo==='direcionamentoId'){ _filtroLancDirecId=valor; _filtroLancCategoriaId=''; _filtroLancCCId=''; }
+  showPage('lancamentos');
+  renderLancamentos(filtroAtivo);
+}
+// Converte a compra entre Despesa e Estorno/Crédito (equivalente simplificado
+// ao "Alterar tipo de transação" do TesourariaSys — aqui só existem os 2
+// tipos). Inverte o sinal do valor da parcela pra refletir corretamente nos
+// totais de fatura e no dashboard (que somam valorParcela ao vivo).
+function converterTipoCompra(uid){
+  fecharMenuCompra();
+  const c=compras.find(x=>x.uid===uid);if(!c)return;
+  const novoTipo=c.tipo==='estorno'?'despesa':'estorno';
+  const novoValor=novoTipo==='estorno'?-Math.abs(c.valorParcela):Math.abs(c.valorParcela);
+  ACF(`Converter "${c.desc}" para ${novoTipo==='estorno'?'Estorno/Crédito':'Despesa normal'}?`, ()=>{
+    compras=compras.map(x=>x.uid===uid?{...x,tipo:novoTipo,valorParcela:novoValor}:x);
+    salvar();renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
+    showToast(`Convertido para ${novoTipo==='estorno'?'Estorno/Crédito':'Despesa'} ✓`);
+  });
+}
+function abrirMenuCompra(ev, uid){
+  ev.preventDefault(); ev.stopPropagation();
+  const c=compras.find(x=>x.uid===uid); if(!c) return false;
+  const cat=categoriaById(c.categoriaId), catMae=cat?(cat.parentId?categoriaById(cat.parentId):cat):null;
+  const cc=centroCustoById(c.centroCustoId), ccMae=cc?(cc.parentId?centroCustoById(cc.parentId):cc):null;
+  const direc=direcionamentoById(c.direcionamentoId), direcMae=direc?(direc.parentId?direcionamentoById(direc.parentId):direc):null;
+
+  const acoes=[];
+  acoes.push({label:'✏ Editar', fn:()=>{ fecharMenuCompra(); editarParcela(uid); }});
+  if(catMae) acoes.push({label:`👉 Ir para categoria: ${catMae.nome}`, fn:()=>irParaCompra('categoriaId', catMae.id)});
+  if(cat && cat.parentId) acoes.push({label:`👉 Ir para subcategoria: ${nomeCompletoCadastro(cat,categorias)}`, fn:()=>irParaCompra('categoriaId', cat.id)});
+  if(ccMae) acoes.push({label:`👉 Ir para Centro de Custo: ${ccMae.nome}`, fn:()=>irParaCompra('centroCustoId', ccMae.id)});
+  if(cc && cc.parentId) acoes.push({label:`👉 Ir para Centro de Custo: ${nomeCompletoCadastro(cc,centrosCusto)}`, fn:()=>irParaCompra('centroCustoId', cc.id)});
+  if(direcMae) acoes.push({label:`👉 Ir para Direcionamento: ${direcMae.nome}`, fn:()=>irParaCompra('direcionamentoId', direcMae.id)});
+  if(direc && direc.parentId) acoes.push({label:`👉 Ir para Direcionamento: ${nomeCompletoCadastro(direc,direcionamentos)}`, fn:()=>irParaCompra('direcionamentoId', direc.id)});
+  acoes.push({sep:true});
+  acoes.push({label:c.tipo==='estorno'?'⇄ Converter para Despesa normal':'⇄ Converter para Estorno/Crédito', fn:()=>converterTipoCompra(uid)});
+  acoes.push({label:'↪ Mover para outro cartão...', fn:()=>{ fecharMenuCompra(); editarParcela(uid); }});
+  acoes.push({sep:true});
+  acoes.push({label:'🗑 Excluir', cor:'var(--danger)', fn:()=>{ fecharMenuCompra(); deletarCompra(c.compraId); }});
+
+  const menu=document.getElementById('ctx-menu-compra');
+  menu.innerHTML=acoes.map((a,i)=> a.sep ? `<div class="ctxmenu-sep"></div>` : `<div class="ctxmenu-item" data-idx="${i}" style="${a.cor?`color:${a.cor}`:''}">${esc(a.label)}</div>`).join('');
+  menu.querySelectorAll('.ctxmenu-item').forEach(el=>{
+    const a=acoes[Number(el.dataset.idx)];
+    el.addEventListener('click', (e)=>{ e.stopPropagation(); a.fn(); });
+  });
+  menu.style.display='block';
+  const x=Math.min(ev.clientX, window.innerWidth-260);
+  const y=Math.min(ev.clientY, window.innerHeight-(acoes.length*34+20));
+  menu.style.left=Math.max(4,x)+'px';
+  menu.style.top=Math.max(4,y)+'px';
+  return false;
+}
+function fecharMenuCompra(){
+  const m=document.getElementById('ctx-menu-compra');
+  if(m) m.style.display='none';
+}
+document.addEventListener('click', fecharMenuCompra);
 function editarParcela(u){
   const c=compras.find(x=>x.uid===u);if(!c)return;
   document.getElementById('ep-uid').value=u;document.getElementById('ep-compraid').value=c.compraId;
-  document.getElementById('ep-desc').value=c.desc;document.getElementById('ep-valor').value=c.valorParcela;
+  document.getElementById('ep-desc').value=c.desc;document.getElementById('ep-valor').value=Math.abs(c.valorParcela);
+  const tipoEl=document.getElementById('ep-tipo');if(tipoEl)tipoEl.value=c.tipo==='estorno'?'estorno':'despesa';
   document.getElementById('ep-memo').value=c.memo||'';
   popularCascata('ep','categoria', c.categoriaId||'');
   popularCascata('ep','cc', c.centroCustoId||'');
@@ -2135,8 +2237,10 @@ function editarParcela(u){
   document.getElementById('ep-nparcelas-original').value=c.nParcelas;
   document.getElementById('ep-parcelas').value=String(c.nParcelas);
   document.getElementById('ep-parcelas').disabled=algumPago;
+  document.getElementById('ep-parcelas').dataset.travadoPago=algumPago?'1':'0';
   document.getElementById('ep-total-atual').textContent=fmt(totalAtual)+(algumPago?' — não é possível reparcelar (há parcela paga)':'');
   document.getElementById('ep-parcelas-preview-wrap').style.display='none';
+  aoMudarTipoCompra('ep');
   document.getElementById('modal-edit').classList.add('open');
 }
 function atualizarReparcelarPreview(){
@@ -2167,24 +2271,27 @@ function atualizarReparcelarPreview(){
 function salvarEdicao(){
   const u=document.getElementById('ep-uid').value,desc=document.getElementById('ep-desc').value.trim();
   const memo=document.getElementById('ep-memo')?.value.trim()||'';
+  const tipo=document.getElementById('ep-tipo')?.value==='estorno'?'estorno':'despesa';
   const categoriaId=valorFinalCascata('ep','categoria');
   const centroCustoId=valorFinalCascata('ep','cc');
   const direcionamentoId=valorFinalCascata('ep','direc');
-  const val=parseFloat(document.getElementById('ep-valor').value),venc=document.getElementById('ep-venc').value;
+  const valAbs=parseFloat(document.getElementById('ep-valor').value),venc=document.getElementById('ep-venc').value;
+  const val=tipo==='estorno'?-Math.abs(valAbs):Math.abs(valAbs);
   const dataCompra=document.getElementById('ep-datacompra').value,novoCartao=document.getElementById('ep-cartao').value;
   const cartaoOrig=document.getElementById('ep-cartao-original').value,escopo=document.getElementById('ep-trocar-escopo').value;
   const compraId=document.getElementById('ep-compraid').value;
   const nOriginal=parseInt(document.getElementById('ep-nparcelas-original').value);
   const nNovo=parseInt(document.getElementById('ep-parcelas').value);
-  if(!desc||!val||!venc){showToast('Preencha todos os campos',true);return;}
+  if(!desc||!valAbs||!venc){showToast('Preencha todos os campos',true);return;}
 
   if(nNovo!==nOriginal){
     const novosRegistros=[];
     for(let i=1;i<=nNovo;i++){
       const valEl=document.getElementById('ep-pe-val-'+i),vencEl=document.getElementById('ep-pe-venc-'+i);
-      const vp=parseFloat(valEl&&valEl.value)||0,vc=vencEl&&vencEl.value;
-      if(!vp||!vc){showToast('Preencha valor e vencimento de todas as parcelas',true);return;}
-      novosRegistros.push({uid:uid(),compraId,desc,cartao:novoCartao,dataCompra,nParcelas:nNovo,parcela:i,valorParcela:vp,venc:vc,...(memo?{memo}:{}),...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(direcionamentoId?{direcionamentoId}:{})});
+      const vpAbs=parseFloat(valEl&&valEl.value)||0,vc=vencEl&&vencEl.value;
+      if(!vpAbs||!vc){showToast('Preencha valor e vencimento de todas as parcelas',true);return;}
+      const vp=tipo==='estorno'?-Math.abs(vpAbs):Math.abs(vpAbs);
+      novosRegistros.push({uid:uid(),compraId,desc,cartao:novoCartao,dataCompra,nParcelas:nNovo,parcela:i,valorParcela:vp,venc:vc,tipo,...(memo?{memo}:{}),...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(direcionamentoId?{direcionamentoId}:{})});
     }
     compras=compras.filter(x=>x.compraId!==compraId).concat(novosRegistros);
     salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
@@ -2198,9 +2305,9 @@ function salvarEdicao(){
     // Aplica descrição/cartão/memo/direcionamento E o valor a TODAS as parcelas do grupo.
     // O vencimento NÃO é replicado pra todas (cada parcela tem seu próprio mês) — só a
     // parcela que estava sendo editada tem o vencimento atualizado.
-    compras=compras.map(c=>c.compraId!==compraId?c:{...c,desc,dataCompra,cartao:novoCartao,memo,categoriaId,centroCustoId,direcionamentoId,valorParcela:val});
+    compras=compras.map(c=>c.compraId!==compraId?c:{...c,desc,dataCompra,cartao:novoCartao,memo,categoriaId,centroCustoId,direcionamentoId,valorParcela:val,tipo});
     const i2=compras.findIndex(x=>x.uid===u);if(i2>=0)compras[i2]={...compras[i2],venc};
-  }else{compras[idx]={...compras[idx],desc,valorParcela:val,venc,dataCompra,cartao:novoCartao,memo,categoriaId,centroCustoId,direcionamentoId};}
+  }else{compras[idx]={...compras[idx],desc,valorParcela:val,venc,dataCompra,cartao:novoCartao,memo,categoriaId,centroCustoId,direcionamentoId,tipo};}
   salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
   showToast(trocou?`Cartão alterado para ${CARTOES[novoCartao].nome} ✓`:'Atualizado ✓');
 }
@@ -2275,13 +2382,13 @@ function renderFaturas(){
           <div style="min-width:60px" class="no-print"></div>
         </div>
         ${g.itens.sort((a,b)=>a.desc.localeCompare(b.desc)).map(i=>`
-        <div class="fd-row">
+        <div class="fd-row" style="cursor:pointer" ondblclick="editarParcela('${i.uid}')" oncontextmenu="return abrirMenuCompra(event,'${i.uid}')" title="Duplo clique: editar — Clique direito: mais opções">
           <div style="min-width:55px;max-width:55px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${i.dataCompra?new Date(i.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</div>
-          <div class="fd-desc">${i.desc}</div>
+          <div class="fd-desc">${i.desc}${i.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}</div>
           <div style="flex:1;min-width:110px;font-size:.75rem;color:var(--muted);padding:0 4px;">${i.memo||'<span style="opacity:.3">—</span>'}</div>
           <div style="min-width:90px;">${nomeCatCompra(i)?`<span style="display:inline-block;padding:1px 6px;border-radius:10px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--muted);">${esc(nomeCatCompra(i))}</span>`:''}</div>
           <div class="fd-parc"><span class="parc-tag${g.passada?' passada':''}">${i.parcela}/${i.nParcelas}</span></div>
-          <div class="fd-val">${fmt(i.valorParcela)}</div>
+          <div class="fd-val" style="${i.valorParcela<0?'color:#0a7d33':''}">${fmt(i.valorParcela)}</div>
           <div style="min-width:60px;display:flex;gap:3px;" class="no-print">
             <button class="icon-btn edit" onclick="editarParcela('${i.uid}')">✏️</button>
             <button class="icon-btn del" onclick="deletarCompraFatura('${i.compraId}')">🗑</button>
@@ -2702,6 +2809,19 @@ function atualizarDatalistCompras(){
 // listaCats()/popularCatSelect()/listaDirec()/popularDirecSelect() foram
 // substituídas pelas cascatas Mãe→Sub (popularCascata/opcoesCategoriaMae/etc,
 // definidas perto do carregamento do cadastro único, no topo do arquivo).
+// Estorno/crédito é sempre lançado à vista (1x): ao selecionar, trava o
+// seletor de parcelas em 1x e some com o editor de parcelas. Voltando pra
+// Despesa, libera o seletor de novo.
+function aoMudarTipoCompra(prefixo){
+  const p = prefixo||'c';
+  const tipoEl = document.getElementById(p+'-tipo');
+  const parcEl = document.getElementById(p+'-parcelas');
+  if(!tipoEl||!parcEl) return;
+  const ehEstorno = tipoEl.value==='estorno';
+  if(ehEstorno){ parcEl.value='1'; parcEl.disabled=true; }
+  else { parcEl.disabled = p==='ep' ? (document.getElementById('ep-parcelas').dataset.travadoPago==='1') : false; }
+  if(p==='c') calcularParcelas(); else atualizarReparcelarPreview();
+}
 function sugerirMemorando(){
   const desc = document.getElementById('c-desc')?.value?.trim();
   const campoMemo = document.getElementById('c-memo');
@@ -2718,6 +2838,8 @@ function abrirModalCompra(){
   popularCascata('c','direc','');
   document.getElementById('c-data').value=hoje.toISOString().split('T')[0];
   document.getElementById('c-desc').value='';document.getElementById('c-valor').value='';document.getElementById('c-parcelas').value='1';
+  const tipoEl=document.getElementById('c-tipo');if(tipoEl)tipoEl.value='despesa';
+  aoMudarTipoCompra();
   const memoEl=document.getElementById('c-memo');if(memoEl)memoEl.value='';
   const resumo=document.getElementById('fala-resumo');if(resumo){resumo.style.display='none';resumo.innerHTML='';}
   calcularFechamento();calcularParcelas();document.getElementById('modal-compra').classList.add('open');
@@ -3133,18 +3255,20 @@ function confirmarImportacaoCSVCartao(){
 
 function salvarCompra(){
   const desc=document.getElementById('c-desc').value.trim(),data=document.getElementById('c-data').value;
-  const valor=parseFloat(document.getElementById('c-valor').value),cartao=document.getElementById('c-cartao').value;
-  const n=parseInt(document.getElementById('c-parcelas').value);
-  if(!desc||!data||!valor||valor<=0){showToast('Preencha todos os campos',true);return;}
+  const valorAbs=parseFloat(document.getElementById('c-valor').value),cartao=document.getElementById('c-cartao').value;
+  const tipo=document.getElementById('c-tipo')?.value==='estorno'?'estorno':'despesa';
+  const n=tipo==='estorno'?1:parseInt(document.getElementById('c-parcelas').value);
+  if(!desc||!data||!valorAbs||valorAbs<=0){showToast('Preencha todos os campos',true);return;}
   const compraId=uid();let totalReal=0;
   const memo=document.getElementById('c-memo')?.value.trim()||'';
   const categoriaId=valorFinalCascata('c','categoria');
   const centroCustoId=valorFinalCascata('c','cc');
   const direcionamentoId=valorFinalCascata('c','direc');
-  for(let i=1;i<=n;i++){const vVal=parseFloat(document.getElementById('pe-val-'+i).value)||0,vVenc=document.getElementById('pe-venc-'+i).value;
-    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(memo?{memo}:{}),...(direcionamentoId?{direcionamentoId}:{})});totalReal+=vVal;}
+  for(let i=1;i<=n;i++){const vValAbs=parseFloat(document.getElementById('pe-val-'+i).value)||0,vVenc=document.getElementById('pe-venc-'+i).value;
+    const vVal=tipo==='estorno'?-Math.abs(vValAbs):Math.abs(vValAbs);
+    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,tipo,...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(memo?{memo}:{}),...(direcionamentoId?{direcionamentoId}:{})});totalReal+=vVal;}
   if(!limites[cartao])limites[cartao]={total:0,usado:0};limites[cartao].usado=(limites[cartao].usado||0)+totalReal;
-  salvar();fecharModal('modal-compra');renderDashboard();showToast('Compra lançada ✓');
+  salvar();fecharModal('modal-compra');renderDashboard();showToast(tipo==='estorno'?'Estorno/crédito lançado ✓':'Compra lançada ✓');
 }
 
 // ── BACKUP ──────────────────────────────────────────────────
