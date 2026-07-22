@@ -425,6 +425,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div class="section-title">🛒 Compras — quanto eu comprei (por data da compra, não do vencimento)</div>
   </div>
   <div style="font-size:12px;color:var(--muted);margin:-6px 0 14px;line-height:1.5">Diferente da Fatura (que mostra o que você <strong>paga</strong> por mês, olhando o vencimento), aqui cada linha é uma compra inteira — valor total, mesmo parcelada — organizada pela <strong>data em que você comprou</strong>. Use pra saber quanto gastou no supermercado, no posto etc. num período.</div>
+  <div id="cf-favoritos" style="margin-bottom:8px"></div>
   <div class="card" style="margin-bottom:12px">
     <div style="font-weight:700;margin-bottom:8px;font-size:.85rem">Filtros</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
@@ -442,6 +443,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <div style="flex:1;min-width:160px"><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Fornecedor</label><input type="text" id="cf-fornecedor" list="dl-lanc-forn" placeholder="Buscar por nome..." oninput="renderComprasFiltro()" style="width:100%;padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"></div>
       <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Agrupar por</label><select id="cf-agrupar" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"><option value="">Nenhum (lista simples)</option><option value="categoria">Categoria</option><option value="cc">Centro de Custo</option><option value="direc">Direcionamento</option><option value="cartao">Cartão</option><option value="fornecedor">Fornecedor</option><option value="mes">Mês da compra</option></select></div>
       <button class="btn btn-outline btn-sm no-print" onclick="limparFiltroCF()">✕ Limpar Filtros</button>
+      <button class="btn btn-outline btn-sm no-print" onclick="salvarFavoritoCF()">⭐ Salvar como Favorito</button>
       <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button>
       <button class="btn btn-outline btn-sm no-print" onclick="exportarCSVComprasFiltro()">📥 Exportar CSV</button>
     </div>
@@ -1297,7 +1299,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.22';
+const VERSAO = 'v4.23';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1638,7 +1640,7 @@ function setFila(payload){try{localStorage.setItem(PREFIX+'_fila',JSON.stringify
 function limparFila(){localStorage.removeItem(PREFIX+'_fila');}
 function getLastSha(){return localStorage.getItem(PREFIX+'_last_sha')||'';}
 function setLastSha(sha){if(sha)localStorage.setItem(PREFIX+'_last_sha',sha);}
-function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,cartoesCustom,usuarios};}
+function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,cartoesCustom,usuarios,favoritosCF};}
 
 function atualizarIndicadorConexao(){
   const el=document.getElementById('conn-indicator');
@@ -1693,6 +1695,7 @@ const CARTOES_BUILTIN=Object.keys(CARTOES);
 const DEFAULT_LIMITES={c6:{total:50000,usado:0},cef:{total:50000,usado:0},mlivre:{total:30000,usado:0},santander:{total:100000,usado:0},bradesco:{total:100000,usado:0}};
 
 let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={}, direcionamentos=[];
+let favoritosCF=[];
 let usuarios=[];
 let USUARIO_ATUAL=null, _pjSelId=null;
 const PJ_LABELS={master:'Master',operador:'Operador',consulta:'Consulta'};
@@ -1769,7 +1772,7 @@ async function initData(){
     if(dados){
       compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
       fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; cartoesCustom=dados.cartoesCustom||{};
-      usuarios=dados.usuarios||[];
+      usuarios=dados.usuarios||[]; favoritosCF=dados.favoritosCF||[];
       carregarCadastrosUnicosOffline();
       Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       document.getElementById('loading-screen').style.display='none';
@@ -1795,7 +1798,7 @@ async function initData(){
         Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       } else {
         compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; cartoesCustom=data.cartoesCustom||{};
-        usuarios=data.usuarios||[];
+        usuarios=data.usuarios||[]; favoritosCF=data.favoritosCF||[];
         Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
         setSyncStatus('ok');
@@ -2851,6 +2854,50 @@ function limparFiltroCF(){
   _cfGruposAbertos={};
   renderComprasFiltro();
 }
+// ── Favoritos do relatório de Compras (salva a combinação de filtros) ──
+function _configAtualCF(){
+  return {
+    de: document.getElementById('cf-de')?.value||'', ate: document.getElementById('cf-ate')?.value||'',
+    cartao: document.getElementById('cf-cartao')?.value||'todos', tipo: document.getElementById('cf-tipo')?.value||'',
+    fornecedor: document.getElementById('cf-fornecedor')?.value||'', agrupar: document.getElementById('cf-agrupar')?.value||'',
+    categoriaId: valorFinalCascata('cf','categoria'), ccId: valorFinalCascata('cf','cc'), direcId: valorFinalCascata('cf','direc')
+  };
+}
+function salvarFavoritoCF(){
+  const nome=prompt('Nome deste relatório favorito (ex: "Supermercado do mês"):');
+  if(!nome||!nome.trim()) return;
+  const novo={id:uid(), nome:nome.trim(), config:_configAtualCF(), criadoEm:new Date().toISOString()};
+  favoritosCF=[...favoritosCF, novo];
+  salvar();
+  renderFavoritosCF();
+  showToast(`⭐ Relatório "${novo.nome}" salvo nos favoritos`);
+}
+function carregarFavoritoCF(id){
+  const f=favoritosCF.find(x=>x.id===id); if(!f) return;
+  const c=f.config;
+  const setVal=(elId,v)=>{const el=document.getElementById(elId);if(el)el.value=v||'';};
+  setVal('cf-de',c.de); setVal('cf-ate',c.ate); setVal('cf-cartao',c.cartao||'todos'); setVal('cf-tipo',c.tipo); setVal('cf-fornecedor',c.fornecedor); setVal('cf-agrupar',c.agrupar);
+  popularCascata('cf','categoria', c.categoriaId||''); popularCascata('cf','cc', c.ccId||''); popularCascata('cf','direc', c.direcId||'');
+  _cfGruposAbertos={};
+  renderComprasFiltro();
+  showToast(`⭐ Filtro "${f.nome}" aplicado`);
+}
+function excluirFavoritoCF(id){
+  const f=favoritosCF.find(x=>x.id===id); if(!f) return;
+  ACF(`Excluir o relatório favorito "${f.nome}"?`, ()=>{
+    favoritosCF=favoritosCF.filter(x=>x.id!==id);
+    salvar(); renderFavoritosCF();
+  });
+}
+function renderFavoritosCF(){
+  const cont=document.getElementById('cf-favoritos'); if(!cont) return;
+  if(!favoritosCF.length){ cont.innerHTML=''; return; }
+  cont.innerHTML=`<div style="display:flex;gap:6px;flex-wrap:wrap">${favoritosCF.map(f=>`
+    <span style="display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:4px 6px 4px 12px;font-size:.72rem">
+      <span style="cursor:pointer" onclick="carregarFavoritoCF('${f.id}')" title="Carregar este relatório">⭐ ${esc(f.nome)}</span>
+      <span style="cursor:pointer;color:var(--muted);padding:0 4px" onclick="excluirFavoritoCF('${f.id}')" title="Excluir favorito">✕</span>
+    </span>`).join('')}</div>`;
+}
 function _linhaCompraCF(x){
   const card=CARTOES[x.cartao]||{nome:x.cartao,tag:''};
   const catNome=x.categoriaId?nomeCompletoCadastro(categoriaById(x.categoriaId)||{},categorias):'';
@@ -2872,6 +2919,7 @@ function renderComprasFiltro(){
   if(document.getElementById('cf-categoria-mae') && !document.getElementById('cf-categoria-mae').options.length){
     popularCascata('cf','categoria','');popularCascata('cf','cc','');popularCascata('cf','direc','');
   }
+  renderFavoritosCF();
   const cont=document.getElementById('cf-resultado'); if(!cont) return;
   const lista=_comprasFiltradasCF();
   const total=lista.reduce((s,x)=>s+x.valorTotal,0);
@@ -5217,6 +5265,7 @@ async function confirmarImportacaoCartoes(){
   compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
   fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[];
   cartoesCustom=dados.cartoesCustom||{}; if(dados.usuarios) usuarios=dados.usuarios;
+  favoritosCF=dados.favoritosCF||favoritosCF||[];
   // Categoria/Centro de Custo/Direcionamento não vêm mais do backup — são o
   // cadastro único compartilhado, recarregado direto da fonte após restaurar.
   await carregarCadastrosUnicos();
