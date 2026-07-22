@@ -1004,6 +1004,12 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
 
   <div class="backup-section">
+    <h3>📥 Importar do Microsoft Money (QIF)</h3>
+    <p style="font-size:.82rem;line-height:1.5">Traz o histórico de compras do Money — no formato <strong>QIF</strong> exportado de lá — junto com as categorias que você usava, deixando você mapear cada uma pra um cadastro nosso (ou criar uma nova) antes de confirmar. Cada lançamento do Money vira uma compra à vista (1x) aqui; transferências entre contas são ignoradas automaticamente.</p>
+    <button class="btn btn-primary" onclick="abrirImportarQIF()">📥 Importar QIF do Money</button>
+  </div>
+
+  <div class="backup-section">
     <h3>💾 Backup manual em disco local — passo a passo</h3>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
       <div style="display:flex;gap:10px;align-items:flex-start;">
@@ -1144,6 +1150,13 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   <div class="modal" style="max-width:760px;">
     <div class="modal-hd"><h2 id="modal-csv-titulo">Importar Fatura (CSV Bradesco)</h2><button class="close-btn" onclick="fecharModal('modal-csv-cartao')">✕</button></div>
     <div class="modal-bd" id="modal-csv-corpo"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-qif-cartao">
+  <div class="modal" style="max-width:820px;">
+    <div class="modal-hd"><h2 id="modal-qif-titulo">📥 Importar QIF do Money</h2><button class="close-btn" onclick="fecharModal('modal-qif-cartao')">✕</button></div>
+    <div class="modal-bd" id="modal-qif-corpo"></div>
   </div>
 </div>
 
@@ -1293,7 +1306,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.23';
+const VERSAO = 'v4.24';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -3462,6 +3475,262 @@ function confirmarImportacaoCSVCartao(){
   fecharModal('modal-csv-cartao');
   renderDashboard();
   showToast(`✅ ${totalCompras} compra(s) da fatura importada(s) (${totalLancamentos} lançamento(s) de parcela)`);
+}
+
+// ── IMPORTAR QIF DO MICROSOFT MONEY ──────────────────────────
+// Fluxo: (1) escolher cartão + arquivo + formato de data → parseQIF
+//        (2) mapear cada categoria do Money pra um cadastro nosso (existente
+//            ou criar novo), em lote — uma única gravação no cadastro único
+//        (3) revisar a lista de lançamentos (checkbox), com checagem de
+//            duplicados, e confirmar
+// Cada lançamento do Money entra como compra à vista (1x) — o Money não
+// guarda "está em quantas parcelas" por transação, só uma linha por mês.
+function parseDataQIF(s, formato){
+  s=(s||'').trim();
+  let m = s.match(/^(\d{1,2})\/(\d{1,2})'(\d{2})$/); // MM/DD'YY (padrão QIF antigo)
+  if(m){ let [,a,b,ano]=m; ano='20'+ano;
+    return formato==='DMA' ? `${ano}-${b.padStart(2,'0')}-${a.padStart(2,'0')}` : `${ano}-${a.padStart(2,'0')}-${b.padStart(2,'0')}`;
+  }
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if(m){ let [,a,b,ano]=m; if(ano.length===2) ano=(parseInt(ano,10)<50?'20':'19')+ano;
+    return formato==='DMA' ? `${ano}-${b.padStart(2,'0')}-${a.padStart(2,'0')}` : `${ano}-${a.padStart(2,'0')}-${b.padStart(2,'0')}`;
+  }
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if(m){ let [,ano,mes,dia]=m; return `${ano}-${mes.padStart(2,'0')}-${dia.padStart(2,'0')}`; }
+  return '';
+}
+function parseNumeroQIF(s){ s=String(s||'').trim().replace(/,/g,''); return parseFloat(s)||0; }
+// Olha todas as datas do arquivo pra sugerir o formato mais provável: se
+// algum primeiro número for >12, só pode ser dia (DD/MM); se algum segundo
+// número for >12, só pode ser MM/DD. Empate (tudo ≤12) cai no padrão
+// brasileiro (DD/MM) mas avisa que não tem certeza.
+function sugerirFormatoDataQIF(texto){
+  const datas = [...texto.matchAll(/^D(\d{1,2})\/(\d{1,2})[\/'](\d{2,4})/gm)];
+  let temA=false, temB=false;
+  datas.forEach(m=>{ if(parseInt(m[1],10)>12) temA=true; if(parseInt(m[2],10)>12) temB=true; });
+  if(temA && !temB) return {formato:'DMA', certeza:true};
+  if(temB && !temA) return {formato:'MDA', certeza:true};
+  return {formato:'DMA', certeza:false};
+}
+function parseQIF(texto, formato){
+  const linhas = texto.split(/\r?\n/);
+  const registros = []; let atual=null, splits=[];
+  function fecharRegistro(){
+    if(!atual){ return; }
+    if(!atual.isTransfer && atual.data && atual.valor){
+      if(splits.length){
+        splits.forEach(s=>{ if(s.valor) registros.push({data:atual.data, valor:s.valor, payee:atual.payee, categoriaTexto:s.categoria||atual.categoriaTexto, memo:s.memo||atual.memo}); });
+      } else {
+        registros.push({data:atual.data, valor:atual.valor, payee:atual.payee, categoriaTexto:atual.categoriaTexto, memo:atual.memo});
+      }
+    }
+    atual=null; splits=[];
+  }
+  linhas.forEach(linhaRaw=>{
+    const linha=linhaRaw.trim(); if(!linha) return;
+    if(linha==='^'){ fecharRegistro(); return; }
+    if(linha[0]==='!') return; // cabeçalho de seção (!Type:CCard etc)
+    if(!atual) atual={data:'',valor:0,payee:'',categoriaTexto:'',memo:'',isTransfer:false};
+    const tipo=linha[0], resto=linha.slice(1);
+    if(tipo==='D') atual.data=parseDataQIF(resto,formato);
+    else if(tipo==='T'||tipo==='U') atual.valor=parseNumeroQIF(resto);
+    else if(tipo==='P') atual.payee=resto.trim();
+    else if(tipo==='M') atual.memo=resto.trim();
+    else if(tipo==='L'){ const cat=resto.split('/')[0].trim(); atual.categoriaTexto=cat; if(cat.startsWith('[')&&cat.endsWith(']')) atual.isTransfer=true; }
+    else if(tipo==='S') splits.push({categoria:resto.split('/')[0].trim(), valor:0, memo:''});
+    else if(tipo==='E'){ if(splits.length) splits[splits.length-1].memo=resto.trim(); }
+    else if(tipo==='$'){ if(splits.length) splits[splits.length-1].valor=parseNumeroQIF(resto); }
+  });
+  fecharRegistro();
+  return registros;
+}
+let _qifPendente=[], _qifCartaoAlvo='', _qifCategoriasUnicas=[], _qifMapaCategoria={};
+function abrirImportarQIF(){
+  const opcoesCartao = Object.keys(CARTOES).map(k=>`<option value="${k}">${esc(CARTOES[k].nome)} — ${esc(CARTOES[k].banco)}</option>`).join('');
+  document.getElementById('modal-qif-corpo').innerHTML = `
+    <div id="erro-qif" style="display:none;background:#fee;border:1px solid #f99;color:#900;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:10px"></div>
+    <div style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.5">No Money, exporte o histórico do cartão em <strong>Arquivo → Exportar → Arquivo QIF</strong>. Escolha o cartão de destino e o formato de data (se não souber, deixe em "Detectar automaticamente" e confira o resultado na revisão antes de confirmar).</div>
+    <div class="form-group"><label>Cartão de destino *</label><select id="qif-cartao">${opcoesCartao}</select></div>
+    <div class="form-group"><label>Formato de data no arquivo</label><select id="qif-formato-data"><option value="auto">Detectar automaticamente</option><option value="DMA">Dia/Mês/Ano (padrão brasileiro)</option><option value="MDA">Mês/Dia/Ano (padrão americano do Money)</option></select></div>
+    <div class="form-group"><label>Arquivo (.qif)</label><input type="file" id="qif-arquivo" accept=".qif,text/qif,text/plain" style="padding:8px"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button type="button" class="btn btn-primary" onclick="processarArquivoQIF()">📂 Ler Arquivo</button>
+      <button type="button" class="btn btn-outline" onclick="fecharModal('modal-qif-cartao')">Cancelar</button>
+    </div>`;
+  document.getElementById('modal-qif-cartao').classList.add('open');
+}
+function processarArquivoQIF(){
+  const cartao=document.getElementById('qif-cartao').value;
+  const formatoEsc=document.getElementById('qif-formato-data').value;
+  const arquivo=document.getElementById('qif-arquivo')?.files?.[0];
+  const errEl=document.getElementById('erro-qif');
+  const mostrarErro=msg=>{ if(errEl){errEl.textContent=msg;errEl.style.display='block';} };
+  if(!arquivo){ mostrarErro('Escolha um arquivo .qif primeiro.'); return; }
+  const leitor=new FileReader();
+  leitor.onload=(e)=>{
+    const texto=e.target.result;
+    const formato = formatoEsc==='auto' ? sugerirFormatoDataQIF(texto).formato : formatoEsc;
+    let registros;
+    try{ registros=parseQIF(texto, formato); }
+    catch(err){ mostrarErro('Não consegui ler este arquivo. Confira se é um QIF válido exportado do Money.'); return; }
+    if(!registros.length){ mostrarErro('Nenhum lançamento encontrado (ou eram todos transferências entre contas, que são ignoradas).'); return; }
+    _qifPendente=registros; _qifCartaoAlvo=cartao;
+    // Extrai categorias únicas com contagem, na ordem de mais frequente
+    const contagem={};
+    registros.forEach(r=>{ const t=r.categoriaTexto||'(Sem categoria)'; contagem[t]=(contagem[t]||0)+1; });
+    _qifCategoriasUnicas = Object.entries(contagem).map(([texto,count])=>({texto,count})).sort((a,b)=>b.count-a.count);
+    _qifMapaCategoria = {};
+    renderMapeamentoQIF();
+  };
+  leitor.onerror=()=>mostrarErro('Não foi possível ler o arquivo. Tente novamente.');
+  leitor.readAsText(arquivo, 'ISO-8859-1');
+}
+function renderMapeamentoQIF(){
+  const linhas = _qifCategoriasUnicas.map((c,i)=>{
+    if(c.texto==='(Sem categoria)') return '';
+    const [maeTexto, subTexto] = c.texto.split(':').map(s=>s?.trim());
+    // Auto-match: procura categoria existente com o mesmo nome (mãe, e sub se houver)
+    const maeExistente = categorias.find(x=>!x.parentId && x.tipo==='despesa' && itemValidoPF(x) && x.nome.toLowerCase()===maeTexto.toLowerCase());
+    let matchId = '';
+    if(maeExistente){
+      if(subTexto){ const subExistente = categorias.find(x=>x.parentId===maeExistente.id && x.nome.toLowerCase()===subTexto.toLowerCase()); matchId = subExistente ? subExistente.id : maeExistente.id; }
+      else matchId = maeExistente.id;
+    }
+    const criarPorPadrao = !matchId;
+    return `<tr data-idx="${i}">
+      <td style="font-size:.78rem;">${esc(c.texto)} <span style="color:var(--muted);font-size:.7rem">(${c.count}x)</span></td>
+      <td style="text-align:center"><input type="checkbox" id="qifmap${i}-criar" ${criarPorPadrao?'checked':''} onchange="aoMudarCriarNovaQIF(${i})"></td>
+      <td><div style="display:flex;gap:4px">
+        <select id="qifmap${i}-categoria-mae" onchange="aoMudarMaeCascata('qifmap${i}','categoria','')" style="font-size:.75rem;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);"></select>
+        <select id="qifmap${i}-categoria-sub" style="font-size:.75rem;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);"></select>
+      </div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('modal-qif-corpo').innerHTML = `
+    <div style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.5">${_qifPendente.length} lançamento(s) encontrado(s), em ${_qifCategoriasUnicas.length} categoria(s) diferentes do Money. Pra cada uma, marque <strong>"Criar nova"</strong> pra criar um cadastro igual aqui, ou desmarque e escolha uma categoria já existente. As sem categoria no Money ficam sem categoria aqui também.</div>
+    <div style="max-height:360px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">
+      <table style="width:100%;font-size:.78rem;"><thead><tr style="background:var(--surface2);position:sticky;top:0"><th style="text-align:left;padding:6px 8px">Categoria no Money</th><th style="padding:6px 4px">Criar nova</th><th style="text-align:left;padding:6px 8px">Ou usar categoria existente</th></tr></thead>
+      <tbody>${linhas}</tbody></table>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button type="button" class="btn btn-primary" onclick="confirmarMapeamentoQIF()">Continuar →</button>
+      <button type="button" class="btn btn-outline" onclick="fecharModal('modal-qif-cartao')">Cancelar</button>
+    </div>`;
+  _qifCategoriasUnicas.forEach((c,i)=>{
+    if(c.texto==='(Sem categoria)') return;
+    const [maeTexto, subTexto] = c.texto.split(':').map(s=>s?.trim());
+    const maeExistente = categorias.find(x=>!x.parentId && x.tipo==='despesa' && itemValidoPF(x) && x.nome.toLowerCase()===maeTexto.toLowerCase());
+    let matchId='';
+    if(maeExistente){ if(subTexto){ const subExistente = categorias.find(x=>x.parentId===maeExistente.id && x.nome.toLowerCase()===subTexto.toLowerCase()); matchId = subExistente?subExistente.id:maeExistente.id; } else matchId=maeExistente.id; }
+    popularCascata('qifmap'+i, 'categoria', matchId);
+    aoMudarCriarNovaQIF(i);
+  });
+}
+function aoMudarCriarNovaQIF(i){
+  const criar = document.getElementById(`qifmap${i}-criar`)?.checked;
+  const maeSel = document.getElementById(`qifmap${i}-categoria-mae`), subSel = document.getElementById(`qifmap${i}-categoria-sub`);
+  if(maeSel) maeSel.disabled=criar; if(subSel) subSel.disabled=criar;
+}
+async function confirmarMapeamentoQIF(){
+  const btn=event?.target; if(btn) btn.disabled=true;
+  try{
+    // Monta a lista de categorias novas a criar (mãe e, se houver, sub), evitando duplicar mães repetidas entre linhas
+    const novasMaes=new Map(); // nome -> {id, nome, parentId:null, tipo:'despesa', tipoPFPJ:'PF'/'PJ'}
+    const novasSubs=[];
+    const pendentesCriacao = _qifCategoriasUnicas.filter((c,i)=>c.texto!=='(Sem categoria)' && document.getElementById(`qifmap${i}-criar`)?.checked);
+    pendentesCriacao.forEach(c=>{
+      const [maeTexto, subTexto] = c.texto.split(':').map(s=>s?.trim());
+      let mae = categorias.find(x=>!x.parentId && x.tipo==='despesa' && itemValidoPF(x) && x.nome.toLowerCase()===maeTexto.toLowerCase());
+      if(!mae && !novasMaes.has(maeTexto.toLowerCase())) novasMaes.set(maeTexto.toLowerCase(), {id:uid(), nome:maeTexto, parentId:null, tipo:'despesa', tipoPFPJ:TIPO_DADOS==='pj'?'PJ':'PF'});
+    });
+    if(novasMaes.size || pendentesCriacao.some(c=>c.texto.includes(':'))){
+      const pfpj = TIPO_DADOS==='pj' ? 'pj' : 'pf';
+      const cad = await ghCadastroCarregar(pfpj);
+      cad.categorias = cad.categorias||[];
+      cad.categorias.push(...novasMaes.values());
+      pendentesCriacao.forEach(c=>{
+        const [maeTexto, subTexto] = c.texto.split(':').map(s=>s?.trim());
+        if(!subTexto) return;
+        const maeExistente = categorias.find(x=>!x.parentId && x.tipo==='despesa' && itemValidoPF(x) && x.nome.toLowerCase()===maeTexto.toLowerCase());
+        const maeId = maeExistente ? maeExistente.id : novasMaes.get(maeTexto.toLowerCase())?.id;
+        if(!maeId) return;
+        const subExistente = categorias.find(x=>x.parentId===maeId && x.nome.toLowerCase()===subTexto.toLowerCase());
+        if(!subExistente) novasSubs.push({id:uid(), nome:subTexto, parentId:maeId, tipo:'despesa', tipoPFPJ:TIPO_DADOS==='pj'?'PJ':'PF'});
+      });
+      cad.categorias.push(...novasSubs);
+      await ghCadastroSalvar(pfpj, cad);
+      await carregarCadastrosUnicos();
+    }
+    // Monta o mapa final texto → categoriaId, agora com o cadastro atualizado
+    _qifMapaCategoria = {};
+    _qifCategoriasUnicas.forEach((c,i)=>{
+      if(c.texto==='(Sem categoria)'){ _qifMapaCategoria[c.texto]=''; return; }
+      const criar = document.getElementById(`qifmap${i}-criar`)?.checked;
+      if(!criar){ _qifMapaCategoria[c.texto] = valorFinalCascata('qifmap'+i,'categoria'); return; }
+      const [maeTexto, subTexto] = c.texto.split(':').map(s=>s?.trim());
+      const mae = categorias.find(x=>!x.parentId && x.tipo==='despesa' && x.nome.toLowerCase()===maeTexto.toLowerCase());
+      if(!mae){ _qifMapaCategoria[c.texto]=''; return; }
+      if(!subTexto){ _qifMapaCategoria[c.texto]=mae.id; return; }
+      const sub = categorias.find(x=>x.parentId===mae.id && x.nome.toLowerCase()===subTexto.toLowerCase());
+      _qifMapaCategoria[c.texto] = sub ? sub.id : mae.id;
+    });
+    renderRevisaoQIF();
+  }catch(err){
+    showToast('Erro ao criar categorias: '+err.message, true);
+  }finally{
+    if(btn) btn.disabled=false;
+  }
+}
+function renderRevisaoQIF(){
+  const linhas = _qifPendente.map((r,i)=>{
+    const categoriaId = _qifMapaCategoria[r.categoriaTexto||'(Sem categoria)']||'';
+    const catNome = categoriaId ? nomeCompletoCadastro(categoriaById(categoriaId)||{}, categorias) : '—';
+    const jaExiste = jaExisteLancamentoCSV(_qifCartaoAlvo, {dataCompra:r.data, parcela:1, nParcelas:1, valor:Math.abs(r.valor)});
+    return `<tr style="${jaExiste?'opacity:.5':''}">
+      <td style="text-align:center"><input type="checkbox" id="qifrev${i}" ${jaExiste?'':'checked'}></td>
+      <td style="font-size:.75rem;white-space:nowrap">${r.data?new Date(r.data+'T12:00:00').toLocaleDateString('pt-BR'):'<span style="color:#c00">data inválida</span>'}</td>
+      <td style="font-size:.78rem;">${esc(r.payee||r.memo||'(sem descrição)')}${jaExiste?' <span style="font-size:.68rem;color:var(--muted)">(parece já existir)</span>':''}</td>
+      <td style="font-size:.72rem;color:var(--muted)">${esc(catNome)}</td>
+      <td style="text-align:right;font-weight:600;font-size:.78rem;${r.valor>=0?'color:#0a7d33':''}">${fmt(Math.abs(r.valor))}${r.valor>=0?' (crédito)':''}</td>
+    </tr>`;
+  }).join('');
+  const invalidas = _qifPendente.filter(r=>!r.data).length;
+  document.getElementById('modal-qif-corpo').innerHTML = `
+    <div style="font-size:12px;color:#666;margin-bottom:10px;line-height:1.5">Confira as datas antes de confirmar — se estiverem todas erradas (dia e mês trocados), cancele e refaça escolhendo o outro formato de data na tela anterior. Desmarque o que não quiser importar.${invalidas?` <strong style="color:#c00">${invalidas} linha(s) com data inválida serão ignoradas.</strong>`:''}</div>
+    <div style="max-height:380px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">
+      <table style="width:100%;font-size:.78rem;"><thead><tr style="background:var(--surface2);position:sticky;top:0"><th style="padding:6px 4px"><input type="checkbox" checked onchange="document.querySelectorAll('[id^=qifrev]').forEach(c=>c.checked=this.checked)"></th><th style="text-align:left;padding:6px 8px">Data compra</th><th style="text-align:left;padding:6px 8px">Descrição</th><th style="text-align:left;padding:6px 8px">Categoria</th><th style="text-align:right;padding:6px 8px">Valor</th></tr></thead>
+      <tbody>${linhas}</tbody></table>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button type="button" class="btn btn-primary" onclick="confirmarImportacaoQIF()">✅ Confirmar Importação</button>
+      <button type="button" class="btn btn-outline" onclick="fecharModal('modal-qif-cartao')">Cancelar</button>
+    </div>`;
+}
+function confirmarImportacaoQIF(){
+  const agora = new Date().toISOString();
+  let totalReal=0, qtd=0;
+  _qifPendente.forEach((r,i)=>{
+    if(!r.data) return;
+    if(!document.getElementById(`qifrev${i}`)?.checked) return;
+    const categoriaId = _qifMapaCategoria[r.categoriaTexto||'(Sem categoria)']||'';
+    const tipo = r.valor<0 ? 'despesa' : 'estorno';
+    const valorAbs = Math.abs(r.valor);
+    const venc = calcVenc(r.data, _qifCartaoAlvo, 1);
+    compras.push({
+      uid:uid(), compraId:uid(), desc:r.payee||r.memo||'(sem descrição)', dataCompra:r.data, cartao:_qifCartaoAlvo,
+      nParcelas:1, parcela:1, valorParcela: tipo==='estorno'?-valorAbs:valorAbs, venc, tipo,
+      ...(r.memo&&r.memo!==r.payee?{memo:r.memo}:{}), ...(categoriaId?{categoriaId}:{}),
+      origemImportacao:'qif-money', dataImportacao: agora,
+    });
+    totalReal += tipo==='estorno'?-valorAbs:valorAbs; qtd++;
+  });
+  if(!limites[_qifCartaoAlvo]) limites[_qifCartaoAlvo]={total:0,usado:0};
+  limites[_qifCartaoAlvo].usado = (limites[_qifCartaoAlvo].usado||0)+totalReal;
+  salvar();
+  _qifPendente=[]; _qifCartaoAlvo=''; _qifCategoriasUnicas=[]; _qifMapaCategoria={};
+  fecharModal('modal-qif-cartao');
+  renderDashboard();
+  showToast(`✅ ${qtd} lançamento(s) do Money importado(s)`);
 }
 
 function salvarCompra(){
