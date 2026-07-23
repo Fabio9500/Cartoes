@@ -84,6 +84,10 @@ main{padding:18px 16px;max-width:1100px;margin:0 auto;}
 .filter-chip{padding:5px 12px;border-radius:20px;font-size:.73rem;font-weight:600;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all .18s;}
 .filter-chip.active,.filter-chip:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 .tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);}
+@media (min-width:769px){
+  .tbl-wrap{overflow:auto;max-height:calc(100vh - 230px);}
+  .tbl-wrap thead th{top:0;}
+}
 table{width:100%;border-collapse:collapse;font-size:.82rem;}thead{background:var(--surface2);}
 thead th{text-align:left;padding:9px 12px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);white-space:nowrap;position:sticky;top:56px;background:var(--surface2);z-index:5;}
 tbody tr{border-top:1px solid var(--border);transition:background .12s;}tbody tr:hover{background:#faf8f5;}
@@ -115,10 +119,11 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 .parcelas-edit-table td{padding:5px 7px;border-top:1px solid var(--border);}
 .parcelas-edit-table input{width:100%;padding:4px 7px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;background:var(--surface2);font-family:'Outfit',sans-serif;}
 .parcelas-edit-table input:focus{outline:none;border-color:var(--accent);}
-.fatura-detalhe{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);}
-.fatura-detalhe-hd{padding:12px 16px;background:var(--surface2);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.fatura-detalhe{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;box-shadow:var(--shadow);}
+.fatura-detalhe-hd{padding:12px 16px;background:var(--surface2);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-radius:var(--radius) var(--radius) 0 0;}
 .fd-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}.fd-total{font-size:1rem;font-weight:800;}
 .fd-row{display:flex;align-items:center;gap:10px;padding:9px 16px;border-top:1px solid var(--border);font-size:.82rem;}
+.fd-row-cab{position:sticky;top:56px;z-index:4;}
 .fd-desc{flex:1;}.fd-parc{min-width:55px;}.fd-val{min-width:85px;text-align:right;font-weight:600;}
 .backup-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;max-width:480px;box-shadow:var(--shadow);margin-bottom:14px;}
 .backup-section h3{font-size:.88rem;font-weight:700;margin-bottom:5px;}
@@ -149,6 +154,7 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 @media (max-width: 768px){
   header{padding:0 12px;height:52px}
   thead th{top:52px}
+  .fd-row-cab{top:52px}
   .logo{font-size:.82rem}
   main{padding:12px 10px}
   .tab{padding:10px 12px;font-size:.76rem}
@@ -519,7 +525,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <input type="text" id="busca-geral-texto" placeholder="Ex: furadeira, Leroy Merlin, obra..." oninput="renderBuscaGeral()"
       style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.85rem;margin-bottom:10px;">
     <div id="busca-geral-info" style="font-size:.72rem;color:var(--accent);font-weight:600;margin-bottom:8px;"></div>
-    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+    <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data Compra</th>
@@ -555,7 +561,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-faturas-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-faturas-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('faturas')">
     </div>
-    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+    <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
@@ -592,7 +598,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-mensal-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-mensal-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('mensal')">
     </div>
-<div id="rel-mensal-wrap" style="overflow-x:auto;">
+<div id="rel-mensal-wrap" class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead id="rel-mensal-head"></thead>
         <tbody id="rel-mensal-body"></tbody>
@@ -622,7 +628,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-pagos-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-pagos-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('pagos')">
     </div>
-<div style="overflow-x:auto;">
+<div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Mês</th>
@@ -685,7 +691,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
       <div id="sf-forn-info" style="font-size:.72rem;color:var(--muted);margin-top:7px;"></div>
     </div>
-<div style="overflow-x:auto;">
+<div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">#</th>
@@ -744,7 +750,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <input type="text" id="rel-busca" placeholder="Buscar fornecedor ou memorando..." oninput="renderLancamentosRel()"
         style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;flex:1;min-width:180px;">
     </div>
-    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+    <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data Compra</th>
@@ -837,7 +843,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-parc-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-parc-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('parc')">
     </div>
-<div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+<div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
@@ -1314,7 +1320,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.26';
+const VERSAO = 'v4.30';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2425,7 +2431,7 @@ function renderFaturas(){
         <div style="display:flex;align-items:center;gap:10px;"><div class="fd-total">${fmt(g.total)}</div>${btnP}</div>
       </div>
       <div>
-        <div class="fd-row" style="background:var(--surface2);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">
+        <div class="fd-row fd-row-cab" style="background:var(--surface2);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">
           <div style="min-width:55px;max-width:55px">Dt.</div><div class="fd-desc">Fornecedor</div><div style="flex:1;min-width:110px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Memorando</div><div style="min-width:90px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Categoria</div><div class="fd-parc">Parcela</div><div class="fd-val">Valor</div>
           <div style="min-width:60px" class="no-print"></div>
         </div>
@@ -2442,7 +2448,7 @@ function renderFaturas(){
             <button class="icon-btn del" onclick="deletarCompraFatura('${i.compraId}')">🗑</button>
           </div>
         </div>`).join('')}
-        <div class="fd-row" style="background:var(--surface2);font-weight:700;">
+        <div class="fd-row" style="background:var(--surface2);font-weight:700;border-radius:0 0 var(--radius) var(--radius);">
           <div class="fd-desc" style="color:var(--muted)">Total da fatura</div><div style="flex:1;min-width:110px;"></div><div style="min-width:90px;"></div><div class="fd-parc"></div>
           <div class="fd-val" style="font-size:.95rem">${fmt(g.total)}</div><div style="min-width:28px" class="no-print"></div>
         </div>
@@ -4295,7 +4301,7 @@ function renderProjecao(){
   }
   const cartoes=Object.keys(CARTOES);
   body.innerHTML=`
-  <div style="overflow-x:auto;">
+  <div class="tbl-wrap">
   <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
     <thead><tr style="background:var(--surface2);">
       <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
@@ -5666,7 +5672,7 @@ boot();
     </div>
     <div class="modal-bd">
       <div id="forn-modal-resumo" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;"></div>
-      <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+      <div class="tbl-wrap">
         <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
           <thead><tr style="background:var(--surface2);">
             <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data</th>
