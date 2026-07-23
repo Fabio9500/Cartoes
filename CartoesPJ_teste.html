@@ -525,7 +525,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <input type="text" id="busca-geral-texto" placeholder="Ex: furadeira, Leroy Merlin, obra..." oninput="renderBuscaGeral()"
       style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.85rem;margin-bottom:10px;">
     <div id="busca-geral-info" style="font-size:.72rem;color:var(--accent);font-weight:600;margin-bottom:8px;"></div>
-    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+    <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data Compra</th>
@@ -561,7 +561,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-faturas-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-faturas-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('faturas')">
     </div>
-    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+    <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
@@ -750,7 +750,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <input type="text" id="rel-busca" placeholder="Buscar fornecedor ou memorando..." oninput="renderLancamentosRel()"
         style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;flex:1;min-width:180px;">
     </div>
-    <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+    <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data Compra</th>
@@ -843,7 +843,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-parc-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-parc-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('parc')">
     </div>
-<div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+<div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
@@ -1320,7 +1320,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.28';
+const VERSAO = 'v4.29';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -5672,7 +5672,7 @@ boot();
     </div>
     <div class="modal-bd">
       <div id="forn-modal-resumo" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;"></div>
-      <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);">
+      <div class="tbl-wrap">
         <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
           <thead><tr style="background:var(--surface2);">
             <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data</th>
