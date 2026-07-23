@@ -14057,32 +14057,6 @@
       "obs": ""
     }
   ],
-  "categorias": [
-    {
-      "id": "mrht1kynxlsv",
-      "nome": "Bar & Restaurante"
-    },
-    {
-      "id": "mrnx35bufljc",
-      "nome": "Congelamento Mensal"
-    },
-    {
-      "id": "mqy7oe2jvb8v",
-      "nome": "Diversos"
-    },
-    {
-      "id": "mrhszqzlb0sg",
-      "nome": "Reforma/Manutenção"
-    },
-    {
-      "id": "mrhsy311on4m",
-      "nome": "Telasul"
-    },
-    {
-      "id": "mrnx2w5d89gu",
-      "nome": "Vinhos"
-    }
-  ],
   "cartoesCustom": {
     "santander": {
       "nome": "Santander (15)",
@@ -14118,6 +14092,13 @@
       "venc": 7,
       "fechDias": 8,
       "tag": "bradesco"
+    },
+    "bradesco1": {
+      "nome": "BRA 01",
+      "banco": "Bradesco",
+      "venc": 31,
+      "fechDias": 10,
+      "tag": "bradesco"
     }
   },
   "usuarios": [
@@ -14146,5 +14127,5 @@
       "ativo": true
     }
   ],
-  "direcionamentos": []
+  "favoritosCF": []
 }
