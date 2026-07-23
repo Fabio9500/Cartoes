@@ -598,7 +598,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-mensal-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-mensal-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('mensal')">
     </div>
-<div id="rel-mensal-wrap" style="overflow-x:auto;">
+<div id="rel-mensal-wrap" class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead id="rel-mensal-head"></thead>
         <tbody id="rel-mensal-body"></tbody>
@@ -628,7 +628,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <span id="sf-pagos-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
       <input type="date" id="sf-pagos-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('pagos')">
     </div>
-<div style="overflow-x:auto;">
+<div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Mês</th>
@@ -691,7 +691,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
       <div id="sf-forn-info" style="font-size:.72rem;color:var(--muted);margin-top:7px;"></div>
     </div>
-<div style="overflow-x:auto;">
+<div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">#</th>
@@ -1320,7 +1320,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.29';
+const VERSAO = 'v4.30';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -4301,7 +4301,7 @@ function renderProjecao(){
   }
   const cartoes=Object.keys(CARTOES);
   body.innerHTML=`
-  <div style="overflow-x:auto;">
+  <div class="tbl-wrap">
   <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
     <thead><tr style="background:var(--surface2);">
       <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
