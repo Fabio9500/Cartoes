@@ -85,7 +85,7 @@ main{padding:18px 16px;max-width:1100px;margin:0 auto;}
 .filter-chip.active,.filter-chip:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 .tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);}
 table{width:100%;border-collapse:collapse;font-size:.82rem;}thead{background:var(--surface2);}
-thead th{text-align:left;padding:9px 12px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);white-space:nowrap;}
+thead th{text-align:left;padding:9px 12px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);white-space:nowrap;position:sticky;top:56px;background:var(--surface2);z-index:5;}
 tbody tr{border-top:1px solid var(--border);transition:background .12s;}tbody tr:hover{background:#faf8f5;}
 tbody td{padding:9px 12px;vertical-align:middle;}
 .tag{display:inline-block;padding:2px 7px;border-radius:5px;font-size:.68rem;font-weight:700;}
@@ -148,6 +148,7 @@ tbody td{padding:9px 12px;vertical-align:middle;}
    ══════════════════════════════════════════ */
 @media (max-width: 768px){
   header{padding:0 12px;height:52px}
+  thead th{top:52px}
   .logo{font-size:.82rem}
   main{padding:12px 10px}
   .tab{padding:10px 12px;font-size:.76rem}
@@ -1307,7 +1308,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.25';
+const VERSAO = 'v4.26';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
