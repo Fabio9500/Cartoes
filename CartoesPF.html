@@ -428,6 +428,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   </div>
   <div style="font-size:12px;color:var(--muted);margin:-6px 0 14px;line-height:1.5">Diferente da Fatura (que mostra o que você <strong>paga</strong> por mês, olhando o vencimento), aqui cada linha é uma compra inteira — valor total, mesmo parcelada — organizada pela <strong>data em que você comprou</strong>. Use pra saber quanto gastou no supermercado, no posto etc. num período.</div>
   <div id="cf-favoritos" style="margin-bottom:8px"></div>
+  <div class="card" id="cf-colunas" style="margin-bottom:12px"></div>
   <div class="card" style="margin-bottom:12px">
     <div style="font-weight:700;margin-bottom:8px;font-size:.85rem">Filtros</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
@@ -1306,7 +1307,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.24';
+const VERSAO = 'v4.25';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2815,6 +2816,55 @@ const DIMENSOES_AGRUPAMENTO_CF=[
   {id:'categoria',label:'Categoria'},{id:'cc',label:'Centro de Custo'},{id:'direc',label:'Direcionamento'},
   {id:'cartao',label:'Cartão'},{id:'fornecedor',label:'Fornecedor'},{id:'mes',label:'Mês da compra'}
 ];
+// Colunas configuráveis do Relatório de Filtragem (mesma lógica da TesourariaSys:
+// usuário liga/desliga colunas, e a escolha entra também no que fica salvo no Favorito).
+const COLUNAS_CF=[
+  {id:'dataCompra',label:'Data compra'},
+  {id:'fornecedor',label:'Fornecedor'},
+  {id:'categoria',label:'Categoria'},
+  {id:'centroCusto',label:'Centro de Custo'},
+  {id:'direcionamento',label:'Direcionamento'},
+  {id:'cartao',label:'Cartão'},
+  {id:'parcelas',label:'Parcelas'},
+  {id:'tipo',label:'Tipo'},
+  {id:'valorTotal',label:'Valor Total'},
+];
+let colunasCF={dataCompra:true,fornecedor:true,categoria:true,centroCusto:true,direcionamento:true,cartao:true,parcelas:true,tipo:false,valorTotal:true};
+function toggleColunaCF(col){ colunasCF[col]=!colunasCF[col]; renderComprasFiltro(); }
+function _valoresLinhaCF(x){
+  const card=CARTOES[x.cartao]||{nome:x.cartao,tag:''};
+  const catNome=x.categoriaId?nomeCompletoCadastro(categoriaById(x.categoriaId)||{},categorias):'';
+  const ccNome=x.centroCustoId?nomeCompletoCadastro(centroCustoById(x.centroCustoId)||{},centrosCusto):'';
+  const direcNome=x.direcionamentoId?nomeCompletoCadastro(direcionamentoById(x.direcionamentoId)||{},direcionamentos):'';
+  return {
+    dataCompra: x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR'):'-',
+    fornecedor: x.desc||'-',
+    categoria: catNome||'-',
+    centroCusto: ccNome||'-',
+    direcionamento: direcNome||'-',
+    cartao: card.nome||x.cartao||'-',
+    parcelas: x.nParcelas>1?x.nParcelas+'x':'à vista',
+    tipo: x.tipo==='estorno'?'Estorno/Crédito':'Despesa',
+    valorTotal: fmt(x.valorTotal)
+  };
+}
+// Gráfico de barras (Top 10 por grupo), em SVG puro — sem dependência externa,
+// mesmo padrão usado na TesourariaSys e no ChequeSys.
+function _svgBarrasGruposCF(grupos){
+  if(!grupos.length) return '';
+  const top=grupos.slice(0,10);
+  const w=700, alturaLinha=26, h=top.length*alturaLinha+20, padEsq=170, padDir=90;
+  const maxAbs=Math.max(...top.map(g=>Math.abs(g.total)),1);
+  const barras=top.map((g,i)=>{
+    const y=10+i*alturaLinha;
+    const largura=Math.abs(g.total)/maxAbs*(w-padEsq-padDir);
+    const cor=g.total<0?'#0a7d33':'#e0a800';
+    return `<text x="${padEsq-8}" y="${y+14}" font-size="10" fill="#666" text-anchor="end">${esc(g.label.length>26?g.label.slice(0,25)+'…':g.label)}</text>
+      <rect x="${padEsq}" y="${y+3}" width="${Math.max(largura,2).toFixed(1)}" height="16" rx="3" fill="${cor}"/>
+      <text x="${(padEsq+largura+6).toFixed(1)}" y="${y+14}" font-size="10" fill="#666">${fmt(g.total)}</text>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto">${barras}</svg>`;
+}
 function _comprasAgregadasPorCompraId(){
   const porCompra={};
   compras.forEach(c=>{
@@ -2906,23 +2956,33 @@ function renderFavoritosCF(){
   cont.innerHTML=`<div style="display:flex;gap:6px;flex-wrap:wrap">${favoritosCF.map(f=>`
     <span style="display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:4px 6px 4px 12px;font-size:.72rem">
       <span style="cursor:pointer" onclick="carregarFavoritoCF('${f.id}')" title="Carregar este relatório">⭐ ${esc(f.nome)}</span>
+      <span style="cursor:pointer;color:var(--muted);padding:0 3px" onclick="renomearFavoritoCF('${f.id}')" title="Renomear">✎</span>
       <span style="cursor:pointer;color:var(--muted);padding:0 4px" onclick="excluirFavoritoCF('${f.id}')" title="Excluir favorito">✕</span>
     </span>`).join('')}</div>`;
 }
-function _linhaCompraCF(x){
-  const card=CARTOES[x.cartao]||{nome:x.cartao,tag:''};
-  const catNome=x.categoriaId?nomeCompletoCadastro(categoriaById(x.categoriaId)||{},categorias):'';
-  const ccNome=x.centroCustoId?nomeCompletoCadastro(centroCustoById(x.centroCustoId)||{},centrosCusto):'';
-  const direcNome=x.direcionamentoId?nomeCompletoCadastro(direcionamentoById(x.direcionamentoId)||{},direcionamentos):'';
+function renomearFavoritoCF(id){
+  const f=favoritosCF.find(x=>x.id===id); if(!f) return;
+  const novoNome=prompt('Novo nome para este relatório favorito:', f.nome);
+  if(!novoNome||!novoNome.trim()) return;
+  favoritosCF=favoritosCF.map(x=>x.id===id?{...x,nome:novoNome.trim()}:x);
+  salvar(); renderFavoritosCF();
+  showToast(`Favorito renomeado para "${novoNome.trim()}"`);
+}
+function _linhaCompraCF(x, colsAtivas){
+  const cols = colsAtivas || COLUNAS_CF.filter(c=>colunasCF[c.id]);
+  const v = _valoresLinhaCF(x);
   return `<tr style="cursor:pointer" ondblclick="editarParcela('${x.primeiroUid}')" oncontextmenu="return abrirMenuCompra(event,'${x.primeiroUid}')" title="Duplo clique: editar — Clique direito: mais opções">
-    <td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR'):'-'}</td>
-    <td style="font-weight:600">${esc(x.desc)}${x.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}</td>
-    <td style="font-size:.75rem;color:var(--muted)">${catNome||'<span style="opacity:.3">—</span>'}</td>
-    <td style="font-size:.75rem;color:var(--muted)">${ccNome||'<span style="opacity:.3">—</span>'}</td>
-    <td style="font-size:.75rem;color:var(--muted)">${direcNome||'<span style="opacity:.3">—</span>'}</td>
-    <td><span class="tag ${card.tag}">${card.nome}</span></td>
-    <td style="text-align:center;font-size:.75rem">${x.nParcelas>1?x.nParcelas+'x':'à vista'}</td>
-    <td style="text-align:right;font-weight:700;${x.valorTotal<0?'color:#0a7d33':''}">${fmt(x.valorTotal)}</td>
+    ${cols.map(c=>{
+      let conteudo = esc(v[c.id]);
+      if(c.id==='fornecedor') conteudo = `${esc(x.desc)}${x.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}`;
+      if(c.id==='cartao') conteudo = `<span class="tag ${(CARTOES[x.cartao]||{}).tag||''}">${esc(v.cartao)}</span>`;
+      if(c.id==='dataCompra') return `<td style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${conteudo}</td>`;
+      if(c.id==='valorTotal') return `<td style="text-align:right;font-weight:700;${x.valorTotal<0?'color:#0a7d33':''}">${conteudo}</td>`;
+      if(c.id==='parcelas') return `<td style="text-align:center;font-size:.75rem">${conteudo}</td>`;
+      if(c.id==='fornecedor') return `<td style="font-weight:600">${conteudo}</td>`;
+      if(['categoria','centroCusto','direcionamento'].includes(c.id)) return `<td style="font-size:.75rem;color:var(--muted)">${v[c.id]?conteudo:'<span style="opacity:.3">—</span>'}</td>`;
+      return `<td>${conteudo}</td>`;
+    }).join('')}
   </tr>`;
 }
 function renderComprasFiltro(){
@@ -2931,43 +2991,55 @@ function renderComprasFiltro(){
     popularCascata('cf','categoria','');popularCascata('cf','cc','');popularCascata('cf','direc','');
   }
   renderFavoritosCF();
+  const contCol=document.getElementById('cf-colunas');
+  if(contCol){
+    contCol.innerHTML = `<div style="font-weight:700;margin-bottom:8px;font-size:.85rem">Colunas do Relatório</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${COLUNAS_CF.map(c=>`
+        <label style="display:flex;align-items:center;gap:5px;font-size:.72rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer">
+          <input type="checkbox" ${colunasCF[c.id]?'checked':''} onchange="toggleColunaCF('${c.id}')"> ${c.label}
+        </label>`).join('')}</div>`;
+  }
   const cont=document.getElementById('cf-resultado'); if(!cont) return;
   const lista=_comprasFiltradasCF();
   const total=lista.reduce((s,x)=>s+x.valorTotal,0);
   const qtd=lista.length;
   const ticket=qtd?total/qtd:0;
   const agrupar=document.getElementById('cf-agrupar')?.value||'';
-  const head=`<tr><th>Data compra</th><th>Fornecedor</th><th>Categoria</th><th>Centro de Custo</th><th>Direcionamento</th><th>Cartão</th><th style="text-align:center">Parcelas</th><th style="text-align:right">Valor total</th></tr>`;
+  const colsAtivas=COLUNAS_CF.filter(c=>colunasCF[c.id]);
+  const alinhaDir=new Set(['valorTotal']);
+  const head=`<tr>${colsAtivas.map(c=>`<th${alinhaDir.has(c.id)?' style="text-align:right"':''}>${c.label}</th>`).join('')}</tr>`;
   let corpo;
+  let grupos=[];
   if(agrupar){
-    const grupos=_agruparComprasCF(lista, agrupar);
+    grupos=_agruparComprasCF(lista, agrupar);
     corpo = grupos.map(g=>{
       const aberto=!!_cfGruposAbertos[g.chave];
       return `<tr onclick="toggleGrupoCF('${esc(String(g.chave)).replace(/'/g,"\\'")}')" style="cursor:pointer;background:var(--surface2);font-weight:700">
-        <td colspan="8"><span style="display:inline-block;width:14px">${aberto?'▾':'▸'}</span> ${esc(g.label)} <span style="font-weight:400;color:var(--muted);font-size:.72rem">(${g.itens.length} compra${g.itens.length>1?'s':''})</span>
+        <td colspan="${colsAtivas.length||1}"><span style="display:inline-block;width:14px">${aberto?'▾':'▸'}</span> ${esc(g.label)} <span style="font-weight:400;color:var(--muted);font-size:.72rem">(${g.itens.length} compra${g.itens.length>1?'s':''})</span>
         <span style="float:right;${g.total<0?'color:#0a7d33':''}">${fmt(g.total)}</span></td></tr>`
-        + (aberto ? g.itens.map(_linhaCompraCF).join('') : '');
-    }).join('') || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">Nenhuma compra encontrada com esses filtros.</td></tr>`;
+        + (aberto ? g.itens.map(x=>_linhaCompraCF(x,colsAtivas)).join('') : '');
+    }).join('') || `<tr><td colspan="${colsAtivas.length||1}" style="text-align:center;color:var(--muted);padding:20px">Nenhuma compra encontrada com esses filtros.</td></tr>`;
   } else {
-    corpo = lista.map(_linhaCompraCF).join('') || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">Nenhuma compra encontrada com esses filtros.</td></tr>`;
+    corpo = lista.map(x=>_linhaCompraCF(x,colsAtivas)).join('') || `<tr><td colspan="${colsAtivas.length||1}" style="text-align:center;color:var(--muted);padding:20px">Nenhuma compra encontrada com esses filtros.</td></tr>`;
   }
+  const graficoHtml = agrupar && grupos.length ? `<div class="card" style="margin-bottom:12px"><div style="font-weight:700;margin-bottom:8px;font-size:.85rem">Gráfico — Top 10 por ${DIMENSOES_AGRUPAMENTO_CF.find(d=>d.id===agrupar)?.label||''}</div>${_svgBarrasGruposCF(grupos)}</div>` : '';
   cont.innerHTML = `
     <div class="kpis" style="margin-bottom:12px">
       <div class="card kpi"><div class="kpi-l">Total comprado no período</div><div class="kpi-v" style="${total<0?'color:#0a7d33':''}">${fmt(total)}</div></div>
       <div class="card kpi"><div class="kpi-l">Qtd. de compras</div><div class="kpi-v">${qtd}</div></div>
       <div class="card kpi"><div class="kpi-l">Ticket médio</div><div class="kpi-v">${fmt(ticket)}</div></div>
     </div>
+    ${graficoHtml}
     <div class="card"><div class="tabela-mobile-cards" style="overflow-x:auto"><table><thead>${head}</thead><tbody>${corpo}</tbody></table></div></div>`;
 }
 function exportarCSVComprasFiltro(){
   const lista=_comprasFiltradasCF();
-  const linhas=[['Data da Compra','Fornecedor','Categoria','Centro de Custo','Direcionamento','Cartão','Parcelas','Tipo','Valor Total'].join(';')];
+  const colsAtivas=COLUNAS_CF.filter(c=>colunasCF[c.id]);
+  if(!lista.length){ alert('Nenhuma compra encontrada para exportar.'); return; }
+  const linhas=[colsAtivas.map(c=>c.label).join(';')];
   lista.forEach(x=>{
-    const catNome=x.categoriaId?nomeCompletoCadastro(categoriaById(x.categoriaId)||{},categorias):'';
-    const ccNome=x.centroCustoId?nomeCompletoCadastro(centroCustoById(x.centroCustoId)||{},centrosCusto):'';
-    const direcNome=x.direcionamentoId?nomeCompletoCadastro(direcionamentoById(x.direcionamentoId)||{},direcionamentos):'';
-    const card=CARTOES[x.cartao]||{nome:x.cartao};
-    linhas.push([x.dataCompra, x.desc, catNome, ccNome, direcNome, card.nome, x.nParcelas+'x', x.tipo==='estorno'?'Estorno/Crédito':'Despesa', String(x.valorTotal).replace('.',',')].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(';'));
+    const v=_valoresLinhaCF(x);
+    linhas.push(colsAtivas.map(c=>`"${String(v[c.id]||'').replace(/"/g,'""')}"`).join(';'));
   });
   const blob=new Blob(['\ufeff'+linhas.join('\r\n')],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob);
