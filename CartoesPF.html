@@ -1314,7 +1314,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.30';
+const VERSAO = 'v4.31';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2722,22 +2722,18 @@ async function processarFilaTesouraria(silencioso){
 // Grava o lançamento de saída direto no dados.json do TesourariaSys.
 // Refaz o fetch do sha logo antes de gravar, reduz risco de conflito 409
 // (mesmo cuidado que o próprio TesourariaSys já toma ao salvar sozinho).
+// ARQUIVAMENTO POR ANO NO TESOURARIASYS (23/07/2026): lançamentos não moram
+// mais dentro de dados.json — cada ano tem seu próprio arquivo
+// (lancamentos_AAAA.json). Por isso o débito automático agora grava
+// diretamente no arquivo do ano correspondente à data do pagamento, em vez
+// de gravar em dados.json (que o TesourariaSys nem lê mais pra lançamentos).
 async function registrarDebitoTesouraria(contaId, valor, data, descricao, _tentativa){
   _tentativa = _tentativa || 1;
   const token = getTokenTesouraria();
   if(!token || !contaId) return {ok:false};
-  const url = 'https://api.github.com/repos/Fabio9500/tesourariasys/contents/dados.json';
+  const ano = (data||'').slice(0,4);
+  const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
   try{
-    const rGet = await fetch(url, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
-    if(!rGet.ok) return {ok:false, erro:'Não foi possível acessar o TesourariaSys (HTTP '+rGet.status+').'};
-    const jGet = await rGet.json();
-    let dados;
-    if(!jGet.content || jGet.content.trim()===''){
-      const r2 = await fetch(jGet.download_url);
-      dados = await r2.json();
-    } else {
-      dados = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
-    }
     const catCad = await ghCadastroCarregar('pj');
     const catFatCartao = (catCad.categorias||[]).find(c=>c.nome==='Fatura Cartão de Crédito'&&c.tipo==='despesa');
     const novoLanc = {
@@ -2747,22 +2743,41 @@ async function registrarDebitoTesouraria(contaId, valor, data, descricao, _tenta
       origem:'manual', contaPagarId:null,
       criadoEm: new Date().toISOString()
     };
-    dados.lancamentos = [...(dados.lancamentos||[]), novoLanc];
-    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(dados,null,2))));
-    const rPut = await fetch(url, {
+    const rGet = await fetch(urlAno, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
+    let listaAno = [], shaAno = null;
+    if(rGet.status === 404){
+      listaAno = []; // esse ano ainda não tinha arquivo (raro — ex: virada de ano) — cria agora
+    } else if(rGet.ok){
+      const jGet = await rGet.json();
+      shaAno = jGet.sha;
+      if(!jGet.content || jGet.content.trim()===''){
+        const r2 = await fetch(jGet.download_url);
+        listaAno = await r2.json();
+      } else {
+        listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
+      }
+    } else {
+      return {ok:false, erro:'Não foi possível acessar o TesourariaSys (HTTP '+rGet.status+').'};
+    }
+    listaAno = [...listaAno, novoLanc];
+    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(listaAno))));
+    const bodyPut = { message:'Débito automático — fatura CartoesPF', content:conteudo };
+    if(shaAno) bodyPut.sha = shaAno;
+    const rPut = await fetch(urlAno, {
       method:'PUT',
       headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
-      body: JSON.stringify({ message:'Débito automático — fatura CartoesPF', content:conteudo, sha:jGet.sha })
+      body: JSON.stringify(bodyPut)
     });
     if(!rPut.ok){
-      // Provável conflito de escrita (409) — outro sistema gravou no meio do caminho.
-      // Busca o SHA atualizado e tenta de novo, uma única vez, antes de desistir.
+      // Provável conflito de escrita (409) — outro sistema/dispositivo gravou nesse
+      // mesmo arquivo de ano no meio do caminho. Busca de novo e tenta uma vez mais.
       if(_tentativa===1){
         await new Promise(r=>setTimeout(r,500));
         return registrarDebitoTesouraria(contaId, valor, data, descricao, 2);
       }
       return {ok:false, erro:'Erro ao gravar no TesourariaSys mesmo após tentar de novo (HTTP '+rPut.status+').'};
     }
+    garantirAnoNoIndiceTesouraria(ano, token); // não bloqueia o resultado — só mantém o índice de anos em dia
     return {ok:true, tentativas:_tentativa};
   }catch(e){
     if(_tentativa===1){
@@ -2771,6 +2786,31 @@ async function registrarDebitoTesouraria(contaId, valor, data, descricao, _tenta
     }
     return {ok:false, erro:e.message};
   }
+}
+// Mantém dados.anosLancamentos (índice de quais anos existem) atualizado —
+// só grava se o ano ainda não estiver listado (evita PUT desnecessário).
+async function garantirAnoNoIndiceTesouraria(ano, token){
+  try{
+    const url = 'https://api.github.com/repos/Fabio9500/tesourariasys/contents/dados.json';
+    const rGet = await fetch(url, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
+    if(!rGet.ok) return;
+    const jGet = await rGet.json();
+    let dados;
+    if(!jGet.content || jGet.content.trim()===''){
+      const r2 = await fetch(jGet.download_url);
+      dados = await r2.json();
+    } else {
+      dados = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
+    }
+    if((dados.anosLancamentos||[]).includes(ano)) return;
+    dados.anosLancamentos = [...new Set([...(dados.anosLancamentos||[]), ano])].sort();
+    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(dados,null,2))));
+    await fetch(url, {
+      method:'PUT',
+      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body: JSON.stringify({ message:'Atualiza índice de anos (novo ano de lançamentos)', content:conteudo, sha:jGet.sha })
+    });
+  }catch(e){ /* não crítico — o lançamento já foi salvo; só o índice de anos não atualizou */ }
 }
 
 function abrirPagamento(cartao,venc,total){
