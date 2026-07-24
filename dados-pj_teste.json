@@ -1,0 +1,119 @@
+{
+  "versao": 5,
+  "tipo": "pj",
+  "limites": {
+    "c6": {
+      "total": 15000,
+      "usado": 3011109.79
+    },
+    "cef": {
+      "total": 20000,
+      "usado": 20589.13000000001
+    },
+    "mlivre": {
+      "total": 20700,
+      "usado": 3609.26
+    },
+    "santander": {
+      "total": 0,
+      "usado": 3000
+    },
+    "bradesco": {
+      "total": 0,
+      "usado": 0
+    }
+  },
+  "pagamentos": {
+    "c6|2026-04-05": {
+      "valor": 4108.92,
+      "data": "2026-04-27",
+      "total": 4108.920000000001
+    },
+    "cef|2026-04-20": {
+      "valor": 3723.48,
+      "data": "2026-04-27",
+      "total": 3723.479999999999
+    },
+    "mlivre|2026-04-22": {
+      "valor": 831.47,
+      "data": "2026-04-27",
+      "total": 831.47
+    },
+    "c6|2026-05-05": {
+      "valor": 5360.68,
+      "data": "2026-05-05",
+      "total": 5360.680000000001
+    },
+    "cef|2026-05-20": {
+      "valor": 3665.8,
+      "data": "2026-05-18",
+      "total": 3665.7999999999997
+    },
+    "mlivre|2026-05-22": {
+      "valor": 420.29,
+      "data": "2026-05-18",
+      "total": 420.29
+    },
+    "c6|2026-06-05": {
+      "valor": 5692.38,
+      "data": "2026-06-05",
+      "total": 5692.38
+    },
+    "mlivre|2026-06-20": {
+      "valor": 1180.99,
+      "data": "2026-06-22",
+      "total": 1180.99
+    },
+    "mlivre|2026-05-20": {
+      "valor": 267.2,
+      "data": "2026-06-22",
+      "total": 267.2
+    },
+    "mlivre|2026-04-20": {
+      "valor": 831.47,
+      "data": "2026-06-22",
+      "total": 831.47
+    },
+    "cef|2026-06-20": {
+      "valor": 4136.77,
+      "data": "2026-06-22",
+      "total": 4136.7699999999995
+    }
+  },
+  "fechamentos": {
+    "cef": "2026-07-12"
+  },
+  "fornecedores": [],
+  "categorias": [],
+  "cartoesCustom": {},
+  "usuarios": [
+    {
+      "id": "mrh7zpwh0cdu",
+      "nome": "Fabio",
+      "login": "fabio",
+      "hash": "fc613b4dfd6736a7bd268c8a0e74ed0d1c04a959f59dd74ef2874983fd443fc9",
+      "perfil": "master",
+      "ativo": true
+    },
+    {
+      "id": "mrh7zpwsudv5",
+      "nome": "Alice",
+      "login": "alice",
+      "hash": "2bd806c97f0e00af1a1fc3328fa763a9269723c8db8fac4f93af71db186d6e90",
+      "perfil": "operador",
+      "ativo": true
+    },
+    {
+      "id": "mrh7zpwtkkeq",
+      "nome": "Bruno",
+      "login": "bruno",
+      "hash": "ccc68482d9e0eee0789e64c7674421076738f8836857ea89bcd0afb832bf3fc3",
+      "perfil": "operador",
+      "ativo": true
+    }
+  ],
+  "direcionamentos": [],
+  "anosCompras": [
+    "2026"
+  ]
+}
