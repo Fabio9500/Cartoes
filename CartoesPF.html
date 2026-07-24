@@ -1314,7 +1314,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v4.31';
+const VERSAO = 'v5.0';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1636,6 +1636,18 @@ function bloquearManualmente(){sairUsuarioPF();}
 const GH_OWNER='Fabio9500', GH_REPO='Cartoes', GH_FILE='dados.json', GH_BRANCH='main', GH_TOKEN_KEY='cc_pf_gh_token';
 let _shaAtual='', _intervaloSync=null;
 let ghToken='', ghSha='';
+// ARQUIVAMENTO POR ANO (23/07/2026): "compras" (a coleção que mais cresce)
+// deixou de morar dentro de dados.json e passou a ficar em arquivos
+// separados por ano (compras_pf_AAAA.json / compras_pj_AAAA.json, já que PF
+// e PJ dividem o mesmo repositório) — mesmo padrão já aplicado no
+// TesourariaSys e no ChequeSys. Implantado de forma preventiva enquanto a
+// base ainda é pequena (pouco mais de 1000 compras). Só o ano corrente + o
+// anterior são carregados por padrão.
+let _anosCarregadosCompras = new Set();
+let _shaAnosCompras = {};
+let _anosComprasIndice = [];
+function anoDaCompra(c){ return (c.dataCompra||c.venc||'').slice(0,4); }
+function anosPadraoParaCarregar(){ const a=new Date().getFullYear(); return [String(a-1), String(a)]; }
 
 async function ghFetch(path,opts={}){
   return fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/${path}`,{...opts,headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json',...(opts.headers||{})}});
@@ -1646,6 +1658,7 @@ async function ghFetch(path,opts={}){
 // ══════════════════════════════════════════════════════════
 const PREFIX=GH_TOKEN_KEY.replace('_gh_token','');
 const TIPO_DADOS=GH_FILE.includes('-pj')?'pj':'pf';
+const ARQ_ANO = (colecao, ano) => `${colecao}_${TIPO_DADOS}_${ano}.json`;
 let _sincronizando=false;
 
 function isOnline(){return navigator.onLine;}
@@ -1676,7 +1689,55 @@ async function loadFromGitHub(){
   const d=await r.json(); ghSha=d.sha; setLastSha(d.sha);
   return JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
 }
+async function buscarArquivoAnoGH(nomeArquivo){
+  const r=await ghFetch(`contents/${nomeArquivo}`);
+  if(r.status===404) return null;
+  if(!r.ok) throw new Error(`GitHub ${r.status}`);
+  const d=await r.json();
+  let conteudo;
+  if(!d.content || d.content.trim()===''){
+    const r2=await fetch(d.download_url);
+    conteudo=await r2.json();
+  } else {
+    conteudo=JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+  }
+  return {conteudo, sha:d.sha};
+}
+async function carregarComprasDosAnosPadrao(anosIndice){
+  let compras=[];
+  for(const ano of anosPadraoParaCarregar()){
+    _anosCarregadosCompras.add(ano);
+    if(anosIndice && !anosIndice.includes(ano)) continue; // ano ainda não existe
+    const res=await buscarArquivoAnoGH(ARQ_ANO('compras',ano));
+    if(res){ _shaAnosCompras[ano]=res.sha; compras.push(...(res.conteudo||[])); }
+  }
+  _anosComprasIndice = anosIndice||[];
+  return compras;
+}
+async function salvarComprasPorAno(compras){
+  const porAno={};
+  compras.forEach(c=>{ const a=anoDaCompra(c); if(a){ (porAno[a]=porAno[a]||[]).push(c); } });
+  const anosParaGravar = _anosCarregadosCompras.size ? [..._anosCarregadosCompras] : Object.keys(porAno);
+  await Promise.all(anosParaGravar.map(async ano=>{
+    const lista=porAno[ano]||[];
+    const shaAno=_shaAnosCompras[ano];
+    const conteudoAno=btoa(unescape(encodeURIComponent(JSON.stringify(lista))));
+    const bodyAno={message:`Compras ${ano} (${TIPO_DADOS})`, content:conteudoAno, branch:GH_BRANCH, ...(shaAno?{sha:shaAno}:{})};
+    const r=await ghFetch(`contents/${ARQ_ANO('compras',ano)}`,{method:'PUT',body:JSON.stringify(bodyAno)});
+    if(r.ok){ const d=await r.json(); _shaAnosCompras[ano]=d.content.sha; }
+  }));
+  _anosComprasIndice=[...new Set([..._anosComprasIndice, ...Object.keys(porAno)])].sort();
+}
 async function saveToGitHub(payload){
+  // ARQUIVAMENTO POR ANO: se o payload trouxer "compras", grava os anos
+  // carregados separadamente e envia pro dados.json principal só o índice
+  // de anos, sem as compras em si.
+  if(payload.compras){
+    await salvarComprasPorAno(payload.compras);
+    payload={...payload};
+    delete payload.compras;
+    payload.anosCompras=_anosComprasIndice;
+  }
   // Confere o sha mais recente antes de gravar, reduz risco de conflito 409
   try{
     const rGet=await ghFetch(`contents/${GH_FILE}`);
@@ -1802,7 +1863,10 @@ async function initData(){
   }
   try{
     const data=await loadFromGitHub();
-    if(data&&data.compras){
+    if(data){
+      data.compras = await carregarComprasDosAnosPadrao(data.anosCompras);
+    }
+    if(data){
       const fila=getFila();
       if(fila){
         setSyncStatus('saving');
@@ -5671,6 +5735,9 @@ async function verificarAtualizacaoRemota(){
       novosDados=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
     }
     try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(novosDados));}catch(e){}
+    // ARQUIVAMENTO POR ANO: novosDados não tem mais "compras" — busca os
+    // anos padrão separadamente antes de atribuir.
+    novosDados.compras = await carregarComprasDosAnosPadrao(novosDados.anosCompras);
     compras=novosDados.compras||[];limites=novosDados.limites||{};pagamentos=novosDados.pagamentos||{};
     renderDashboard();
     showToast('🔄 Dados atualizados de outro dispositivo');
