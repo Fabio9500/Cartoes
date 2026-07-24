@@ -1323,7 +1323,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.1';
+const VERSAO = 'v5.2';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2011,6 +2011,23 @@ async function bootAposAuth(){
   processarFilaTesouraria(true);
 }
 
+
+// ══════════════════════════════════════════
+// 🔒 TRAVA CONTRA DUPLO-CLIQUE — ações que criam compras/pagamentos rodam
+// de forma síncrona a partir de um botão "Salvar/Confirmar" num modal. Um
+// duplo-toque no celular (ou clique duplo no notebook) antes do modal
+// fechar disparava a função duas vezes, criando 2 lançamentos idênticos —
+// mesmo bug já corrigido no ChequeSys (v4.61). Toda função que grava uma
+// compra ou pagamento a partir de um botão de confirmação deve chamar
+// travaAcaoDupla() como primeira linha. (24/07/2026)
+// ══════════════════════════════════════════
+let _acaoEmAndamento = false;
+function travaAcaoDupla(){
+  if(_acaoEmAndamento) return true; // já tem uma ação rodando — ignora esta chamada
+  _acaoEmAndamento = true;
+  setTimeout(()=>{ _acaoEmAndamento = false; }, 600); // autolibera sozinha — nunca fica travada
+  return false;
+}
 
 // ── UTIL ────────────────────────────────────────────────────
 const fmt=v=>'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -2883,6 +2900,7 @@ function abrirPagamento(cartao,venc,total){
   carregarContasTesouraria();
 }
 async function confirmarPagamento(){
+  if(travaAcaoDupla()) return;
   const cartao=document.getElementById('pag-cartao').value,venc=document.getElementById('pag-venc').value;
   const total=parseFloat(document.getElementById('pag-total').value),valor=parseFloat(document.getElementById('pag-valor').value);
   const data=document.getElementById('pag-data').value;
@@ -3900,6 +3918,7 @@ function confirmarImportacaoQIF(){
 }
 
 function salvarCompra(){
+  if(travaAcaoDupla()) return;
   const desc=document.getElementById('c-desc').value.trim(),data=document.getElementById('c-data').value;
   const valorAbs=parseFloat(document.getElementById('c-valor').value),cartao=document.getElementById('c-cartao').value;
   const tipo=document.getElementById('c-tipo')?.value==='estorno'?'estorno':'despesa';
