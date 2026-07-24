@@ -507,7 +507,10 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
     <div>
       <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:4px;">Direcionamento</label>
-      <input type="text" id="rel-direcionamento" list="dl-direcionamento" placeholder="Todos" oninput="renderRelatorios()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;">
+      <div style="display:flex;gap:5px">
+        <select id="rel-direc-mae" onchange="aoMudarMaeCascata('rel','direc','');renderLancamentosRel()" style="padding:7px 8px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;min-width:130px;"></select>
+        <select id="rel-direc-sub" onchange="renderLancamentosRel()" style="padding:7px 8px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;min-width:110px;"></select>
+      </div>
     </div>
     <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Imprimir</button>
   </div>
@@ -1320,7 +1323,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.0';
+const VERSAO = 'v5.1';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -4070,7 +4073,7 @@ function renderLancamentosRel(){
   const ini=document.getElementById('sf-lanc-ini')?.value||'';
   const fim=document.getElementById('sf-lanc-fim')?.value||'9999-99-99';
   const cartao=document.getElementById('rel-cartao')?.value||'todos';
-  const direc=(document.getElementById('rel-direcionamento')?.value||'').trim().toLowerCase();
+  const direcId=valorFinalCascata('rel','direc');
   const ordem=document.getElementById('sf-lanc-ordem')?.value||'data_desc';
   // Filtrar compras (agrupa por compraId, usa dataCompra para filtro)
   const grupos={};
@@ -4080,7 +4083,7 @@ function renderLancamentosRel(){
     if(iniF&&dc<iniF)return;
     if(dc>fim)return;
     if(cartao!=='todos'&&x.cartao!==cartao)return;
-    if(direc&&!nomeDirecCompra(x).toLowerCase().includes(direc))return;
+    if(direcId&&!(x.direcionamentoId===direcId||direcionamentoById(x.direcionamentoId)?.parentId===direcId))return;
     if(busca&&!x.desc.toLowerCase().includes(busca)&&!(x.memo||'').toLowerCase().includes(busca))return;
     if(!grupos[x.compraId])grupos[x.compraId]={
       compraId:x.compraId,desc:x.desc,memo:x.memo||'',categoria:nomeCatCompra(x),direcionamento:nomeDirecCompra(x),cartao:x.cartao,
@@ -4635,6 +4638,10 @@ function toggleSecao(id){
   }
 }
 function renderRelatorios(){
+  // Primeira vez que a aba abre: popula a cascata de Direcionamento (mãe).
+  if(document.getElementById('rel-direc-mae') && !document.getElementById('rel-direc-mae').options.length){
+    popularCascata('rel','direc','');
+  }
   // Cards resumo usam filtro global
   const n=parseInt(document.getElementById('rel-periodo-global')?.value||'6');
   const cartao=document.getElementById('rel-cartao')?.value||'todos';
