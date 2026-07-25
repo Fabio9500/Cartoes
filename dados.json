@@ -6,6 +6,10 @@
       "total": 170000,
       "usado": 112411.19999999997
     },
+    "5883": {
+      "total": 30000,
+      "usado": 25213.310000000005
+    },
     "7672": {
       "total": 170000,
       "usado": 85240.54000000002
@@ -17,10 +21,6 @@
     "santander": {
       "total": 250000,
       "usado": 192254.6999999999
-    },
-    "bradesco07": {
-      "total": 30000,
-      "usado": 25213.310000000005
     }
   },
   "pagamentos": {
@@ -1111,6 +1111,13 @@
       "fechDias": 10,
       "tag": "bradesco"
     },
+    "5883": {
+      "nome": "American (07)",
+      "banco": "American",
+      "venc": 7,
+      "fechDias": 8,
+      "tag": "bradesco"
+    },
     "7672": {
       "nome": "BRA (10)",
       "banco": "Bradesco",
@@ -1131,13 +1138,6 @@
       "venc": 15,
       "fechDias": 5,
       "tag": "santander"
-    },
-    "bradesco07": {
-      "nome": "American (07)",
-      "banco": "Bradesco",
-      "venc": 7,
-      "fechDias": 8,
-      "tag": "bradesco"
     },
     "bradesco1": {
       "nome": "BRA 31",
