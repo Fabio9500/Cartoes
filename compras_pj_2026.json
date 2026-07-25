@@ -5284,5 +5284,71 @@
     "parcela": 1,
     "valorParcela": 24.0,
     "venc": "2026-08-20"
+  },
+  {
+    "uid": "9imp3g2kwej2",
+    "compraId": "mkqxebsw1b42",
+    "desc": "GABRIELLESANTOS",
+    "dataCompra": "2026-07-24",
+    "cartao": "cef",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 22.0,
+    "venc": "2026-08-20"
+  },
+  {
+    "uid": "4f5bmgni947u",
+    "compraId": "ggllr63h8369",
+    "desc": "SERBRI",
+    "dataCompra": "2026-07-24",
+    "cartao": "cef",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 51.5,
+    "venc": "2026-08-20"
+  },
+  {
+    "uid": "3zexzj8zrzoe",
+    "compraId": "o6ukfpz8q1fl",
+    "desc": "POSTO GRAPIUNA",
+    "dataCompra": "2026-07-24",
+    "cartao": "cef",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 15.0,
+    "venc": "2026-08-20"
+  },
+  {
+    "uid": "httttznoujmn",
+    "compraId": "n69t3us1xeha",
+    "desc": "PHILIPE LEONARDO DA SI",
+    "dataCompra": "2026-07-24",
+    "cartao": "cef",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 60.0,
+    "venc": "2026-08-20"
+  },
+  {
+    "uid": "47r4h16mdk09",
+    "compraId": "6sqbezo5nj2c",
+    "desc": "BRITOCAR",
+    "dataCompra": "2026-07-24",
+    "cartao": "cef",
+    "nParcelas": 2,
+    "parcela": 1,
+    "valorParcela": 50.75,
+    "venc": "2026-08-20"
+  },
+  {
+    "uid": "pwnnxosimzg7",
+    "compraId": "6sqbezo5nj2c",
+    "desc": "BRITOCAR",
+    "dataCompra": "2026-07-24",
+    "cartao": "cef",
+    "nParcelas": 2,
+    "parcela": 2,
+    "valorParcela": 50.75,
+    "venc": "2026-09-20"
   }
 ]
