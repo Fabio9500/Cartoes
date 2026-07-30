@@ -1109,48 +1109,42 @@
       "banco": "Bradesco",
       "venc": 20,
       "fechDias": 10,
-      "tag": "bradesco",
-      "contaTesourariaId": "ms7to7vefgcgtmu"
+      "tag": "bradesco"
     },
     "5883": {
       "nome": "American (07)",
       "banco": "American",
       "venc": 7,
       "fechDias": 8,
-      "tag": "bradesco",
-      "contaTesourariaId": "ms7to7ve689yl93"
+      "tag": "bradesco"
     },
     "7672": {
       "nome": "BRA (10)",
       "banco": "Bradesco",
       "venc": 10,
       "fechDias": 10,
-      "tag": "bradesco",
-      "contaTesourariaId": "ms7to7ve7056tq2"
+      "tag": "bradesco"
     },
     "8139": {
       "nome": "BRA (01)",
       "banco": "Bradesco",
       "venc": 1,
       "fechDias": 10,
-      "tag": "bradesco",
-      "contaTesourariaId": "ms7to7vbksxxly8"
+      "tag": "bradesco"
     },
     "santander": {
       "nome": "Santander (15)",
       "banco": "Santander",
       "venc": 15,
       "fechDias": 5,
-      "tag": "santander",
-      "contaTesourariaId": "ms7to7vexe5a4a6"
+      "tag": "santander"
     },
     "bradesco1": {
       "nome": "BRA 31",
       "banco": "Bradesco",
       "venc": 31,
       "fechDias": 10,
-      "tag": "bradesco",
-      "contaTesourariaId": "ms7to7vejogpfih"
+      "tag": "bradesco"
     }
   },
   "usuarios": [

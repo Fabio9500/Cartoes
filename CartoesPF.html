@@ -1317,7 +1317,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.2';
+const VERSAO = 'v5.3';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2778,12 +2778,15 @@ function atualizarStatusTokenTesouraria(){
 // "🔄 Tentar sincronizar pendentes agora" na aba Backup.
 function getFilaTesouraria(){ try{ return JSON.parse(localStorage.getItem(PREFIX+'_fila_tsr')||'[]'); }catch(e){ return []; } }
 function setFilaTesouraria(lista){ try{ localStorage.setItem(PREFIX+'_fila_tsr', JSON.stringify(lista)); }catch(e){} }
-function enfileirarDebitoTesouraria(item){
+function enfileirarOperacaoTesouraria(tipo, item){
   const fila = getFilaTesouraria();
-  fila.push({...item, id:uid(), criadoEm:new Date().toISOString()});
+  fila.push({tipo, ...item, id:uid(), criadoEm:new Date().toISOString()});
   setFilaTesouraria(fila);
   atualizarStatusTokenTesouraria();
 }
+function enfileirarDebitoTesouraria(item){ enfileirarOperacaoTesouraria('debito', item); }
+function enfileirarCompraTesouraria(item){ enfileirarOperacaoTesouraria('compra', item); }
+function enfileirarCreditoContaCartao(item){ enfileirarOperacaoTesouraria('credito', item); }
 let _processandoFilaTesouraria = false;
 async function processarFilaTesouraria(silencioso){
   if(_processandoFilaTesouraria) return;
@@ -2794,7 +2797,10 @@ async function processarFilaTesouraria(silencioso){
   const restantes = [];
   let sucesso = 0;
   for(const item of fila){
-    const res = await registrarDebitoTesouraria(item.contaId, item.valor, item.data, item.descricao);
+    let res;
+    if(item.tipo==='compra') res = await registrarCompraTesouraria(item.cartao, item.data, item.valorTotal, item.categoriaId, item.centroCustoId, item.direcionamentoId, item.desc);
+    else if(item.tipo==='credito') res = await registrarCreditoContaCartao(item.cartao, item.itens, item.dataPagamento);
+    else res = await registrarDebitoTesouraria(item.contaId, item.valor, item.data, item.descricao);
     if(res.ok) sucesso++; else restantes.push(item);
   }
   setFilaTesouraria(restantes);
@@ -2897,6 +2903,134 @@ async function garantirAnoNoIndiceTesouraria(ano, token){
   }catch(e){ /* não crítico — o lançamento já foi salvo; só o índice de anos não atualizou */ }
 }
 
+// ── CONTA CARTÃO — integração v5.3 ────────────────────────────────
+// Cada cartão tem uma conta de controle no TesourariaSys (CARTOES[cartao].
+// contaTesourariaId, saldo negativo = quanto falta pagar, mesma convenção
+// das contas bancárias reais). Ao lançar uma compra, grava um lançamento
+// tipo 'saida' (aparece nos relatórios de categoria) na data da compra, pelo
+// valor total (soma das parcelas). Ao pagar uma fatura, grava um 'entrada'
+// por parcela quitada, devolvendo o saldo — assim uma compra em 3x vai
+// abatendo aos poucos, uma fatura por vez.
+async function registrarCompraTesouraria(cartao, data, valorTotal, categoriaId, centroCustoId, direcionamentoId, desc, _tentativa){
+  _tentativa = _tentativa || 1;
+  const token = getTokenTesouraria();
+  const contaId = CARTOES[cartao]?.contaTesourariaId;
+  if(!token || !contaId) return {ok:false};
+  const ano = (data||'').slice(0,4);
+  const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
+  try{
+    // valorTotal negativo = estorno/crédito (reduz a dívida) -> vira 'entrada'
+    const ehEstorno = valorTotal < 0;
+    const novoLanc = {
+      id: uid(), contaId, data, tipo: ehEstorno?'entrada':'saida', valor: Math.abs(valorTotal),
+      categoriaId: categoriaId||'', centroCustoId: centroCustoId||'',
+      ...(direcionamentoId?{direcionamentoId}:{}),
+      contraparte: CARTOES[cartao]?.nome||cartao, descricao: desc||(ehEstorno?'Estorno/crédito no cartão':'Compra no cartão'),
+      origem:'manual', contaPagarId:null,
+      criadoEm: new Date().toISOString()
+    };
+    const rGet = await fetch(urlAno, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
+    let listaAno = [], shaAno = null;
+    if(rGet.status === 404){
+      listaAno = [];
+    } else if(rGet.ok){
+      const jGet = await rGet.json();
+      shaAno = jGet.sha;
+      if(!jGet.content || jGet.content.trim()===''){
+        const r2 = await fetch(jGet.download_url);
+        listaAno = await r2.json();
+      } else {
+        listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
+      }
+    } else {
+      return {ok:false, erro:'Não foi possível acessar o TesourariaSys (HTTP '+rGet.status+').'};
+    }
+    listaAno = [...listaAno, novoLanc];
+    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(listaAno))));
+    const bodyPut = { message:'Compra no cartão — CartoesPF', content:conteudo };
+    if(shaAno) bodyPut.sha = shaAno;
+    const rPut = await fetch(urlAno, {
+      method:'PUT',
+      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body: JSON.stringify(bodyPut)
+    });
+    if(!rPut.ok){
+      if(_tentativa===1){
+        await new Promise(r=>setTimeout(r,500));
+        return registrarCompraTesouraria(cartao, data, valorTotal, categoriaId, centroCustoId, direcionamentoId, desc, 2);
+      }
+      return {ok:false, erro:'Erro ao gravar no TesourariaSys mesmo após tentar de novo (HTTP '+rPut.status+').'};
+    }
+    garantirAnoNoIndiceTesouraria(ano, token);
+    return {ok:true, tentativas:_tentativa};
+  }catch(e){
+    if(_tentativa===1){
+      await new Promise(r=>setTimeout(r,500));
+      return registrarCompraTesouraria(cartao, data, valorTotal, categoriaId, centroCustoId, direcionamentoId, desc, 2);
+    }
+    return {ok:false, erro:e.message};
+  }
+}
+// itens: [{desc, valor}] — uma parcela quitada por item, mesma data de pagamento pra todas
+async function registrarCreditoContaCartao(cartao, itens, dataPagamento, _tentativa){
+  _tentativa = _tentativa || 1;
+  const token = getTokenTesouraria();
+  const contaId = CARTOES[cartao]?.contaTesourariaId;
+  if(!token || !contaId || !itens?.length) return {ok:false};
+  const ano = (dataPagamento||'').slice(0,4);
+  const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
+  try{
+    const nomeCartao = CARTOES[cartao]?.nome||cartao;
+    const novosLancs = itens.map(it=>({
+      id: uid(), contaId, data: dataPagamento, tipo:'entrada', valor: it.valor,
+      categoriaId:'', centroCustoId:'',
+      contraparte: nomeCartao, descricao: `Pagamento fatura — ${it.desc||'parcela'} (${nomeCartao})`,
+      origem:'manual', contaPagarId:null,
+      criadoEm: new Date().toISOString()
+    }));
+    const rGet = await fetch(urlAno, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
+    let listaAno = [], shaAno = null;
+    if(rGet.status === 404){
+      listaAno = [];
+    } else if(rGet.ok){
+      const jGet = await rGet.json();
+      shaAno = jGet.sha;
+      if(!jGet.content || jGet.content.trim()===''){
+        const r2 = await fetch(jGet.download_url);
+        listaAno = await r2.json();
+      } else {
+        listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
+      }
+    } else {
+      return {ok:false, erro:'Não foi possível acessar o TesourariaSys (HTTP '+rGet.status+').'};
+    }
+    listaAno = [...listaAno, ...novosLancs];
+    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(listaAno))));
+    const bodyPut = { message:`Pagamento fatura ${nomeCartao} — CartoesPF (${itens.length} parcela(s))`, content:conteudo };
+    if(shaAno) bodyPut.sha = shaAno;
+    const rPut = await fetch(urlAno, {
+      method:'PUT',
+      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body: JSON.stringify(bodyPut)
+    });
+    if(!rPut.ok){
+      if(_tentativa===1){
+        await new Promise(r=>setTimeout(r,500));
+        return registrarCreditoContaCartao(cartao, itens, dataPagamento, 2);
+      }
+      return {ok:false, erro:'Erro ao gravar no TesourariaSys mesmo após tentar de novo (HTTP '+rPut.status+').'};
+    }
+    garantirAnoNoIndiceTesouraria(ano, token);
+    return {ok:true, tentativas:_tentativa};
+  }catch(e){
+    if(_tentativa===1){
+      await new Promise(r=>setTimeout(r,500));
+      return registrarCreditoContaCartao(cartao, itens, dataPagamento, 2);
+    }
+    return {ok:false, erro:e.message};
+  }
+}
+
 function abrirPagamento(cartao,venc,total){
   const card=CARTOES[cartao],dv=new Date(venc+'T12:00:00');
   document.getElementById('pag-cartao').value=cartao;document.getElementById('pag-venc').value=venc;
@@ -2916,6 +3050,9 @@ async function confirmarPagamento(){
   const contaTsr=document.getElementById('pag-conta-tsr')?.value||'';
   if(!valor||valor<=0||!data){showToast('Preencha valor e data',true);return;}
   pagamentos[cartao+'|'+venc]={valor,data,total};
+  // estornos já reduziram a dívida da conta-cartão no lançamento (entrada) da
+  // própria compra — não entram aqui de novo, senão a dívida seria creditada 2x
+  const itensQuitados = compras.filter(c=>c.cartao===cartao&&c.venc===venc&&c.tipo!=='estorno').map(c=>({desc:c.desc, valor:Math.abs(c.valorParcela)}));
   compras.forEach(c=>{if(c.cartao===cartao&&c.venc===venc)c.pago=true;});
   salvar();fecharModal('modal-pagamento');renderFaturas();renderDashboard();renderLimites();
   if(contaTsr){
@@ -2930,6 +3067,11 @@ async function confirmarPagamento(){
     }
   } else {
     showToast(`Pagamento de ${fmt(valor)} registrado ✓`);
+  }
+  if(CARTOES[cartao]?.contaTesourariaId && getTokenTesouraria() && itensQuitados.length){
+    registrarCreditoContaCartao(cartao, itensQuitados, data).then(res=>{
+      if(!res.ok) enfileirarCreditoContaCartao({cartao, itens:itensQuitados, dataPagamento:data});
+    });
   }
 }
 function desfazerPagamento(key){
@@ -3954,6 +4096,11 @@ function salvarCompra(){
     compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,tipo,...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(memo?{memo}:{}),...(direcionamentoId?{direcionamentoId}:{})});totalReal+=vVal;}
   if(!limites[cartao])limites[cartao]={total:0,usado:0};limites[cartao].usado=(limites[cartao].usado||0)+totalReal;
   salvar();fecharModal('modal-compra');renderDashboard();showToast(tipo==='estorno'?'Estorno/crédito lançado ✓':'Compra lançada ✓');
+  if(CARTOES[cartao]?.contaTesourariaId && getTokenTesouraria()){
+    registrarCompraTesouraria(cartao, data, totalReal, categoriaId, centroCustoId, direcionamentoId, desc).then(res=>{
+      if(!res.ok) enfileirarCompraTesouraria({cartao, data, valorTotal:totalReal, categoriaId, centroCustoId, direcionamentoId, desc});
+    });
+  }
 }
 
 // ── BACKUP ──────────────────────────────────────────────────

@@ -85,23 +85,7 @@
   },
   "fornecedores": [],
   "categorias": [],
-  "cartoesCustom": {
-    "cef": {
-      "contaTesourariaId": "ms7to7vejuykd66"
-    },
-    "mlivre": {
-      "contaTesourariaId": "ms7to7vefbi6385"
-    },
-    "c6": {
-      "contaTesourariaId": "ms7to7ve9prx32j"
-    },
-    "santander": {
-      "contaTesourariaId": "ms7to7veljpq1vo"
-    },
-    "bradesco": {
-      "contaTesourariaId": "ms7to7veaea5j22"
-    }
-  },
+  "cartoesCustom": {},
   "usuarios": [
     {
       "id": "mrh7zpwh0cdu",
