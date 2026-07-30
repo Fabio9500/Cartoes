@@ -1317,7 +1317,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.3';
+const VERSAO = 'v5.4';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2787,6 +2787,7 @@ function enfileirarOperacaoTesouraria(tipo, item){
 function enfileirarDebitoTesouraria(item){ enfileirarOperacaoTesouraria('debito', item); }
 function enfileirarCompraTesouraria(item){ enfileirarOperacaoTesouraria('compra', item); }
 function enfileirarCreditoContaCartao(item){ enfileirarOperacaoTesouraria('credito', item); }
+function enfileirarComprasTesouraria(item){ enfileirarOperacaoTesouraria('comprasLote', item); }
 let _processandoFilaTesouraria = false;
 async function processarFilaTesouraria(silencioso){
   if(_processandoFilaTesouraria) return;
@@ -2800,8 +2801,9 @@ async function processarFilaTesouraria(silencioso){
     let res;
     if(item.tipo==='compra') res = await registrarCompraTesouraria(item.cartao, item.data, item.valorTotal, item.categoriaId, item.centroCustoId, item.direcionamentoId, item.desc);
     else if(item.tipo==='credito') res = await registrarCreditoContaCartao(item.cartao, item.itens, item.dataPagamento);
+    else if(item.tipo==='comprasLote') res = await registrarComprasTesouraria(item.cartao, item.itens);
     else res = await registrarDebitoTesouraria(item.contaId, item.valor, item.data, item.descricao);
-    if(res.ok) sucesso++; else restantes.push(item);
+    if(res.ok) sucesso++; else restantes.push(item.tipo==='comprasLote' ? {...item, itens:res.itensQueFalharam||item.itens} : item);
   }
   setFilaTesouraria(restantes);
   atualizarStatusTokenTesouraria();
@@ -3029,6 +3031,84 @@ async function registrarCreditoContaCartao(cartao, itens, dataPagamento, _tentat
     }
     return {ok:false, erro:e.message};
   }
+}
+// Grava um lote de lançamentos no arquivo de ano do TesourariaSys (1 fetch+PUT
+// por ano — evita uma chamada de API por item quando a importação tem dezenas
+// de transações). Usada só por registrarComprasTesouraria().
+async function _gravarLoteLancamentosAno(ano, novosLancs, mensagem, token, _tentativa){
+  _tentativa = _tentativa || 1;
+  const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
+  try{
+    const rGet = await fetch(urlAno, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
+    let listaAno = [], shaAno = null;
+    if(rGet.status === 404){
+      listaAno = [];
+    } else if(rGet.ok){
+      const jGet = await rGet.json();
+      shaAno = jGet.sha;
+      if(!jGet.content || jGet.content.trim()===''){
+        const r2 = await fetch(jGet.download_url);
+        listaAno = await r2.json();
+      } else {
+        listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
+      }
+    } else {
+      return {ok:false};
+    }
+    listaAno = [...listaAno, ...novosLancs];
+    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(listaAno))));
+    const bodyPut = { message: mensagem, content: conteudo };
+    if(shaAno) bodyPut.sha = shaAno;
+    const rPut = await fetch(urlAno, {
+      method:'PUT',
+      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body: JSON.stringify(bodyPut)
+    });
+    if(!rPut.ok){
+      if(_tentativa===1){
+        await new Promise(r=>setTimeout(r,500));
+        return _gravarLoteLancamentosAno(ano, novosLancs, mensagem, token, 2);
+      }
+      return {ok:false};
+    }
+    garantirAnoNoIndiceTesouraria(ano, token);
+    return {ok:true};
+  }catch(e){
+    if(_tentativa===1){
+      await new Promise(r=>setTimeout(r,500));
+      return _gravarLoteLancamentosAno(ano, novosLancs, mensagem, token, 2);
+    }
+    return {ok:false};
+  }
+}
+// Compras importadas (OFX/CSV/QIF) chamam aqui em vez de registrarCompraTesouraria
+// uma vez por transação — agrupa por ano e faz 1 gravação por ano, com o mesmo
+// retry automático (fila offline) se algum ano falhar.
+// itens: [{data, valorTotal, categoriaId, centroCustoId, direcionamentoId, desc}]
+async function registrarComprasTesouraria(cartao, itens){
+  const token = getTokenTesouraria();
+  const contaId = CARTOES[cartao]?.contaTesourariaId;
+  if(!token || !contaId || !itens?.length) return {ok:false};
+  const nomeCartao = CARTOES[cartao]?.nome||cartao;
+  const porAno = {};
+  for(const it of itens){ const ano=(it.data||'').slice(0,4); (porAno[ano]=porAno[ano]||[]).push(it); }
+  const falharam = [];
+  for(const [ano, lista] of Object.entries(porAno)){
+    const novosLancs = lista.map(it=>{
+      const ehEstorno = it.valorTotal < 0;
+      return {
+        id: uid(), contaId, data: it.data, tipo: ehEstorno?'entrada':'saida', valor: Math.abs(it.valorTotal),
+        categoriaId: it.categoriaId||'', centroCustoId: it.centroCustoId||'',
+        ...(it.direcionamentoId?{direcionamentoId:it.direcionamentoId}:{}),
+        contraparte: nomeCartao, descricao: it.desc||(ehEstorno?'Estorno/crédito no cartão':'Compra no cartão'),
+        origem:'manual', contaPagarId:null, criadoEm: new Date().toISOString()
+      };
+    });
+    const res = await _gravarLoteLancamentosAno(ano, novosLancs, `Importação de compras — CartoesPF (${lista.length} lançamento(s), ${ano})`, token);
+    if(!res.ok) falharam.push(...lista);
+  }
+  if(falharam.length) return {ok:false, itensQueFalharam:falharam};
+  return {ok:true};
 }
 
 function abrirPagamento(cartao,venc,total){
@@ -3589,10 +3669,17 @@ function confirmarImportacaoOFXCartao(){
   if(!limites[_ofxCartaoAlvo]) limites[_ofxCartaoAlvo] = {total:0, usado:0};
   limites[_ofxCartaoAlvo].usado = (limites[_ofxCartaoAlvo].usado||0) + totalReal;
   salvar();
+  const cartaoImportado = _ofxCartaoAlvo;
+  const itensParaTesouraria = selecionados.map(t=>({data:t.data, valorTotal:t.valor, categoriaId:t.categoriaId, direcionamentoId:t.direcionamentoId, desc:t.desc}));
   _ofxPendenteCartao = []; _ofxCartaoAlvo = '';
   fecharModal('modal-ofx-cartao');
   renderDashboard();
   showToast(`✅ ${selecionados.length} compra(s) importada(s)`);
+  if(CARTOES[cartaoImportado]?.contaTesourariaId && getTokenTesouraria()){
+    registrarComprasTesouraria(cartaoImportado, itensParaTesouraria).then(res=>{
+      if(!res.ok) enfileirarComprasTesouraria({cartao:cartaoImportado, itens:res.itensQueFalharam||itensParaTesouraria});
+    });
+  }
 }
 
 // ══════════════════════════════════════════
@@ -3787,6 +3874,7 @@ function confirmarImportacaoCSVCartao(){
   if(!selecionados.length){ fecharModal('modal-csv-cartao'); return; }
   const agora = new Date().toISOString();
   let totalReal = 0, totalLancamentos = 0, totalCompras = 0;
+  const itensParaTesouraria = [];
   selecionados.forEach(t=>{
     const compraId = uid();
     totalCompras++;
@@ -3802,6 +3890,8 @@ function confirmarImportacaoCSVCartao(){
         });
         totalReal += t.valor; totalLancamentos++;
       }
+      // um lançamento só no TesourariaSys pelo valor TOTAL da compra (soma das parcelas)
+      itensParaTesouraria.push({data:t.dataCompra, valorTotal:t.valor*t.nParcelas, categoriaId:t.categoriaId, direcionamentoId:t.direcionamentoId, desc:t.desc});
     } else {
       // a vista (1/1) ou parcela avulsa (meio/fim de uma compra sem historico anterior no sistema)
       const venc = calcVenc(t.dataCompra, _csvCartaoAlvo, t.parcela);
@@ -3812,15 +3902,22 @@ function confirmarImportacaoCSVCartao(){
         origemImportacao: _csvOrigemAlvo, dataImportacao: agora,
       });
       totalReal += t.valor; totalLancamentos++;
+      itensParaTesouraria.push({data:t.dataCompra, valorTotal:t.valor, categoriaId:t.categoriaId, direcionamentoId:t.direcionamentoId, desc:t.desc});
     }
   });
   if(!limites[_csvCartaoAlvo]) limites[_csvCartaoAlvo] = {total:0, usado:0};
   limites[_csvCartaoAlvo].usado = (limites[_csvCartaoAlvo].usado||0) + totalReal;
   salvar();
+  const cartaoImportado = _csvCartaoAlvo;
   _csvPendenteCartao = []; _csvCartaoAlvo = '';
   fecharModal('modal-csv-cartao');
   renderDashboard();
   showToast(`✅ ${totalCompras} compra(s) da fatura importada(s) (${totalLancamentos} lançamento(s) de parcela)`);
+  if(CARTOES[cartaoImportado]?.contaTesourariaId && getTokenTesouraria()){
+    registrarComprasTesouraria(cartaoImportado, itensParaTesouraria).then(res=>{
+      if(!res.ok) enfileirarComprasTesouraria({cartao:cartaoImportado, itens:res.itensQueFalharam||itensParaTesouraria});
+    });
+  }
 }
 
 // ── IMPORTAR QIF DO MICROSOFT MONEY ──────────────────────────
@@ -4055,6 +4152,7 @@ function renderRevisaoQIF(){
 function confirmarImportacaoQIF(){
   const agora = new Date().toISOString();
   let totalReal=0, qtd=0;
+  const itensParaTesouraria = [];
   _qifPendente.forEach((r,i)=>{
     if(!r.data) return;
     if(!document.getElementById(`qifrev${i}`)?.checked) return;
@@ -4062,21 +4160,29 @@ function confirmarImportacaoQIF(){
     const tipo = r.valor<0 ? 'despesa' : 'estorno';
     const valorAbs = Math.abs(r.valor);
     const venc = calcVenc(r.data, _qifCartaoAlvo, 1);
+    const desc = r.payee||r.memo||'(sem descrição)';
     compras.push({
-      uid:uid(), compraId:uid(), desc:r.payee||r.memo||'(sem descrição)', dataCompra:r.data, cartao:_qifCartaoAlvo,
+      uid:uid(), compraId:uid(), desc, dataCompra:r.data, cartao:_qifCartaoAlvo,
       nParcelas:1, parcela:1, valorParcela: tipo==='estorno'?-valorAbs:valorAbs, venc, tipo,
       ...(r.memo&&r.memo!==r.payee?{memo:r.memo}:{}), ...(categoriaId?{categoriaId}:{}),
       origemImportacao:'qif-money', dataImportacao: agora,
     });
     totalReal += tipo==='estorno'?-valorAbs:valorAbs; qtd++;
+    itensParaTesouraria.push({data:r.data, valorTotal: tipo==='estorno'?-valorAbs:valorAbs, categoriaId, desc});
   });
   if(!limites[_qifCartaoAlvo]) limites[_qifCartaoAlvo]={total:0,usado:0};
   limites[_qifCartaoAlvo].usado = (limites[_qifCartaoAlvo].usado||0)+totalReal;
   salvar();
+  const cartaoImportado = _qifCartaoAlvo;
   _qifPendente=[]; _qifCartaoAlvo=''; _qifCategoriasUnicas=[]; _qifMapaCategoria={};
   fecharModal('modal-qif-cartao');
   renderDashboard();
   showToast(`✅ ${qtd} lançamento(s) do Money importado(s)`);
+  if(CARTOES[cartaoImportado]?.contaTesourariaId && getTokenTesouraria()){
+    registrarComprasTesouraria(cartaoImportado, itensParaTesouraria).then(res=>{
+      if(!res.ok) enfileirarComprasTesouraria({cartao:cartaoImportado, itens:res.itensQueFalharam||itensParaTesouraria});
+    });
+  }
 }
 
 function salvarCompra(){
