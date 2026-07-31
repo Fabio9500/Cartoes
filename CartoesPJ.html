@@ -1323,7 +1323,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.5';
+const VERSAO = 'v5.6';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1686,6 +1686,24 @@ function atualizarIndicadorConexao(){
   }
 }
 
+// Busca o conteúdo de um arquivo grande (>1MB, que a API de Contents não
+// devolve embutido no campo "content") direto pela Git Blobs API
+// (api.github.com/repos/.../git/blobs/{sha}) em vez de usar o download_url
+// que a API de Contents sugere — esse download_url aponta pra
+// raw.githubusercontent.com, uma CDN com cache de até 5 minutos, que pode
+// servir conteúdo desatualizado. Isso é especialmente perigoso nas funções
+// que LEEM e depois REGRAVAM um arquivo (ex: registrarCompraTesouraria) —
+// se o conteúdo lido vier stale (faltando itens recentes) mas o SHA da
+// gravação for o atual, a gravação aceita e sobrescreve, apagando os itens
+// recentes que não foram lidos. A Blobs API não passa por CDN.
+async function buscarBlobGH(owner, repo, sha, token){
+  const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/blobs/${sha}`, {
+    headers:{ 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if(!r.ok) throw new Error('HTTP '+r.status+' (blob)');
+  const j = await r.json();
+  return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+}
 async function loadFromGitHub(){
   const r=await ghFetch(`contents/${GH_FILE}`);
   if(r.status===404)return null;
@@ -1700,8 +1718,7 @@ async function buscarArquivoAnoGH(nomeArquivo){
   const d=await r.json();
   let conteudo;
   if(!d.content || d.content.trim()===''){
-    const r2=await fetch(d.download_url);
-    conteudo=await r2.json();
+    conteudo = await buscarBlobGH(GH_OWNER, GH_REPO, d.sha, ghToken);
   } else {
     conteudo=JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
   }
@@ -2567,8 +2584,7 @@ async function ghCadastroCarregar(pfpj){
     _cadastroSha[pfpj] = j.sha;
     let dados;
     if(!j.content || j.content.trim()===''){
-      const r2 = await fetch(j.download_url);
-      dados = await r2.json();
+      dados = await buscarBlobGH('Fabio9500', 'tesourariasys', j.sha, token);
     } else {
       dados = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
     }
@@ -2736,8 +2752,7 @@ async function carregarContasTesouraria(){
     const j = await r.json();
     let dados;
     if(!j.content || j.content.trim()===''){
-      const r2 = await fetch(j.download_url);
-      dados = await r2.json();
+      dados = await buscarBlobGH('Fabio9500', 'tesourariasys', j.sha, token);
     } else {
       dados = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
     }
@@ -2836,8 +2851,7 @@ async function registrarDebitoTesouraria(contaId, valor, data, descricao, _tenta
       const jGet = await rGet.json();
       shaAno = jGet.sha;
       if(!jGet.content || jGet.content.trim()===''){
-        const r2 = await fetch(jGet.download_url);
-        listaAno = await r2.json();
+        listaAno = await buscarBlobGH('Fabio9500', 'tesourariasys', jGet.sha, token);
       } else {
         listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
       }
@@ -2880,8 +2894,7 @@ async function garantirAnoNoIndiceTesouraria(ano, token){
     const jGet = await rGet.json();
     let dados;
     if(!jGet.content || jGet.content.trim()===''){
-      const r2 = await fetch(jGet.download_url);
-      dados = await r2.json();
+      dados = await buscarBlobGH('Fabio9500', 'tesourariasys', jGet.sha, token);
     } else {
       dados = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
     }
@@ -2930,8 +2943,7 @@ async function registrarCompraTesouraria(cartao, data, valorTotal, categoriaId, 
       const jGet = await rGet.json();
       shaAno = jGet.sha;
       if(!jGet.content || jGet.content.trim()===''){
-        const r2 = await fetch(jGet.download_url);
-        listaAno = await r2.json();
+        listaAno = await buscarBlobGH('Fabio9500', 'tesourariasys', jGet.sha, token);
       } else {
         listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
       }
@@ -2989,8 +3001,7 @@ async function registrarCreditoContaCartao(cartao, itens, dataPagamento, _tentat
       const jGet = await rGet.json();
       shaAno = jGet.sha;
       if(!jGet.content || jGet.content.trim()===''){
-        const r2 = await fetch(jGet.download_url);
-        listaAno = await r2.json();
+        listaAno = await buscarBlobGH('Fabio9500', 'tesourariasys', jGet.sha, token);
       } else {
         listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
       }
@@ -3038,8 +3049,7 @@ async function _gravarLoteLancamentosAno(ano, novosLancs, mensagem, token, _tent
       const jGet = await rGet.json();
       shaAno = jGet.sha;
       if(!jGet.content || jGet.content.trim()===''){
-        const r2 = await fetch(jGet.download_url);
-        listaAno = await r2.json();
+        listaAno = await buscarBlobGH('Fabio9500', 'tesourariasys', jGet.sha, token);
       } else {
         listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
       }
@@ -6023,9 +6033,7 @@ async function verificarAtualizacaoRemota(){
     _shaAtual=shaRemoto;ghSha=shaRemoto;setLastSha(shaRemoto);
     let novosDados;
     if(!j.content||j.content.trim()===''){
-      const r2=await fetch(j.download_url);
-      if(!r2.ok)return;
-      novosDados=await r2.json();
+      try{ novosDados = await buscarBlobGH(GH_OWNER, GH_REPO, j.sha, ghToken); }catch(e){ return; }
     }else{
       novosDados=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
     }
