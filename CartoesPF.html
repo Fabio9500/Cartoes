@@ -1317,7 +1317,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.4';
+const VERSAO = 'v5.5';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -3593,6 +3593,26 @@ function abrirImportarOFXCartao(){
   `;
   document.getElementById('modal-ofx-cartao').classList.add('open');
 }
+// Lê um arquivo de texto tentando UTF-8 primeiro; se o resultado tiver
+// caractere de erro (U+FFFD), quer dizer que não era UTF-8 de verdade —
+// relê o mesmo arquivo como ISO-8859-1/Windows-1252 (encoding mais comum em
+// extratos OFX/CSV exportados por bancos brasileiros). Não cobre o caso raro
+// de um Latin-1 cujos bytes acentuados formem por coincidência uma sequência
+// UTF-8 válida (sem gerar U+FFFD) — na prática não observado nos extratos
+// bancários testados.
+function lerArquivoTextoAutoEncoding(arquivo, callback, onerror){
+  const leitor1 = new FileReader();
+  leitor1.onload = (e) => {
+    const texto = e.target.result;
+    if(texto.indexOf('�') === -1){ callback(texto); return; }
+    const leitor2 = new FileReader();
+    leitor2.onload = (e2) => callback(e2.target.result);
+    leitor2.onerror = onerror;
+    leitor2.readAsText(arquivo, 'ISO-8859-1');
+  };
+  leitor1.onerror = onerror;
+  leitor1.readAsText(arquivo, 'UTF-8');
+}
 function processarArquivoOFXCartao(){
   const cartao = document.getElementById('ofxc-cartao').value;
   const input = document.getElementById('ofxc-arquivo');
@@ -3600,10 +3620,9 @@ function processarArquivoOFXCartao(){
   const errEl = document.getElementById('erro-ofx');
   const mostrarErro = msg => { if(errEl){ errEl.textContent = msg; errEl.style.display = 'block'; } };
   if(!arquivo){ mostrarErro('Escolha um arquivo .ofx primeiro.'); return; }
-  const leitor = new FileReader();
-  leitor.onload = (e) => {
+  lerArquivoTextoAutoEncoding(arquivo, (texto) => {
     let transacoes;
-    try{ transacoes = parseOFX(e.target.result); }
+    try{ transacoes = parseOFX(texto); }
     catch(err){ mostrarErro('Não consegui ler este arquivo. Confira se é um .ofx válido.'); return; }
     if(!transacoes.length){ mostrarErro('Nenhuma compra encontrada neste arquivo.'); return; }
     const idsExistentes = new Set(compras.filter(c=>c.fitid).map(c=>c.fitid));
@@ -3621,9 +3640,7 @@ function processarArquivoOFXCartao(){
       };
     });
     mostrarRevisaoOFXCartao();
-  };
-  leitor.onerror = () => mostrarErro('Não foi possível ler o arquivo. Tente novamente.');
-  leitor.readAsText(arquivo, 'UTF-8');
+  }, () => mostrarErro('Não foi possível ler o arquivo. Tente novamente.'));
 }
 function mostrarRevisaoOFXCartao(){
   const reconhecidos = _ofxPendenteCartao.filter(t=>t.reconhecido).length;
@@ -3823,19 +3840,16 @@ function processarArquivoCSVCartao(){
   const errEl = document.getElementById('erro-csv');
   const mostrarErro = msg => { if(errEl){ errEl.textContent = msg; errEl.style.display = 'block'; } };
   if(!arquivo){ mostrarErro('Escolha um arquivo .csv primeiro.'); return; }
-  const leitor = new FileReader();
-  leitor.onload = (e) => {
+  lerArquivoTextoAutoEncoding(arquivo, (texto) => {
     let registros, origem;
-    try{ ({registros, origem} = parseCSVFaturaCartao(e.target.result)); }
+    try{ ({registros, origem} = parseCSVFaturaCartao(texto)); }
     catch(err){ mostrarErro('Não consegui ler este arquivo. Confira se é o CSV da fatura do cartão.'); return; }
     if(!registros.length){ mostrarErro('Nenhum lançamento encontrado neste arquivo. Se o banco não for o Bradesco, confira se o CSV tem colunas de Data, Descrição e Valor.'); return; }
     _csvCartaoAlvo = cartao;
     _csvOrigemAlvo = origem;
     _csvPendenteCartao = registros.map(r=>({ ...r, incluir: !jaExisteLancamentoCSV(cartao, r), jaExiste: jaExisteLancamentoCSV(cartao, r) }));
     mostrarRevisaoCSVCartao();
-  };
-  leitor.onerror = () => mostrarErro('Não foi possível ler o arquivo. Tente novamente.');
-  leitor.readAsText(arquivo, 'ISO-8859-1');
+  }, () => mostrarErro('Não foi possível ler o arquivo. Tente novamente.'));
 }
 function mostrarRevisaoCSVCartao(){
   const duplicados = _csvPendenteCartao.filter(t=>t.jaExiste).length;
@@ -5451,9 +5465,7 @@ function abrirImportador(){
 function lerArquivoExtrato(ev){
   const file=ev.target.files[0];
   if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{document.getElementById('imp-texto').value=e.target.result;};
-  reader.readAsText(file,'utf-8');
+  lerArquivoTextoAutoEncoding(file, texto=>{document.getElementById('imp-texto').value=texto;}, ()=>{});
 }
 
 function parseValorBR(str){
