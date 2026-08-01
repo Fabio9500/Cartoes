@@ -2710,7 +2710,8 @@ async function salvarItemCadastroUnico(campo, item, exclusao){
   }catch(e){
     const fila=getFilaCadastro(); fila.push({alvos,campo,item,exclusao}); setFilaCadastro(fila);
     setSyncStatus('error');
-    showToast('⚠️ Não consegui salvar agora — guardado neste dispositivo, tentaremos de novo',true);
+    console.error('Falha ao salvar cadastro único', e);
+    showToast('⚠️ Não consegui salvar agora ('+e.message+') — guardado neste dispositivo, tentaremos de novo',true);
   }
 }
 function _aplicarItemCadastroEm(cad, campo, item, exclusao){
