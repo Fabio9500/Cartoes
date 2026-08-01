@@ -13873,5 +13873,192 @@
     "parcela": 6,
     "valorParcela": 50.03,
     "venc": "2027-01-01"
+  },
+  {
+    "uid": "b5pxmim1ud",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 1,
+    "valorParcela": 4875.03,
+    "venc": "2026-08-15"
+  },
+  {
+    "uid": "aieg4oyoba",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 2,
+    "valorParcela": 4875.03,
+    "venc": "2026-09-15"
+  },
+  {
+    "uid": "as2f4fzst6",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 3,
+    "valorParcela": 4875.03,
+    "venc": "2026-10-15"
+  },
+  {
+    "uid": "xb7aiy8r18",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 4,
+    "valorParcela": 4875.03,
+    "venc": "2026-11-15"
+  },
+  {
+    "uid": "wro403xl4j",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 5,
+    "valorParcela": 4875.03,
+    "venc": "2026-12-15"
+  },
+  {
+    "uid": "s1s2pun1p3",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 6,
+    "valorParcela": 4875.03,
+    "venc": "2027-01-15"
+  },
+  {
+    "uid": "edasnnei9d",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 7,
+    "valorParcela": 4875.03,
+    "venc": "2027-02-15"
+  },
+  {
+    "uid": "jj7wm7wobt",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 8,
+    "valorParcela": 4875.03,
+    "venc": "2027-03-15"
+  },
+  {
+    "uid": "ofltqhtvyp",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 9,
+    "valorParcela": 4875.03,
+    "venc": "2027-04-15"
+  },
+  {
+    "uid": "5bdzf8wycc",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 10,
+    "valorParcela": 4875.03,
+    "venc": "2027-05-15"
+  },
+  {
+    "uid": "hmierv4itr",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 11,
+    "valorParcela": 4875.03,
+    "venc": "2027-06-15"
+  },
+  {
+    "uid": "t8ejertl5n",
+    "compraId": "lnku59qsil",
+    "desc": "FASA ME*FACULDADESSA",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 12,
+    "parcela": 12,
+    "valorParcela": 4875.03,
+    "venc": "2027-07-15"
+  },
+  {
+    "uid": "1sezzraka8",
+    "compraId": "tm8ceyxad2",
+    "desc": "Apple.com/Bill",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 109.9,
+    "venc": "2026-08-15"
+  },
+  {
+    "uid": "xvcy6gmv4o",
+    "compraId": "hzfft9wlqz",
+    "desc": "Amazon Prime Canais",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 19.9,
+    "venc": "2026-08-15"
+  },
+  {
+    "uid": "9chon5g4bv",
+    "compraId": "f46xgmr5wk",
+    "desc": "EBN *TikTok Shop",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 3,
+    "parcela": 1,
+    "valorParcela": 42.52,
+    "venc": "2026-08-15"
+  },
+  {
+    "uid": "oadm0eccko",
+    "compraId": "f46xgmr5wk",
+    "desc": "EBN *TikTok Shop",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 3,
+    "parcela": 2,
+    "valorParcela": 42.52,
+    "venc": "2026-09-15"
+  },
+  {
+    "uid": "n1en363pe5",
+    "compraId": "f46xgmr5wk",
+    "desc": "EBN *TikTok Shop",
+    "dataCompra": "2026-07-15",
+    "cartao": "santander",
+    "nParcelas": 3,
+    "parcela": 3,
+    "valorParcela": 42.52,
+    "venc": "2026-10-15"
   }
 ]
