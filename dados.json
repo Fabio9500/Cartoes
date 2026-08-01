@@ -246,9 +246,1059 @@
     }
   },
   "fechamentos": {},
-  "fornecedores": [],
-  "cartoesCustom": {},
-  "usuarios": [],
+  "fornecedores": [
+    {
+      "id": "msawpwqckvuc",
+      "nome": "Açougue Premium",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcnmny",
+      "nome": "ADAPTAORG",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc7mhn",
+      "nome": "AGIS DISTRIBUICAO",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcyob0",
+      "nome": "Água mineral",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbmon0",
+      "nome": "Águia Branca",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcwhlk",
+      "nome": "Alvarus",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqczrmw",
+      "nome": "Amazon",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcexfi",
+      "nome": "Amazon Prime Canais",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcmcql",
+      "nome": "Anuidade",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbar4e",
+      "nome": "ANUIDADE DIFERENCIADA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcdh0e",
+      "nome": "Apple",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcd40i",
+      "nome": "Apple.com/Bill",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbdllr",
+      "nome": "APPLECOMBILL",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqclr2q",
+      "nome": "ARENA ITB",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqczlxg",
+      "nome": "ASICS - LOJA SALVADOR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbheng",
+      "nome": "Ass. AMAZON PRIME BR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc9tjm",
+      "nome": "Ass. Apple  Icloud",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqckhwq",
+      "nome": "Ass. Claude",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbsl9r",
+      "nome": "Ass. CLUB SMILES",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbz5bf",
+      "nome": "Ass. CLUBE ESFERA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbzjc3",
+      "nome": "Ass. CLUBE LIVELO",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc3uy2",
+      "nome": "Ass. Ifood",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc23h1",
+      "nome": "Ass. Netflix",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqck54r",
+      "nome": "Ass. Sportify",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcutxp",
+      "nome": "Ass. UOL",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcbdjt",
+      "nome": "Ass. Zs Seguro Santander",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc9ylr",
+      "nome": "Atacadao",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqboqfm",
+      "nome": "Atacadão",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcfpfq",
+      "nome": "Atakarejo",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcl2qu",
+      "nome": "AUTO POSTO VIP",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc4eoc",
+      "nome": "B91 HORTIFRUT CG",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc5e2t",
+      "nome": "BAHIA PARK BAHIA MARIN",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc4u8g",
+      "nome": "Barbearia",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb0dnn",
+      "nome": "Bateria Moura",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbuntl",
+      "nome": "BIO MUNDO",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc92ps",
+      "nome": "Bira Queijos",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc6tpa",
+      "nome": "Boboniere",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbev5f",
+      "nome": "Bom sabor",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqce5qi",
+      "nome": "BRADESCO AUT 01",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc57td",
+      "nome": "BRADESCO Capitalizacao",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqchfaw",
+      "nome": "Brasilgás",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc345n",
+      "nome": "BS COMERCIO DE GAS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc5uqt",
+      "nome": "CAMACARI OUTLET 00016",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc4kvy",
+      "nome": "CASA DO CONSTRUTOR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcodp5",
+      "nome": "CASAR PRE-SENTE",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcentb",
+      "nome": "Casas Bahia",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcg5vi",
+      "nome": "Casatua",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcu6l4",
+      "nome": "Chat pro",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcdnl2",
+      "nome": "CHEIRO E PAO",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqczied",
+      "nome": "CHOCOLATES VARIEDADE",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcc8jr",
+      "nome": "CIANO PJBANK",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcz9nx",
+      "nome": "CIANO PJBANK 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcuy40",
+      "nome": "Clara Mat. Construção",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbr0e4",
+      "nome": "COMERCIO MS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqccn08",
+      "nome": "Cond. C. Jardim 1102",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqckp32",
+      "nome": "Cond. Cidadelle",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc4l5r",
+      "nome": "Cond. E 15",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcsbxt",
+      "nome": "CONLAR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqckyji",
+      "nome": "Conlar - Impermeabilizantes",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqchql9",
+      "nome": "CONVENIENCIA JEQUITIBA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbd1k2",
+      "nome": "CRISTAL MOTORS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc0dvr",
+      "nome": "Cyntia - Compras do mes",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcgjuq",
+      "nome": "Dengo",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcgxwl",
+      "nome": "Diesel Mat. Construcao",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcbluf",
+      "nome": "Dindin Capitalizacao",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcqjjt",
+      "nome": "Distribuidora de agua",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcf78p",
+      "nome": "DISTRIBUIDORA DEUS A",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcphiv",
+      "nome": "Diverso",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbkhl2",
+      "nome": "Diversos",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbj5i4",
+      "nome": "DMA DISTRIBUIDORA SA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc2f8b",
+      "nome": "DMA DISTRIBUIDORA SA 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcjlw7",
+      "nome": "Dra. Dos Petis",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbhi99",
+      "nome": "Drogasil",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqckhe3",
+      "nome": "EBN *TikTok Shop",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcyqo4",
+      "nome": "EBN TIKTOK SHOP",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc42id",
+      "nome": "EBN TIKTOK SHOP 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbnq8k",
+      "nome": "ECON PREMIAVEL BRADESCO",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc2y9k",
+      "nome": "ECON PREMIAVEL BRADESCO 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcutmh",
+      "nome": "Ecopremeavel",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbpl7f",
+      "nome": "ELEMENTAR MANIPULACA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcthqu",
+      "nome": "Emp. MS Cosmético",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcg2mm",
+      "nome": "Empório Biboca - Neguinha",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc1wcs",
+      "nome": "Eternit - Campo Santo",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb4ht9",
+      "nome": "FABRICA DE CACHOS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcc4gx",
+      "nome": "FARAGE FERRO E ACO",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb7zge",
+      "nome": "FASA ME ACORDOMENSAL",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbwvos",
+      "nome": "FASA ME ACORDOMENSALI",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc1ek8",
+      "nome": "FASA ME*FACULDADESSA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqci4st",
+      "nome": "GALEGO MOVEIS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbfcpq",
+      "nome": "GRUPO CASAS BAHIA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbjzhx",
+      "nome": "GRUPO CASAS BAHIA 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqckoxb",
+      "nome": "HERING LIGHT ITABUNA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcmdwu",
+      "nome": "Hidroplastik",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcy0xs",
+      "nome": "Hortifrúti",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcytuo",
+      "nome": "IFD IFOOD CLUB",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc6c1y",
+      "nome": "Ifood",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqchq49",
+      "nome": "IG ISAAC 1",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcyyuq",
+      "nome": "IG ISAAC 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqchnox",
+      "nome": "Igood",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqceisc",
+      "nome": "InfinityPay",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcosnp",
+      "nome": "Intelbras",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcxuww",
+      "nome": "IPPON",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbr6z1",
+      "nome": "Itabuna tecidos",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc9ehe",
+      "nome": "Junior Salgados",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcg1nc",
+      "nome": "KOPENHAGEN",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcmfsr",
+      "nome": "L Lopes - A rever",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbx7v6",
+      "nome": "LATAM AIR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqciu9y",
+      "nome": "Le Biscuit - Mainha",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcyr5i",
+      "nome": "LE CHAT",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcwap1",
+      "nome": "LIU HORTIFRUTI",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc80yy",
+      "nome": "Livraria Brasilia",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqchie1",
+      "nome": "LOOM MULTIMARCAS 1",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcyskh",
+      "nome": "LOOM MULTIMARCAS 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbf06a",
+      "nome": "LORRANA SILVA DE",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc6yow",
+      "nome": "LOS PAMPAS ITABUNA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcbxde",
+      "nome": "Maiana Água mineral",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqba21m",
+      "nome": "Manual Tratamento",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc27i0",
+      "nome": "MARIANICELYDOS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcrhnk",
+      "nome": "Matheus - Compras do mês",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqclksx",
+      "nome": "Mayana  Água mimeral",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqclwb1",
+      "nome": "Merc.Livre Tenis",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcq3c9",
+      "nome": "Mercado Livre Azarro",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcxpk7",
+      "nome": "Mineirão Atacado",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcap3v",
+      "nome": "Mirasul Muri",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc6omy",
+      "nome": "MISS KOH SHOP SSA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc4wm7",
+      "nome": "MIX MATEUS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqczv0u",
+      "nome": "Mix Matheus",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcn3f0",
+      "nome": "Morro dos Navegantes",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc8mh7",
+      "nome": "MP *BRENNER",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc0vxw",
+      "nome": "MRSN COMERCIO CAL 1",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcx928",
+      "nome": "MRSN COMERCIO CAL 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbebw7",
+      "nome": "Muri Japonês",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcxqmc",
+      "nome": "NATSU",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqci4k7",
+      "nome": "Natura - Matheus",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbd5zt",
+      "nome": "NETFLIX COM",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqchpbb",
+      "nome": "NFS SALVADOR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcqfvw",
+      "nome": "Padaria",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc7bwp",
+      "nome": "Padoca",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc9nyo",
+      "nome": "PAGUE MENOS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqchc36",
+      "nome": "PAO E VINHO 1",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqch6vp",
+      "nome": "PAO E VINHO 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc6l0n",
+      "nome": "Paradaise Vinho",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc8ooy",
+      "nome": "PG ISAAC TECSERV",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbiuyw",
+      "nome": "PG PAGTRUST TECNOLOGI",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbxuzz",
+      "nome": "PHILISOM",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc5z5o",
+      "nome": "Pizzaria",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcjf8n",
+      "nome": "PlayStation",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqck93e",
+      "nome": "POINT DOS MORANGOS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc7x6c",
+      "nome": "PONTO DO ACAI",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbw7rn",
+      "nome": "PORTO SEGURO CIA SEG",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbglyb",
+      "nome": "Posto",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbjy5r",
+      "nome": "Posto Jocel",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc2jc2",
+      "nome": "POSTO SODIC BOAS VINDA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb68g0",
+      "nome": "PRODUTOSUOL",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc2qkj",
+      "nome": "RC 119-OUTLET SALVADOR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc16fg",
+      "nome": "Rest. Jandis",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcmcth",
+      "nome": "Restaurante",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbrps3",
+      "nome": "Rondelli",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcpf3c",
+      "nome": "Rural quimica",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqctzm9",
+      "nome": "Sabor a lenha",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb9rpq",
+      "nome": "SABORES DO IATE",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcip72",
+      "nome": "SAF",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc9kp1",
+      "nome": "SAL E BRASA GRILL EXP",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqct8uo",
+      "nome": "SAMS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcfu5o",
+      "nome": "SAMS LAURO DE FREITAS",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb1a00",
+      "nome": "SANTANA MARTINS CIA 1",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqboumb",
+      "nome": "SANTANA MARTINS CIA 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqczi1a",
+      "nome": "ScalaComercioDe",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc8eu1",
+      "nome": "Seguro Amarok",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb7lmu",
+      "nome": "SEGUROS SE SEGUROGAR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbf8hb",
+      "nome": "SEPHORA PAULISTA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcrtrl",
+      "nome": "SESTINI",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcmkjs",
+      "nome": "SGH I 6838 I OUTLET PR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb4wry",
+      "nome": "SIMOES MATERIAIS PCO",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcwpse",
+      "nome": "SORVETERIA ACUBANA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbnnd5",
+      "nome": "Supermercado Conceição",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqczy1t",
+      "nome": "TAP CALL CENTER VIP",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcvmo9",
+      "nome": "Telasul",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbfvjb",
+      "nome": "TELHAS BAHIA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqckri0",
+      "nome": "Tico Mia Matheus",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcw5nw",
+      "nome": "Tik Tok",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcalm0",
+      "nome": "TIRACHAPEU GASTRONOMIA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcewu2",
+      "nome": "TRACK AND FIELD",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcaluw",
+      "nome": "Ultragas",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqchkvq",
+      "nome": "Ultragas - Estorno",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqczlh6",
+      "nome": "UnossoBar",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb7vc1",
+      "nome": "USAFLEX ITABUNA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcm1su",
+      "nome": "Vesúvio",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqb231j",
+      "nome": "VIVARA ITA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcxyxx",
+      "nome": "VR OUTLET SALVADOR",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcv87j",
+      "nome": "WELLHUB FABIO OLIVEIRA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc8rix",
+      "nome": "WELLHUB FABIO OLIVEIRA 2",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqc1zlj",
+      "nome": "ZP JAY OLIVEIRA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqcw6me",
+      "nome": "ZP*SNC COMERCIO LTDA",
+      "obs": ""
+    },
+    {
+      "id": "msawpwqbedq3",
+      "nome": "ZS SEG AC PESSOA MAR26",
+      "obs": ""
+    }
+  ],
+  "cartoesCustom": {
+    "4290": {
+      "nome": "BRA (20)",
+      "banco": "Bradesco",
+      "venc": 20,
+      "fechDias": 10,
+      "tag": "bradesco",
+      "contaTesourariaId": "ms7to7vefgcgtmu"
+    },
+    "5883": {
+      "nome": "American (07)",
+      "banco": "American",
+      "venc": 7,
+      "fechDias": 8,
+      "tag": "bradesco",
+      "contaTesourariaId": "ms7to7ve689yl93"
+    },
+    "7672": {
+      "nome": "BRA (10)",
+      "banco": "Bradesco",
+      "venc": 10,
+      "fechDias": 10,
+      "tag": "bradesco",
+      "contaTesourariaId": "ms7to7ve7056tq2"
+    },
+    "8139": {
+      "nome": "BRA (01)",
+      "banco": "Bradesco",
+      "venc": 1,
+      "fechDias": 10,
+      "tag": "bradesco",
+      "contaTesourariaId": "ms7to7vbksxxly8"
+    },
+    "santander": {
+      "nome": "Santander (15)",
+      "banco": "Santander",
+      "venc": 15,
+      "fechDias": 5,
+      "tag": "santander",
+      "contaTesourariaId": "ms7to7vexe5a4a6"
+    },
+    "bradesco1": {
+      "nome": "BRA 31",
+      "banco": "Bradesco",
+      "venc": 31,
+      "fechDias": 10,
+      "tag": "bradesco",
+      "contaTesourariaId": "ms7to7vejogpfih"
+    }
+  },
+  "usuarios": [
+    {
+      "id": "mr016f6govir",
+      "nome": "Fabio",
+      "login": "fabio",
+      "hash": "fc613b4dfd6736a7bd268c8a0e74ed0d1c04a959f59dd74ef2874983fd443fc9",
+      "perfil": "master",
+      "ativo": true
+    },
+    {
+      "id": "mr016f6g605m",
+      "nome": "Alice",
+      "login": "alice",
+      "hash": "2bd806c97f0e00af1a1fc3328fa763a9269723c8db8fac4f93af71db186d6e90",
+      "perfil": "operador",
+      "ativo": true
+    },
+    {
+      "id": "mr016f6gyqdf",
+      "nome": "Bruno",
+      "login": "bruno",
+      "hash": "ccc68482d9e0eee0789e64c7674421076738f8836857ea89bcd0afb832bf3fc3",
+      "perfil": "operador",
+      "ativo": true
+    }
+  ],
   "favoritosCF": [],
   "anosCompras": [
     "2026"
