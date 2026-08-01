@@ -2028,6 +2028,14 @@ window.addEventListener('offline',()=>{setSyncStatus('queued');atualizarIndicado
 
 // Backup automático no GitHub a cada 6 horas
 setInterval(async()=>{ await backupGitHub(true); }, 6*60*60*1000);
+// Rede de segurança pra fila de cadastro pendente: o evento 'online' do
+// navegador só dispara numa transição real offline→online, mas
+// navigator.onLine (usado em isOnline()) não é 100% confiável — em teste
+// real (01/08/2026) ficou uma alteração pendurada porque o evento nunca
+// disparou, mesmo com internet disponível; só um F5 resolveu. Confere a
+// cada 45s se tem algo pendente e a conexão parece OK, sem depender só do
+// evento.
+setInterval(()=>{ if(getFilaCadastro().length && isOnline()) resolverFilaCadastroPendente(); }, 45000);
 async function boot(){
   await verificarAuth();
 }
@@ -2709,9 +2717,16 @@ async function salvarItemCadastroUnico(campo, item, exclusao){
     await carregarCadastrosUnicos();
   }catch(e){
     const fila=getFilaCadastro(); fila.push({alvos,campo,item,exclusao}); setFilaCadastro(fila);
-    setSyncStatus('error');
     console.error('Falha ao salvar cadastro único', e);
-    showToast('⚠️ Não consegui salvar agora ('+e.message+') — guardado neste dispositivo, tentaremos de novo',true);
+    if(e instanceof TypeError){
+      // Falha de rede de verdade (ex: navigator.onLine disse que tinha conexão,
+      // mas na hora do fetch não tinha) — mesmo tratamento do salvar() principal:
+      // trata como "ainda offline", não como erro de verdade.
+      setSyncStatus('queued');
+    } else {
+      setSyncStatus('error');
+      showToast('⚠️ Não consegui salvar agora ('+e.message+') — guardado neste dispositivo, tentaremos de novo',true);
+    }
   }
 }
 function _aplicarItemCadastroEm(cad, campo, item, exclusao){
