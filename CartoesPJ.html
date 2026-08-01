@@ -1323,7 +1323,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.9';
+const VERSAO = 'v5.10';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2724,6 +2724,34 @@ function _aplicarItemCadastroEm(cad, campo, item, exclusao){
   }
   cad[campo]=lista;
 }
+// Grava um lote de itens novos (categorias ou centros de custo) num único
+// arquivo pf/pj — usado ao confirmar mapeamento de QIF. Mesma proteção
+// offline/erro do salvarItemCadastroUnico acima: aplica local na hora (pra
+// "categorias"/"centrosCusto" já refletir os novos itens mesmo offline) e,
+// se offline ou a gravação falhar, enfileira o lote inteiro.
+async function _salvarLoteCadastroUnico(pfpj, campo, itensNovos){
+  if(!itensNovos.length) return;
+  const cadLocal = pfpj==='pj' ? CADASTRO_PJ : CADASTRO_PF;
+  cadLocal[campo] = [...(cadLocal[campo]||[]), ...itensNovos];
+  aplicarCadastrosUnicosLocal();
+  if(!isOnline()){
+    const fila=getFilaCadastro(); fila.push({lote:true,pfpj,campo,itensNovos}); setFilaCadastro(fila);
+    setSyncStatus('queued');
+    showToast('📴 Sem conexão — alteração guardada neste dispositivo, será enviada ao voltar');
+    return;
+  }
+  try{
+    const cad = await ghCadastroCarregar(pfpj);
+    cad[campo] = [...(cad[campo]||[]), ...itensNovos];
+    await ghCadastroSalvar(pfpj, cad);
+    await carregarCadastrosUnicos();
+  }catch(e){
+    const fila=getFilaCadastro(); fila.push({lote:true,pfpj,campo,itensNovos}); setFilaCadastro(fila);
+    console.error('Falha ao salvar lote de cadastro único', e);
+    if(e instanceof TypeError){ setSyncStatus('queued'); }
+    else { setSyncStatus('error'); showToast('⚠️ Não consegui salvar agora ('+e.message+') — guardado neste dispositivo, tentaremos de novo',true); }
+  }
+}
 // Tenta reenviar as alterações de cadastro que ficaram pendentes offline —
 // chamado ao reconectar (ver initData()). Cada item da fila é reaplicado por
 // cima do cadastro mais recente do GitHub (não do estado local, que pode já
@@ -2736,10 +2764,16 @@ async function resolverFilaCadastroPendente(){
   const pendentes=[];
   for(const op of fila){
     try{
-      for(const alvo of op.alvos){
-        const cad = await ghCadastroCarregar(alvo);
-        _aplicarItemCadastroEm(cad, op.campo, op.item, op.exclusao);
-        await ghCadastroSalvar(alvo, cad);
+      if(op.lote){
+        const cad = await ghCadastroCarregar(op.pfpj);
+        cad[op.campo] = [...(cad[op.campo]||[]), ...op.itensNovos];
+        await ghCadastroSalvar(op.pfpj, cad);
+      } else {
+        for(const alvo of op.alvos){
+          const cad = await ghCadastroCarregar(alvo);
+          _aplicarItemCadastroEm(cad, op.campo, op.item, op.exclusao);
+          await ghCadastroSalvar(alvo, cad);
+        }
       }
     }catch(e){ pendentes.push(op); }
   }
@@ -4209,9 +4243,6 @@ async function confirmarMapeamentoQIF(){
     });
     if(novasMaes.size || pendentesCriacao.some(c=>c.texto.includes(':'))){
       const pfpj = TIPO_DADOS==='pj' ? 'pj' : 'pf';
-      const cad = await ghCadastroCarregar(pfpj);
-      cad.categorias = cad.categorias||[];
-      cad.categorias.push(...novasMaes.values());
       pendentesCriacao.forEach(c=>{
         const [maeTexto, subTexto] = c.texto.split(':').map(s=>s?.trim());
         if(!subTexto) return;
@@ -4221,9 +4252,11 @@ async function confirmarMapeamentoQIF(){
         const subExistente = categorias.find(x=>x.parentId===maeId && x.nome.toLowerCase()===subTexto.toLowerCase());
         if(!subExistente) novasSubs.push({id:uid(), nome:subTexto, parentId:maeId, tipo:'despesa', tipoPFPJ:TIPO_DADOS==='pj'?'PJ':'PF'});
       });
-      cad.categorias.push(...novasSubs);
-      await ghCadastroSalvar(pfpj, cad);
-      await carregarCadastrosUnicos();
+      // Mesma proteção offline/erro do salvarItemCadastroUnico: aplica local
+      // na hora (pra "categorias" já refletir os novos itens no mapeamento
+      // logo abaixo, mesmo offline) e, se offline ou a gravação falhar,
+      // enfileira pra tentar de novo depois.
+      await _salvarLoteCadastroUnico(pfpj, 'categorias', [...novasMaes.values(), ...novasSubs]);
     }
     // Monta o mapa final texto → categoriaId, agora com o cadastro atualizado
     _qifMapaCategoria = {};
