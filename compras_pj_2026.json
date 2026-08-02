@@ -5524,16 +5524,5 @@
     "parcela": 1,
     "valorParcela": 107.93,
     "venc": "2026-08-05"
-  },
-  {
-    "uid": "drk4zl5dkt",
-    "compraId": "ikwi3xyocd",
-    "desc": "L Comercio de Ferro",
-    "dataCompra": "2026-06-29",
-    "cartao": "c6",
-    "nParcelas": 1,
-    "parcela": 1,
-    "valorParcela": 34.87,
-    "venc": "2026-08-05"
   }
 ]
