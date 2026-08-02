@@ -1375,7 +1375,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.30';
+const VERSAO = 'v5.31';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -4943,19 +4943,18 @@ function imprimirSecao(secId, titulo){
     <meta charset="UTF-8">
     <title>${titulo}</title>
     <style>
-      /* Padrão de fonte de impressão (pedido do Fabio, 02/08/2026): mesmo
-         tamanho/peso usado na impressão da fatura (nome do cartão = tamanho
-         do saldo, 1rem/800) — aplicado aqui em todas as impressões geradas
-         por popup (relatórios, fornecedor, etc), que antes usavam fontes
-         bem menores (9-13px) e ficavam difíceis de ler no papel. */
-      body{font-family:Arial,sans-serif;font-size:15px;padding:20px;color:#1a1814;}
-      h2{margin-bottom:16px;color:#1a1814;font-size:1.3rem;font-weight:800;}
-      table{width:100%;border-collapse:collapse;font-size:14px;}
-      th{background:#f0ede8;padding:9px 12px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#8a8070;border-bottom:2px solid #e2ddd7;}
-      td{padding:9px 12px;border-bottom:1px solid #e2ddd7;}
+      /* Padrão CORRETO de fonte de impressão (corrigido 02/08/2026 — a
+         referência do Fabio era a janela que abre pelo botão 🖨 do card
+         do Dashboard, que já usava essa fonte compacta; replicado aqui
+         pra ficar igual em todas as impressões geradas por popup). */
+      body{font-family:Arial,sans-serif;font-size:12px;padding:20px;color:#1a1814;}
+      h2{margin-bottom:16px;color:#1a1814;}
+      table{width:100%;border-collapse:collapse;font-size:11px;}
+      th{background:#f0ede8;padding:7px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:#8a8070;border-bottom:2px solid #e2ddd7;}
+      td{padding:7px 10px;border-bottom:1px solid #e2ddd7;}
       tr:last-child td{border-bottom:none;}
-      tfoot td{font-weight:800;}
-      .tag{padding:2px 6px;border-radius:4px;font-size:12px;font-weight:700;}
+      tfoot td{font-weight:700;border-top:2px solid #1a1814;padding-top:10px;}
+      .tag{padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;}
       @media print{body{padding:0;}}
     </style>
   </head><body>
@@ -5085,23 +5084,23 @@ function imprimirFaturaUnica(cartao, venc){
   const linhas=itens.map(x=>`<tr>
     <td>${x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'—'}</td>
     <td><strong>${esc(x.desc)}</strong></td>
-    <td style="color:#8a8070;font-size:12px;">${x.memo?esc(x.memo):'—'}</td>
-    <td>${x.categoria?`<span style="display:inline-block;padding:2px 7px;border-radius:8px;background:#f0ede8;font-size:11px;font-weight:700;">${esc(x.categoria)}</span>`:'—'}</td>
+    <td style="color:#8a8070;font-size:10px;">${x.memo?esc(x.memo):'—'}</td>
+    <td>${x.categoria?`<span style="display:inline-block;padding:1px 6px;border-radius:8px;background:#f0ede8;font-size:9px;font-weight:700;">${esc(x.categoria)}</span>`:'—'}</td>
     <td style="text-align:center;">${x.nParcelas>1?x.parcela+'/'+x.nParcelas:'à vista'}</td>
     <td style="text-align:right;font-weight:700;">${fmt(x.valorParcela)}</td>
   </tr>`).join('');
   w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fatura '+card.nome+'</title><style>'
-    // Padrão de fonte de impressão (pedido do Fabio, 02/08/2026): mesmo
-    // tamanho/peso aprovado na impressão da fatura (nome do cartão no
-    // tamanho do saldo, 1rem/800) — aplicado aqui também, no lugar das
-    // fontes pequenas (9-13px) que essa janela usava antes.
-    +'body{font-family:Arial,sans-serif;font-size:15px;padding:24px;color:#1a1814;}'
-    +'h2{margin:0 0 4px;color:#1a1814;font-size:1.3rem;font-weight:800;}.sub{color:#8a8070;margin-bottom:18px;font-size:14px;}'
-    +'table{width:100%;border-collapse:collapse;font-size:14px;}'
-    +'th{background:#f0ede8;padding:8px 11px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#8a8070;border-bottom:2px solid #e2ddd7;}'
-    +'td{padding:8px 11px;border-bottom:1px solid #e2ddd7;vertical-align:middle;}'
+    // Padrão CORRETO de fonte de impressão (corrigido 02/08/2026 — a
+    // referência do Fabio era ESTA janela, a que abre pelo botão 🖨 do
+    // card do Dashboard; a versão anterior aumentou por engano, revertido
+    // pra fonte compacta original e replicado assim em todas as impressões).
+    +'body{font-family:Arial,sans-serif;font-size:12px;padding:24px;color:#1a1814;}'
+    +'h2{margin:0 0 4px;color:#1a1814;}.sub{color:#8a8070;margin-bottom:18px;font-size:13px;}'
+    +'table{width:100%;border-collapse:collapse;font-size:11px;}'
+    +'th{background:#f0ede8;padding:6px 9px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:#8a8070;border-bottom:2px solid #e2ddd7;}'
+    +'td{padding:6px 9px;border-bottom:1px solid #e2ddd7;vertical-align:middle;}'
     +'tr:last-child td{border-bottom:none;}'
-    +'tfoot td{font-weight:800;font-size:1.1rem;border-top:2px solid #1a1814;padding-top:12px;}'
+    +'tfoot td{font-weight:700;border-top:2px solid #1a1814;padding-top:10px;}'
     +'@media print{body{padding:0;}}'
     +'</style></head><body>'
     +'<h2>'+card.nome+' — '+card.banco+'</h2>'
