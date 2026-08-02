@@ -62,6 +62,12 @@ main{padding:18px 16px;max-width:1100px;margin:0 auto;}
 .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-top:20px;}
 .section-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:20px;}
+.chip-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;padding-bottom:6px;border-bottom:1px dashed var(--border);}
+.chip-toolbar button{background:none;border:1px solid var(--border);border-radius:5px;padding:2px 6px;font-size:.68rem;cursor:pointer;color:var(--muted);line-height:1.4;}
+.chip-toolbar button:hover{background:var(--surface2);color:var(--text);}
+.chip-drag-handle{cursor:grab;color:var(--muted);font-size:.8rem;user-select:none;}
+.card-chip.dragging{opacity:.4;}
+.card-chip.drag-over{outline:2px dashed var(--accent);outline-offset:2px;}
 .card-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);transition:transform .2s;}.card-chip:hover{transform:translateY(-2px);}
 .chip-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
 .bank-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 7px;border-radius:4px;color:#fff;}
@@ -1369,7 +1375,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.27';
+const VERSAO = 'v5.28';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1722,7 +1728,7 @@ function setFila(payload){try{localStorage.setItem(PREFIX+'_fila',JSON.stringify
 function limparFila(){localStorage.removeItem(PREFIX+'_fila');}
 function getLastSha(){return localStorage.getItem(PREFIX+'_last_sha')||'';}
 function setLastSha(sha){if(sha)localStorage.setItem(PREFIX+'_last_sha',sha);}
-function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,cartoesCustom,usuarios,favoritosCF};}
+function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,cartoesCustom,usuarios,favoritosCF,ordemCartoesDash};}
 // Fila separada pra Categoria/Centro de Custo/Direcionamento (cadastros-pf.json
 // e cadastros-pj.json, no repo do TesourariaSys) — 01/08/2026, a pedido do
 // Fabio (opção "A+"). Achado na varredura: salvarItemCadastroUnico() gravava
@@ -1918,7 +1924,7 @@ async function sincronizarAgora(){
     } else {
       compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{};
       fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; cartoesCustom=data.cartoesCustom||{};
-      usuarios=data.usuarios||[]; favoritosCF=data.favoritosCF||[];
+      usuarios=data.usuarios||[]; favoritosCF=data.favoritosCF||[]; ordemCartoesDash=data.ordemCartoesDash||[];
       Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
       setSyncStatus('ok');
@@ -1972,6 +1978,7 @@ const DEFAULT_LIMITES={8139:{total:170000,usado:0},7672:{total:170000,usado:0},4
 
 let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={}, direcionamentos=[];
 let favoritosCF=[];
+let ordemCartoesDash=[];
 let usuarios=[];
 let USUARIO_ATUAL=null, _pfSelId=null;
 const PF_LABELS={master:'Master',operador:'Operador',consulta:'Consulta'};
@@ -2064,7 +2071,7 @@ async function initData(){
     if(dados){
       compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
       fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; cartoesCustom=dados.cartoesCustom||{};
-      usuarios=dados.usuarios||[]; favoritosCF=dados.favoritosCF||[];
+      usuarios=dados.usuarios||[]; favoritosCF=dados.favoritosCF||[]; ordemCartoesDash=dados.ordemCartoesDash||[];
       carregarCadastrosUnicosOffline();
       Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       document.getElementById('loading-screen').style.display='none';
@@ -2093,7 +2100,7 @@ async function initData(){
         Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       } else {
         compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; cartoesCustom=data.cartoesCustom||{};
-        usuarios=data.usuarios||[]; favoritosCF=data.favoritosCF||[];
+        usuarios=data.usuarios||[]; favoritosCF=data.favoritosCF||[]; ordemCartoesDash=data.ordemCartoesDash||[];
         Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
         setSyncStatus('ok');
@@ -2359,7 +2366,8 @@ function renderDashboard(){
     <div class="total-card"><div class="label">Limite disponível</div><div class="valor success">${fmt(tDisp)}</div></div>`;
   const usadoBT=usoFuturo['8139']+usoFuturo['7672']+usoFuturo['4290'];
   const grid=document.getElementById('cards-grid'); grid.innerHTML='';
-  Object.entries(CARTOES).sort((a,b)=>a[1].venc-b[1].venc).forEach(([k,c])=>{
+  const _ordemAtual=ordemCartoesAtual();
+  _ordemAtual.map(k=>[k,CARTOES[k]]).filter(([k,c])=>c).forEach(([k,c],idx)=>{
     const l=limites[k]||{total:0}, isBra=k.startsWith('bradesco');
     const usado=isBra?usadoBT:(usoFuturo[k]||0), total=l.total||0;
     const pct=total>0?Math.min(100,(usado/total)*100):0, cor=corLimite(pct);
@@ -2378,7 +2386,16 @@ function renderDashboard(){
           <button onclick="event.stopPropagation();fecharFatura('${k}')" style="padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.7rem;cursor:pointer;color:var(--muted);">Fechar fatura</button>
         </div>`;
     grid.innerHTML+=`
-    <div class="card-chip" style="cursor:pointer" onclick="verFaturaAtualCard('${k}','${proxVenc}')" title="Ver fatura atual">
+    <div class="card-chip" style="cursor:pointer" draggable="true"
+      ondragstart="cardDragStart(event,'${k}')" ondragend="cardDragEnd(event)"
+      ondragover="cardDragOver(event)" ondragleave="cardDragLeave(event)" ondrop="event.stopPropagation();cardDrop(event,'${k}')"
+      onclick="verFaturaAtualCard('${k}','${proxVenc}')" title="Ver fatura atual">
+      <div class="chip-toolbar no-print" onclick="event.stopPropagation()">
+        <button onclick="moverCartaoDash('${k}',-1)" title="Mover pra posição anterior" ${idx===0?'disabled style="opacity:.3;cursor:default;"':''}>◀</button>
+        <span class="chip-drag-handle" title="Arraste pra reordenar">⠿</span>
+        <button onclick="imprimirFaturaCard('${k}','${proxVenc}')" title="Imprimir fatura atual">🖨</button>
+        <button onclick="moverCartaoDash('${k}',1)" title="Mover pra próxima posição" ${idx===_ordemAtual.length-1?'disabled style="opacity:.3;cursor:default;"':''}>▶</button>
+      </div>
       <div class="chip-top"><span class="bank-label ${c.tag}">${c.banco}</span><span class="venc-info">Dia ${c.venc}</span></div>
       <div class="chip-name">${c.nome}${tagU}</div>
       <div style="font-size:.68rem;color:var(--muted);margin-bottom:8px">Limite: ${fmt(total)}${isBra?' (3 cartões)':''}</div>
@@ -4946,6 +4963,64 @@ function imprimirSecao(secId, titulo){
 }
 
 
+// ── ORDEM DOS CARDS DO DASHBOARD (arrastar pra reordenar) ──────
+// Pedido do Fabio (02/08/2026): cards de cartão do Dashboard devem poder
+// ser reordenados livremente. Ordem padrão (quando ainda não foi mexida):
+// cartão com fatura FECHADA primeiro, depois por dia de vencimento — depois
+// disso, a ordem escolhida pelo Fabio (ordemCartoesDash) prevalece e fica
+// salva no dados.json, sincronizada entre dispositivos.
+function ordemCartoesPadrao(){
+  return Object.entries(CARTOES).sort((a,b)=>{
+    const fechA=(fechamentos&&fechamentos[a[0]])?0:1;
+    const fechB=(fechamentos&&fechamentos[b[0]])?0:1;
+    if(fechA!==fechB)return fechA-fechB;
+    return a[1].venc-b[1].venc;
+  }).map(([k])=>k);
+}
+function ordemCartoesAtual(){
+  const todos=Object.keys(CARTOES);
+  const salva=(ordemCartoesDash||[]).filter(k=>todos.includes(k));
+  const faltando=ordemCartoesPadrao().filter(k=>!salva.includes(k));
+  return [...salva,...faltando];
+}
+function moverCartaoDash(k,dir){
+  const ordem=ordemCartoesAtual();
+  const i=ordem.indexOf(k),j=i+dir;
+  if(i<0||j<0||j>=ordem.length)return;
+  [ordem[i],ordem[j]]=[ordem[j],ordem[i]];
+  ordemCartoesDash=ordem;
+  salvar();renderDashboard();
+}
+let _dragCartaoKey=null;
+function cardDragStart(ev,k){
+  _dragCartaoKey=k;
+  ev.dataTransfer.effectAllowed='move';
+  ev.currentTarget.classList.add('dragging');
+}
+function cardDragEnd(ev){ ev.currentTarget.classList.remove('dragging'); }
+function cardDragOver(ev){
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect='move';
+  ev.currentTarget.classList.add('drag-over');
+}
+function cardDragLeave(ev){ ev.currentTarget.classList.remove('drag-over'); }
+function cardDrop(ev,k){
+  ev.preventDefault();
+  ev.currentTarget.classList.remove('drag-over');
+  const origem=_dragCartaoKey; _dragCartaoKey=null;
+  if(!origem||origem===k)return;
+  const ordem=ordemCartoesAtual();
+  const from=ordem.indexOf(origem), to=ordem.indexOf(k);
+  if(from<0||to<0)return;
+  ordem.splice(from,1);
+  ordem.splice(to,0,origem);
+  ordemCartoesDash=ordem;
+  salvar();renderDashboard();
+}
+function imprimirFaturaCard(cartao,venc){
+  if(venc==='9999-99-99'){ showToast('Nenhuma fatura futura para este cartão'); return; }
+  imprimirFaturaUnica(cartao,venc);
+}
 function verFaturaAtualCard(cartao, venc){
   const card=CARTOES[cartao];
   if(venc==='9999-99-99'){ showToast('Nenhuma fatura futura para este cartão'); return; }
@@ -6596,7 +6671,7 @@ async function confirmarImportacaoCartoes(){
   compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
   fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; categorias=dados.categorias||[];
   cartoesCustom=dados.cartoesCustom||{}; direcionamentos=dados.direcionamentos||[]; if(dados.usuarios) usuarios=dados.usuarios;
-  favoritosCF=dados.favoritosCF||favoritosCF||[];
+  favoritosCF=dados.favoritosCF||favoritosCF||[]; ordemCartoesDash=dados.ordemCartoesDash||ordemCartoesDash||[];
   await salvar();
   fecharModal('modal-importar-backup');
   renderDashboard();
