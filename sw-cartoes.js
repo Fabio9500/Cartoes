@@ -1,5 +1,5 @@
-/* Cartões (PF + PJ) — Service Worker v5 (cache-first) */
-const CACHE = 'cartoes-v5';
+/* Cartões (PF + PJ) — Service Worker v6 (cache-first) */
+const CACHE = 'cartoes-v6';
 const PF = './CartoesPF.html';
 const PJ = './CartoesPJ.html';
 
