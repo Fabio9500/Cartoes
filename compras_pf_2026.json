@@ -14576,5 +14576,16 @@
     "parcela": 1,
     "valorParcela": 1100.0,
     "venc": "2026-08-10"
+  },
+  {
+    "uid": "7vl6xpt54g",
+    "compraId": "mrz3wch2nx",
+    "desc": "IOF sobre transação",
+    "dataCompra": "2026-08-10",
+    "cartao": "7672",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 38.87,
+    "venc": "2026-08-10"
   }
 ]
