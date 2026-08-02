@@ -5436,5 +5436,93 @@
     "parcela": 2,
     "valorParcela": 50.75,
     "venc": "2026-09-20"
+  },
+  {
+    "uid": "7lrtrbegce",
+    "compraId": "p0zx2mltss",
+    "desc": "GABRIELLESANTOS",
+    "dataCompra": "2026-07-31",
+    "cartao": "c6",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 22.0,
+    "venc": "2026-09-08"
+  },
+  {
+    "uid": "0tlwu87rhl",
+    "compraId": "7wqtrxjb8i",
+    "desc": "GABAGE SOLDAS E FERRAM",
+    "dataCompra": "2026-07-31",
+    "cartao": "c6",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 30.5,
+    "venc": "2026-09-08"
+  },
+  {
+    "uid": "9lno30uqac",
+    "compraId": "nb4wkqgbrd",
+    "desc": "POSTO JARDIM DO O",
+    "dataCompra": "2026-07-31",
+    "cartao": "c6",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 15.0,
+    "venc": "2026-09-08"
+  },
+  {
+    "uid": "lsikkscgge",
+    "compraId": "ues25j81ps",
+    "desc": "GABRIELLESANTOS",
+    "dataCompra": "2026-07-30",
+    "cartao": "c6",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 22.0,
+    "venc": "2026-09-08"
+  },
+  {
+    "uid": "d54bmnayuh",
+    "compraId": "1gykm6cl7s",
+    "desc": "POSTO GRAPIUNA",
+    "dataCompra": "2026-07-30",
+    "cartao": "c6",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 20.0,
+    "venc": "2026-09-08"
+  },
+  {
+    "uid": "grl5jn5aqi",
+    "compraId": "60m6pv0aaj",
+    "desc": "CONFINAR",
+    "dataCompra": "2026-07-30",
+    "cartao": "c6",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 46.0,
+    "venc": "2026-09-08"
+  },
+  {
+    "uid": "12y134mukl",
+    "compraId": "otbvzmwsdy",
+    "desc": "GABRIELLESANTOS",
+    "dataCompra": "2026-07-29",
+    "cartao": "c6",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 22.0,
+    "venc": "2026-09-08"
+  },
+  {
+    "uid": "pa1pgc7hkf",
+    "compraId": "c6zh6zb8sy",
+    "desc": "ALUMIFER",
+    "dataCompra": "2026-07-20",
+    "cartao": "c6",
+    "nParcelas": 2,
+    "parcela": 2,
+    "valorParcela": 107.93,
+    "venc": "2026-09-08"
   }
 ]
