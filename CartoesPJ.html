@@ -1274,8 +1274,11 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
       <input type="hidden" id="ep-uid"><input type="hidden" id="ep-compraid"><input type="hidden" id="ep-cartao-original">
     </div>
-    <div class="modal-ft" style="justify-content:space-between;">
-      <button class="btn btn-danger btn-sm" onclick="deletarCompraModal()">🗑 Excluir compra inteira</button>
+    <div class="modal-ft" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-danger btn-sm" id="btn-ep-del-parcela" style="display:none;" onclick="deletarParcelaModal()">🗑 Excluir apenas esta parcela</button>
+        <button class="btn btn-danger btn-sm" onclick="deletarCompraModal()">🗑 Excluir compra inteira</button>
+      </div>
       <div style="display:flex;gap:8px;">
         <button class="btn btn-outline" onclick="fecharModal('modal-edit')">Cancelar</button>
         <button class="btn btn-primary" onclick="salvarEdicao()">Salvar</button>
@@ -1344,7 +1347,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.19';
+const VERSAO = 'v5.20';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2517,7 +2520,7 @@ function renderLancamentos(filtro){
       <td data-label="Status">${dStr}</td>
       <td data-label="" class="no-print"><div class="action-btns">
         <button class="icon-btn edit" onclick="editarParcela('${c.uid}')">✏️</button>
-        <button class="icon-btn del" onclick="deletarCompra('${c.compraId}')">🗑</button>
+        <button class="icon-btn del" onclick="deletarParcela('${c.uid}')">🗑</button>
       </div></td></tr>`;
   };
   tbody.innerHTML=linhas.map(({tipo,c})=>{
@@ -2584,7 +2587,12 @@ function abrirMenuCompra(ev, uid){
   acoes.push({label:c.tipo==='estorno'?'⇄ Converter para Despesa normal':'⇄ Converter para Estorno/Crédito', fn:()=>converterTipoCompra(uid)});
   acoes.push({label:'↪ Mover para outro cartão...', fn:()=>{ fecharMenuCompra(); editarParcela(uid); }});
   acoes.push({sep:true});
-  acoes.push({label:'🗑 Excluir', cor:'var(--danger)', fn:()=>{ fecharMenuCompra(); deletarCompra(c.compraId); }});
+  if(c.nParcelas>1){
+    acoes.push({label:`🗑 Excluir apenas esta parcela (${c.parcela}/${c.nParcelas})`, cor:'var(--danger)', fn:()=>{ fecharMenuCompra(); deletarParcela(uid); }});
+    acoes.push({label:`🗑 Excluir compra inteira (${c.nParcelas} parcelas)`, cor:'var(--danger)', fn:()=>{ fecharMenuCompra(); deletarCompra(c.compraId); }});
+  } else {
+    acoes.push({label:'🗑 Excluir', cor:'var(--danger)', fn:()=>{ fecharMenuCompra(); deletarParcela(uid); }});
+  }
 
   const menu=document.getElementById('ctx-menu-compra');
   menu.innerHTML=acoes.map((a,i)=> a.sep ? `<div class="ctxmenu-sep"></div>` : `<div class="ctxmenu-item" data-idx="${i}" style="${a.cor?`color:${a.cor}`:''}">${esc(a.label)}</div>`).join('');
@@ -2640,6 +2648,11 @@ function editarParcela(u){
   document.getElementById('ep-nparcelas-original').value=c.nParcelas;
   document.getElementById('ep-parcelas').value=String(c.nParcelas);
   document.getElementById('ep-parcelas').disabled=algumPago;
+  const btnDelParc=document.getElementById('btn-ep-del-parcela');
+  if(btnDelParc){
+    btnDelParc.style.display=c.nParcelas>1?'':'none';
+    btnDelParc.textContent=`🗑 Excluir apenas esta parcela (${c.parcela}/${c.nParcelas})`;
+  }
   document.getElementById('ep-parcelas').dataset.travadoPago=algumPago?'1':'0';
   document.getElementById('ep-total-atual').textContent=fmt(totalAtual)+(algumPago?' — não é possível reparcelar (há parcela paga)':'');
   document.getElementById('ep-parcelas-preview-wrap').style.display='none';
@@ -2725,6 +2738,18 @@ function ACF(msg,cb){
   const el=document.getElementById('confirm-msg');if(el)el.textContent=msg;
   document.getElementById('confirm-overlay').classList.add('open');
 }
+function deletarParcela(uid){
+  const c=compras.find(x=>x.uid===uid);if(!c)return;
+  const msg=c.nParcelas>1
+    ?`Excluir apenas a parcela ${c.parcela}/${c.nParcelas} de "${c.desc}"? As demais parcelas desta compra serão mantidas.`
+    :`Excluir "${c.desc}"?`;
+  ACF(msg, ()=>{
+    compras=compras.filter(x=>x.uid!==uid);
+    salvar();renderDashboard();renderFaturas();renderLancamentos(filtroAtivo);
+    showToast('Parcela excluída ✓');
+  });
+}
+function deletarParcelaModal(){const u=document.getElementById('ep-uid').value;fecharModal('modal-edit');setTimeout(()=>deletarParcela(u),250);}
 function deletarCompraModal(){_cid=document.getElementById('ep-compraid').value;fecharModal('modal-edit');setTimeout(()=>abrirConfirm(_cid),250);}
 function deletarCompraFatura(cid){abrirConfirm(cid);}
 function deletarCompra(cid){abrirConfirm(cid);}
@@ -2802,7 +2827,7 @@ function renderFaturas(){
           <div class="fd-val" style="${i.valorParcela<0?'color:#0a7d33':''}">${fmt(i.valorParcela)}</div>
           <div style="min-width:60px;display:flex;gap:3px;" class="no-print">
             <button class="icon-btn edit" onclick="editarParcela('${i.uid}')">✏️</button>
-            <button class="icon-btn del" onclick="deletarCompraFatura('${i.compraId}')">🗑</button>
+            <button class="icon-btn del" onclick="deletarParcela('${i.uid}')">🗑</button>
           </div>
         </div>`).join('')}
         <div class="fd-row" style="background:var(--surface2);font-weight:700;border-radius:0 0 var(--radius) var(--radius);">
