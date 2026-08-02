@@ -14565,5 +14565,16 @@
     "parcela": 1,
     "valorParcela": 98.5,
     "venc": "2026-09-01"
+  },
+  {
+    "uid": "7vtpx2mvyu",
+    "compraId": "0mh7hdh4ey",
+    "desc": "ANTHROPIC* CLAUDE SUB",
+    "dataCompra": "2026-07-25",
+    "cartao": "7672",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 1100.0,
+    "venc": "2026-08-10"
   }
 ]
