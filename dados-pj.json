@@ -4,7 +4,7 @@
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 6401.14
+      "usado": 6543.12
     },
     "cef": {
       "total": 20000,
@@ -99,7 +99,6 @@
     "cef": "2026-07-12"
   },
   "fornecedores": [],
-  "categorias": [],
   "cartoesCustom": {
     "cef": {
       "contaTesourariaId": "ms7to7vejuykd66"
@@ -143,7 +142,7 @@
       "ativo": true
     }
   ],
-  "direcionamentos": [],
+  "favoritosCF": [],
   "anosCompras": [
     "2026"
   ]
