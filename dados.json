@@ -245,7 +245,9 @@
       "total": 2831.97
     }
   },
-  "fechamentos": {},
+  "fechamentos": {
+    "8139": "2026-08-02"
+  },
   "fornecedores": [
     {
       "id": "msawpwqckvuc",
