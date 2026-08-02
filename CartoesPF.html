@@ -358,6 +358,13 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <button class="btn btn-primary btn-sm no-print" onclick="abrirModalCompra()">＋ Nova</button>
   </div>
 </header>
+<div id="banner-versao-nova" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--accent);color:#fff;font-size:13px;font-weight:700;text-align:center;padding:10px;cursor:pointer" onclick="atualizarVersaoAgora()">
+  🔔 Uma nova versão do Cartões está disponível — toque aqui pra atualizar agora
+</div>
+<div id="widget-sync" style="display:none;position:fixed;right:12px;bottom:12px;z-index:60;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 10px;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.25)">
+  <span id="ultima-sync" title="Quando os dados foram buscados do GitHub pela última vez" style="font-size:10px;color:var(--muted);white-space:nowrap"></span>
+  <button type="button" id="btn-sync-agora" onclick="sincronizarAgora()" title="Buscar dados mais recentes do GitHub agora" style="background:transparent;color:var(--text);font-size:15px;padding:2px 4px;border:none;cursor:pointer;line-height:1">🔄</button>
+</div>
 <div class="tabs">
   <button class="tab active" onclick="showPage('dashboard')">Dashboard</button>
   <button class="tab" onclick="showPage('lancamentos')">Lançamentos</button>
@@ -1326,7 +1333,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.13';
+const VERSAO = 'v5.14';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1841,6 +1848,81 @@ function setSyncStatus(s){
   atualizarIndicadorConexao();
 }
 
+// Confiabilidade de sincronizacao (02/08/2026, mesmo padrao do ChequeSys/TesourariaSys):
+// - ULTIMA_SYNC + atualizarUltimaSyncUI(): mostra quando os dados em tela foram
+//   buscados do GitHub pela ultima vez.
+// - sincronizarAgora(): botao explicito pra forcar nova busca, sem esperar reload
+//   de pagina (que pode nao refazer o fetch por causa de cache do service worker).
+// - verificarVersaoNova(): compara a versao rodando no navegador com a mais
+//   recente do repositorio (version.json) e avisa com banner.
+let ULTIMA_SYNC = null;
+function atualizarUltimaSyncUI(){
+  const el = document.getElementById('ultima-sync');
+  if(!el || !ULTIMA_SYNC) return;
+  const hh = String(ULTIMA_SYNC.getHours()).padStart(2,'0');
+  const mm = String(ULTIMA_SYNC.getMinutes()).padStart(2,'0');
+  el.textContent = `🕐 ${hh}:${mm}`;
+}
+async function sincronizarAgora(){
+  if(_sincronizando){ showToast('⏳ Aguarde a gravação em andamento terminar e tente de novo.', true); return; }
+  const btn = document.getElementById('btn-sync-agora');
+  if(btn) btn.textContent = '⏳';
+  _sincronizando = true;
+  try{
+    const data = await loadFromGitHub();
+    if(!data){ showToast('❌ Não foi possível buscar os dados agora.', true); return; }
+    data.compras = await carregarComprasDosAnosPadrao(data.anosCompras);
+    const fila = getFila();
+    if(fila){
+      setSyncStatus('saving');
+      await resolverFilaPendente(fila, data, ghSha);
+      usuarios = data.usuarios || usuarios || [];
+      cartoesCustom = data.cartoesCustom || cartoesCustom || {};
+      Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
+    } else {
+      compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{};
+      fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; cartoesCustom=data.cartoesCustom||{};
+      usuarios=data.usuarios||[]; favoritosCF=data.favoritosCF||[];
+      Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
+      try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
+      setSyncStatus('ok');
+    }
+    renderDashboard();
+    if(typeof renderRelatorios==='function'&&document.getElementById('page-relatorios')?.classList.contains('active'))renderRelatorios();
+    ULTIMA_SYNC = new Date();
+    atualizarUltimaSyncUI();
+    showToast('✅ Dados atualizados do GitHub');
+  }catch(e){
+    showToast('❌ Falha ao sincronizar: '+e.message, true);
+  }finally{
+    _sincronizando = false;
+    if(btn) btn.textContent = '🔄';
+  }
+}
+async function verificarVersaoNova(){
+  try{
+    const r = await fetch('https://api.github.com/repos/Fabio9500/Cartoes/contents/version.json?t='+Date.now(), {
+      headers:{ 'Authorization': `token ${ghToken}`, 'Accept': 'application/vnd.github.v3+json' },
+      cache:'no-store'
+    });
+    if(!r.ok) return;
+    const j = await r.json();
+    const remoto = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+    const banner = document.getElementById('banner-versao-nova');
+    if(!banner) return;
+    banner.style.display = (remoto.versao && remoto.versao !== VERSAO) ? 'block' : 'none';
+  }catch(e){ /* checagem de versao e best-effort, nunca trava o app */ }
+}
+function haAlgoAbertoNaoSalvo(){
+  return !!document.querySelector('.modal-overlay.open');
+}
+function atualizarVersaoAgora(){
+  if(haAlgoAbertoNaoSalvo()){
+    if(!confirm('Você tem uma tela aberta que pode ter dados não salvos (uma compra, importação, etc). Atualizar agora vai recarregar a página e pode perder isso. Atualizar mesmo assim?')) return;
+  }
+  location.reload();
+}
+
 // ── CARTÕES ─────────────────────────────────────────────────
 let CARTOES={
   8139: {nome:'BRA 01',banco:'Bradesco',venc:1, fechDias:10,tag:'bradesco'},
@@ -1985,6 +2067,11 @@ async function initData(){
       if(isOnline()){ await carregarCadastrosUnicos(); await resolverFilaCadastroPendente(); } else carregarCadastrosUnicosOffline();
       document.getElementById('loading-screen').style.display='none';
       renderDashboard();
+      document.getElementById('widget-sync').style.display='flex';
+      ULTIMA_SYNC = new Date();
+      atualizarUltimaSyncUI();
+      verificarVersaoNova();
+      if(!window._intervaloVersaoCartoes) window._intervaloVersaoCartoes = setInterval(verificarVersaoNova, 60000);
     } else {
       document.getElementById('loading-screen').style.display='none';
       document.getElementById('firstuse-screen').style.display='flex';
@@ -2054,7 +2141,7 @@ async function configurarGitHub(){
     erroEl.textContent=e.message; erroEl.style.display='block';
   }
 }
-function desconectar(){if(!confirm('Desconectar este dispositivo?'))return;localStorage.removeItem(GH_TOKEN_KEY);limparFila();location.reload();}
+function desconectar(){if(!confirm('Desconectar este dispositivo?'))return;localStorage.removeItem(GH_TOKEN_KEY);limparFila();document.getElementById('widget-sync').style.display='none';location.reload();}
 async function forcarSync(){
   if(!isOnline()){showToast('Sem conexão no momento — suas alterações já estão guardadas neste dispositivo',true);return;}
   showToast('Sincronizando...');await salvar();
