@@ -103,16 +103,16 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 .empty-state{text-align:center;padding:48px 16px;color:var(--muted);}.empty-state .icon{font-size:2.5rem;margin-bottom:10px;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);z-index:200;align-items:center;justify-content:center;padding:12px;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border-radius:18px;width:100%;max-width:500px;max-height:93vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
-.modal-hd{padding:20px 20px 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.modal{background:var(--surface);border-radius:18px;width:100%;max-width:500px;max-height:93vh;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2);display:flex;flex-direction:column;}
+.modal-hd{padding:20px 20px 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex:0 0 auto;}
 .modal-hd h2{font-size:1rem;font-weight:700;}
 .close-btn{width:28px;height:28px;border-radius:7px;border:none;background:var(--surface2);color:var(--muted);cursor:pointer;font-size:.9rem;}
-.modal-bd{padding:0 20px 20px;}.form-group{margin-bottom:13px;}
+.modal-bd{padding:0 20px 20px;overflow-y:auto;flex:1 1 auto;min-height:0;}.form-group{margin-bottom:13px;}
 .form-group label{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;}
 .form-group input,.form-group select{width:100%;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;transition:border-color .18s;}
 .form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.modal-ft{padding:0 20px 20px;display:flex;gap:8px;justify-content:flex-end;}
+.modal-ft{padding:12px 20px 20px;display:flex;gap:8px;justify-content:flex-end;flex:0 0 auto;border-top:1px solid var(--border);background:var(--surface);}
 .info-box{background:#fff8e8;border:1px solid #f0d070;border-radius:8px;padding:9px 12px;font-size:.78rem;color:#7a5c00;margin-bottom:12px;line-height:1.5;}
 .parcelas-edit-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:6px;}
 .parcelas-edit-table th{text-align:left;padding:6px 9px;background:var(--surface2);font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
@@ -1342,7 +1342,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.20';
+const VERSAO = 'v5.21';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
