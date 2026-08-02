@@ -1375,7 +1375,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.28';
+const VERSAO = 'v5.29';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -5537,6 +5537,46 @@ function toggleSecao(id){
     renderSecao(id);
   }
 }
+// ── FILTROS DOS RELATÓRIOS FICAM FIXADOS (pedido do Fabio, 02/08/2026) ──
+// Qualquer select/data/busca dentro da aba Relatórios é salvo no localStorage
+// (por dispositivo, não sincroniza entre aparelhos — é só preferência de
+// tela) assim que muda, e restaurado sempre que a aba é reaberta. Usa
+// delegação de evento (um listener só no container) em vez de mexer em cada
+// onchange/oninput individualmente — cobre até filtros novos que forem
+// adicionados no futuro sem precisar lembrar de registrar aqui.
+const CHAVE_FILTROS_REL = PREFIX+'_filtros_rel';
+let _filtrosRelRestaurados=false;
+function salvarFiltrosRelLocal(){
+  try{
+    const pag=document.getElementById('page-relatorios'); if(!pag)return;
+    const vals={};
+    pag.querySelectorAll('select[id], input[type="date"][id], input[type="text"][id]').forEach(el=>{ vals[el.id]=el.value; });
+    localStorage.setItem(CHAVE_FILTROS_REL, JSON.stringify(vals));
+  }catch(e){}
+}
+function restaurarFiltrosRelLocal(){
+  try{
+    const raw=localStorage.getItem(CHAVE_FILTROS_REL); if(!raw)return;
+    const vals=JSON.parse(raw);
+    Object.entries(vals).forEach(([id,v])=>{
+      if(v===undefined||v===null||v==='')return;
+      const el=document.getElementById(id);
+      if(el)el.value=v;
+    });
+    // Datas personalizadas com valor salvo precisam ficar visíveis nas
+    // seções que ainda usam o toggle por "Personalizado" (todas, exceto
+    // Faturas por Cartão, que já fica sempre visível).
+    ['mensal','pagos','forn','parc','graficos','projecao'].forEach(sec=>{
+      const sel=document.getElementById('sf-'+sec);
+      if(sel&&sel.value==='custom'){
+        const ini=document.getElementById('sf-'+sec+'-ini'), fim=document.getElementById('sf-'+sec+'-fim'), sep=document.getElementById('sf-'+sec+'-sep');
+        if(ini)ini.style.display=''; if(fim)fim.style.display=''; if(sep)sep.style.display='';
+      }
+    });
+  }catch(e){}
+}
+document.getElementById('page-relatorios')?.addEventListener('change', salvarFiltrosRelLocal);
+document.getElementById('page-relatorios')?.addEventListener('input', salvarFiltrosRelLocal);
 function renderRelatorios(){
   // Primeira vez que a aba abre: popula a cascata de Direcionamento (mãe).
   if(document.getElementById('rel-direc-mae') && !document.getElementById('rel-direc-mae').options.length){
@@ -5551,6 +5591,10 @@ function renderRelatorios(){
       const o=document.createElement('option');o.value=k;o.textContent=c.nome;selFatCartao.appendChild(o);
     });
   }
+  // Restaura os filtros salvos (última vez que a aba foi usada) — só na
+  // primeira renderização depois de abrir a aba, pra não sobrescrever uma
+  // mudança que o Fabio acabou de fazer em renderizações seguintes.
+  if(!_filtrosRelRestaurados){ _filtrosRelRestaurados=true; restaurarFiltrosRelLocal(); }
   // Cards resumo usam filtro global
   const n=parseInt(document.getElementById('rel-periodo-global')?.value||'6');
   const cartao=document.getElementById('rel-cartao')?.value||'todos';
