@@ -234,8 +234,12 @@ body.dark .form-group input,body.dark .form-group select{background:var(--surfac
    fica escuro e o texto continua escuro — quase ilegível. Regra genérica
    cobre TODOS os selects/inputs da tela, não só os de dentro de .form-group.
    Cobre também as opções do dropdown (<option>), que em alguns navegadores
-   não herdam a cor do <select> pai. */
-body.dark input,body.dark select{color:var(--text)!important;}
+   não herdam a cor do <select> pai.
+   REFORÇO (02/08/2026, ainda escuro em Compras no iPhone/Safari): Safari em
+   iOS às vezes ignora "color" sozinho em <select>/<input> — precisa também
+   de -webkit-text-fill-color, senão o texto volta a ficar preto mesmo com
+   color certo. */
+body.dark input,body.dark select{color:var(--text)!important;-webkit-text-fill-color:var(--text)!important;}
 body.dark option{background:var(--surface2);color:var(--text);}
 body.dark .tabs{background:var(--surface);}
 body.dark .filter-chip{background:var(--surface2);color:var(--muted);}
@@ -1359,7 +1363,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.24';
+const VERSAO = 'v5.25';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
