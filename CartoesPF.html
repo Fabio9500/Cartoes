@@ -226,6 +226,17 @@ body.dark thead{background:var(--surface2)!important;}
 body.dark tbody tr:hover{background:var(--surface2)!important;}
 body.dark .setup-card{background:var(--surface);color:var(--text);}
 body.dark .form-group input,body.dark .form-group select{background:var(--surface2);color:var(--text);border-color:var(--border);}
+/* Correção de contraste (02/08/2026, relatado pelo Fabio): muitos selects e
+   inputs de FILTRO (ex: filtro-fatura-cartao, sf-*, dash-filtro-cartao) ficam
+   FORA de .form-group — usam background:var(--surface2) inline mas não têm
+   color definido, então herdam o texto escuro padrão do navegador. No claro
+   isso não aparece (texto escuro sobre fundo claro), mas no escuro o fundo
+   fica escuro e o texto continua escuro — quase ilegível. Regra genérica
+   cobre TODOS os selects/inputs da tela, não só os de dentro de .form-group.
+   Cobre também as opções do dropdown (<option>), que em alguns navegadores
+   não herdam a cor do <select> pai. */
+body.dark input,body.dark select{color:var(--text)!important;}
+body.dark option{background:var(--surface2);color:var(--text);}
 body.dark .tabs{background:var(--surface);}
 body.dark .filter-chip{background:var(--surface2);color:var(--muted);}
 body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
@@ -1342,7 +1353,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.22';
+const VERSAO = 'v5.23';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
