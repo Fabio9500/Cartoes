@@ -1893,7 +1893,7 @@ async function sincronizarAgora(){
 }
 async function verificarVersaoNova(){
   try{
-    const r = await fetch('https://api.github.com/repos/Fabio9500/Cartoes/contents/version.json?t='+Date.now(), {
+    const r = await fetch('https://api.github.com/repos/Fabio9500/Cartoes/contents/version-pj.json?t='+Date.now(), {
       headers:{ 'Authorization': `token ${ghToken}`, 'Accept': 'application/vnd.github.v3+json' },
       cache:'no-store'
     });
