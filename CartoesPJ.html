@@ -33,7 +33,7 @@ body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font
 .ctxmenu-item:hover{background:var(--surface2)}
 .ctxmenu-sep{height:1px;background:var(--border);margin:4px 2px}
 #sync-status{font-size:.66rem;color:#aaa;display:flex;align-items:center;gap:4px;}
-header{background:var(--text);color:#fff;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
+header{background:#1a1814;color:#fff;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
 .logo{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:8px;}.logo span{color:var(--accent);font-size:1.2rem;}
 .header-actions{display:flex;gap:6px;align-items:center;}
 #data-atual{font-size:.7rem;color:#aaa;margin-right:4px;}
@@ -353,7 +353,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
 </div>
 
 <header>
-  <div class="logo"><span>💳</span> Cartões PJ <span id="logo-versao" style="font-size:10px;color:var(--muted);font-weight:400;margin-left:4px"></span></div>
+  <div class="logo"><span>💳</span> Cartões PJ <span id="logo-versao" style="font-size:10px;color:rgba(255,255,255,.55);font-weight:400;margin-left:4px"></span></div>
   <div class="header-actions">
     <div id="pj-usu-badge" class="no-print" style="display:none;align-items:center;gap:6px;margin-right:4px">
       <div id="pj-usu-avatar" style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:#000;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center"></div>
@@ -1368,7 +1368,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.25';
+const VERSAO = 'v5.26';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
