@@ -546,13 +546,13 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div id="busca-geral-info" style="font-size:.72rem;color:var(--accent);font-weight:600;margin-bottom:8px;"></div>
     <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
-        <thead><tr style="background:var(--surface2);">
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data Compra</th>
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Parcelas</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Vencimentos</th>
+        <thead id="thead-rel-busca"><tr style="background:var(--surface2);">
+          <th data-campo="dataCompra" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('busca','dataCompra')" title="Toque para ordenar">Data Compra</th>
+          <th data-campo="desc" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('busca','desc')" title="Toque para ordenar">Fornecedor</th>
+          <th data-campo="cartao" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('busca','cartao')" title="Toque para ordenar">Cartão</th>
+          <th data-campo="nParcelas" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('busca','nParcelas')" title="Toque para ordenar">Parcelas</th>
+          <th data-campo="total" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('busca','total')" title="Toque para ordenar">Total</th>
+          <th data-campo="vencMin" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('busca','vencMin')" title="Toque para ordenar">Vencimentos</th>
         </tr></thead>
         <tbody id="busca-geral-body"></tbody>
       </table>
@@ -582,12 +582,12 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
     <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
-        <thead><tr style="background:var(--surface2);">
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Vencimento</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Itens</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Status</th>
+        <thead id="thead-rel-faturas"><tr style="background:var(--surface2);">
+          <th data-campo="cartao" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('faturas','cartao')" title="Toque para ordenar">Cartão</th>
+          <th data-campo="venc" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('faturas','venc')" title="Toque para ordenar">Vencimento</th>
+          <th data-campo="itens" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('faturas','itens')" title="Toque para ordenar">Itens</th>
+          <th data-campo="total" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('faturas','total')" title="Toque para ordenar">Total</th>
+          <th data-campo="status" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('faturas','status')" title="Toque para ordenar">Status</th>
         </tr></thead>
         <tbody id="rel-faturas-body"></tbody>
       </table>
@@ -649,11 +649,11 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
 <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
-        <thead><tr style="background:var(--surface2);">
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Mês</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--success);">Pago</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--warn);">A Pagar</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
+        <thead id="thead-rel-pagos"><tr style="background:var(--surface2);">
+          <th data-campo="mes" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('pagos','mes')" title="Toque para ordenar">Mês</th>
+          <th data-campo="pago" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--success);cursor:pointer" onclick="alternarOrdenacaoRel('pagos','pago')" title="Toque para ordenar">Pago</th>
+          <th data-campo="aPag" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--warn);cursor:pointer" onclick="alternarOrdenacaoRel('pagos','aPag')" title="Toque para ordenar">A Pagar</th>
+          <th data-campo="tot" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('pagos','tot')" title="Toque para ordenar">Total</th>
         </tr></thead>
         <tbody id="rel-pago-body"></tbody>
       </table>
@@ -712,12 +712,12 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
 <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
-        <thead><tr style="background:var(--surface2);">
+        <thead id="thead-rel-forn"><tr style="background:var(--surface2);">
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">#</th>
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
+          <th data-campo="nome" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('forn','nome')" title="Toque para ordenar">Fornecedor</th>
           <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Categorias</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Parcelas</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
+          <th data-campo="count" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('forn','count')" title="Toque para ordenar">Parcelas</th>
+          <th data-campo="total" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('forn','total')" title="Toque para ordenar">Total</th>
         </tr></thead>
         <tbody id="rel-forn-body"></tbody>
       </table>
@@ -864,12 +864,12 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
 <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
-        <thead><tr style="background:var(--surface2);">
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
-          <th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Cartão</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Progresso</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Restante</th>
-          <th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th>
+        <thead id="thead-rel-parc"><tr style="background:var(--surface2);">
+          <th data-campo="desc" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('parc','desc')" title="Toque para ordenar">Fornecedor</th>
+          <th data-campo="cartao" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('parc','cartao')" title="Toque para ordenar">Cartão</th>
+          <th data-campo="pct" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('parc','pct')" title="Toque para ordenar">Progresso</th>
+          <th data-campo="restante" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('parc','restante')" title="Toque para ordenar">Restante</th>
+          <th data-campo="total" style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('parc','total')" title="Toque para ordenar">Total</th>
         </tr></thead>
         <tbody id="rel-parc-body"></tbody>
       </table>
@@ -1339,7 +1339,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.17';
+const VERSAO = 'v5.18';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -5254,7 +5254,15 @@ function renderSecFaturas(lista,meses){
     grupos[key].itens++;grupos[key].total+=c.valorParcela;
     if(!c.pago)grupos[key].pago=false;
   });
-  const sorted=Object.values(grupos).sort((a,b)=>b.venc.localeCompare(a.venc));
+  let sorted=Object.values(grupos).sort((a,b)=>b.venc.localeCompare(a.venc));
+  sorted=aplicarOrdenacaoLista(sorted, SORT_REL.faturas, {
+    cartao:g=>(CARTOES[g.cartao]?.nome||g.cartao).toLowerCase(),
+    venc:g=>g.venc,
+    itens:g=>g.itens,
+    total:g=>g.total,
+    status:g=>g.pago?2:(g.venc<hj?0:1)
+  });
+  atualizarSetasOrdenacao('thead-rel-faturas', SORT_REL.faturas);
   if(!sorted.length){body.innerHTML='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--muted)">Nenhuma fatura no período</td></tr>';return;}
   body.innerHTML=sorted.map(g=>{
     const card=CARTOES[g.cartao]||{nome:g.cartao,tag:'tag-outros'};
@@ -5386,12 +5394,14 @@ function renderSecMensal(lista,meses){
 function renderSecPagos(lista,meses){
   if(!lista)lista=getSecData('pagos');if(!meses)meses=getSecMeses('pagos');
   const body=document.getElementById('rel-pago-body');if(!body)return;
-  body.innerHTML=meses.map(m=>{
+  let linhas=meses.map(m=>{
     const pago=lista.filter(x=>x.venc.slice(0,7)===m&&x.pago).reduce((a,x)=>a+x.valorParcela,0);
     const aPag=lista.filter(x=>x.venc.slice(0,7)===m&&!x.pago).reduce((a,x)=>a+x.valorParcela,0);
-    const tot=pago+aPag;if(tot===0)return'';
-    return`<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;font-weight:600;">${nomeMes(m)}</td><td style="padding:8px 12px;text-align:right;color:var(--success);font-weight:600;">${pago>0?fmt(pago):'-'}</td><td style="padding:8px 12px;text-align:right;color:var(--warn);font-weight:600;">${aPag>0?fmt(aPag):'-'}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(tot)}</td></tr>`;
-  }).join('');
+    return{mes:m,pago,aPag,tot:pago+aPag};
+  }).filter(x=>x.tot!==0);
+  linhas=aplicarOrdenacaoLista(linhas, SORT_REL.pagos, {mes:x=>x.mes,pago:x=>x.pago,aPag:x=>x.aPag,tot:x=>x.tot});
+  atualizarSetasOrdenacao('thead-rel-pagos', SORT_REL.pagos);
+  body.innerHTML=linhas.map(x=>`<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;font-weight:600;">${nomeMes(x.mes)}</td><td style="padding:8px 12px;text-align:right;color:var(--success);font-weight:600;">${x.pago>0?fmt(x.pago):'-'}</td><td style="padding:8px 12px;text-align:right;color:var(--warn);font-weight:600;">${x.aPag>0?fmt(x.aPag):'-'}</td><td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(x.tot)}</td></tr>`).join('');
 }
 function abrirListaForn(){
   const el=document.getElementById('sf-forn-nome');
@@ -5437,7 +5447,9 @@ function renderSecForn(lista){
     if(nomeCatCompra(x))forn[key].cats.add(nomeCatCompra(x));
   });
   const sorted=Object.entries(forn).sort((a,b)=>b[1].total-a[1].total);
-  const exibir=temFiltro?sorted:sorted.slice(0,20);
+  let exibir=temFiltro?sorted:sorted.slice(0,20);
+  exibir=aplicarOrdenacaoLista(exibir, SORT_REL.forn, {nome:p=>p[0].toLowerCase(), count:p=>p[1].count, total:p=>p[1].total});
+  atualizarSetasOrdenacao('thead-rel-forn', SORT_REL.forn);
   const infoEl=document.getElementById('sf-forn-info');
   if(infoEl){
     if(temFiltro){
@@ -5461,8 +5473,17 @@ function renderSecParc(){
   const body=document.getElementById('rel-parc-body');if(!body)return;
   const parcAtivos={};
   compras.forEach(x=>{if(x.nParcelas>1){if(!parcAtivos[x.compraId])parcAtivos[x.compraId]={desc:x.desc,cartao:x.cartao,nParcelas:x.nParcelas,pagas:0,total:0,restante:0};parcAtivos[x.compraId].total+=x.valorParcela;const fut=new Date(x.venc+'T12:00:00')>=hoje&&!x.pago;if(fut)parcAtivos[x.compraId].restante+=x.valorParcela;if(x.pago||new Date(x.venc+'T12:00:00')<hoje)parcAtivos[x.compraId].pagas++;}});
-  const filt=Object.values(parcAtivos).filter(x=>x.restante>0).sort((a,b)=>b.restante-a.restante);
-  body.innerHTML=filt.length?filt.map(x=>{const card=CARTOES[x.cartao];const pct=Math.round((x.pagas/x.nParcelas)*100);return`<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;font-weight:600;">${x.desc.replace(/\s*\(.*?\)\s*$/,'').trim()}</td><td style="padding:8px 12px;"><span class="tag ${card.tag}">${card.nome}</span></td><td style="padding:8px 12px;"><div style="font-size:.72rem;color:var(--muted);margin-bottom:3px;">${x.pagas}/${x.nParcelas} (${pct}%)</div><div style="height:4px;background:var(--surface2);border-radius:2px;"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:2px;"></div></div></td><td style="padding:8px 12px;text-align:right;color:var(--warn);font-weight:700;">${fmt(x.restante)}</td><td style="padding:8px 12px;text-align:right;font-weight:600;">${fmt(x.total)}</td></tr>`;}).join(''):'<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--muted);">Nenhum parcelamento ativo</td></tr>';
+  let filt=Object.values(parcAtivos).filter(x=>x.restante>0).sort((a,b)=>b.restante-a.restante);
+  filt=filt.map(x=>({...x,descLimpa:x.desc.replace(/\s*\(.*?\)\s*$/,'').trim(),pct:Math.round((x.pagas/x.nParcelas)*100)}));
+  filt=aplicarOrdenacaoLista(filt, SORT_REL.parc, {
+    desc:x=>x.descLimpa.toLowerCase(),
+    cartao:x=>(CARTOES[x.cartao]?.nome||x.cartao).toLowerCase(),
+    pct:x=>x.pct,
+    restante:x=>x.restante,
+    total:x=>x.total
+  });
+  atualizarSetasOrdenacao('thead-rel-parc', SORT_REL.parc);
+  body.innerHTML=filt.length?filt.map(x=>{const card=CARTOES[x.cartao];const pct=x.pct;return`<tr style="border-top:1px solid var(--border);"><td style="padding:8px 12px;font-weight:600;">${x.descLimpa}</td><td style="padding:8px 12px;"><span class="tag ${card.tag}">${card.nome}</span></td><td style="padding:8px 12px;"><div style="font-size:.72rem;color:var(--muted);margin-bottom:3px;">${x.pagas}/${x.nParcelas} (${pct}%)</div><div style="height:4px;background:var(--surface2);border-radius:2px;"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:2px;"></div></div></td><td style="padding:8px 12px;text-align:right;color:var(--warn);font-weight:700;">${fmt(x.restante)}</td><td style="padding:8px 12px;text-align:right;font-weight:600;">${fmt(x.total)}</td></tr>`;}).join(''):'<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--muted);">Nenhum parcelamento ativo</td></tr>';
 }
 function getMeses(n){
   if(n===0){const s=new Set();compras.forEach(c=>s.add(c.venc.slice(0,7)));return[...s].sort();}
@@ -5507,6 +5528,12 @@ function importarFornecedoresHistorico(){
   atualizarDatalistCompras();
   salvar();renderCadForn();
   showToast(`${novos.length} fornecedor${novos.length>1?'es':''}  importado${novos.length>1?'s':''} do histórico ✓`);
+}
+let SORT_REL={busca:{campo:null,dir:'asc'},faturas:{campo:null,dir:'asc'},pagos:{campo:null,dir:'asc'},forn:{campo:null,dir:'asc'},parc:{campo:null,dir:'asc'}};
+function alternarOrdenacaoRel(tipo,campo){
+  const s=SORT_REL[tipo];
+  if(s.campo===campo){ s.dir=s.dir==='asc'?'desc':'asc'; } else { s.campo=campo; s.dir='asc'; }
+  ({busca:renderBuscaGeral,faturas:renderSecFaturas,pagos:renderSecPagos,forn:renderSecForn,parc:renderSecParc})[tipo]();
 }
 let SORT_CAD={forn:{campo:null,dir:'asc'},cat:{campo:null,dir:'asc'},cc:{campo:null,dir:'asc'},direc:{campo:null,dir:'asc'}};
 function alternarOrdenacaoCad(tipo,campo){
@@ -6295,7 +6322,16 @@ function renderBuscaGeral(){
     if(x.venc<grupos[x.compraId].vencMin)grupos[x.compraId].vencMin=x.venc;
     if(x.venc>grupos[x.compraId].vencMax)grupos[x.compraId].vencMax=x.venc;
   });
-  const sorted=Object.values(grupos).sort((a,b)=>b.dataCompra.localeCompare(a.dataCompra));
+  let sorted=Object.values(grupos).sort((a,b)=>b.dataCompra.localeCompare(a.dataCompra));
+  sorted=aplicarOrdenacaoLista(sorted, SORT_REL.busca, {
+    dataCompra:x=>x.dataCompra||'',
+    desc:x=>(x.desc||'').toLowerCase(),
+    cartao:x=>(CARTOES[x.cartao]?.nome||x.cartao).toLowerCase(),
+    nParcelas:x=>x.nParcelas,
+    total:x=>x.total,
+    vencMin:x=>x.vencMin
+  });
+  atualizarSetasOrdenacao('thead-rel-busca', SORT_REL.busca);
   if(info)info.textContent=`${sorted.length} resultado${sorted.length!==1?'s':''} encontrado${sorted.length!==1?'s':''}`;
   if(!sorted.length){body.innerHTML='<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--muted);">Nenhum resultado encontrado</td></tr>';return;}
   body.innerHTML=sorted.slice(0,300).map(x=>{
