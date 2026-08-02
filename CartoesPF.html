@@ -424,8 +424,8 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div style="display:flex;gap:8px;align-items:center;" class="no-print">
       <select id="filtro-fatura-cartao" onchange="renderFaturas()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
         <option value="todos">Todos os cartões</option>
-        <option value="bradesco1">BRA 01</option><option value="bradesco10">BRA 10</option>
-        <option value="bradesco20">BRA 20</option><option value="santander">Santander</option>
+        <option value="8139">BRA 01</option><option value="7672">BRA 10</option>
+        <option value="4290">BRA 20</option><option value="santander">Santander</option>
         <option value="picpay">PicPay</option>
       </select>
       <select id="filtro-fatura-periodo" onchange="toggleFiltroFaturaMes()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
@@ -450,7 +450,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
       <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Data da compra — De</label><input type="date" id="cf-de" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"></div>
       <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Data da compra — Até</label><input type="date" id="cf-ate" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"></div>
-      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Cartão</label><select id="cf-cartao" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"><option value="todos">Todos os cartões</option><option value="bradesco1">BRA 01</option><option value="bradesco10">BRA 10</option><option value="bradesco20">BRA 20</option><option value="santander">Santander</option><option value="picpay">PicPay</option></select></div>
+      <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Cartão</label><select id="cf-cartao" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"><option value="todos">Todos os cartões</option><option value="8139">BRA 01</option><option value="7672">BRA 10</option><option value="4290">BRA 20</option><option value="santander">Santander</option><option value="picpay">PicPay</option></select></div>
       <div><label style="font-size:.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Tipo</label><select id="cf-tipo" onchange="renderComprasFiltro()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;"><option value="">Despesas + Estornos</option><option value="despesa">Só Despesas</option><option value="estorno">Só Estornos/Créditos</option></select></div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
@@ -506,9 +506,9 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:4px;">Cartão</label>
       <select id="rel-cartao" onchange="renderRelatorios()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.82rem;">
         <option value="todos">Todos os cartões</option>
-        <option value="bradesco1">BRA 01</option>
-        <option value="bradesco10">BRA 10</option>
-        <option value="bradesco20">BRA 20</option>
+        <option value="8139">BRA 01</option>
+        <option value="7672">BRA 10</option>
+        <option value="4290">BRA 20</option>
         <option value="santander">Santander</option>
         <option value="picpay">PicPay</option>
       </select>
@@ -1125,9 +1125,9 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
         <div class="form-group"><label>Cartão</label>
           <select id="c-cartao" onchange="calcularFechamento();calcularParcelas()">
-            <option value="bradesco1">BRA 01 — dia 01</option>
-            <option value="bradesco10">BRA 10 — dia 10</option>
-            <option value="bradesco20">BRA 20 — dia 20</option>
+            <option value="8139">BRA 01 — dia 01</option>
+            <option value="7672">BRA 10 — dia 10</option>
+            <option value="4290">BRA 20 — dia 20</option>
             <option value="santander">Santander — dia 15</option>
             <option value="picpay">PicPay — dia 25</option>
           </select>
@@ -1243,8 +1243,8 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <div style="border-top:1px solid var(--border);margin:14px 0;"></div>
       <div class="form-group"><label>🔄 Trocar Cartão</label>
         <select id="ep-cartao">
-          <option value="bradesco1">BRA 01 — dia 01</option><option value="bradesco10">BRA 10 — dia 10</option>
-          <option value="bradesco20">BRA 20 — dia 20</option><option value="santander">Santander — dia 15</option>
+          <option value="8139">BRA 01 — dia 01</option><option value="7672">BRA 10 — dia 10</option>
+          <option value="4290">BRA 20 — dia 20</option><option value="santander">Santander — dia 15</option>
           <option value="picpay">PicPay — dia 25</option>
         </select>
       </div>
@@ -1326,7 +1326,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.12';
+const VERSAO = 'v5.13';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1843,14 +1843,14 @@ function setSyncStatus(s){
 
 // ── CARTÕES ─────────────────────────────────────────────────
 let CARTOES={
-  bradesco1: {nome:'BRA 01',banco:'Bradesco',venc:1, fechDias:10,tag:'bradesco'},
-  bradesco10:{nome:'BRA 10',banco:'Bradesco',venc:10,fechDias:10,tag:'bradesco'},
-  bradesco20:{nome:'BRA 20',banco:'Bradesco',venc:20,fechDias:10,tag:'bradesco'},
+  8139: {nome:'BRA 01',banco:'Bradesco',venc:1, fechDias:10,tag:'bradesco'},
+  7672:{nome:'BRA 10',banco:'Bradesco',venc:10,fechDias:10,tag:'bradesco'},
+  4290:{nome:'BRA 20',banco:'Bradesco',venc:20,fechDias:10,tag:'bradesco'},
   santander: {nome:'Santander',banco:'Santander',venc:15,fechDias:5, tag:'santander'},
   picpay:    {nome:'PicPay',banco:'PicPay',venc:25,fechDias:10,tag:'picpay'},
 };
 const CARTOES_BUILTIN=Object.keys(CARTOES);
-const DEFAULT_LIMITES={bradesco1:{total:170000,usado:0},bradesco10:{total:170000,usado:0},bradesco20:{total:170000,usado:0},santander:{total:250000,usado:0},picpay:{total:30000,usado:0}};
+const DEFAULT_LIMITES={8139:{total:170000,usado:0},7672:{total:170000,usado:0},4290:{total:170000,usado:0},santander:{total:250000,usado:0},picpay:{total:30000,usado:0}};
 
 let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={}, direcionamentos=[];
 let favoritosCF=[];
@@ -2221,20 +2221,20 @@ function renderDashboard(){
   const filtroCar=cartaoSel?.value||'todos';
   const em30=new Date(hoje); em30.setDate(hoje.getDate()+30);
   let t30=0,tFuturo=0,nParc=0; const seenP=new Set();
-  const usoFuturo={bradesco1:0,bradesco10:0,bradesco20:0,santander:0,picpay:0};
+  const usoFuturo={8139:0,7672:0,4290:0,santander:0,picpay:0};
   compras.forEach(c=>{
     const vd=new Date(c.venc+'T12:00:00'), futuro=vd>=hoje&&!c.pago;
     if(futuro){if(vd<=em30)t30+=c.valorParcela;tFuturo+=c.valorParcela;if(usoFuturo[c.cartao]!==undefined)usoFuturo[c.cartao]+=c.valorParcela;}
     if(futuro&&c.nParcelas>1&&!seenP.has(c.compraId)){nParc++;seenP.add(c.compraId);}
   });
-  const usadoB=usoFuturo.bradesco1+usoFuturo.bradesco10+usoFuturo.bradesco20;
-  const tDisp=Math.max(0,(limites.bradesco1?.total||0)-usadoB)+Math.max(0,(limites.santander?.total||0)-usoFuturo.santander)+Math.max(0,(limites.picpay?.total||0)-usoFuturo.picpay);
+  const usadoB=usoFuturo['8139']+usoFuturo['7672']+usoFuturo['4290'];
+  const tDisp=Math.max(0,(limites['8139']?.total||0)-usadoB)+Math.max(0,(limites.santander?.total||0)-usoFuturo.santander)+Math.max(0,(limites.picpay?.total||0)-usoFuturo.picpay);
   document.getElementById('totais-bar').innerHTML=`
     <div class="total-card"><div class="label">Vence em 30 dias</div><div class="valor danger">${fmt(t30)}</div></div>
     <div class="total-card"><div class="label">Total a pagar</div><div class="valor warn">${fmt(tFuturo)}</div></div>
     <div class="total-card"><div class="label">Parcelamentos ativos</div><div class="valor">${nParc}</div></div>
     <div class="total-card"><div class="label">Limite disponível</div><div class="valor success">${fmt(tDisp)}</div></div>`;
-  const usadoBT=usoFuturo.bradesco1+usoFuturo.bradesco10+usoFuturo.bradesco20;
+  const usadoBT=usoFuturo['8139']+usoFuturo['7672']+usoFuturo['4290'];
   const grid=document.getElementById('cards-grid'); grid.innerHTML='';
   Object.entries(CARTOES).sort((a,b)=>a[1].venc-b[1].venc).forEach(([k,c])=>{
     const l=limites[k]||{total:0}, isBra=k.startsWith('bradesco');
@@ -3719,9 +3719,9 @@ function exportarCSVComprasFiltro(){
 // ── LIMITES ─────────────────────────────────────────────────
 function renderLimites(){
   const grid=document.getElementById('limites-grid');grid.innerHTML='';
-  const usoReal={bradesco1:0,bradesco10:0,bradesco20:0,santander:0,picpay:0};
+  const usoReal={8139:0,7672:0,4290:0,santander:0,picpay:0};
   compras.forEach(c=>{if(new Date(c.venc+'T12:00:00')>=hoje&&!c.pago&&usoReal[c.cartao]!==undefined)usoReal[c.cartao]+=c.valorParcela;});
-  const usadoB=usoReal.bradesco1+usoReal.bradesco10+usoReal.bradesco20,totalB=limites.bradesco1?.total||0;
+  const usadoB=usoReal['8139']+usoReal['7672']+usoReal['4290'],totalB=limites['8139']?.total||0;
   const pctB=totalB>0?Math.min(100,(usadoB/totalB)*100):0,corB=corLimite(pctB);
   grid.innerHTML+=`
   <div class="card-chip" style="border:2px solid #ffc107;">
@@ -3749,7 +3749,7 @@ function renderLimites(){
 function salvarLimite(){
   const sel=document.getElementById('lim-cartao').value,val=parseFloat(document.getElementById('lim-valor').value);
   if(!val||val<=0){showToast('Valor inválido',true);return;}
-  if(sel==='bradesco'){if(!limites.bradesco1)limites.bradesco1={total:0,usado:0};if(!limites.bradesco10)limites.bradesco10={total:0,usado:0};if(!limites.bradesco20)limites.bradesco20={total:0,usado:0};limites.bradesco1.total=limites.bradesco10.total=limites.bradesco20.total=val;}
+  if(sel==='bradesco'){if(!limites['8139'])limites['8139']={total:0,usado:0};if(!limites['7672'])limites['7672']={total:0,usado:0};if(!limites['4290'])limites['4290']={total:0,usado:0};limites['8139'].total=limites['7672'].total=limites['4290'].total=val;}
   else{if(!limites[sel])limites[sel]={total:0,usado:0};limites[sel].total=val;}
   salvar();renderLimites();showToast('Limite atualizado ✓');
 }
@@ -4139,7 +4139,7 @@ let _csvPendenteCartao = [];
 let _csvCartaoAlvo = '';
 let _csvOrigemAlvo = 'csv-bradesco';
 function abrirImportarCSVCartao(){
-  const opcoesCartao = Object.keys(CARTOES).map(k=>`<option value="${k}"${k==='bradesco20'?' selected':''}>${esc(CARTOES[k].nome)} — ${esc(CARTOES[k].banco)}</option>`).join('');
+  const opcoesCartao = Object.keys(CARTOES).map(k=>`<option value="${k}"${k==='4290'?' selected':''}>${esc(CARTOES[k].nome)} — ${esc(CARTOES[k].banco)}</option>`).join('');
   document.getElementById('modal-csv-titulo').textContent = '📄 Importar Fatura (CSV)';
   document.getElementById('modal-csv-corpo').innerHTML = `
     <div id="erro-csv" style="display:none;background:#fee;border:1px solid #f99;color:#900;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:10px"></div>
@@ -6042,9 +6042,9 @@ function parseValorFala(tOriginal){
 
 function parseCartaoFala(t){
   const grupos=[];
-  if(CARTOES.bradesco1)grupos.push({key:'bradesco1',re:/\bbra\s?0?1\b|\bbradesco\s?0?1\b/});
-  if(CARTOES.bradesco10)grupos.push({key:'bradesco10',re:/\bbra\s?10\b|\bbradesco\s?10\b/});
-  if(CARTOES.bradesco20)grupos.push({key:'bradesco20',re:/\bbra\s?20\b|\bbradesco\s?20\b/});
+  if(CARTOES['8139'])grupos.push({key:'8139',re:/\bbra\s?0?1\b|\bbradesco\s?0?1\b/});
+  if(CARTOES['7672'])grupos.push({key:'7672',re:/\bbra\s?10\b|\bbradesco\s?10\b/});
+  if(CARTOES['4290'])grupos.push({key:'4290',re:/\bbra\s?20\b|\bbradesco\s?20\b/});
   if(CARTOES.santander)grupos.push({key:'santander',re:/\bsantander\b/});
   if(CARTOES.picpay)grupos.push({key:'picpay',re:/\bpic\s?pay\b/});
   if(CARTOES.c6)grupos.push({key:'c6',re:/\bc\s?-?\s?6\b/});
@@ -6057,7 +6057,7 @@ function parseCartaoFala(t){
   }
   const mBra=t.match(/\bbradesco\b/);
   if(mBra){
-    if(CARTOES.bradesco1&&CARTOES.bradesco10&&CARTOES.bradesco20)return{key:null,ambiguo:true,alias:mBra[0]};
+    if(CARTOES['8139']&&CARTOES['7672']&&CARTOES['4290'])return{key:null,ambiguo:true,alias:mBra[0]};
     if(CARTOES.bradesco)return{key:'bradesco',ambiguo:false,alias:mBra[0]};
   }
   return{key:null,ambiguo:false,alias:null};
