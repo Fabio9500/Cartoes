@@ -592,9 +592,14 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
         <option value="0">Todos</option>
         <option value="custom">Personalizado</option>
       </select>
-      <input type="date" id="sf-faturas-ini" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('faturas')">
-      <span id="sf-faturas-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
-      <input type="date" id="sf-faturas-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('faturas')">
+      <span style="font-size:.72rem;color:var(--muted);">De:</span>
+      <input type="date" id="sf-faturas-ini" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('faturas')">
+      <span style="font-size:.72rem;color:var(--muted);">até</span>
+      <input type="date" id="sf-faturas-fim" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('faturas')">
+      <span style="font-size:.72rem;font-weight:700;color:var(--muted);margin-left:6px;">Cartão:</span>
+      <select id="sf-faturas-cartao" onchange="renderSecao('faturas')" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
+        <option value="todos">Todos os cartões</option>
+      </select>
     </div>
     <div class="tbl-wrap">
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
@@ -606,6 +611,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
           <th data-campo="status" style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoRel('faturas','status')" title="Toque para ordenar">Status</th>
         </tr></thead>
         <tbody id="rel-faturas-body"></tbody>
+        <tfoot id="rel-faturas-tfoot"></tfoot>
       </table>
     </div>
   </div>
@@ -1358,7 +1364,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.23';
+const VERSAO = 'v5.24';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2354,7 +2360,7 @@ function renderDashboard(){
           <button onclick="event.stopPropagation();fecharFatura('${k}')" style="padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.7rem;cursor:pointer;color:var(--muted);">Fechar fatura</button>
         </div>`;
     grid.innerHTML+=`
-    <div class="card-chip" style="cursor:pointer" onclick="abrirFaturaDetalhe('${k}','${proxVenc}')" title="Ver fatura atual">
+    <div class="card-chip" style="cursor:pointer" onclick="verFaturaAtualCard('${k}','${proxVenc}')" title="Ver fatura atual">
       <div class="chip-top"><span class="bank-label ${c.tag}">${c.banco}</span><span class="venc-info">Dia ${c.venc}</span></div>
       <div class="chip-name">${c.nome}${tagU}</div>
       <div style="font-size:.68rem;color:var(--muted);margin-bottom:8px">Limite: ${fmt(total)}${isBra?' (3 cartões)':''}</div>
@@ -4903,6 +4909,25 @@ function imprimirSecao(secId, titulo){
 }
 
 
+function verFaturaAtualCard(cartao, venc){
+  const card=CARTOES[cartao];
+  if(venc==='9999-99-99'){ showToast('Nenhuma fatura futura para este cartão'); return; }
+  const itens=compras.filter(c=>c.cartao===cartao&&c.venc===venc).sort((a,b)=>a.desc.localeCompare(b.desc));
+  const total=itens.reduce((a,x)=>a+x.valorParcela,0);
+  const dv=new Date(venc+'T12:00:00');
+  document.getElementById('vf-modal-titulo').innerHTML=`<span class="tag ${card.tag}">${card.nome}</span>`;
+  document.getElementById('vf-modal-sub').textContent=`Vencimento: ${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})} • ${itens.length} lançamento${itens.length!==1?'s':''}`;
+  document.getElementById('vf-modal-body').innerHTML=itens.length?itens.map(x=>`
+    <tr style="border-top:1px solid var(--border);">
+      <td style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:.75rem;white-space:nowrap;color:var(--muted);">${x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</td>
+      <td style="padding:7px 12px;font-weight:600;">${esc(x.desc)}</td>
+      <td style="padding:7px 12px;text-align:center;font-size:.75rem;color:var(--muted);">${x.nParcelas>1?x.parcela+'/'+x.nParcelas:'à vista'}</td>
+      <td style="padding:7px 12px;text-align:right;font-weight:700;${x.valorParcela<0?'color:#0a7d33':''}">${fmt(x.valorParcela)}</td>
+    </tr>`).join(''):'<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);">Nenhum lançamento</td></tr>';
+  document.getElementById('vf-modal-total').textContent=fmt(total);
+  document.getElementById('vf-modal-vercompleta').onclick=()=>{ fecharModal('modal-ver-fatura'); abrirFaturaDetalhe(cartao, venc); };
+  document.getElementById('modal-ver-fatura').classList.add('open');
+}
 function abrirFaturaDetalhe(cartao, venc){
   // Switch to faturas tab
   showPage('faturas');
@@ -5195,7 +5220,8 @@ const SEC_IDS = ['mensal','pagos','forn','lanc','parc','graficos','projecao'];
 function getSecData(secId){
   const sel=document.getElementById('sf-'+secId);
   const selVal=sel?.value||'6';
-  const cartao=document.getElementById('rel-cartao')?.value||'todos';
+  const cartaoLocal=document.getElementById('sf-'+secId+'-cartao');
+  const cartao=(cartaoLocal?cartaoLocal.value:null)||document.getElementById('rel-cartao')?.value||'todos';
   const hj=hoje.toISOString().split('T')[0];
   const iniEl=document.getElementById('sf-'+secId+'-ini');
   const fimEl=document.getElementById('sf-'+secId+'-fim');
@@ -5255,18 +5281,26 @@ function handleSecPeriodo(secId){
   const fimEl=document.getElementById('sf-'+secId+'-fim');
   const sepEl=document.getElementById('sf-'+secId+'-sep');
   if(!sel)return;
+  // "Faturas por Cartão" (pedido do Fabio, 02/08/2026): datas personalizadas
+  // ficam SEMPRE visíveis nessa seção, não só quando "Personalizado" é
+  // selecionado — por isso nunca alterna o display aqui.
+  const datasFixas = secId==='faturas';
   if(sel.value==='custom'){
-    if(iniEl)iniEl.style.display='';
-    if(fimEl)fimEl.style.display='';
-    if(sepEl)sepEl.style.display='';
+    if(!datasFixas){
+      if(iniEl)iniEl.style.display='';
+      if(fimEl)fimEl.style.display='';
+      if(sepEl)sepEl.style.display='';
+    }
     const now=new Date(),ini=new Date(now.getFullYear(),now.getMonth()-5,1);
     if(iniEl&&!iniEl.value)iniEl.value=ini.toISOString().split('T')[0];
     if(fimEl&&!fimEl.value)fimEl.value=now.toISOString().split('T')[0];
     if(iniEl&&iniEl.value&&fimEl&&fimEl.value)renderSecao(secId);
   } else {
-    if(iniEl)iniEl.style.display='none';
-    if(fimEl)fimEl.style.display='none';
-    if(sepEl)sepEl.style.display='none';
+    if(!datasFixas){
+      if(iniEl)iniEl.style.display='none';
+      if(fimEl)fimEl.style.display='none';
+      if(sepEl)sepEl.style.display='none';
+    }
     renderSecao(secId);
   }
 }
@@ -5304,7 +5338,22 @@ function renderSecFaturas(lista,meses){
     status:g=>g.pago?2:(g.venc<hj?0:1)
   });
   atualizarSetasOrdenacao('thead-rel-faturas', SORT_REL.faturas);
-  if(!sorted.length){body.innerHTML='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--muted)">Nenhuma fatura no período</td></tr>';return;}
+  const tfoot=document.getElementById('rel-faturas-tfoot');
+  if(!sorted.length){
+    body.innerHTML='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--muted)">Nenhuma fatura no período</td></tr>';
+    if(tfoot)tfoot.innerHTML='';
+    return;
+  }
+  if(tfoot){
+    const totItens=sorted.reduce((a,g)=>a+g.itens,0);
+    const totGeral=sorted.reduce((a,g)=>a+g.total,0);
+    tfoot.innerHTML=`<tr style="border-top:2px solid var(--border);font-weight:800;background:var(--surface2);">
+      <td colspan="2" style="padding:9px 12px;">Total (${sorted.length} fatura${sorted.length!==1?'s':''} no filtro)</td>
+      <td style="padding:9px 12px;text-align:right;">${totItens}</td>
+      <td style="padding:9px 12px;text-align:right;">${fmt(totGeral)}</td>
+      <td></td>
+    </tr>`;
+  }
   body.innerHTML=sorted.map(g=>{
     const card=CARTOES[g.cartao]||{nome:g.cartao,tag:'tag-outros'};
     const statusStr=g.pago?`<span style="color:var(--success);font-weight:600">✓ Paga</span>`
@@ -5386,6 +5435,15 @@ function renderRelatorios(){
   // Primeira vez que a aba abre: popula a cascata de Direcionamento (mãe).
   if(document.getElementById('rel-direc-mae') && !document.getElementById('rel-direc-mae').options.length){
     popularCascata('rel','direc','');
+  }
+  // Idem pro filtro de cartão dedicado da seção "Faturas por Cartão" —
+  // populado a partir de CARTOES (não hardcoded), então já cobre cartões
+  // custom sem precisar editar HTML depois.
+  const selFatCartao=document.getElementById('sf-faturas-cartao');
+  if(selFatCartao && selFatCartao.options.length<=1){
+    Object.entries(CARTOES).sort((a,b)=>a[1].venc-b[1].venc).forEach(([k,c])=>{
+      const o=document.createElement('option');o.value=k;o.textContent=c.nome;selFatCartao.appendChild(o);
+    });
   }
   // Cards resumo usam filtro global
   const n=parseInt(document.getElementById('rel-periodo-global')?.value||'6');
@@ -6556,6 +6614,39 @@ boot();
 </script>
 
 <!-- MODAL FORNECEDOR -->
+<div class="modal-overlay" id="modal-ver-fatura">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-hd">
+      <div>
+        <h2 id="vf-modal-titulo" style="display:flex;align-items:center;gap:8px;">Fatura</h2>
+        <div id="vf-modal-sub" style="font-size:.75rem;color:var(--muted);margin-top:2px;"></div>
+      </div>
+      <button class="close-btn" onclick="fecharModal('modal-ver-fatura')">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="tbl-wrap">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+          <thead><tr style="background:var(--surface2);">
+            <th style="padding:7px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Data</th>
+            <th style="padding:7px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Fornecedor</th>
+            <th style="padding:7px 12px;text-align:center;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Parcela</th>
+            <th style="padding:7px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Valor</th>
+          </tr></thead>
+          <tbody id="vf-modal-body"></tbody>
+          <tfoot><tr style="border-top:2px solid var(--border);font-weight:800;">
+            <td colspan="3" style="padding:9px 12px;">Total da fatura</td>
+            <td id="vf-modal-total" style="padding:9px 12px;text-align:right;"></td>
+          </tr></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-outline" id="vf-modal-vercompleta">Ver fatura completa</button>
+      <button class="btn btn-primary" onclick="fecharModal('modal-ver-fatura')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-fornecedor">
   <div class="modal" style="max-width:600px;">
     <div class="modal-hd">
