@@ -29,6 +29,7 @@ body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font
 .sync-dot.ok{background:#4ade80;}.sync-dot.saving{background:#fbbf24;animation:pulse 1s infinite;}.sync-dot.error{background:#f87171;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 #ctx-menu-compra{display:none;position:fixed;z-index:500;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.3);min-width:230px;max-width:340px;padding:4px;font-size:12px}
+#ctx-menu-cad{display:none;position:fixed;z-index:500;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.3);min-width:180px;max-width:280px;padding:4px;font-size:12px}
 .ctxmenu-item{padding:8px 12px;border-radius:5px;cursor:pointer;white-space:normal;line-height:1.4}
 .ctxmenu-item:hover{background:var(--surface2)}
 .ctxmenu-sep{height:1px;background:var(--border);margin:4px 2px}
@@ -88,6 +89,17 @@ main{padding:18px 16px;max-width:1100px;margin:0 auto;}
 @media (min-width:769px){
   .tbl-wrap{max-height:calc(100vh - 230px);}
 }
+/* Mestre-detalhe do Cadastro (Categoria/Centro de Custo/Direcionamento) —
+   pedido do Fabio 02/08/2026: painel esquerdo só com os itens-mãe, clicar
+   abre as subdivisões no painel direito; botão direito = editar/excluir. */
+.cad-md-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:768px){.cad-md-grid{grid-template-columns:1fr;}}
+.cad-md-hd{padding:9px 14px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:var(--surface2);position:sticky;top:0;}
+.cad-md-row{padding:10px 14px;border-top:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.85rem;}
+.cad-md-row:hover{background:var(--surface2);}
+.cad-md-row.sel{background:var(--surface2);font-weight:700;border-left:3px solid var(--accent);padding-left:11px;}
+.cad-md-row .cad-md-seta{color:var(--muted);font-size:.75rem;}
+.cad-md-empty{padding:24px 14px;text-align:center;color:var(--muted);font-size:.82rem;}
 table{width:100%;border-collapse:collapse;font-size:.82rem;}thead{background:var(--surface2);}
 thead th{text-align:left;padding:9px 12px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);white-space:nowrap;position:sticky;top:56px;background:var(--surface2);z-index:5;}
 tbody tr{border-top:1px solid var(--border);transition:background .12s;}tbody tr:hover{background:#faf8f5;}
@@ -948,48 +960,41 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     </div>
     <div id="cad-cat" style="display:none;">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
-        <span style="font-size:.82rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ — o que você criar aqui aparece nos outros sistemas também.</span>
+        <span style="font-size:.8rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ. Clique numa categoria à esquerda pra ver as subcategorias à direita. Clique com o botão direito num item pra editar ou excluir.</span>
         <button class="btn btn-primary btn-sm" onclick="abrirCad('cat')">+ Nova Categoria</button>
       </div>
-      <div class="tbl-wrap">
-        <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
-          <thead id="thead-cad-cat"><tr style="background:var(--surface2);">
-            <th data-campo="nome" style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoCad('cat','nome')" title="Toque para ordenar">Categoria</th>
-            <th data-campo="tipo" style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoCad('cat','tipo')" title="Toque para ordenar">Tipo</th>
-            <th style="padding:10px 14px;width:80px;" class="no-print"></th>
-          </tr></thead>
-          <tbody id="cad-cat-body"></tbody>
-        </table>
+      <div class="cad-md-grid">
+        <div class="tbl-wrap"><div class="cad-md-hd">Categorias</div><div id="cad-cat-mae-list"></div></div>
+        <div class="tbl-wrap"><div class="cad-md-hd" style="display:flex;justify-content:space-between;align-items:center;">
+          <span id="cad-cat-sub-tit">Subcategorias</span>
+          <button class="btn btn-outline btn-sm no-print" id="cad-cat-sub-btn" style="display:none;padding:3px 9px;" onclick="novaSubCad('cat')">+ Sub</button>
+        </div><div id="cad-cat-sub-list"></div></div>
       </div>
     </div>
     <div id="cad-cc" style="display:none;">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
-        <span style="font-size:.82rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ — o que você criar aqui aparece nos outros sistemas também.</span>
+        <span style="font-size:.8rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ. Clique num centro de custo à esquerda pra ver as subdivisões à direita. Clique com o botão direito num item pra editar ou excluir.</span>
         <button class="btn btn-primary btn-sm" onclick="abrirCad('cc')">+ Novo Centro de Custo</button>
       </div>
-      <div class="tbl-wrap">
-        <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
-          <thead id="thead-cad-cc"><tr style="background:var(--surface2);">
-            <th data-campo="nome" style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoCad('cc','nome')" title="Toque para ordenar">Centro de Custo</th>
-            <th style="padding:10px 14px;width:80px;" class="no-print"></th>
-          </tr></thead>
-          <tbody id="cad-cc-body"></tbody>
-        </table>
+      <div class="cad-md-grid">
+        <div class="tbl-wrap"><div class="cad-md-hd">Centros de Custo</div><div id="cad-cc-mae-list"></div></div>
+        <div class="tbl-wrap"><div class="cad-md-hd" style="display:flex;justify-content:space-between;align-items:center;">
+          <span id="cad-cc-sub-tit">Subdivisões</span>
+          <button class="btn btn-outline btn-sm no-print" id="cad-cc-sub-btn" style="display:none;padding:3px 9px;" onclick="novaSubCad('cc')">+ Sub</button>
+        </div><div id="cad-cc-sub-list"></div></div>
       </div>
     </div>
     <div id="cad-direc" style="display:none;">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
-        <span style="font-size:.82rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ — o que você criar aqui aparece nos outros sistemas também.</span>
+        <span style="font-size:.8rem;color:var(--muted);flex:1;">Cadastro compartilhado com o TesourariaSys e o CartõesPJ. Clique num direcionamento à esquerda pra ver as subdivisões à direita. Clique com o botão direito num item pra editar ou excluir.</span>
         <button class="btn btn-primary btn-sm" onclick="abrirCad('direc')">+ Novo Direcionamento</button>
       </div>
-      <div class="tbl-wrap">
-        <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
-          <thead id="thead-cad-direc"><tr style="background:var(--surface2);">
-            <th data-campo="nome" style="padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);cursor:pointer" onclick="alternarOrdenacaoCad('direc','nome')" title="Toque para ordenar">Direcionamento</th>
-            <th style="padding:10px 14px;width:80px;" class="no-print"></th>
-          </tr></thead>
-          <tbody id="cad-direc-body"></tbody>
-        </table>
+      <div class="cad-md-grid">
+        <div class="tbl-wrap"><div class="cad-md-hd">Direcionamentos</div><div id="cad-direc-mae-list"></div></div>
+        <div class="tbl-wrap"><div class="cad-md-hd" style="display:flex;justify-content:space-between;align-items:center;">
+          <span id="cad-direc-sub-tit">Subdivisões</span>
+          <button class="btn btn-outline btn-sm no-print" id="cad-direc-sub-btn" style="display:none;padding:3px 9px;" onclick="novaSubCad('direc')">+ Sub</button>
+        </div><div id="cad-direc-sub-list"></div></div>
       </div>
     </div>
   </div>
@@ -1304,6 +1309,7 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
 </div>
 
 <div id="ctx-menu-compra" class="no-print"></div>
+<div id="ctx-menu-cad" class="no-print"></div>
 
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
@@ -1363,7 +1369,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.26';
+const VERSAO = 'v5.27';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -5711,59 +5717,84 @@ function renderCadCart(){
     </div>`;
   }).join('');
 }
-function renderCadCat(){
-  const body=document.getElementById('cad-cat-body');if(!body)return;
-  let lista=categorias.filter(c=>itemValidoPF(c)&&c.tipo==='despesa').sort((a,b)=>nomeCompletoCadastro(a,categorias).localeCompare(nomeCompletoCadastro(b,categorias),'pt-BR'));
-  lista=aplicarOrdenacaoLista(lista, SORT_CAD.cat, {nome:c=>nomeCompletoCadastro(c,categorias).toLowerCase(), tipo:c=>c.tipoPFPJ==='ambos'?'pf e pj':'pf'});
-  atualizarSetasOrdenacao('thead-cad-cat', SORT_CAD.cat);
-  if(!lista.length){
-    body.innerHTML=`<tr><td colspan="3" style="padding:24px;text-align:center;color:var(--muted);">Nenhuma categoria cadastrada ainda. Clique em + Nova Categoria para começar.</td></tr>`;
+// ── CADASTRO MESTRE-DETALHE (Categoria / Centro de Custo / Direcionamento) ──
+// Pedido do Fabio (02/08/2026): painel esquerdo só com os itens-mãe; clicar
+// abre as subdivisões no painel direito; botão direito = editar/excluir.
+const _cadInfo={
+  cat:{lista:()=>categorias, filtro:x=>itemValidoPF(x)&&x.tipo==='despesa', vazioMae:'Nenhuma categoria cadastrada ainda. Clique em + Nova Categoria para começar.', vazioSub:'Nenhuma subcategoria nesta categoria ainda.'},
+  cc:{lista:()=>centrosCusto, filtro:x=>itemValidoPF(x), vazioMae:'Nenhum centro de custo cadastrado ainda. Clique em + Novo Centro de Custo para começar.', vazioSub:'Nenhuma subdivisão neste centro de custo ainda.'},
+  direc:{lista:()=>direcionamentos, filtro:x=>itemValidoPF(x), vazioMae:'Nenhum direcionamento cadastrado ainda. Clique em + Novo Direcionamento para começar.', vazioSub:'Nenhuma subdivisão neste direcionamento ainda.'}
+};
+let _cadMaeSel={cat:null,cc:null,direc:null};
+function renderCadMD(tipo){
+  const info=_cadInfo[tipo];
+  const maeListEl=document.getElementById('cad-'+tipo+'-mae-list');
+  const subListEl=document.getElementById('cad-'+tipo+'-sub-list');
+  const subTitEl=document.getElementById('cad-'+tipo+'-sub-tit');
+  const subBtnEl=document.getElementById('cad-'+tipo+'-sub-btn');
+  if(!maeListEl||!subListEl)return;
+  const todos=info.lista().filter(info.filtro);
+  let maes=todos.filter(x=>!x.parentId).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  // Se o item selecionado sumiu (ex: acabou de ser excluído), limpa seleção.
+  if(_cadMaeSel[tipo]&&!maes.some(m=>m.id===_cadMaeSel[tipo]))_cadMaeSel[tipo]=null;
+  maeListEl.innerHTML=maes.length?maes.map(m=>{
+    const nSub=todos.filter(x=>x.parentId===m.id).length;
+    return `<div class="cad-md-row${_cadMaeSel[tipo]===m.id?' sel':''}" onclick="selecionarCadMae('${tipo}','${m.id}')" oncontextmenu="return abrirMenuCad(event,'${tipo}','${m.id}')">
+      <span>${esc(m.nome)}</span>
+      <span class="cad-md-seta">${nSub?nSub+' sub ':''}▸</span>
+    </div>`;
+  }).join(''):`<div class="cad-md-empty">${info.vazioMae}</div>`;
+  const maeSel=_cadMaeSel[tipo]?todos.find(x=>x.id===_cadMaeSel[tipo]):null;
+  if(subBtnEl)subBtnEl.style.display=maeSel?'':'none';
+  if(!maeSel){
+    if(subTitEl)subTitEl.textContent='Subcategorias';
+    subListEl.innerHTML=`<div class="cad-md-empty">Selecione um item à esquerda pra ver as subdivisões.</div>`;
     return;
   }
-  body.innerHTML=lista.map(c=>`<tr style="border-top:1px solid var(--border);">
-    <td style="padding:10px 14px;font-weight:600;">${esc(nomeCompletoCadastro(c,categorias))}</td>
-    <td style="padding:10px 14px;font-size:.72rem;color:var(--muted);">${c.tipoPFPJ==='ambos'?'PF e PJ':'PF'}</td>
-    <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
-      <button class="icon-btn edit" onclick="abrirCad('cat','${c.id}')">✏️</button>
-      <button class="icon-btn del" onclick="excluirCad('cat','${c.id}')">🗑</button>
-    </div></td>
-  </tr>`).join('');
+  if(subTitEl)subTitEl.textContent=maeSel.nome;
+  const subs=todos.filter(x=>x.parentId===maeSel.id).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  subListEl.innerHTML=subs.length?subs.map(s=>`
+    <div class="cad-md-row" onclick="abrirCad('${tipo}','${s.id}')" oncontextmenu="return abrirMenuCad(event,'${tipo}','${s.id}')">
+      <span>${esc(s.nome)}</span><span></span>
+    </div>`).join(''):`<div class="cad-md-empty">${info.vazioSub}</div>`;
 }
-function renderCadCC(){
-  const body=document.getElementById('cad-cc-body');if(!body)return;
-  let lista=centrosCusto.filter(c=>itemValidoPF(c)).sort((a,b)=>nomeCompletoCadastro(a,centrosCusto).localeCompare(nomeCompletoCadastro(b,centrosCusto),'pt-BR'));
-  lista=aplicarOrdenacaoLista(lista, SORT_CAD.cc, {nome:c=>nomeCompletoCadastro(c,centrosCusto).toLowerCase()});
-  atualizarSetasOrdenacao('thead-cad-cc', SORT_CAD.cc);
-  if(!lista.length){
-    body.innerHTML=`<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">Nenhum centro de custo cadastrado ainda. Clique em + Novo Centro de Custo para começar.</td></tr>`;
-    return;
-  }
-  body.innerHTML=lista.map(c=>`<tr style="border-top:1px solid var(--border);">
-    <td style="padding:10px 14px;font-weight:600;">${esc(nomeCompletoCadastro(c,centrosCusto))}</td>
-    <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
-      <button class="icon-btn edit" onclick="abrirCad('cc','${c.id}')">✏️</button>
-      <button class="icon-btn del" onclick="excluirCad('cc','${c.id}')">🗑</button>
-    </div></td>
-  </tr>`).join('');
+function selecionarCadMae(tipo,id){
+  _cadMaeSel[tipo]=_cadMaeSel[tipo]===id?null:id;
+  renderCadMD(tipo);
 }
-function renderCadDirec(){
-  const body=document.getElementById('cad-direc-body');if(!body)return;
-  let lista=direcionamentos.filter(d=>itemValidoPF(d)).sort((a,b)=>nomeCompletoCadastro(a,direcionamentos).localeCompare(nomeCompletoCadastro(b,direcionamentos),'pt-BR'));
-  lista=aplicarOrdenacaoLista(lista, SORT_CAD.direc, {nome:d=>nomeCompletoCadastro(d,direcionamentos).toLowerCase()});
-  atualizarSetasOrdenacao('thead-cad-direc', SORT_CAD.direc);
-  if(!lista.length){
-    body.innerHTML=`<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">Nenhum direcionamento cadastrado ainda. Clique em + Novo Direcionamento para começar.</td></tr>`;
-    return;
-  }
-  body.innerHTML=lista.map(d=>`<tr style="border-top:1px solid var(--border);">
-    <td style="padding:10px 14px;font-weight:600;">${esc(nomeCompletoCadastro(d,direcionamentos))}</td>
-    <td style="padding:10px 14px;" class="no-print"><div style="display:flex;gap:4px;">
-      <button class="icon-btn edit" onclick="abrirCad('direc','${d.id}')">✏️</button>
-      <button class="icon-btn del" onclick="excluirCad('direc','${d.id}')">🗑</button>
-    </div></td>
-  </tr>`).join('');
+function novaSubCad(tipo){
+  if(!_cadMaeSel[tipo])return;
+  abrirCad(tipo,null,_cadMaeSel[tipo]);
 }
-function abrirCad(tipo, id){
+function abrirMenuCad(ev,tipo,id){
+  ev.preventDefault();ev.stopPropagation();
+  const nomes={cat:'categoria',cc:'centro de custo',direc:'direcionamento'};
+  const menu=document.getElementById('ctx-menu-cad');
+  const acoes=[
+    {label:'✏️ Editar '+nomes[tipo], fn:()=>{ fecharMenuCad(); abrirCad(tipo,id); }},
+    {label:'🗑 Excluir', cor:'var(--danger)', fn:()=>{ fecharMenuCad(); excluirCad(tipo,id); }}
+  ];
+  menu.innerHTML=acoes.map((a,i)=>`<div class="ctxmenu-item" data-idx="${i}" style="${a.cor?`color:${a.cor}`:''}">${esc(a.label)}</div>`).join('');
+  menu.querySelectorAll('.ctxmenu-item').forEach(el=>{
+    const a=acoes[Number(el.dataset.idx)];
+    el.addEventListener('click',(e)=>{e.stopPropagation();a.fn();});
+  });
+  menu.style.display='block';
+  const x=Math.min(ev.clientX, window.innerWidth-220);
+  const y=Math.min(ev.clientY, window.innerHeight-(acoes.length*34+20));
+  menu.style.left=Math.max(4,x)+'px';
+  menu.style.top=Math.max(4,y)+'px';
+  return false;
+}
+function fecharMenuCad(){
+  const m=document.getElementById('ctx-menu-cad');
+  if(m)m.style.display='none';
+}
+document.addEventListener('click', fecharMenuCad);
+function renderCadCat(){ renderCadMD('cat'); }
+function renderCadCC(){ renderCadMD('cc'); }
+function renderCadDirec(){ renderCadMD('direc'); }
+function abrirCad(tipo, id, parentPreset){
   document.getElementById('cad-id').value=id||'';
   document.getElementById('cad-tipo').value=tipo;
   const nomes={forn:'Fornecedor',cart:'Cartão',cat:'Categoria',cc:'Centro de Custo',direc:'Direcionamento'};
@@ -5788,21 +5819,21 @@ function abrirCad(tipo, id){
             <select id="cad-f6" ${IS()}>${['bradesco','santander','picpay','tag-outros'].map(t=>`<option value="${t}"${(c?.tag||'tag-outros')===t?' selected':''}>${t}</option>`).join('')}</select>
           </div>`;
   } else if(tipo==='cat'){
-    const c=id?categorias.find(x=>x.id===id):{};
+    const c=id?categorias.find(x=>x.id===id):{parentId:parentPreset||''};
     const maesCat=categorias.filter(x=>!x.parentId&&x.id!==id&&x.tipo==='despesa'&&itemValidoPF(x));
     html=`<div class="form-group"><label>Categoria-mãe (opcional)</label>
             <select id="cad-f2" ${IS()}><option value="">— Nenhuma (categoria principal) —</option>${maesCat.map(m=>`<option value="${m.id}"${c?.parentId===m.id?' selected':''}>${esc(m.nome)}</option>`).join('')}</select>
           </div>
           <div class="form-group"><label>Nome da Categoria *</label><input type="text" id="cad-f1" ${IS()} value="${esc(c?.nome||'')}"></div>`;
   } else if(tipo==='cc'){
-    const c=id?centrosCusto.find(x=>x.id===id):{};
+    const c=id?centrosCusto.find(x=>x.id===id):{parentId:parentPreset||''};
     const maesCC=centrosCusto.filter(x=>!x.parentId&&x.id!==id&&itemValidoPF(x));
     html=`<div class="form-group"><label>Centro de Custo-mãe (opcional)</label>
             <select id="cad-f2" ${IS()}><option value="">— Nenhum (centro de custo principal) —</option>${maesCC.map(m=>`<option value="${m.id}"${c?.parentId===m.id?' selected':''}>${esc(m.nome)}</option>`).join('')}</select>
           </div>
           <div class="form-group"><label>Nome do Centro de Custo *</label><input type="text" id="cad-f1" ${IS()} value="${esc(c?.nome||'')}"></div>`;
   } else if(tipo==='direc'){
-    const d=id?direcionamentos.find(x=>x.id===id):{};
+    const d=id?direcionamentos.find(x=>x.id===id):{parentId:parentPreset||''};
     const maesDirec=direcionamentos.filter(x=>!x.parentId&&x.id!==id&&itemValidoPF(x));
     html=`<div class="form-group"><label>Direcionamento-mãe (opcional)</label>
             <select id="cad-f2" ${IS()}><option value="">— Nenhum (direcionamento principal) —</option>${maesDirec.map(m=>`<option value="${m.id}"${d?.parentId===m.id?' selected':''}>${esc(m.nome)}</option>`).join('')}</select>
