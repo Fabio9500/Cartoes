@@ -1342,7 +1342,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.21';
+const VERSAO = 'v5.22';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2344,14 +2344,14 @@ function renderDashboard(){
     const statusCard=fechada
       ?`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
           <span style="font-size:.72rem;color:var(--warn);font-weight:700;">🔒 Fechada ${new Date(fechada+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</span>
-          <button onclick="reabrirFatura('${k}')" style="padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.7rem;cursor:pointer;color:var(--muted);">Reabrir</button>
+          <button onclick="event.stopPropagation();reabrirFatura('${k}')" style="padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.7rem;cursor:pointer;color:var(--muted);">Reabrir</button>
         </div>`
       :`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
           <span style="font-size:.72rem;color:var(--success);font-weight:600;">🟢 Aberta</span>
-          <button onclick="fecharFatura('${k}')" style="padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.7rem;cursor:pointer;color:var(--muted);">Fechar fatura</button>
+          <button onclick="event.stopPropagation();fecharFatura('${k}')" style="padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;font-family:Outfit,sans-serif;font-size:.7rem;cursor:pointer;color:var(--muted);">Fechar fatura</button>
         </div>`;
     grid.innerHTML+=`
-    <div class="card-chip">
+    <div class="card-chip" style="cursor:pointer" onclick="abrirFaturaDetalhe('${k}','${proxVenc}')" title="Ver fatura atual">
       <div class="chip-top"><span class="bank-label ${c.tag}">${c.banco}</span><span class="venc-info">Dia ${c.venc}</span></div>
       <div class="chip-name">${c.nome}${tagU}</div>
       <div style="font-size:.68rem;color:var(--muted);margin-bottom:8px">Limite: ${fmt(total)}${isBra?' (3 cartões)':''}</div>
