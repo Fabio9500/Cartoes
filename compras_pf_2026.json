@@ -14587,5 +14587,27 @@
     "parcela": 1,
     "valorParcela": 38.87,
     "venc": "2026-08-10"
+  },
+  {
+    "uid": "bsv6vn7tc2",
+    "compraId": "jwfvmo8h6z",
+    "desc": "Ifood",
+    "dataCompra": "2026-07-30",
+    "cartao": "7672",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 7.95,
+    "venc": "2026-09-10"
+  },
+  {
+    "uid": "okg6636t4d",
+    "compraId": "kwrivu9tro",
+    "desc": "Cond. Cidade Jardim",
+    "dataCompra": "2026-07-30",
+    "cartao": "7672",
+    "nParcelas": 1,
+    "parcela": 1,
+    "valorParcela": 712.43,
+    "venc": "2026-09-10"
   }
 ]
