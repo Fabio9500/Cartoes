@@ -1380,7 +1380,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.32';
+const VERSAO = 'v5.33';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1968,6 +1968,24 @@ const CARTOES_BUILTIN=Object.keys(CARTOES);
 const DEFAULT_LIMITES={c6:{total:50000,usado:0},cef:{total:50000,usado:0},mlivre:{total:30000,usado:0},santander:{total:100000,usado:0},bradesco:{total:100000,usado:0}};
 
 let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={}, direcionamentos=[];
+// Função central que aplica TODOS os campos de um payload (fila local ou
+// dados remotos) nas variáveis globais — ACHADO NA AUDITORIA OFFLINE
+// (02/08/2026, pedido do Fabio): antes, resolverFilaPendente/resolverConflito
+// só restauravam compras/limites/pagamentos na hora de resolver a fila ao
+// reconectar — fechamentos, fornecedores, cartoesCustom, usuarios,
+// favoritosCF e ordemCartoesDash ficavam VAZIOS na memória nesse instante, e
+// como resolverFilaPendente(sem conflito) já chama saveToGitHub() logo em
+// seguida com montarPayload(), esses campos vazios eram GRAVADOS por cima do
+// que já existia na nuvem — apagando de verdade fatura fechada/aberta,
+// cadastro de fornecedores, cartões custom e usuários sempre que o app
+// reconectava com uma alteração pendente. Centralizado aqui pra não ter mais
+// esse mesmo bug espalhado em 4-5 lugares diferentes.
+function _aplicarCamposPayload(dados){
+  compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
+  fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; cartoesCustom=dados.cartoesCustom||{};
+  usuarios=dados.usuarios||[]; favoritosCF=dados.favoritosCF||[]; ordemCartoesDash=dados.ordemCartoesDash||[];
+  Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
+}
 let favoritosCF=[];
 let ordemCartoesDash=[];
 let usuarios=[];
@@ -2026,14 +2044,14 @@ async function resolverFilaPendente(filaPayload,dadosRemotos,shaRemotoAtual){
   const shaQuandoFicouOffline=getLastSha();
   if(!shaQuandoFicouOffline||shaQuandoFicouOffline===shaRemotoAtual){
     // Ninguém mais alterou os dados remotos enquanto estávamos offline — aplica nossa fila com segurança
-    compras=filaPayload.compras||[]; limites=filaPayload.limites||{}; pagamentos=filaPayload.pagamentos||{};
+    _aplicarCamposPayload(filaPayload);
     limparFila();
     try{await saveToGitHub(montarPayload());try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}setSyncStatus('ok');}
     catch(e){setFila(montarPayload());setSyncStatus('queued');}
     return;
   }
   // CONFLITO: outro dispositivo salvou dados diferentes enquanto este estava offline
-  compras=dadosRemotos.compras||[]; limites=dadosRemotos.limites||{}; pagamentos=dadosRemotos.pagamentos||{};
+  _aplicarCamposPayload(dadosRemotos);
   window._conflitoFila=filaPayload; window._conflitoRemoto=dadosRemotos;
   document.getElementById('modal-conflito').classList.add('open');
 }
@@ -2041,10 +2059,10 @@ async function resolverConflito(opcao){
   document.getElementById('modal-conflito').classList.remove('open');
   if(opcao==='nuvem'){
     limparFila();
-    compras=window._conflitoRemoto.compras||[]; limites=window._conflitoRemoto.limites||{}; pagamentos=window._conflitoRemoto.pagamentos||{};
+    _aplicarCamposPayload(window._conflitoRemoto);
     setSyncStatus('ok'); showToast('☁️ Dados da nuvem mantidos');
   } else {
-    compras=window._conflitoFila.compras||[]; limites=window._conflitoFila.limites||{}; pagamentos=window._conflitoFila.pagamentos||{};
+    _aplicarCamposPayload(window._conflitoFila);
     limparFila();
     try{await saveToGitHub(montarPayload());setSyncStatus('ok');showToast('✅ Suas alterações offline foram salvas');}
     catch(e){setFila(montarPayload());setSyncStatus('queued');showToast('Alterações guardadas neste dispositivo — tentaremos novamente',true);}
@@ -2060,11 +2078,8 @@ async function initData(){
     const bkp=localStorage.getItem(PREFIX+'_bkp');
     const dados=fila||(bkp?JSON.parse(bkp):null);
     if(dados){
-      compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
-      fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; cartoesCustom=dados.cartoesCustom||{};
-      usuarios=dados.usuarios||[]; favoritosCF=dados.favoritosCF||[]; ordemCartoesDash=dados.ordemCartoesDash||[];
+      _aplicarCamposPayload(dados);
       carregarCadastrosUnicosOffline();
-      Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       document.getElementById('loading-screen').style.display='none';
       setSyncStatus('queued');
       if(!usuarios.length){ document.getElementById('loading-msg').textContent='📴 Sem conexão e usuários ainda não configurados neste dispositivo.'; return; }
@@ -2085,14 +2100,15 @@ async function initData(){
       const fila=getFila();
       if(fila){
         setSyncStatus('saving');
+        // resolverFilaPendente() já restaura TODOS os campos (fila, sem
+        // conflito; ou dados remotos, se der conflito — aí a escolha final
+        // vem de resolverConflito() quando o Fabio decidir) — não sobrescrever
+        // aqui de novo, senão volta o bug de perder fechamentos/fornecedores/
+        // cartoesCustom/usuarios/favoritosCF/ordemCartoesDash (achado na
+        // auditoria offline de 02/08/2026).
         await resolverFilaPendente(fila,data,ghSha);
-        usuarios=data.usuarios||usuarios||[];
-        cartoesCustom=data.cartoesCustom||cartoesCustom||{};
-        Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       } else {
-        compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{}; fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; cartoesCustom=data.cartoesCustom||{};
-        usuarios=data.usuarios||[]; favoritosCF=data.favoritosCF||[]; ordemCartoesDash=data.ordemCartoesDash||[];
-        Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
+        _aplicarCamposPayload(data);
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
         setSyncStatus('ok');
       }
@@ -2112,13 +2128,27 @@ async function initData(){
     }
   }catch(e){
     if(e instanceof TypeError){
+      // ACHADO NA AUDITORIA OFFLINE (02/08/2026, pedido do Fabio): esse catch
+      // trata o caso "navigator.onLine diz que tem internet, mas o fetch
+      // falhou de verdade" (ex: wifi conectado num roteador sem internet,
+      // portal cativo) — MESMO cenário do bloco "if(!isOnline())" lá em cima,
+      // só que descoberto de um jeito diferente. Antes, esse fallback só
+      // restaurava compras/limites/pagamentos — faltava fechamentos (fatura
+      // abre "aberta" mesmo estando fechada), fornecedores, cartoesCustom,
+      // usuarios e a checagem de sessão/login (pulava a tela de login direto
+      // pro Dashboard). Corrigido pra restaurar tudo igual ao bloco offline
+      // principal, com o mesmo comportamento em ambos os casos.
       const fila=getFila();
       const bkp=localStorage.getItem(PREFIX+'_bkp');
       const dados=fila||(bkp?JSON.parse(bkp):null);
       if(dados){
-        compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
+        _aplicarCamposPayload(dados);
+        carregarCadastrosUnicosOffline();
         document.getElementById('loading-screen').style.display='none';
-        setSyncStatus('queued'); renderDashboard();
+        setSyncStatus('queued');
+        if(!usuarios.length){ document.getElementById('loading-screen').style.display='flex'; document.getElementById('loading-msg').textContent='📴 Sem conexão de verdade e usuários ainda não configurados neste dispositivo.'; return; }
+        if(!verificarSessaoPJ()){mostrarLoginPJ();return;}
+        renderDashboard();
         return;
       }
     }
