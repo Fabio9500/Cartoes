@@ -1375,7 +1375,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.31';
+const VERSAO = 'v5.32';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -5026,9 +5026,17 @@ function imprimirFaturaCard(cartao,venc){
   if(venc==='9999-99-99'){ showToast('Nenhuma fatura futura para este cartão'); return; }
   imprimirFaturaUnica(cartao,venc);
 }
+let _vfCartao=null, _vfVenc=null;
 function verFaturaAtualCard(cartao, venc){
   const card=CARTOES[cartao];
-  if(venc==='9999-99-99'){ showToast('Nenhuma fatura futura para este cartão'); return; }
+  if(venc==='9999-99-99'){
+    // Sem fatura futura — cai pra fatura mais recente que exista (passada),
+    // assim as setas de navegação continuam úteis em vez de só travar.
+    const todasVenc=[...new Set(compras.filter(c=>c.cartao===cartao).map(c=>c.venc))].sort();
+    if(!todasVenc.length){ showToast('Nenhuma fatura para este cartão'); return; }
+    venc=todasVenc[todasVenc.length-1];
+  }
+  _vfCartao=cartao; _vfVenc=venc;
   const itens=compras.filter(c=>c.cartao===cartao&&c.venc===venc).sort((a,b)=>a.desc.localeCompare(b.desc));
   const total=itens.reduce((a,x)=>a+x.valorParcela,0);
   const dv=new Date(venc+'T12:00:00');
@@ -5043,7 +5051,27 @@ function verFaturaAtualCard(cartao, venc){
     </tr>`).join(''):'<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--muted);">Nenhum lançamento</td></tr>';
   document.getElementById('vf-modal-total').textContent=fmt(total);
   document.getElementById('vf-modal-vercompleta').onclick=()=>{ fecharModal('modal-ver-fatura'); abrirFaturaDetalhe(cartao, venc); };
+  atualizarSetasVf();
   document.getElementById('modal-ver-fatura').classList.add('open');
+}
+function atualizarSetasVf(){
+  const todasVenc=[...new Set(compras.filter(c=>c.cartao===_vfCartao).map(c=>c.venc))].sort();
+  const idx=todasVenc.indexOf(_vfVenc);
+  const prevBtn=document.getElementById('vf-modal-prev'), nextBtn=document.getElementById('vf-modal-next');
+  const semAnterior=idx<=0, semProxima=idx<0||idx>=todasVenc.length-1;
+  if(prevBtn){ prevBtn.disabled=semAnterior; prevBtn.style.opacity=semAnterior?'.3':'1'; prevBtn.style.cursor=semAnterior?'default':'pointer'; }
+  if(nextBtn){ nextBtn.disabled=semProxima; nextBtn.style.opacity=semProxima?'.3':'1'; nextBtn.style.cursor=semProxima?'default':'pointer'; }
+}
+function vfNavegar(dir){
+  if(!_vfCartao||!_vfVenc)return;
+  const todasVenc=[...new Set(compras.filter(c=>c.cartao===_vfCartao).map(c=>c.venc))].sort();
+  const idx=todasVenc.indexOf(_vfVenc), novoIdx=idx+dir;
+  if(novoIdx<0||novoIdx>=todasVenc.length)return;
+  verFaturaAtualCard(_vfCartao, todasVenc[novoIdx]);
+}
+function vfImprimir(){
+  if(!_vfCartao||!_vfVenc)return;
+  imprimirFaturaUnica(_vfCartao,_vfVenc);
 }
 function abrirFaturaDetalhe(cartao, venc){
   // Switch to faturas tab
@@ -6784,9 +6812,13 @@ boot();
 <div class="modal-overlay" id="modal-ver-fatura">
   <div class="modal" style="max-width:560px;">
     <div class="modal-hd">
-      <div>
-        <h2 id="vf-modal-titulo" style="display:flex;align-items:center;gap:8px;">Fatura</h2>
-        <div id="vf-modal-sub" style="font-size:.75rem;color:var(--muted);margin-top:2px;"></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="icon-btn" id="vf-modal-prev" onclick="vfNavegar(-1)" title="Fatura anterior" style="border:1px solid var(--border);border-radius:7px;padding:5px 9px;">◀</button>
+        <div>
+          <h2 id="vf-modal-titulo" style="display:flex;align-items:center;gap:8px;">Fatura</h2>
+          <div id="vf-modal-sub" style="font-size:.75rem;color:var(--muted);margin-top:2px;"></div>
+        </div>
+        <button class="icon-btn" id="vf-modal-next" onclick="vfNavegar(1)" title="Próxima fatura" style="border:1px solid var(--border);border-radius:7px;padding:5px 9px;">▶</button>
       </div>
       <button class="close-btn" onclick="fecharModal('modal-ver-fatura')">✕</button>
     </div>
@@ -6808,6 +6840,7 @@ boot();
       </div>
     </div>
     <div class="modal-ft">
+      <button class="btn btn-outline" onclick="vfImprimir()">🖨 Imprimir</button>
       <button class="btn btn-outline" id="vf-modal-vercompleta">Ver fatura completa</button>
       <button class="btn btn-primary" onclick="fecharModal('modal-ver-fatura')">Fechar</button>
     </div>
