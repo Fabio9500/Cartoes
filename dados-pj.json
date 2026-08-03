@@ -4,7 +4,7 @@
   "limites": {
     "c6": {
       "total": 15000,
-      "usado": 6651.57
+      "usado": 6703.009999999999
     },
     "cef": {
       "total": 20000,
@@ -143,6 +143,7 @@
     }
   ],
   "favoritosCF": [],
+  "ordemCartoesDash": [],
   "anosCompras": [
     "2026"
   ]
