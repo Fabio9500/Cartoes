@@ -1375,7 +1375,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.34';
+const VERSAO = 'v5.35';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -3332,7 +3332,14 @@ async function registrarDebitoTesouraria(contaId, valor, data, descricao, _tenta
   const ano = (data||'').slice(0,4);
   const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
   try{
-    const catCad = await ghCadastroCarregar('pj');
+    // Bug real encontrado em auditoria de integração (04/08/2026): este é o
+    // arquivo PF, mas buscava o cadastro de categorias PJ ('pj') — hoje
+    // "mascarado" porque nenhum dos dois cadastros tem a categoria "Fatura
+    // Cartão de Crédito" ainda (então caía em categoriaId:'' de qualquer
+    // jeito), mas se alguém criar essa categoria só no PJ no futuro, todo
+    // débito automático do PF sairia classificado com a categoria ERRADA
+    // (a do PJ). Corrigido pra buscar o cadastro certo (PF).
+    const catCad = await ghCadastroCarregar('pf');
     const catFatCartao = (catCad.categorias||[]).find(c=>c.nome==='Fatura Cartão de Crédito'&&c.tipo==='despesa');
     const novoLanc = {
       id: uid(), contaId, data, tipo:'saida', valor,

@@ -147,7 +147,15 @@ global.document = { getElementById: _getEl };
 global.console = console;
 global.btoa = s => Buffer.from(s, 'binary').toString('base64');
 global.atob = s => Buffer.from(s, 'base64').toString('binary');
-global.unescape = require('querystring').unescape;
+// NÃO sobrescrever global.unescape com require('querystring').unescape —
+// são funções DIFERENTES (achado real em 04/08/2026, auditoria de
+// integração ChequeSys↔TesourariaSys): querystring.unescape decodifica
+// UTF-8 de verdade (tipo decodeURIComponent); o unescape() global do
+// Node — o mesmo que o app usa em btoa(unescape(encodeURIComponent(...))) —
+// faz a decodificação byte-a-byte estilo Latin-1 que esse truque exige.
+// Substituir corrompe qualquer conteúdo com acento ("ç", "—" etc.) que
+// passe por um PUT+decode dentro do fetch simulado. O unescape() global
+// do Node já existe e funciona certo — não precisa ser trocado.
 global.encodeURIComponent = encodeURIComponent;
 global.escape = require('querystring').escape;
 global.decodeURIComponent = decodeURIComponent;
