@@ -1375,7 +1375,7 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.33';
+const VERSAO = 'v5.34';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1772,11 +1772,22 @@ async function buscarBlobGH(owner, repo, sha, token){
   const j = await r.json();
   return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
 }
+// _shaAntesUltimoLoad: guarda o SHA "de antes" a cada loadFromGitHub(), pra
+// quem for resolver uma fila pendente logo em seguida conseguir comparar de
+// verdade se outro dispositivo mudou os dados enquanto este estava offline.
+// Bug real (03/08/2026, mesma auditoria do ChequeSys/TesourariaSys): sem
+// isso, "ghSha=d.sha; setLastSha(d.sha)" sobrescrevia o SHA ANTES da
+// comparação de conflito, que então comparava getLastSha() com o mesmo
+// valor recém-gravado — sempre "igual", conflito nunca detectado de
+// verdade. Se dois dispositivos ficassem offline ao mesmo tempo com
+// alterações diferentes, o que reconectasse por último sobrescrevia o
+// outro silenciosamente, sem avisar ninguém.
+let _shaAntesUltimoLoad='';
 async function loadFromGitHub(){
   const r=await ghFetch(`contents/${GH_FILE}`);
   if(r.status===404)return null;
   if(!r.ok)throw new Error(`GitHub ${r.status}`);
-  const d=await r.json(); ghSha=d.sha; setLastSha(d.sha);
+  const d=await r.json(); _shaAntesUltimoLoad=getLastSha(); ghSha=d.sha; setLastSha(d.sha);
   return JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
 }
 async function buscarArquivoAnoGH(nomeArquivo){
@@ -1917,7 +1928,7 @@ async function sincronizarAgora(){
     const fila = getFila();
     if(fila){
       setSyncStatus('saving');
-      await resolverFilaPendente(fila, data, ghSha);
+      await resolverFilaPendente(fila, data, ghSha, _shaAntesUltimoLoad);
       usuarios = data.usuarios || usuarios || [];
       cartoesCustom = data.cartoesCustom || cartoesCustom || {};
       Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
@@ -2049,8 +2060,7 @@ async function _salvarReal(){
     _sincronizando=false;
   }
 }
-async function resolverFilaPendente(filaPayload,dadosRemotos,shaRemotoAtual){
-  const shaQuandoFicouOffline=getLastSha();
+async function resolverFilaPendente(filaPayload,dadosRemotos,shaRemotoAtual,shaQuandoFicouOffline){
   if(!shaQuandoFicouOffline||shaQuandoFicouOffline===shaRemotoAtual){
     // Ninguém mais alterou os dados remotos enquanto estávamos offline — aplica nossa fila com segurança
     _aplicarCamposPayload(filaPayload);
@@ -2115,7 +2125,7 @@ async function initData(){
         // aqui de novo, senão volta o bug de perder fechamentos/fornecedores/
         // cartoesCustom/usuarios/favoritosCF/ordemCartoesDash (achado na
         // auditoria offline de 02/08/2026).
-        await resolverFilaPendente(fila,data,ghSha);
+        await resolverFilaPendente(fila,data,ghSha,_shaAntesUltimoLoad);
       } else {
         _aplicarCamposPayload(data);
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
@@ -2242,11 +2252,20 @@ window.addEventListener('online',async()=>{
   if(!fila)return;
   _sincronizando=true; setSyncStatus('saving');
   try{
-    const r=await ghFetch(`contents/${GH_FILE}`);
-    if(r.ok){
-      const d=await r.json();
-      const dadosRemotos=JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
-      await resolverFilaPendente(fila,dadosRemotos,d.sha);
+    // Bug real (03/08/2026, mesma auditoria do ChequeSys/TesourariaSys):
+    // este trecho fazia um fetch bruto de dados.json — que nunca tem
+    // "compras" (arquivada por ano, fora do payload principal) — pra montar
+    // "dadosRemotos". Se um conflito fosse detectado e o Fabio escolhesse
+    // "Manter dados da nuvem", compras ficava vazio até um reload completo.
+    // Corrigido reusando loadFromGitHub() + carregarComprasDosAnosPadrao,
+    // igual ao padrão já usado em sincronizarAgora()/initData() — também
+    // captura o SHA de antes do fetch, senão a detecção de conflito fica
+    // morta (ver comentário de loadFromGitHub()).
+    const shaAntes=getLastSha();
+    const dadosRemotos=await loadFromGitHub();
+    if(dadosRemotos){
+      dadosRemotos.compras=await carregarComprasDosAnosPadrao(dadosRemotos.anosCompras);
+      await resolverFilaPendente(fila,dadosRemotos,ghSha,shaAntes);
       renderDashboard();
       if(typeof renderRelatorios==='function'&&document.getElementById('page-relatorios')?.classList.contains('active'))renderRelatorios();
     }

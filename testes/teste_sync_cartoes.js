@@ -42,6 +42,9 @@ let funcoesReais = [
   'anoDaCompra',
   'editarParcela',
   'salvarEdicao',
+  'loadFromGitHub',
+  'resolverFilaPendente',
+  '_aplicarCamposPayload',
 ].map(n => extrairFuncao(n, codigoCompleto)).join('\n\n');
 
 console.log('--- Funções extraídas verbatim de ' + ARQ + ' (conferência visual) ---');
@@ -151,13 +154,14 @@ global.decodeURIComponent = decodeURIComponent;
 
 let _sincronizando = false, _shaAtual = null;
 let ghToken = 'fake-token', ghSha = null;
+let _shaAntesUltimoLoad = ''; // preenchido pelo loadFromGitHub() real extraído abaixo
 let _statusLog = [];
 function isOnline() { return navigator.onLine; }
 function setSyncStatus(s) { _statusLog.push(s); }
 function showToast() {}
 function renderDashboard() {}
 async function buscarBlobGH() { return null; }
-let compras = [], limites = {}, pagamentos = {}, fechamentos = {}, fornecedores = [], cartoesCustom = {}, usuarios = [], favoritosCF = [];
+let compras = [], limites = {}, pagamentos = {}, fechamentos = {}, fornecedores = [], cartoesCustom = {}, usuarios = [], favoritosCF = [], ordemCartoesDash = [];
 let _anosCarregadosCompras = new Set([String(new Date().getFullYear())]);
 let _shaAnosCompras = {};
 let _anosComprasIndice = [];
@@ -193,9 +197,10 @@ function renderFaturas() {}
 function uid() { return 'novo-' + Math.random().toString(36).slice(2); }
 let filtroAtivo = null;
 
+global.window = global.window || {};
 let _filaSalvar = Promise.resolve();
-eval(funcoesReais + '\nglobal.__api = { salvar, saveToGitHub, salvarComprasPorAno, verificarAtualizacaoRemota, getFila, setFila, limparFila, editarParcela, salvarEdicao };');
-const { salvar, verificarAtualizacaoRemota, getFila, setFila, editarParcela, salvarEdicao } = global.__api;
+eval(funcoesReais + '\nglobal.__api = { salvar, saveToGitHub, salvarComprasPorAno, verificarAtualizacaoRemota, getFila, setFila, limparFila, editarParcela, salvarEdicao, loadFromGitHub, resolverFilaPendente, _aplicarCamposPayload, getLastSha, setLastSha };');
+const { salvar, verificarAtualizacaoRemota, getFila, setFila, limparFila, editarParcela, salvarEdicao, loadFromGitHub, resolverFilaPendente, getLastSha, setLastSha } = global.__api;
 
 // ══════════════════════════════════════════
 // TESTE 1 — 2 saves rápidos (1º lento, 2º rápido) — nenhuma compra perdida
@@ -414,6 +419,63 @@ function teste7b_correcaoReal() {
   return ok;
 }
 
+// ══════════════════════════════════════════
+// TESTE 8 — loadFromGitHub() + resolverFilaPendente() DE VERDADE: SEM
+// conflito (SHA remoto igual ao de quando ficou offline), a fila é aplicada
+// direto, sem disparar o modal.
+// ══════════════════════════════════════════
+async function teste8() {
+  ghState = { dados: { compras: [], limites: {}, pagamentos: {}, anosCompras: [] }, sha: novoSha() };
+  Object.keys(anosArquivos).forEach(k => delete anosArquivos[k]);
+  chamadasPut.length = 0;
+  DELAYS = {};
+  delete global.window._conflitoFila; delete global.window._conflitoRemoto;
+  setLastSha(ghState.sha); // "SHA de quando ficou offline" == SHA remoto atual -> sem conflito
+  setFila({ compras: [{ uid: 'C-OFFLINE', compraId: 'CP-OFFLINE', cartao: 'bradesco1', dataCompra: '2026-08-01', venc: '2026-09-01', valorParcela: 77, desc: 'Feito offline' }], limites: {}, pagamentos: {}, fechamentos: {}, fornecedores: [], cartoesCustom: {}, usuarios: [], favoritosCF: [] });
+  const fila = getFila();
+  const data = await loadFromGitHub();
+  data.compras = await carregarComprasDosAnosPadrao(data.anosCompras);
+  await resolverFilaPendente(fila, data, ghSha, _shaAntesUltimoLoad);
+  const entrouEmConflito = !!global.window._conflitoFila;
+  const foiPraNuvem = chamadasPut.some(c => c.arquivo === 'dados.json');
+  const ok = !entrouEmConflito && foiPraNuvem;
+  console.log('[TESTE 8] loadFromGitHub()+resolverFilaPendente() reais SEM conflito aplicam a fila direto:', ok ? '✅ PASSOU' : '❌ FALHOU',
+    '| entrou em conflito?', entrouEmConflito, '| foi pra nuvem?', foiPraNuvem);
+  limparFila();
+  return ok;
+}
+
+// ══════════════════════════════════════════
+// TESTE 9 — loadFromGitHub() + resolverFilaPendente() DE VERDADE precisam
+// detectar conflito quando o SHA remoto mudou enquanto este dispositivo
+// estava offline. Bug real mais sério desta auditoria (encontrado antes no
+// ChequeSys/TesourariaSys, mesma arquitetura aqui): "ghSha=d.sha;
+// setLastSha(d.sha)" rodava ANTES da comparação de conflito, que então
+// comparava getLastSha() com o mesmo valor recém-gravado — sempre "igual",
+// conflito nunca detectado. Corrigido capturando o SHA de antes em
+// "_shaAntesUltimoLoad" dentro do próprio loadFromGitHub().
+// ══════════════════════════════════════════
+async function teste9() {
+  ghState = { dados: { compras: [], limites: {}, pagamentos: {}, anosCompras: [] }, sha: novoSha() }; // SHA remoto NOVO — outro dispositivo já salvou algo
+  Object.keys(anosArquivos).forEach(k => delete anosArquivos[k]);
+  chamadasPut.length = 0;
+  DELAYS = {};
+  delete global.window._conflitoFila; delete global.window._conflitoRemoto;
+  setLastSha('sha-ANTIGA-de-quando-ficou-offline'); // SHA que tínhamos antes de ficar offline — diferente do remoto atual = conflito real
+  setFila({ compras: [{ uid: 'C-OFFLINE2', compraId: 'CP-OFFLINE2', cartao: 'bradesco1', dataCompra: '2026-08-01', venc: '2026-09-01', valorParcela: 88, desc: 'Feito offline 2' }], limites: {}, pagamentos: {}, fechamentos: {}, fornecedores: [], cartoesCustom: {}, usuarios: [], favoritosCF: [] });
+  const fila = getFila();
+  const data = await loadFromGitHub();
+  data.compras = await carregarComprasDosAnosPadrao(data.anosCompras);
+  await resolverFilaPendente(fila, data, ghSha, _shaAntesUltimoLoad);
+  const entrouEmConflito = !!global.window._conflitoFila;
+  const ok = entrouEmConflito;
+  console.log('[TESTE 9] loadFromGitHub()+resolverFilaPendente() reais detectam conflito quando o SHA remoto mudou enquanto offline:', ok ? '✅ PASSOU' : '❌ FALHOU',
+    '| entrou em conflito?', entrouEmConflito);
+  delete global.window._conflitoFila; delete global.window._conflitoRemoto;
+  limparFila();
+  return ok;
+}
+
 (async () => {
   const r1 = await teste1();
   const r2 = await teste2();
@@ -423,6 +485,8 @@ function teste7b_correcaoReal() {
   const r6 = await teste6();
   const r7a = teste7a_mecanismoDoBug();
   const r7b = teste7b_correcaoReal();
+  const r8 = await teste8();
+  const r9 = await teste9();
   console.log('\n=== RESULTADO FINAL (' + ARQ + ') ===');
   console.log('Teste 1 (2 saves rápidos sem perda de dado):', r1 ? 'PASSOU' : 'FALHOU');
   console.log('Teste 2 (_sincronizando true/false ao redor do save):', r2 ? 'PASSOU' : 'FALHOU');
@@ -432,7 +496,9 @@ function teste7b_correcaoReal() {
   console.log('Teste 6 (poll não sobrescreve save em andamento):', r6 ? 'PASSOU' : 'FALHOU');
   console.log('Teste 7a (mecanismo do bug do cartão zerado, confirmado):', r7a ? 'PASSOU' : 'FALHOU');
   console.log('Teste 7b (correção real preserva cartão custom):', r7b ? 'PASSOU' : 'FALHOU');
-  const todosPassaram = r1 && r2 && r3 && r4 && r5 && r6 && r7a && r7b;
+  console.log('Teste 8 (resolverFilaPendente sem conflito aplica fila direto):', r8 ? 'PASSOU' : 'FALHOU');
+  console.log('Teste 9 (resolverFilaPendente detecta conflito de sincronização entre dispositivos):', r9 ? 'PASSOU' : 'FALHOU');
+  const todosPassaram = r1 && r2 && r3 && r4 && r5 && r6 && r7a && r7b && r8 && r9;
   console.log('\n' + (todosPassaram ? '✅ TODOS OS TESTES PASSARAM' : '❌ AO MENOS UM TESTE FALHOU'));
   process.exit(todosPassaram ? 0 : 1);
 })();
