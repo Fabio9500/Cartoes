@@ -143,7 +143,13 @@
     }
   ],
   "favoritosCF": [],
-  "ordemCartoesDash": [],
+  "ordemCartoesDash": [
+    "bradesco",
+    "cef",
+    "santander",
+    "c6",
+    "mlivre"
+  ],
   "anosCompras": [
     "2026"
   ]
