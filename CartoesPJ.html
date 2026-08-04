@@ -439,6 +439,8 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <button class="filter-chip active" onclick="filtrar('todos',this)">Todos</button>
     <span id="filter-chips-cartoes"></span>
     <input type="text" id="lanc-filtro-forn" list="dl-lanc-forn" placeholder="🔍 Fornecedor" oninput="renderLancamentos(filtroAtivo)" class="no-print" style="padding:5px 12px;border-radius:20px;font-size:.73rem;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;min-width:150px;">
+    <input type="date" id="lanc-filtro-de" title="Vencimento de" oninput="renderLancamentos(filtroAtivo)" class="no-print" style="padding:5px 10px;border-radius:20px;font-size:.73rem;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;">
+    <input type="date" id="lanc-filtro-ate" title="Vencimento até" oninput="renderLancamentos(filtroAtivo)" class="no-print" style="padding:5px 10px;border-radius:20px;font-size:.73rem;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;">
     <span id="lanc-filtro-cadastro-ativo" class="no-print" style="display:none;padding:5px 12px;border-radius:20px;font-size:.73rem;border:1px solid var(--accent);background:var(--surface2);color:var(--accent);font-weight:600;"></span>
     <datalist id="dl-lanc-forn"></datalist>
     <div style="flex:1"></div>
@@ -665,6 +667,35 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
         <thead id="rel-mensal-head"></thead>
         <tbody id="rel-mensal-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- GASTOS MENSAIS POR CATEGORIA -->
+  <div class="backup-section" style="max-width:100%;margin-bottom:14px;" id="sec-catmensal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h3>🏷 Gastos Mensais por Categoria</h3>
+      <button class="btn btn-outline btn-sm no-print" onclick="imprimirSecao('sec-catmensal','Gastos Mensais por Categoria')">🖨 Imprimir</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span style="font-size:.72rem;font-weight:700;color:var(--muted);">Período:</span>
+      <select id="sf-catmensal" onchange="handleSecPeriodo('catmensal')" style="padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
+        <option value="1">1 mês</option>
+        <option value="3">3 meses</option>
+        <option value="6" selected>6 meses</option>
+        <option value="12">12 meses</option>
+        <option value="24">24 meses</option>
+        <option value="0">Todos</option>
+        <option value="custom">Personalizado</option>
+      </select>
+      <input type="date" id="sf-catmensal-ini" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('catmensal')">
+      <span id="sf-catmensal-sep" style="display:none;font-size:.72rem;color:var(--muted);">até</span>
+      <input type="date" id="sf-catmensal-fim" style="display:none;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;" onchange="handleSecPeriodo('catmensal')">
+    </div>
+    <div class="tbl-wrap">
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+        <thead id="rel-catmensal-head"></thead>
+        <tbody id="rel-catmensal-body"></tbody>
       </table>
     </div>
   </div>
@@ -1095,19 +1126,12 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
       </div>
       <div style="display:flex;gap:10px;align-items:flex-start;">
         <div style="background:var(--accent);color:#fff;font-weight:700;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;">4</div>
-        <div style="font-size:.82rem;">Para <strong>restaurar</strong>: clique em "Importar backup" (seção abaixo) e selecione o arquivo JSON salvo. Os dados serão restaurados e sincronizados com o GitHub automaticamente.</div>
+        <div style="font-size:.82rem;">Para <strong>restaurar</strong>: abra o botão flutuante de Backup e clique em "📥 Importar Backup" e selecione o arquivo JSON salvo — restrito ao usuário Master, mostra uma comparação antes de confirmar, e restaura tudo (compras, cadastros, usuários) sincronizado com o GitHub automaticamente.</div>
       </div>
       <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:10px;font-size:.75rem;color:var(--muted);">
         💡 <strong>Backup extra na nuvem:</strong> seus dados também ficam salvos automaticamente no GitHub a cada alteração. Para baixar direto de lá, acesse <strong>github.com/Fabio9500/Cartoes</strong>, clique no arquivo <strong>dados.json</strong> (ou dados-pj.json) → botão <strong>"Raw"</strong> → <strong>Ctrl+S</strong> para salvar.
       </div>
     </div>
-  </div>
-
-  <div class="backup-section">
-    <h3>📥 Importar backup</h3>
-    <p>Restaura a partir de um arquivo .json exportado anteriormente.</p>
-    <input type="file" id="imp-file" accept=".json" style="display:none" onchange="importar(event)">
-    <button class="btn btn-outline" onclick="document.getElementById('imp-file').click()">Selecionar arquivo</button>
   </div>
   <div class="backup-section">
     <h3>🏦 Importar extrato do cartão</h3>
@@ -1380,7 +1404,7 @@ const AUTH_TS    = 'app_auth_ts_pj';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.35';
+const VERSAO = 'v5.36';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2393,13 +2417,19 @@ function renderDashboard(){
   const em30=new Date(hoje); em30.setDate(hoje.getDate()+30);
   let t30=0,tFuturo=0,nParc=0; const seenP=new Set();
   const usoFuturo={bradesco1:0,bradesco10:0,bradesco20:0,santander:0,picpay:0};
+  // usoComprometido: achado em auditoria (04/08/2026) — uma fatura que VENCEU
+  // e ficou sem pagar sumia inteiramente do cálculo de limite usado (só
+  // "futuro && !pago" era somado), fazendo o cartão parecer com mais limite
+  // livre do que tem de verdade. Soma qualquer compra não paga, vencida ou não.
+  const usoComprometido={bradesco1:0,bradesco10:0,bradesco20:0,santander:0,picpay:0};
   compras.forEach(c=>{
     const vd=new Date(c.venc+'T12:00:00'), futuro=vd>=hoje&&!c.pago;
     if(futuro){if(vd<=em30)t30+=c.valorParcela;tFuturo+=c.valorParcela;if(usoFuturo[c.cartao]!==undefined)usoFuturo[c.cartao]+=c.valorParcela;}
     if(futuro&&c.nParcelas>1&&!seenP.has(c.compraId)){nParc++;seenP.add(c.compraId);}
+    if(!c.pago&&usoComprometido[c.cartao]!==undefined)usoComprometido[c.cartao]+=c.valorParcela;
   });
-  const usadoB=usoFuturo.bradesco1+usoFuturo.bradesco10+usoFuturo.bradesco20;
-  const tDisp=Math.max(0,(limites.bradesco1?.total||0)-usadoB)+Math.max(0,(limites.santander?.total||0)-usoFuturo.santander)+Math.max(0,(limites.picpay?.total||0)-usoFuturo.picpay);
+  const usadoB=usoComprometido.bradesco1+usoComprometido.bradesco10+usoComprometido.bradesco20;
+  const tDisp=Math.max(0,(limites.bradesco1?.total||0)-usadoB)+Math.max(0,(limites.santander?.total||0)-usoComprometido.santander)+Math.max(0,(limites.picpay?.total||0)-usoComprometido.picpay);
   document.getElementById('totais-bar').innerHTML=`
     <div class="total-card"><div class="label">Vence em 30 dias</div><div class="valor danger">${fmt(t30)}</div></div>
     <div class="total-card"><div class="label">Total a pagar</div><div class="valor warn">${fmt(tFuturo)}</div></div>
@@ -2410,7 +2440,7 @@ function renderDashboard(){
   const _ordemAtual=ordemCartoesAtual();
   _ordemAtual.map(k=>[k,CARTOES[k]]).filter(([k,c])=>c).forEach(([k,c],idx)=>{
     const l=limites[k]||{total:0}, isBra=k.startsWith('bradesco');
-    const usado=usoFuturo[k]||0, total=l.total||0;
+    const usado=usoComprometido[k]||0, total=l.total||0;
     const pct=total>0?Math.min(100,(usado/total)*100):0, cor=corLimite(pct);
     const futuras=compras.filter(x=>x.cartao===k&&new Date(x.venc+'T12:00:00')>=hoje);
     const proxVenc=futuras.reduce((m,x)=>x.venc<m?x.venc:m,'9999-99-99');
@@ -2534,9 +2564,17 @@ function renderLancamentos(filtro){
     dlLF.innerHTML=[...ns].sort((a,b)=>a.localeCompare(b,'pt-BR')).map(v=>`<option value="${v.replace(/"/g,'&quot;')}">`).join('');
   }
   const filForn=(document.getElementById('lanc-filtro-forn')?.value||'').toLowerCase().trim();
+  // Achado em auditoria (04/08/2026): a aba Lançamentos renderizava TODO o
+  // histórico de uma vez, sem filtro de data — com anos de uso e
+  // parcelamentos em 12x (cada um vira 12 linhas), só tendia a crescer sem
+  // controle. Filtra por vencimento, mesmo campo mostrado na tabela.
+  const filDe=document.getElementById('lanc-filtro-de')?.value||'';
+  const filAte=document.getElementById('lanc-filtro-ate')?.value||'';
   let lista=[...compras].sort((a,b)=>{const da=a.dataCompra||a.venc,db=b.dataCompra||b.venc;return db.localeCompare(da)||b.venc.localeCompare(a.venc)||a.parcela-b.parcela;});
   if(filtro!=='todos')lista=lista.filter(c=>c.cartao===filtro);
   if(filForn)lista=lista.filter(c=>(c.desc||'').toLowerCase().includes(filForn));
+  if(filDe)lista=lista.filter(c=>c.venc>=filDe);
+  if(filAte)lista=lista.filter(c=>c.venc<=filAte);
   if(_filtroLancCategoriaId)lista=lista.filter(c=>c.categoriaId===_filtroLancCategoriaId||categoriaById(c.categoriaId)?.parentId===_filtroLancCategoriaId);
   if(_filtroLancCCId)lista=lista.filter(c=>c.centroCustoId===_filtroLancCCId||centroCustoById(c.centroCustoId)?.parentId===_filtroLancCCId);
   if(_filtroLancDirecId)lista=lista.filter(c=>c.direcionamentoId===_filtroLancDirecId||direcionamentoById(c.direcionamentoId)?.parentId===_filtroLancDirecId);
@@ -3919,7 +3957,10 @@ function exportarCSVComprasFiltro(){
 function renderLimites(){
   const grid=document.getElementById('limites-grid');grid.innerHTML='';
   const usoReal={c6:0,cef:0,mlivre:0,santander:0,bradesco:0};
-  compras.forEach(c=>{if(new Date(c.venc+'T12:00:00')>=hoje&&!c.pago&&usoReal[c.cartao]!==undefined)usoReal[c.cartao]+=c.valorParcela;});
+  // Achado em auditoria (04/08/2026): antes só somava parcela futura não
+  // paga — uma fatura VENCIDA e ainda não paga sumia do "Comprometido",
+  // fazendo o cartão parecer com mais limite livre do que tem de verdade.
+  compras.forEach(c=>{if(!c.pago&&usoReal[c.cartao]!==undefined)usoReal[c.cartao]+=c.valorParcela;});
   Object.keys(CARTOES).forEach(k=>{
     const c=CARTOES[k],l=limites[k]||{total:0},usado=usoReal[k]||0,total=l.total||0;
     const pct=total>0?Math.min(100,(usado/total)*100):0,cor=corLimite(pct);
@@ -3937,7 +3978,7 @@ function renderLimites(){
 function salvarLimite(){
   const sel=document.getElementById('lim-cartao').value,val=parseFloat(document.getElementById('lim-valor').value);
   if(!val||val<=0){showToast('Valor inválido',true);return;}
-  if(!limites[sel])limites[sel]={total:0,usado:0};
+  if(!limites[sel])limites[sel]={total:0};
   limites[sel].total=val;
   salvar();renderLimites();showToast('Limite atualizado ✓');
 }
@@ -4193,8 +4234,7 @@ function confirmarImportacaoOFXCartao(){
     });
     totalReal += t.valor;
   });
-  if(!limites[_ofxCartaoAlvo]) limites[_ofxCartaoAlvo] = {total:0, usado:0};
-  limites[_ofxCartaoAlvo].usado = (limites[_ofxCartaoAlvo].usado||0) + totalReal;
+  if(!limites[_ofxCartaoAlvo]) limites[_ofxCartaoAlvo] = {total:0};
   salvar();
   const cartaoImportado = _ofxCartaoAlvo;
   const itensParaTesouraria = selecionados.map(t=>({data:t.data, valorTotal:t.valor, categoriaId:t.categoriaId, centroCustoId:t.centroCustoId, direcionamentoId:t.direcionamentoId, desc:t.desc}));
@@ -4429,8 +4469,7 @@ function confirmarImportacaoCSVCartao(){
       itensParaTesouraria.push({data:t.dataCompra, valorTotal:t.valor, categoriaId:t.categoriaId, centroCustoId:t.centroCustoId, direcionamentoId:t.direcionamentoId, desc:t.desc});
     }
   });
-  if(!limites[_csvCartaoAlvo]) limites[_csvCartaoAlvo] = {total:0, usado:0};
-  limites[_csvCartaoAlvo].usado = (limites[_csvCartaoAlvo].usado||0) + totalReal;
+  if(!limites[_csvCartaoAlvo]) limites[_csvCartaoAlvo] = {total:0};
   salvar();
   const cartaoImportado = _csvCartaoAlvo;
   _csvPendenteCartao = []; _csvCartaoAlvo = '';
@@ -4697,8 +4736,7 @@ function confirmarImportacaoQIF(){
     totalReal += tipo==='estorno'?-valorAbs:valorAbs; qtd++;
     itensParaTesouraria.push({data:r.data, valorTotal: tipo==='estorno'?-valorAbs:valorAbs, categoriaId, centroCustoId:_qifCentroCustoId, desc});
   });
-  if(!limites[_qifCartaoAlvo]) limites[_qifCartaoAlvo]={total:0,usado:0};
-  limites[_qifCartaoAlvo].usado = (limites[_qifCartaoAlvo].usado||0)+totalReal;
+  if(!limites[_qifCartaoAlvo]) limites[_qifCartaoAlvo]={total:0};
   salvar();
   const cartaoImportado = _qifCartaoAlvo;
   _qifPendente=[]; _qifCartaoAlvo=''; _qifCategoriasUnicas=[]; _qifMapaCategoria={}; _qifCentroCustoId='';
@@ -4727,7 +4765,7 @@ function salvarCompra(){
   for(let i=1;i<=n;i++){const vValAbs=parseFloat(document.getElementById('pe-val-'+i).value)||0,vVenc=document.getElementById('pe-venc-'+i).value;
     const vVal=tipo==='estorno'?-Math.abs(vValAbs):Math.abs(vValAbs);
     compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,tipo,...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(memo?{memo}:{}),...(direcionamentoId?{direcionamentoId}:{})});totalReal+=vVal;}
-  if(!limites[cartao])limites[cartao]={total:0,usado:0};limites[cartao].usado=(limites[cartao].usado||0)+totalReal;
+  if(!limites[cartao])limites[cartao]={total:0};
   salvar();fecharModal('modal-compra');renderDashboard();showToast(tipo==='estorno'?'Estorno/crédito lançado ✓':'Compra lançada ✓');
   if(CARTOES[cartao]?.contaTesourariaId && getTokenTesouraria()){
     registrarCompraTesouraria(cartao, data, totalReal, categoriaId, centroCustoId, direcionamentoId, desc).then(res=>{
@@ -4737,17 +4775,6 @@ function salvarCompra(){
 }
 
 // ── BACKUP ──────────────────────────────────────────────────
-function exportar(){
-  const blob=new Blob([JSON.stringify({versao:5,tipo:TIPO_DADOS,exportado:new Date().toISOString(),compras,limites,pagamentos},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`cartoes-pf-backup-${new Date().toISOString().split('T')[0]}.json`;a.click();
-  showToast('Backup exportado ✓');
-}
-function importar(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.compras||!d.limites)throw new Error();compras=d.compras;limites=d.limites;pagamentos=d.pagamentos||{};salvar();renderDashboard();showToast(`${compras.length} lançamentos importados ✓`);}catch{showToast('Arquivo inválido',true);}};
-  reader.readAsText(file);e.target.value='';
-}
 function limparTudo(){
   compras=[];limites=JSON.parse(JSON.stringify(DEFAULT_LIMITES));pagamentos={};
   salvar();renderDashboard();showToast('Dados limpos ✓');
@@ -5217,6 +5244,23 @@ function abrirFornecedor(nome){
 
 
 // ── MF-04: NOTIFICAÇÕES ─────────────────────────────────────
+// Achado em auditoria (04/08/2026): só existia alerta de fatura vencendo —
+// nenhum aviso proativo quando um cartão se aproxima do limite (o dado já
+// existia, usado só pra colorir a barrinha em corLimite()). Mesmo critério
+// de "comprometido" já corrigido no Dashboard/Limites (qualquer compra não
+// paga, vencida ou não), pra bater com o que aparece nas outras telas.
+function cartoesPertoDoLimite(limiarPct){
+  limiarPct = limiarPct || 85;
+  const usoPorCartao={};
+  compras.forEach(c=>{ if(!c.pago) usoPorCartao[c.cartao]=(usoPorCartao[c.cartao]||0)+c.valorParcela; });
+  return Object.keys(CARTOES).map(k=>{
+    const total=limites[k]?.total||0;
+    if(!total) return null;
+    const usado=usoPorCartao[k]||0;
+    const pct=(usado/total)*100;
+    return pct>=limiarPct ? {cartao:k,pct,usado,total} : null;
+  }).filter(Boolean);
+}
 function verificarNotificacoes(){
   if(!('Notification' in window))return;
   const faturas={};
@@ -5230,12 +5274,19 @@ function verificarNotificacoes(){
     const dias=Math.ceil((new Date(f.venc+'T12:00:00')-hoje)/86400000);
     return dias>=0&&dias<=3;
   });
-  if(alertas.length===0)return;
+  const limitesAlerta=cartoesPertoDoLimite();
+  if(alertas.length===0&&limitesAlerta.length===0)return;
   if(Notification.permission==='granted'){
     alertas.forEach(f=>{
       const dias=Math.ceil((new Date(f.venc+'T12:00:00')-hoje)/86400000);
       new Notification('💳 Fatura vencendo!',{
         body:`${CARTOES[f.cartao].nome}: ${fmt(f.total)} — vence ${dias===0?'hoje':`em ${dias} dia${dias>1?'s':''}`}`,
+        icon:'https://fabio9500.github.io/Cartoes/favicon.ico'
+      });
+    });
+    limitesAlerta.forEach(l=>{
+      new Notification('⚠️ Limite quase no teto!',{
+        body:`${CARTOES[l.cartao].nome}: ${fmt(l.usado)} de ${fmt(l.total)} usado (${l.pct.toFixed(0)}%)`,
         icon:'https://fabio9500.github.io/Cartoes/favicon.ico'
       });
     });
@@ -5264,27 +5315,6 @@ function initDark(){
     const btn=document.getElementById('dark-btn');
     if(btn)btn.textContent='☀️';
   }
-}
-
-
-// ── MF-07: BACKUP AUTOMÁTICO ────────────────────────────────
-let _backupTimer=null;
-function agendarBackupAuto(){
-  clearTimeout(_backupTimer);
-  // Backup automático a cada 30 min se houver alterações pendentes
-  _backupTimer=setInterval(()=>{
-    const ultima=localStorage.getItem('ultimoBackupAuto')||'';
-    const agora=new Date().toISOString();
-    const diff=ultima?(new Date(agora)-new Date(ultima))/60000:999;
-    if(diff>=30){
-      const blob=new Blob([JSON.stringify({versao:5,tipo:'auto',exportado:agora,compras,limites,pagamentos},null,2)],{type:'application/json'});
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download=`backup-auto-${agora.slice(0,10)}.json`;
-      // Silent backup - don't auto-download, just record timestamp
-      localStorage.setItem('ultimoBackupAuto',agora);
-    }
-  },1800000); // 30 min
 }
 
 
@@ -5364,11 +5394,10 @@ function renderProjecao(){
 
 
 initDark();
-agendarBackupAuto();
 setTimeout(verificarNotificacoes, 3000);
 
 // ── RELATÓRIOS — FILTROS INDIVIDUAIS ─────────────────────────
-const SEC_IDS = ['mensal','pagos','forn','lanc','parc','graficos','projecao'];
+const SEC_IDS = ['mensal','catmensal','pagos','forn','lanc','parc','graficos','projecao'];
 
 
 
@@ -5477,7 +5506,7 @@ function handleSecPeriodo(secId){
 }
 function aplicarGlobal(){
   const n=document.getElementById('rel-periodo-global')?.value||'6';
-  ['faturas','mensal','pagos','forn','lanc','parc','graficos','projecao'].forEach(id=>{
+  ['faturas','mensal','catmensal','pagos','forn','lanc','parc','graficos','projecao'].forEach(id=>{
     const el=document.getElementById('sf-'+id);
     if(el){el.value=n;}
     const iniEl=document.getElementById('sf-'+id+'-ini');
@@ -5546,6 +5575,7 @@ function renderSecao(secId){
     case 'busca-geral': renderBuscaGeral(); break;
     case 'faturas':  renderSecFaturas(lista,meses); break;
     case 'mensal':   renderSecMensal(lista,meses); break;
+    case 'catmensal':renderSecCatMensal(lista,meses); break;
     case 'pagos':    renderSecPagos(lista,meses); break;
     case 'forn':     renderSecForn(lista); break;
     case 'lanc':     renderLancamentosRel(); break;
@@ -5555,7 +5585,7 @@ function renderSecao(secId){
   }
 }
 function initAccordion(){
-  const IDS=['busca-geral','faturas','mensal','pagos','forn','lanc','projecao','graficos','parc'];
+  const IDS=['busca-geral','faturas','mensal','catmensal','pagos','forn','lanc','projecao','graficos','parc'];
   IDS.forEach(id=>{
     const sec=document.getElementById('sec-'+id);
     if(!sec||sec.dataset.acc==='1')return;
@@ -5631,7 +5661,7 @@ function restaurarFiltrosRelLocal(){
     // Datas personalizadas com valor salvo precisam ficar visíveis nas
     // seções que ainda usam o toggle por "Personalizado" (todas, exceto
     // Faturas por Cartão, que já fica sempre visível).
-    ['mensal','pagos','forn','parc','graficos','projecao'].forEach(sec=>{
+    ['mensal','catmensal','pagos','forn','parc','graficos','projecao'].forEach(sec=>{
       const sel=document.getElementById('sf-'+sec);
       if(sel&&sel.value==='custom'){
         const ini=document.getElementById('sf-'+sec+'-ini'), fim=document.getElementById('sf-'+sec+'-fim'), sep=document.getElementById('sf-'+sec+'-sep');
@@ -5686,7 +5716,7 @@ function renderRelatorios(){
     <div class="total-card"><div class="label">Compras</div><div class="valor">${nCompras}</div></div>`;
   // Inicializa accordion (idempotente) e re-renderiza seções já abertas
   initAccordion();
-  ['busca-geral','faturas','mensal','pagos','forn','lanc','parc','graficos','projecao'].forEach(id=>{
+  ['busca-geral','faturas','mensal','catmensal','pagos','forn','lanc','parc','graficos','projecao'].forEach(id=>{
     const body=document.getElementById('acc-body-'+id);
     if(body&&body.style.display!=='none')renderSecao(id);
   });
@@ -5704,6 +5734,30 @@ function renderSecMensal(lista,meses){
     const tot=vals.reduce((a,v)=>a+v,0);if(tot===0)return'';
     return`<tr style="border-top:1px solid var(--border);background:${ri%2===0?'var(--surface2)':'var(--surface)'}"><td style="padding:8px 12px;"><span class="tag ${card.tag}">${card.nome}</span></td>${vals.map(v=>`<td style="padding:8px 12px;text-align:right;font-weight:${v>0?'600':'400'};color:${v>0?'var(--text)':'var(--muted)'};">${v>0?fmt(v):'-'}</td>`).join('')}<td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(tot)}</td></tr>`;
   }).join('')+`<tr style="border-top:2px solid var(--border);background:var(--surface2);font-weight:700;"><td style="padding:8px 12px;">Total</td>${meses.map(m=>`<td style="padding:8px 12px;text-align:right;">${fmt(totM[m]||0)}</td>`).join('')}<td style="padding:8px 12px;text-align:right;">${fmt(Object.values(totM).reduce((a,v)=>a+v,0))}</td></tr>`;
+}
+// Achado em auditoria (04/08/2026): Relatórios já tinha gráfico de barras
+// por mês (total geral) e tabela mês×cartão, mas nenhuma visão mês×categoria
+// (ex: "Alimentação subiu tanto% esse mês"), mesmo já existindo categoriaId
+// em cada compra. Agrupa por categoria MÃE (subcategoria conta pra mãe,
+// mesmo critério já usado no filtro "Ir para Categoria" de Lançamentos) —
+// mesmo padrão/estrutura de renderSecMensal, só trocando cartão por categoria.
+function renderSecCatMensal(lista,meses){
+  if(!lista)lista=getSecData('catmensal');if(!meses)meses=getSecMeses('catmensal');
+  const head=document.getElementById('rel-catmensal-head'),body=document.getElementById('rel-catmensal-body');
+  if(!head||!body)return;
+  const maes=categorias.filter(c=>!c.parentId&&itemValidoPF(c)&&c.tipo==='despesa').sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  const idDaMae=c=>{ const cat=categoriaById(c.categoriaId); if(!cat) return null; return cat.parentId||cat.id; };
+  head.innerHTML=`<tr style="background:var(--surface2);"><th style="padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Categoria</th>${meses.map(m=>`<th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">${nomeMes(m)}</th>`).join('')}<th style="padding:8px 12px;text-align:right;font-size:.68rem;text-transform:uppercase;color:var(--muted);">Total</th></tr>`;
+  const totM={};meses.forEach(m=>totM[m]=0);
+  const linhasCat=maes.map((mae,ri)=>{
+    const vals=meses.map(m=>{const v=lista.filter(x=>idDaMae(x)===mae.id&&x.venc.slice(0,7)===m).reduce((a,x)=>a+x.valorParcela,0);totM[m]=(totM[m]||0)+v;return v;});
+    const tot=vals.reduce((a,v)=>a+v,0);if(tot===0)return'';
+    return`<tr style="border-top:1px solid var(--border);background:${ri%2===0?'var(--surface2)':'var(--surface)'}"><td style="padding:8px 12px;">${esc(mae.nome)}</td>${vals.map(v=>`<td style="padding:8px 12px;text-align:right;font-weight:${v>0?'600':'400'};color:${v>0?'var(--text)':'var(--muted)'};">${v>0?fmt(v):'-'}</td>`).join('')}<td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(tot)}</td></tr>`;
+  }).join('');
+  const semCatVals=meses.map(m=>{const v=lista.filter(x=>!idDaMae(x)&&x.venc.slice(0,7)===m).reduce((a,x)=>a+x.valorParcela,0);totM[m]=(totM[m]||0)+v;return v;});
+  const semCatTot=semCatVals.reduce((a,v)=>a+v,0);
+  const linhaSemCat=semCatTot===0?'':`<tr style="border-top:1px solid var(--border);color:var(--muted);font-style:italic;"><td style="padding:8px 12px;">Sem categoria</td>${semCatVals.map(v=>`<td style="padding:8px 12px;text-align:right;">${v>0?fmt(v):'-'}</td>`).join('')}<td style="padding:8px 12px;text-align:right;font-weight:700;">${fmt(semCatTot)}</td></tr>`;
+  body.innerHTML=linhasCat+linhaSemCat+`<tr style="border-top:2px solid var(--border);background:var(--surface2);font-weight:700;"><td style="padding:8px 12px;">Total</td>${meses.map(m=>`<td style="padding:8px 12px;text-align:right;">${fmt(totM[m]||0)}</td>`).join('')}<td style="padding:8px 12px;text-align:right;">${fmt(Object.values(totM).reduce((a,v)=>a+v,0))}</td></tr>`;
 }
 function renderSecPagos(lista,meses){
   if(!lista)lista=getSecData('pagos');if(!meses)meses=getSecMeses('pagos');
@@ -6118,6 +6172,15 @@ function excluirCad(tipo,id){
     const emUso = compras.some(c=>c.categoriaId===id||c.centroCustoId===id||c.direcionamentoId===id);
     if(emUso){ showToast('Este item já está em uso em lançamentos e não pode ser excluído.',true); return; }
     ACF(msgs[tipo],async ()=>{ showToast('Excluindo...'); await salvarItemCadastroUnico(campo, item, true); renderCadastros(); showToast('Removido'); });
+    return;
+  }
+  // Achado em auditoria (04/08/2026): categoria/CC/direcionamento já
+  // bloqueavam exclusão "em uso" (linha acima), mas cartão personalizado
+  // não tinha a mesma checagem — dava pra excluir um cartão com compras
+  // lançadas nele, deixando as compras órfãs (sem cartão existente no
+  // cadastro, quebrando telas que dependem de CARTOES[c.cartao]).
+  if(tipo==='cart' && compras.some(c=>c.cartao===id)){
+    showToast('Este cartão tem compras lançadas e não pode ser removido.',true);
     return;
   }
   ACF(msgs[tipo]||'Excluir?',()=>{
