@@ -1400,7 +1400,12 @@ const AUTH_TS    = 'app_auth_ts_pf';
 const AUTH_TRIES = 'app_auth_tries';
 const AUTH_BLOCK = 'app_auth_block';
 const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novamente
-const VERSAO = 'v5.36';
+// v5.37 (05/08/2026): recategoriza as compras de 2026 (compras_pf_2026.json)
+// cruzando o categoriaId antigo (agora órfão após o rebuild do cadastro no
+// TesourariaSys), o campo de texto livre "categoria" e palavras-chave da
+// descrição — mesmo critério usado no TesourariaSys. O que não deu pra
+// categorizar com segurança foi pra "A REVER".
+const VERSAO = 'v5.37';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
