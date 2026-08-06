@@ -1414,7 +1414,10 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // lançamentos, com a edição movida pro duplo clique. Botões "✏"/"✏️
 // Editar" inline removidos dessas listas. Atraso de 280ms no clique
 // único evita o "flash" de navegação quando o duplo clique acontece.
-const VERSAO = 'v5.38';
+// v5.39 — Log de Auditoria (mesmo padrão do ChequeSys): registra login,
+// limpeza de dados e importação de backup em logAuditoriaPF (últimos
+// 500), acessível pelo Master em Backup → Log de Auditoria.
+const VERSAO = 'v5.39';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1703,10 +1706,42 @@ async function loginUsuarioPF(){
   if(hash!==u.hash){document.getElementById('pf-login-erro').style.display='block';return;}
   USUARIO_ATUAL={id:u.id,nome:u.nome,perfil:u.perfil};
   localStorage.setItem('cc_pf_usu',JSON.stringify(USUARIO_ATUAL));
+  registrarLogPF('Login', `${u.nome} (${u.perfil}) entrou no sistema`);
   document.getElementById('login-screen').style.display='none';
   atualizarBadgePF();
   renderDashboard();
   setTimeout(()=>_oferecerBioPF(u.id),1500);
+}
+
+// ══════════════════════════════════════════
+// 📝 LOG DE AUDITORIA — registra quem fez o quê e quando. Mesmo padrão do
+// ChequeSys (06/08/2026). Guardado em logAuditoriaPF (últimos 500).
+// ══════════════════════════════════════════
+function registrarLogPF(acao, detalhe){
+  try{
+    const entrada = {
+      id: uid(), data: new Date().toISOString(),
+      usuario: USUARIO_ATUAL?.nome || 'Desconhecido',
+      perfil: USUARIO_ATUAL?.perfil || '-',
+      acao, detalhe: detalhe||''
+    };
+    logAuditoriaPF = [...(logAuditoriaPF||[]), entrada].slice(-500);
+    return logAuditoriaPF;
+  }catch(e){ return logAuditoriaPF||[]; }
+}
+function htmlLogAuditoriaPF(){
+  const logs = [...(logAuditoriaPF||[])].reverse();
+  const linhas = logs.map(l=>{
+    const dt = new Date(l.data);
+    return `<tr><td style="white-space:nowrap">${dt.toLocaleDateString('pt-BR')} ${dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td><td style="font-weight:700">${esc(l.usuario)}</td><td>${esc(l.acao)}</td><td style="font-size:11px;color:var(--muted)">${esc(l.detalhe)}</td></tr>`;
+  }).join('');
+  return linhas || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Nenhum registro ainda.</td></tr>';
+}
+function abrirLogAuditoriaPF(){
+  if(!temPermPF('excluir')){ alert('Apenas o usuário Master pode ver o log de auditoria.'); return; }
+  fecharModal('modal-backup');
+  document.getElementById('log-auditoria-corpo-pf').innerHTML = htmlLogAuditoriaPF();
+  document.getElementById('modal-log-auditoria-pf').classList.add('open');
 }
 function sairUsuarioPF(){
   USUARIO_ATUAL=null;
@@ -1767,7 +1802,7 @@ function setFila(payload){try{localStorage.setItem(PREFIX+'_fila',JSON.stringify
 function limparFila(){localStorage.removeItem(PREFIX+'_fila');}
 function getLastSha(){return localStorage.getItem(PREFIX+'_last_sha')||'';}
 function setLastSha(sha){if(sha)localStorage.setItem(PREFIX+'_last_sha',sha);}
-function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,cartoesCustom,usuarios,favoritosCF,ordemCartoesDash};}
+function montarPayload(){return{versao:5,tipo:TIPO_DADOS,compras,limites,pagamentos,fechamentos,fornecedores,cartoesCustom,usuarios,favoritosCF,ordemCartoesDash,logAuditoriaPF};}
 // Fila separada pra Categoria/Centro de Custo/Direcionamento (cadastros-pf.json
 // e cadastros-pj.json, no repo do TesourariaSys) — 01/08/2026, a pedido do
 // Fabio (opção "A+"). Achado na varredura: salvarItemCadastroUnico() gravava
@@ -2026,7 +2061,7 @@ let CARTOES={
 const CARTOES_BUILTIN=Object.keys(CARTOES);
 const DEFAULT_LIMITES={8139:{total:170000,usado:0},7672:{total:170000,usado:0},4290:{total:170000,usado:0},santander:{total:250000,usado:0},picpay:{total:30000,usado:0}};
 
-let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={}, direcionamentos=[];
+let compras=[], limites={}, pagamentos={}, fechamentos={}, fornecedores=[], categorias=[], cartoesCustom={}, direcionamentos=[], logAuditoriaPF=[];
 // Função central que aplica TODOS os campos de um payload (fila local ou
 // dados remotos) nas variáveis globais — ACHADO NA AUDITORIA OFFLINE
 // (02/08/2026, pedido do Fabio): antes, resolverFilaPendente/resolverConflito
@@ -2043,6 +2078,7 @@ function _aplicarCamposPayload(dados){
   compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
   fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; cartoesCustom=dados.cartoesCustom||{};
   usuarios=dados.usuarios||[]; favoritosCF=dados.favoritosCF||[]; ordemCartoesDash=dados.ordemCartoesDash||[];
+  logAuditoriaPF=dados.logAuditoriaPF||[];
   Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
 }
 let favoritosCF=[];
@@ -4952,6 +4988,7 @@ async function confirmarLimparTudoSeguro(){
   if(!hashPinSalvo||hashPinDigitado!==hashPinSalvo){ mostrarErroLts('PIN incorreto.'); return; }
   fecharModal('modal-limpar-seguro');
   if(!confirm('Confirma definitivamente a limpeza de TODOS os dados? Essa ação não pode ser desfeita.')) return;
+  registrarLogPF('Limpou Todos os Dados', `${(compras||[]).length} compra(s)/lançamento(s) removido(s)`);
   limparTudo();
 }
 function showToast(msg,erro=false){
@@ -6913,6 +6950,7 @@ async function confirmarImportacaoCartoes(){
   const dados=_backupParaImportarCartoes;
   if(!dados) return;
   if(!confirm('Tem certeza? Essa ação não pode ser desfeita pelo sistema (só restaurando outro backup depois).')) return;
+  registrarLogPF('Importou Backup', `Substituiu todos os dados atuais por um arquivo de backup`);
   compras=dados.compras||[]; limites=dados.limites||{}; pagamentos=dados.pagamentos||{};
   fechamentos=dados.fechamentos||{}; fornecedores=dados.fornecedores||[]; categorias=dados.categorias||[];
   cartoesCustom=dados.cartoesCustom||{}; direcionamentos=dados.direcionamentos||[]; if(dados.usuarios) usuarios=dados.usuarios;
@@ -7190,12 +7228,30 @@ boot();
         <p style="font-size:.68rem;color:var(--muted);margin:6px 0 0;">Restrito ao usuário Master — é uma ação que substitui todos os dados do sistema.</p>
       </div>
       <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px;">
+        <button class="btn btn-outline" style="justify-content:center;width:100%;" onclick="abrirLogAuditoriaPF()">
+          📝 &nbsp;Log de Auditoria
+        </button>
+        <p style="font-size:.68rem;color:var(--muted);margin:6px 0 0;">Vê quem fez login, limpou dados ou importou backup — restrito ao Master.</p>
+      </div>
+      <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px;">
         <p style="font-size:.72rem;color:var(--muted);margin:0;line-height:1.6;">
           ☁️ <strong>GitHub:</strong> salva em <code style="background:var(--surface);padding:1px 5px;border-radius:4px;">Cartoes/backups/backup_data_hora.json</code> — histórico completo de versões no repositório.<br>
           💾 <strong>Local:</strong> baixa arquivo no seu computador — ideal para guardar cópia offline.<br>
           🔄 <strong>Automático:</strong> backup no GitHub acontece sozinho a cada 6 horas.
         </p>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LOG DE AUDITORIA -->
+<div class="modal-overlay" id="modal-log-auditoria-pf">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-hd"><h2>📝 Log de Auditoria</h2><button class="close-btn" onclick="fecharModal('modal-log-auditoria-pf')">✕</button></div>
+    <div class="modal-bd">
+      <p style="font-size:.72rem;color:var(--muted);margin:0 0 10px;">Cobertura atual: login, limpeza de dados e importação de backup.</p>
+      <div style="overflow-x:auto;max-height:500px;overflow-y:auto"><table style="width:100%;font-size:.78rem;"><thead><tr><th style="text-align:left;">Data/Hora</th><th style="text-align:left;">Usuário</th><th style="text-align:left;">Ação</th><th style="text-align:left;">Detalhe</th></tr></thead>
+      <tbody id="log-auditoria-corpo-pf"></tbody></table></div>
     </div>
   </div>
 </div>
