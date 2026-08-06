@@ -1424,7 +1424,14 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // limite, compartilhada com o PF): retenção em camadas, roda sozinho 1x/dia.
 // v5.41 — Remove sw.js/sw-cartoes.js (Service Workers órfãos, nunca
 // registrados por nenhum código — mesma decisão já tomada no ChequeSys).
-const VERSAO = 'v5.41';
+// v5.42 — CORREÇÃO da v5.41: apagar o arquivo do Service Worker não é
+// suficiente pra livrar um dispositivo que já o tinha instalado (o
+// navegador só reage a uma MUDANÇA de conteúdo na mesma URL, não ao
+// arquivo desaparecer) — isso podia prender esse dispositivo numa cópia
+// desatualizada do app pra sempre, sem F5 nem Ctrl+Shift+R resolverem.
+// Restaurados sw.js e sw-cartoes.js, agora com autodestruição (mesmo
+// padrão do ChequeSys), pra qualquer instalação antiga se desinstalar sozinha.
+const VERSAO = 'v5.42';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
