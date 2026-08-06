@@ -1422,7 +1422,9 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // 500), acessível pelo Master em Backup → Log de Auditoria.
 // v5.40 — Expurgo automático de backups antigos (backups/ crescia sem
 // limite, compartilhada com o PF): retenção em camadas, roda sozinho 1x/dia.
-const VERSAO = 'v5.40';
+// v5.41 — Remove sw.js/sw-cartoes.js (Service Workers órfãos, nunca
+// registrados por nenhum código — mesma decisão já tomada no ChequeSys).
+const VERSAO = 'v5.41';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
