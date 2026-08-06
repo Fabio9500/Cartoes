@@ -1420,7 +1420,9 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // v5.39 — Log de Auditoria (mesmo padrão do ChequeSys): registra login,
 // limpeza de dados e importação de backup em logAuditoriaPJ (últimos
 // 500), acessível pelo Master em Backup → Log de Auditoria.
-const VERSAO = 'v5.39';
+// v5.40 — Expurgo automático de backups antigos (backups/ crescia sem
+// limite, compartilhada com o PF): retenção em camadas, roda sozinho 1x/dia.
+const VERSAO = 'v5.40';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2338,7 +2340,16 @@ window.addEventListener('online',async()=>{
 window.addEventListener('offline',()=>{setSyncStatus('queued');atualizarIndicadorConexao();});
 
 // Backup automático no GitHub a cada 6 horas
-setInterval(async()=>{ await backupGitHub(true); }, 6*60*60*1000);
+setInterval(async()=>{
+  await backupGitHub(true);
+  try{
+    const ultimoExpurgo = Number(localStorage.getItem(PREFIX+'_ultimo_expurgo')||0);
+    if(Date.now() - ultimoExpurgo > 24*60*60*1000){
+      await expurgarBackupsAntigos(true);
+      localStorage.setItem(PREFIX+'_ultimo_expurgo', String(Date.now()));
+    }
+  }catch(e){}
+}, 6*60*60*1000);
 // Rede de segurança pra fila de cadastro pendente: o evento 'online' do
 // navegador só dispara numa transição real offline→online, mas
 // navigator.onLine (usado em isOnline()) não é 100% confiável — em teste
@@ -6875,6 +6886,83 @@ async function fazerBackupCompleto(){
   showToast(ghOk?'✅ Backup concluído — GitHub + arquivo local':'💾 Backup local concluído (GitHub indisponível)',!ghOk);
 }
 
+// ══════════════════════════════════════════
+// 🧹 EXPURGO DE BACKUPS ANTIGOS — a pasta backups/ (compartilhada entre PF e
+// PJ, mesmo repositório) crescia sem limite (40+ arquivos e subindo, um a
+// cada 6h para sempre, de cada um dos dois sistemas). Mesma retenção em
+// camadas do TesourariaSys/ChequeSys, rodando sozinha 1x/dia junto do
+// backup automático: últimos 2 dias mantém tudo; de 2 a 30 dias mantém 1
+// por dia; de 30 a 180 dias mantém 1 por semana; mais antigo que 180 dias
+// é excluído. Roda igual em PF e PJ sobre a mesma pasta — decisão é só por
+// data do arquivo, então rodar dos dois lados não causa conflito. (06/08/2026)
+// ══════════════════════════════════════════
+async function listarBackupsGH(){
+  try{
+    const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/backups`, {
+      headers:{'Authorization':`token ${getToken()}`,'Accept':'application/vnd.github.v3+json'}
+    });
+    if(!r.ok) return [];
+    const lista = await r.json();
+    return (Array.isArray(lista)?lista:[]).filter(f=>/^backup_.*\.json$/.test(f.name));
+  }catch(e){ return []; }
+}
+function _parseDataBackup(nomeArquivo){
+  const m = nomeArquivo.match(/backup_(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})/);
+  if(!m) return null;
+  return new Date(`${m[1]}T${m[2]}:${m[3]}:00`);
+}
+function _chaveSemanaISO(data){
+  const onejan = new Date(data.getFullYear(),0,1);
+  const semana = Math.ceil((((data-onejan)/86400000)+onejan.getDay()+1)/7);
+  return data.getFullYear()+'-W'+semana;
+}
+function _backupsParaExcluir(arquivos){
+  const agora = new Date();
+  const comData = arquivos.map(f=>({f, data:_parseDataBackup(f.name)})).filter(x=>x.data).sort((a,b)=>b.data-a.data);
+  const manter = new Set();
+  const chavesDiaVistas = new Set();
+  const chavesSemanaVistas = new Set();
+  comData.forEach(({f,data})=>{
+    const idadeDias = (agora - data) / 86400000;
+    if(idadeDias <= 2){ manter.add(f.name); return; }
+    if(idadeDias <= 30){
+      const chaveDia = data.toISOString().slice(0,10);
+      if(!chavesDiaVistas.has(chaveDia)){ chavesDiaVistas.add(chaveDia); manter.add(f.name); }
+      return;
+    }
+    if(idadeDias <= 180){
+      const chaveSemana = _chaveSemanaISO(data);
+      if(!chavesSemanaVistas.has(chaveSemana)){ chavesSemanaVistas.add(chaveSemana); manter.add(f.name); }
+      return;
+    }
+  });
+  return comData.filter(x=>!manter.has(x.f.name)).map(x=>x.f);
+}
+async function expurgarBackupsAntigos(silencioso){
+  if(!getToken()||!isOnline()) return 0;
+  try{
+    const arquivos = await listarBackupsGH();
+    const paraExcluir = _backupsParaExcluir(arquivos);
+    let excluidos = 0;
+    for(const f of paraExcluir){
+      try{
+        const r = await fetch(f.url, {
+          method:'DELETE',
+          headers:{'Authorization':`token ${getToken()}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+          body: JSON.stringify({message:`Expurgo automático de backup antigo: ${f.name}`, sha:f.sha})
+        });
+        if(r.ok) excluidos++;
+      }catch(e){}
+    }
+    if(!silencioso) showToast(excluidos>0 ? `🧹 ${excluidos} backup(s) antigo(s) removido(s)` : '🧹 Nenhum backup antigo para remover');
+    return excluidos;
+  }catch(e){ return 0; }
+}
+async function expurgarBackupsManual(){
+  showToast('⏳ Verificando backups antigos...');
+  await expurgarBackupsAntigos(false);
+}
+
 function abrirModalBackup(){
   let ultimoBkp='';
   try{ultimoBkp=localStorage.getItem(PREFIX+'_ultimo_bkp')||'';}catch(e){}
@@ -7217,6 +7305,12 @@ boot();
           📝 &nbsp;Log de Auditoria
         </button>
         <p style="font-size:.68rem;color:var(--muted);margin:6px 0 0;">Vê quem fez login, limpou dados ou importou backup — restrito ao Master.</p>
+      </div>
+      <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px;">
+        <button class="btn btn-outline" style="justify-content:center;width:100%;" onclick="fecharModal('modal-backup');expurgarBackupsManual()">
+          🧹 &nbsp;Limpar Backups Antigos Agora
+        </button>
+        <p style="font-size:.68rem;color:var(--muted);margin:6px 0 0;">Roda sozinho 1x/dia; mantém tudo dos últimos 2 dias, 1/dia até 30 dias, 1/semana até 180 dias.</p>
       </div>
       <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px;">
         <p style="font-size:.72rem;color:var(--muted);margin:0;line-height:1.6;">
