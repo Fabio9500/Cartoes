@@ -1431,7 +1431,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // desatualizada do app pra sempre, sem F5 nem Ctrl+Shift+R resolverem.
 // Restaurados sw.js e sw-cartoes.js, agora com autodestruição (mesmo
 // padrão do ChequeSys), pra qualquer instalação antiga se desinstalar sozinha.
-const VERSAO = 'v5.42';
+const VERSAO = 'v5.43';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2080,6 +2080,24 @@ function _aplicarCamposPayload(dados){
   usuarios=dados.usuarios||[]; favoritosCF=dados.favoritosCF||[]; ordemCartoesDash=dados.ordemCartoesDash||[];
   logAuditoriaPJ=dados.logAuditoriaPJ||[];
   Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
+  popularFiltroFaturaCartao();
+}
+// Mesma classe de bug documentada em editarParcela() (achado 02/08/2026):
+// este <select> era HTML estático com só os 5 cartões originais. Um cartão
+// CUSTOM (ex: "picpay", criado depois via cartoesCustom) nunca aparecia como
+// opção — impossível filtrar a aba Faturas só por ele, e nas listagens que
+// usam card.tag ele herdava a cor/tag de outro cartão (ficava parecendo
+// "Bradesco" por causa do tag copiado errado no cadastro, mas o problema de
+// fundo era o select nunca ter a option dele). Corrigido (10/08/2026):
+// repopula a partir do CARTOES atual (builtin + custom) toda vez que os
+// dados carregam, preservando a seleção atual se ainda for válida.
+function popularFiltroFaturaCartao(){
+  const sel=document.getElementById('filtro-fatura-cartao');if(!sel)return;
+  const atual=sel.value||'todos';
+  const opcoes=['<option value="todos">Todos os cartões</option>']
+    .concat(Object.entries(CARTOES).map(([k,c])=>`<option value="${k}">${esc(c.nome||k)}</option>`));
+  sel.innerHTML=opcoes.join('');
+  sel.value=Object.prototype.hasOwnProperty.call(CARTOES,atual)||atual==='todos'?atual:'todos';
 }
 let favoritosCF=[];
 let ordemCartoesDash=[];
