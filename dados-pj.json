@@ -18,7 +18,7 @@
       "total": 55000,
       "usado": 3000
     },
-    "bradesco": {
+    "picpay": {
       "total": 0,
       "usado": 0
     }
@@ -116,8 +116,12 @@
       "fechDias": 8,
       "tag": "santander"
     },
-    "bradesco": {
-      "contaTesourariaId": "ms7to7veaea5j22"
+    "picpay": {
+      "nome": "PicPay  PJ",
+      "banco": "Mastercard",
+      "venc": 10,
+      "fechDias": 8,
+      "tag": "tag-outros"
     }
   },
   "usuarios": [
