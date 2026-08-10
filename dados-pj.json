@@ -110,7 +110,11 @@
       "contaTesourariaId": "ms7to7ve9prx32j"
     },
     "santander": {
-      "contaTesourariaId": "ms7to7veljpq1vo"
+      "nome": "Santander PJ",
+      "banco": "Mastercard",
+      "venc": 30,
+      "fechDias": 8,
+      "tag": "santander"
     },
     "bradesco": {
       "contaTesourariaId": "ms7to7veaea5j22"
@@ -150,6 +154,7 @@
     "mlivre",
     "bradesco"
   ],
+  "logAuditoriaPJ": [],
   "anosCompras": [
     "2026"
   ]
