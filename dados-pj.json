@@ -21,6 +21,9 @@
     "picpay": {
       "total": 0,
       "usado": 0
+    },
+    "bradesco": {
+      "total": 15000
     }
   },
   "pagamentos": {
