@@ -6782,6 +6782,94 @@ function interpretarTextoCompra(textoOriginal){
   return{desc,valor,cartao:cartaoInfo.key,nParcelas,dataCompra:dataInfo.iso,categoria,avisos};
 }
 
+// ── VOZ/TEXTO PARA FILTRO (11/08/2026) ──────────────────────
+// Antes, "Falar/Texto" só sabia interpretar lançamentos novos. Agora
+// também reconhece pedidos de filtro/consulta ("mostra os gastos de
+// julho no Santander") e aplica direto na tela de Lançamentos, sem abrir
+// o modal de Nova Compra. Puramente aditivo: se o texto não bater com
+// nenhuma palavra de filtro abaixo, cai exatamente no mesmo caminho de
+// lançamento que já existia — nada do fluxo antigo muda.
+function classificarIntencaoFala(textoOriginal){
+  const t=textoOriginal.toLowerCase();
+  if(/\b(mostra|mostrar|filtra|filtrar|busca|buscar|lista|listar|quero ver|me mostra|procura|procurar)\b/.test(t))return'filtro';
+  if(/\bquanto\s+(?:eu\s+)?gastei\b/.test(t))return'filtro';
+  if(/\bquais\s+(?:s[ãa]o|foram)\b/.test(t))return'filtro';
+  return'lancamento';
+}
+function parseMesFala(t){
+  const meses={janeiro:0,fevereiro:1,'março':2,marco:2,abril:3,maio:4,junho:5,julho:6,agosto:7,setembro:8,outubro:9,novembro:10,dezembro:11};
+  const fimMes=(ano,mesIdx)=>String(new Date(ano,mesIdx+1,0).getDate()).padStart(2,'0');
+  for(const nome in meses){
+    if(new RegExp('\\b'+nome+'\\b').test(t)){
+      const mesIdx=meses[nome];
+      let ano=hoje.getFullYear();
+      const mAno=t.match(/\b(20\d{2})\b/);
+      if(mAno)ano=parseInt(mAno[1]);
+      return{de:`${ano}-${String(mesIdx+1).padStart(2,'0')}-01`,ate:`${ano}-${String(mesIdx+1).padStart(2,'0')}-${fimMes(ano,mesIdx)}`,achou:true};
+    }
+  }
+  if(/\bm[êe]s passado\b/.test(t)){
+    const d=new Date(hoje.getFullYear(),hoje.getMonth()-1,1);
+    return{de:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`,ate:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${fimMes(d.getFullYear(),d.getMonth())}`,achou:true};
+  }
+  if(/\b(?:este|deste) m[êe]s\b|\bm[êe]s atual\b/.test(t)){
+    return{de:`${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-01`,ate:`${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${fimMes(hoje.getFullYear(),hoje.getMonth())}`,achou:true};
+  }
+  if(/\bano passado\b/.test(t)){const a=hoje.getFullYear()-1;return{de:`${a}-01-01`,ate:`${a}-12-31`,achou:true};}
+  if(/\b(?:este|deste) ano\b|\bano atual\b/.test(t)){const a=hoje.getFullYear();return{de:`${a}-01-01`,ate:`${a}-12-31`,achou:true};}
+  if(/\bhoje\b/.test(t)){const iso=isoDateLocal(hoje);return{de:iso,ate:iso,achou:true};}
+  if(/\bontem\b/.test(t)){const d=new Date(hoje);d.setDate(d.getDate()-1);const iso=isoDateLocal(d);return{de:iso,ate:iso,achou:true};}
+  const datas=[...t.matchAll(/(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/g)].map(m=>{
+    let d=parseInt(m[1]),mo=parseInt(m[2]),y=m[3]?parseInt(m[3]):hoje.getFullYear();
+    if(y<100)y+=2000;
+    return`${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  });
+  if(datas.length>=2)return{de:datas[0]<datas[1]?datas[0]:datas[1],ate:datas[0]<datas[1]?datas[1]:datas[0],achou:true};
+  if(datas.length===1)return{de:datas[0],ate:datas[0],achou:true};
+  return{de:'',ate:'',achou:false};
+}
+function parseFornecedorFala(t){
+  let m=t.match(/\bcom\s+(?:o\s+|a\s+)?([a-zà-ú0-9][a-zà-ú0-9\s]*?)(?=\s+no\s+cart[ãa]o|\s+em\s+\d|\s*$)/i);
+  if(m)return m[1].trim();
+  m=t.match(/\bfornecedor\s+([a-zà-ú0-9][a-zà-ú0-9\s]*?)(?=\s+no\s+cart[ãa]o|\s+em\s+\d|\s*$)/i);
+  if(m)return m[1].trim();
+  m=t.match(/\bd[oa]\s+(?:loja\s+)?([a-zà-ú0-9][a-zà-ú0-9\s]*?)(?=\s+no\s+cart[ãa]o|\s+em\s+\d|\s*$)/i);
+  if(m)return m[1].trim();
+  return'';
+}
+function interpretarComandoFiltro(textoOriginal){
+  const t=textoOriginal.toLowerCase();
+  const cartaoInfo=parseCartaoFala(t);
+  const periodo=parseMesFala(t);
+  const fornecedor=parseFornecedorFala(t);
+  return{cartao:cartaoInfo.key,de:periodo.de,ate:periodo.ate,fornecedor};
+}
+function aplicarFiltroFala(f){
+  showPage('lancamentos');
+  limparFiltroLancCadastro();
+  filtroAtivo=f.cartao||'todos';
+  const deEl=document.getElementById('lanc-filtro-de');if(deEl)deEl.value=f.de||'';
+  const ateEl=document.getElementById('lanc-filtro-ate');if(ateEl)ateEl.value=f.ate||'';
+  const fornEl=document.getElementById('lanc-filtro-forn');if(fornEl)fornEl.value=f.fornecedor||'';
+  renderLancamentos(filtroAtivo);
+  const partes=[];
+  if(f.cartao)partes.push(`cartão ${(CARTOES[f.cartao]||{}).nome||f.cartao}`);
+  if(f.de||f.ate)partes.push(f.de===f.ate?`em ${new Date(f.de+'T12:00:00').toLocaleDateString('pt-BR')}`:`de ${f.de?new Date(f.de+'T12:00:00').toLocaleDateString('pt-BR'):'?'} até ${f.ate?new Date(f.ate+'T12:00:00').toLocaleDateString('pt-BR'):'?'}`);
+  if(f.fornecedor)partes.push(`"${f.fornecedor}"`);
+  showToast(partes.length?`🎤 Filtrado: ${partes.join(', ')}`:'🎤 Nenhum filtro específico identificado — mostrando tudo');
+}
+function processarComandoFala(){
+  const texto=document.getElementById('fala-texto').value.trim();
+  if(!texto){showToast('Fale ou digite primeiro',true);return;}
+  if(classificarIntencaoFala(texto)==='filtro'){
+    const f=interpretarComandoFiltro(texto);
+    fecharModal('modal-fala');
+    aplicarFiltroFala(f);
+  } else {
+    interpretarEAbrirCompra();
+  }
+}
+
 // ── RECONHECIMENTO DE VOZ ────────────────────────────────────
 let _recognizer=null,_gravando=false;
 function getSpeechRecognition(){return window.SpeechRecognition||window.webkitSpeechRecognition||null;}
@@ -7308,20 +7396,21 @@ boot();
 <!-- MODAL LANÇAMENTO POR VOZ/TEXTO -->
 <div class="modal-overlay" id="modal-fala">
   <div class="modal" style="max-width:560px;">
-    <div class="modal-hd"><h2>🎤 Lançamento por Voz ou Texto</h2><button class="close-btn" onclick="fecharModal('modal-fala')">✕</button></div>
+    <div class="modal-hd"><h2>🎤 Falar ou Digitar — Lançamento ou Filtro</h2><button class="close-btn" onclick="fecharModal('modal-fala')">✕</button></div>
     <div class="modal-bd">
       <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px;line-height:1.5;">
-        Fale ou digite naturalmente, como você falaria normalmente. Exemplo:<br>
-        <em>"comprei uma furadeira na Leroy Merlin por 350 reais no Bradesco em 3 vezes"</em>
+        Fale ou digite naturalmente, como você falaria normalmente. Exemplos:<br>
+        <em>"comprei uma furadeira na Leroy Merlin por 350 reais no Bradesco em 3 vezes"</em><br>
+        <em>"mostra os gastos de julho no Santander"</em>
       </p>
-      <textarea id="fala-texto" rows="4" placeholder="Ex: gastei 120 reais no posto hoje no Santander"
+      <textarea id="fala-texto" rows="4" placeholder="Ex: gastei 120 reais no posto hoje no Santander — ou: mostra os gastos de julho"
         style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.9rem;color:var(--text);resize:vertical;"></textarea>
       <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
         <button class="btn btn-outline" id="fala-mic-btn" onclick="toggleGravacao()">🎤 Falar</button>
         <span id="fala-mic-status" style="font-size:.78rem;color:var(--muted);"></span>
       </div>
       <div style="margin-top:18px;text-align:right;">
-        <button class="btn btn-primary" onclick="interpretarEAbrirCompra()">Interpretar →</button>
+        <button class="btn btn-primary" onclick="processarComandoFala()">Interpretar →</button>
       </div>
     </div>
   </div>
