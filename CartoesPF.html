@@ -90,6 +90,13 @@ main{padding:18px 16px;max-width:1100px;margin:0 auto;}
 .table-toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
 .filter-chip{padding:5px 12px;border-radius:20px;font-size:.73rem;font-weight:600;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all .18s;}
 .filter-chip.active,.filter-chip:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* Campos de uso raro no dia a dia (centro de custo, direcionamento,
+   reparcelamento, trocar cartão) — escondidos atrás de um toggle nos
+   modais de lançamento, pra não sobrecarregar a tela no celular. */
+.mais-opcoes-form{margin:12px 0;}
+.mais-opcoes-form summary{cursor:pointer;font-size:.78rem;color:var(--accent);font-weight:600;padding:6px 0;list-style:none;}
+.mais-opcoes-form summary::-webkit-details-marker{display:none;}
+.mais-opcoes-form[open] summary{margin-bottom:6px;}
 .tbl-wrap{overflow:auto;max-height:calc(100vh - 230px);border-radius:var(--radius);border:1px solid var(--border);}
 .tbl-wrap thead th{position:sticky;top:0;}
 @media (min-width:769px){
@@ -1177,18 +1184,21 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
           <select id="c-categoria-sub" style="flex:1"></select>
         </div>
       </div>
-      <div class="form-group"><label>Centro de Custo</label>
-        <div class="form-row" style="margin-bottom:0">
-          <select id="c-cc-mae" onchange="aoMudarMaeCascata('c','cc')" style="flex:1"></select>
-          <select id="c-cc-sub" style="flex:1"></select>
+      <details class="mais-opcoes-form" id="c-mais-opcoes">
+        <summary>▸ Mais opções (Centro de Custo, Direcionamento)</summary>
+        <div class="form-group"><label>Centro de Custo</label>
+          <div class="form-row" style="margin-bottom:0">
+            <select id="c-cc-mae" onchange="aoMudarMaeCascata('c','cc')" style="flex:1"></select>
+            <select id="c-cc-sub" style="flex:1"></select>
+          </div>
         </div>
-      </div>
-      <div class="form-group"><label>Direcionamento</label>
-        <div class="form-row" style="margin-bottom:0">
-          <select id="c-direc-mae" onchange="aoMudarMaeCascata('c','direc')" style="flex:1"></select>
-          <select id="c-direc-sub" style="flex:1"></select>
+        <div class="form-group"><label>Direcionamento</label>
+          <div class="form-row" style="margin-bottom:0">
+            <select id="c-direc-mae" onchange="aoMudarMaeCascata('c','direc')" style="flex:1"></select>
+            <select id="c-direc-sub" style="flex:1"></select>
+          </div>
         </div>
-      </div>
+      </details>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="c-data" onchange="calcularFechamento()"></div>
         <div class="form-group"><label>Valor Total (R$)</label><input type="number" id="c-valor" placeholder="0.00" step="0.01" oninput="calcularParcelas()"></div>
@@ -1271,59 +1281,62 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
           <select id="ep-categoria-sub" style="flex:1"></select>
         </div>
       </div>
-      <div class="form-group"><label>Centro de Custo <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label>
-        <div class="form-row" style="margin-bottom:0">
-          <select id="ep-cc-mae" onchange="aoMudarMaeCascata('ep','cc')" style="flex:1"></select>
-          <select id="ep-cc-sub" style="flex:1"></select>
-        </div>
-      </div>
-      <div class="form-group"><label>Direcionamento <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label>
-        <div class="form-row" style="margin-bottom:0">
-          <select id="ep-direc-mae" onchange="aoMudarMaeCascata('ep','direc')" style="flex:1"></select>
-          <select id="ep-direc-sub" style="flex:1"></select>
-        </div>
-      </div>
       <div class="form-row">
         <div class="form-group"><label>Data da Compra</label><input type="date" id="ep-datacompra"></div>
         <div class="form-group"><label>Vencimento</label><input type="date" id="ep-venc"></div>
       </div>
       <div class="form-group"><label>Valor (R$)</label><input type="number" id="ep-valor" step="0.01"></div>
-      <div style="border-top:1px solid var(--border);margin:14px 0;"></div>
-      <div class="form-group">
-        <label>🔁 Parcelas</label>
-        <select id="ep-parcelas" onchange="atualizarReparcelarPreview()">
-          <option value="1">1x (à vista)</option><option value="2">2x</option><option value="3">3x</option>
-          <option value="4">4x</option><option value="5">5x</option><option value="6">6x</option>
-          <option value="7">7x</option><option value="8">8x</option><option value="9">9x</option>
-          <option value="10">10x</option><option value="11">11x</option><option value="12">12x</option>
-          <option value="18">18x</option><option value="24">24x</option>
-        </select>
-        <div style="font-size:.7rem;color:var(--muted);margin-top:4px;">Total atual da compra: <strong id="ep-total-atual"></strong>. Ao mudar o número de parcelas, o valor total é redistribuído automaticamente.</div>
-      </div>
-      <div id="ep-parcelas-preview-wrap" style="display:none;">
-        <div class="form-group" style="margin-bottom:5px;"><label>Novas parcelas — edite se necessário</label></div>
-        <div style="overflow-x:auto;border-radius:7px;border:1px solid var(--border);">
-          <table class="parcelas-edit-table">
-            <thead><tr><th>#</th><th>Valor (R$)</th><th>Vencimento</th></tr></thead>
-            <tbody id="ep-parcelas-edit-tbody"></tbody>
-          </table>
+      <details class="mais-opcoes-form" id="ep-mais-opcoes">
+        <summary>▸ Mais opções (Centro de Custo, Direcionamento, parcelas, trocar cartão)</summary>
+        <div class="form-group"><label>Centro de Custo <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label>
+          <div class="form-row" style="margin-bottom:0">
+            <select id="ep-cc-mae" onchange="aoMudarMaeCascata('ep','cc')" style="flex:1"></select>
+            <select id="ep-cc-sub" style="flex:1"></select>
+          </div>
         </div>
-      </div>
-      <input type="hidden" id="ep-nparcelas-original">
-      <div style="border-top:1px solid var(--border);margin:14px 0;"></div>
-      <div class="form-group"><label>🔄 Trocar Cartão</label>
-        <select id="ep-cartao">
-          <option value="8139">BRA 01 — dia 01</option><option value="7672">BRA 10 — dia 10</option>
-          <option value="4290">BRA 20 — dia 20</option><option value="santander">Santander — dia 15</option>
-          <option value="picpay">PicPay — dia 25</option>
-        </select>
-      </div>
-      <div class="form-group"><label>Aplicar troca em</label>
-        <select id="ep-trocar-escopo">
-          <option value="parcela">Somente esta parcela</option>
-          <option value="todas">Todas as parcelas desta compra</option>
-        </select>
-      </div>
+        <div class="form-group"><label>Direcionamento <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(opcional)</span></label>
+          <div class="form-row" style="margin-bottom:0">
+            <select id="ep-direc-mae" onchange="aoMudarMaeCascata('ep','direc')" style="flex:1"></select>
+            <select id="ep-direc-sub" style="flex:1"></select>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);margin:14px 0;"></div>
+        <div class="form-group">
+          <label>🔁 Parcelas</label>
+          <select id="ep-parcelas" onchange="atualizarReparcelarPreview()">
+            <option value="1">1x (à vista)</option><option value="2">2x</option><option value="3">3x</option>
+            <option value="4">4x</option><option value="5">5x</option><option value="6">6x</option>
+            <option value="7">7x</option><option value="8">8x</option><option value="9">9x</option>
+            <option value="10">10x</option><option value="11">11x</option><option value="12">12x</option>
+            <option value="18">18x</option><option value="24">24x</option>
+          </select>
+          <div style="font-size:.7rem;color:var(--muted);margin-top:4px;">Total atual da compra: <strong id="ep-total-atual"></strong>. Ao mudar o número de parcelas, o valor total é redistribuído automaticamente.</div>
+        </div>
+        <div id="ep-parcelas-preview-wrap" style="display:none;">
+          <div class="form-group" style="margin-bottom:5px;"><label>Novas parcelas — edite se necessário</label></div>
+          <div style="overflow-x:auto;border-radius:7px;border:1px solid var(--border);">
+            <table class="parcelas-edit-table">
+              <thead><tr><th>#</th><th>Valor (R$)</th><th>Vencimento</th></tr></thead>
+              <tbody id="ep-parcelas-edit-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <input type="hidden" id="ep-nparcelas-original">
+        <div style="border-top:1px solid var(--border);margin:14px 0;"></div>
+        <div class="form-group"><label>🔄 Trocar Cartão</label>
+          <select id="ep-cartao">
+            <option value="8139">BRA 01 — dia 01</option><option value="7672">BRA 10 — dia 10</option>
+            <option value="4290">BRA 20 — dia 20</option><option value="santander">Santander — dia 15</option>
+            <option value="picpay">PicPay — dia 25</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Aplicar troca em</label>
+          <select id="ep-trocar-escopo">
+            <option value="parcela">Somente esta parcela</option>
+            <option value="todas">Todas as parcelas desta compra</option>
+          </select>
+        </div>
+      </details>
       <input type="hidden" id="ep-uid"><input type="hidden" id="ep-compraid"><input type="hidden" id="ep-cartao-original">
     </div>
     <div class="modal-ft" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
@@ -2730,7 +2743,7 @@ function renderLancamentos(filtro){
     const pTag=`<span class="parc-tag${passada?' passada':''}">${c.parcela}/${c.nParcelas}</span>`;
     const indent=opcoes.indent?'padding-left:18px;':'';
     const seta=opcoes.seta||'';
-    return `<tr style="cursor:pointer;${passada?'opacity:.55':''}${opcoes.destaque?'background:var(--surface2,#f7f7f7);':''}" onclick="cliqueComEspera('${c.uid}', function(){irParaFornecedorDeCompra('${c.uid}')})" ondblclick="cancelarCliqueComEspera('${c.uid}'); editarParcela('${c.uid}')" oncontextmenu="return abrirMenuCompra(event,'${c.uid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
+    return `<tr style="cursor:pointer;${passada?'opacity:.55':''}${opcoes.destaque?'background:var(--surface2,#f7f7f7);':''}" onclick="cliqueLinhaLancamento('${c.uid}')" ondblclick="cancelarCliqueComEspera('${c.uid}'); editarParcela('${c.uid}')" oncontextmenu="return abrirMenuCompra(event,'${c.uid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
       <td data-label="Dt. Compra" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap">${dtC}</td>
       <td data-label="Fornecedor" style="font-weight:600;${indent}">${seta}${esc(c.desc)}${c.tipo==='estorno'?` <span style="display:inline-block;font-size:.62rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle">↩ Estorno</span>`:''}${c.origemImportacao?` <span title="Importado da fatura ${c.origemImportacao==='csv-bradesco'?'CSV Bradesco':c.origemImportacao==='csv-generico'?'CSV':'OFX'} em ${c.dataImportacao?new Date(c.dataImportacao).toLocaleDateString('pt-BR'):'-'}" style="display:inline-block;font-size:.62rem;font-weight:700;color:#8a5a00;background:#fff3d6;border:1px solid #f0d896;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle">${c.origemImportacao==='ofx'?'📥 OFX':'📄 CSV'}</span>`:''}</td>
       <td data-label="Memorando" style="font-size:.75rem;color:var(--muted);">${c.memo?esc(c.memo):'<span style="opacity:.3">—</span>'}</td>
@@ -2850,6 +2863,18 @@ function cliqueComEspera(id, fn){
 function cancelarCliqueComEspera(id){
   if(_cliqueTimers[id]){ clearTimeout(_cliqueTimers[id]); delete _cliqueTimers[id]; }
 }
+// No celular (largura <=768px, mesmo corte usado pro layout em cartões — ver
+// CSS @media max-width:768px) o toque único num lançamento abre a tela
+// completa de edição direto, sem a espera de 280ms nem o "ir para
+// fornecedor" — no toque, ver a categorização já é o caso comum, e "ir
+// para fornecedor" (uso mais raro, de análise) continua acessível pelo
+// menu de contexto (toque longo). Desktop mantém o padrão de 06/08/2026
+// (clique único = ir para fornecedor, duplo clique = editar).
+function isMobileView(){ return window.matchMedia('(max-width:768px)').matches; }
+function cliqueLinhaLancamento(uid){
+  if(isMobileView()){ editarParcela(uid); return; }
+  cliqueComEspera(uid, function(){ irParaFornecedorDeCompra(uid); });
+}
 // "Fornecedor" de uma compra é o desc sem o sufixo "(...)" — mesma regra
 // já usada em abrirFornecedor()/renderSecForn(). Resolve pelo uid (nunca
 // texto livre direto no HTML) pra não quebrar a página se o desc tiver
@@ -2868,6 +2893,11 @@ function editarParcela(u){
   popularCascata('ep','categoria', c.categoriaId||'');
   popularCascata('ep','cc', c.centroCustoId||'');
   popularCascata('ep','direc', c.direcionamentoId||'');
+  // Se a parcela já tem centro de custo ou direcionamento preenchido,
+  // abre "Mais opções" direto — senão o dado fica escondido sem o usuário
+  // saber que está lá.
+  const maisOpcoesEp=document.getElementById('ep-mais-opcoes');
+  if(maisOpcoesEp) maisOpcoesEp.open=!!(c.centroCustoId||c.direcionamentoId);
   document.getElementById('ep-venc').value=c.venc;document.getElementById('ep-datacompra').value=c.dataCompra||'';
   // BUG CRÍTICO DE CORRUPÇÃO DE DADOS (achado 02/08/2026, relatado pelo
   // Fabio — 78 parcelas afetadas): este <select> era HTML estático com só
@@ -3064,7 +3094,7 @@ function renderFaturas(){
           <div style="min-width:60px" class="no-print"></div>
         </div>
         ${g.itens.sort((a,b)=>a.desc.localeCompare(b.desc)).map(i=>`
-        <div class="fd-row" style="cursor:pointer" onclick="cliqueComEspera('${i.uid}', function(){irParaFornecedorDeCompra('${i.uid}')})" ondblclick="cancelarCliqueComEspera('${i.uid}'); editarParcela('${i.uid}')" oncontextmenu="return abrirMenuCompra(event,'${i.uid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
+        <div class="fd-row" style="cursor:pointer" onclick="cliqueLinhaLancamento('${i.uid}')" ondblclick="cancelarCliqueComEspera('${i.uid}'); editarParcela('${i.uid}')" oncontextmenu="return abrirMenuCompra(event,'${i.uid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
           <div style="min-width:55px;max-width:55px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${i.dataCompra?new Date(i.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</div>
           <div class="fd-desc">${i.desc}${i.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}</div>
           <div style="flex:1;min-width:110px;font-size:.75rem;color:var(--muted);padding:0 4px;">${i.memo||'<span style="opacity:.3">—</span>'}</div>
@@ -3995,7 +4025,7 @@ function renomearFavoritoCF(id){
 function _linhaCompraCF(x, colsAtivas){
   const cols = colsAtivas || COLUNAS_CF.filter(c=>colunasCF[c.id]);
   const v = _valoresLinhaCF(x);
-  return `<tr style="cursor:pointer" onclick="cliqueComEspera('${x.primeiroUid}', function(){irParaFornecedorDeCompra('${x.primeiroUid}')})" ondblclick="cancelarCliqueComEspera('${x.primeiroUid}'); editarParcela('${x.primeiroUid}')" oncontextmenu="return abrirMenuCompra(event,'${x.primeiroUid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
+  return `<tr style="cursor:pointer" onclick="cliqueLinhaLancamento('${x.primeiroUid}')" ondblclick="cancelarCliqueComEspera('${x.primeiroUid}'); editarParcela('${x.primeiroUid}')" oncontextmenu="return abrirMenuCompra(event,'${x.primeiroUid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
     ${cols.map(c=>{
       let conteudo = esc(v[c.id]);
       if(c.id==='fornecedor') conteudo = `${esc(x.desc)}${x.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}`;
@@ -4159,6 +4189,7 @@ function abrirModalCompra(){
   popularCascata('c','categoria','');
   popularCascata('c','cc','');
   popularCascata('c','direc','');
+  const maisOpcoesC=document.getElementById('c-mais-opcoes');if(maisOpcoesC)maisOpcoesC.open=false;
   // Mesmo padrão de correção do ep-cartao (02/08/2026): repopula a partir
   // do CARTOES atual (inclui cartões custom) em vez de depender do HTML
   // estático — aqui não corrompe nada (compra nova, sem valor prévio a
