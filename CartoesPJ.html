@@ -6,6 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cartões PJ">
+<link rel="manifest" href="manifest-pj.json">
+<link rel="apple-touch-icon" href="icon-pj-192.png">
 <title>Controle de Cartões PJ</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -1444,7 +1446,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // desatualizada do app pra sempre, sem F5 nem Ctrl+Shift+R resolverem.
 // Restaurados sw.js e sw-cartoes.js, agora com autodestruição (mesmo
 // padrão do ChequeSys), pra qualquer instalação antiga se desinstalar sozinha.
-const VERSAO = 'v5.43';
+const VERSAO = 'v5.44';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
