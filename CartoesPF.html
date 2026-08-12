@@ -1443,7 +1443,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // desatualizada do app pra sempre, sem F5 nem Ctrl+Shift+R resolverem.
 // Restaurados sw.js e sw-cartoes.js, agora com autodestruição (mesmo
 // padrão do ChequeSys), pra qualquer instalação antiga se desinstalar sozinha.
-const VERSAO = 'v5.43';
+const VERSAO = 'v5.44';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2073,7 +2073,11 @@ function atualizarVersaoAgora(){
   if(haAlgoAbertoNaoSalvo()){
     if(!confirm('Você tem uma tela aberta que pode ter dados não salvos (uma compra, importação, etc). Atualizar agora vai recarregar a página e pode perder isso. Atualizar mesmo assim?')) return;
   }
-  location.reload();
+  // location.reload() sozinho não garante buscar o HTML novo — o navegador
+  // pode servir a versão em cache (GitHub Pages cacheia por alguns minutos),
+  // e o location.reload(true) que forçava bypass foi descontinuado. Navegar
+  // com um parâmetro novo na URL força uma busca de rede de verdade.
+  location.href = location.pathname + '?v=' + Date.now();
 }
 
 // ── CARTÕES ─────────────────────────────────────────────────
