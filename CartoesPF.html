@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Cartões">
+<meta name="apple-mobile-web-app-title" content="Cartões PF">
 <link rel="manifest" href="manifest-pf.json">
 <link rel="apple-touch-icon" href="icon-pf-192.png">
-<title>Controle de Cartões</title>
+<link rel="icon" type="image/png" sizes="192x192" href="icon-pf-192.png">
+<link rel="icon" type="image/svg+xml" href="icon-pf.svg">
+<title>Controle de Cartões PF</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1445,7 +1447,15 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // padrão do ChequeSys), pra qualquer instalação antiga se desinstalar sozinha.
 // v5.45 — Porta popularFiltroFaturaCartao() do PJ pro PF (mesmo bug do
 // select estático, cartões custom sumiam do filtro de fatura).
-const VERSAO = 'v5.45';
+// v5.46 — PF e PJ não tinham favicon próprio nem ícone PNG no manifest
+// (só SVG), então ao fixar os dois na barra de tarefas do Windows caíam
+// no mesmo ícone genérico e um "sobrepunha" o outro. Adicionado <link
+// rel="icon"> com o PNG de cada app, os PNGs 192/512 (já existiam no
+// repo, nunca eram usados) entraram no manifest, e o apple-mobile-web-
+// app-title/<title> do PF passou a dizer "PF" (estava genérico
+// "Cartões", igual ao PJ). Notificações também passaram a usar o ícone
+// local do app em vez de um favicon.ico compartilhado que nem existia.
+const VERSAO = 'v5.46';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -5470,13 +5480,13 @@ function verificarNotificacoes(){
       const dias=Math.ceil((new Date(f.venc+'T12:00:00')-hoje)/86400000);
       new Notification('💳 Fatura vencendo!',{
         body:`${CARTOES[f.cartao].nome}: ${fmt(f.total)} — vence ${dias===0?'hoje':`em ${dias} dia${dias>1?'s':''}`}`,
-        icon:'https://fabio9500.github.io/Cartoes/favicon.ico'
+        icon:'icon-pf-192.png'
       });
     });
     limitesAlerta.forEach(l=>{
       new Notification('⚠️ Limite quase no teto!',{
         body:`${CARTOES[l.cartao].nome}: ${fmt(l.usado)} de ${fmt(l.total)} usado (${l.pct.toFixed(0)}%)`,
-        icon:'https://fabio9500.github.io/Cartoes/favicon.ico'
+        icon:'icon-pf-192.png'
       });
     });
   } else if(Notification.permission!=='denied'){
