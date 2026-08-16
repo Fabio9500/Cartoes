@@ -167,7 +167,7 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 .confirm-overlay.open{display:flex;}
 .confirm-box{background:var(--surface);border-radius:16px;padding:24px;max-width:320px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;}
 .confirm-box .cb-icon{font-size:2rem;margin-bottom:10px;}.confirm-box .cb-title{font-weight:700;font-size:1rem;margin-bottom:6px;}
-.confirm-box .cb-msg{font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.confirm-box .cb-msg{font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.5;white-space:pre-line;}
 .confirm-box .cb-btns{display:flex;gap:10px;justify-content:center;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:10px 20px;border-radius:30px;font-size:.82rem;font-weight:500;transition:all .3s;z-index:9999;opacity:0;white-space:nowrap;max-width:90vw;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
@@ -1471,7 +1471,26 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // pagamentos, fechamentos, cartoesCustom, fornecedores, usuários,
 // favoritosCF, log de auditoria) — prepara o sistema pra 2-3 usuários
 // simultâneos sem perder trabalho de ninguém.
-const VERSAO = 'v5.47';
+// v5.48 (16/08/2026, a pedido do Fabio): Registro Mestre de Compra no
+// Cartão — parcelas criadas pelo novo fluxo do TesourariaSys ("Nova
+// Compra no Cartão") chegam aqui com um campo registroMestreId,
+// vinculando-as ao lançamento que já as categorizou uma vez lá. Essas
+// parcelas saem da soma de relatório por categoria/CC/direcionamento/
+// fornecedor (renderSecCatMensal, renderSecForn, _agruparComprasCF) — só
+// entram nesses totais se forem órfãs (sem mestre, comportamento de
+// sempre). Continuam contando normalmente em fatura/cartão e "pagos" —
+// isso é saldo devedor real, sem relação com duplicidade de categoria.
+// Menu de contexto ganha "📎 Ir para registro mestre" quando a parcela
+// tem esse vínculo, e a tela aceita ?verCompra=compraId como deep-link.
+// Import (OFX/CSV/QIF) e reparcelamento avisam — nunca em silêncio — se
+// a operação pode divergir de um mestre existente (possivelDivergenciaMestre).
+// Decidido junto com o Fabio: o mecanismo antigo de "conta virtual" por
+// cartão (registrarCompraTesouraria/registrarCreditoContaCartao/
+// estornarCreditoContaCartao/registrarComprasTesouraria) foi aposentado —
+// compra feita direto no Cartões (fora do fluxo novo) volta a ser parcela
+// órfã normal. Pagamento de fatura (registrarDebitoTesouraria) deixou de
+// gravar categoria própria — vira baixa de dívida, não despesa nova.
+const VERSAO = 'v5.48';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1899,7 +1918,7 @@ function atualizarIndicadorConexao(){
 // que a API de Contents sugere — esse download_url aponta pra
 // raw.githubusercontent.com, uma CDN com cache de até 5 minutos, que pode
 // servir conteúdo desatualizado. Isso é especialmente perigoso nas funções
-// que LEEM e depois REGRAVAM um arquivo (ex: registrarCompraTesouraria) —
+// que LEEM e depois REGRAVAM um arquivo (ex: registrarDebitoTesouraria) —
 // se o conteúdo lido vier stale (faltando itens recentes) mas o SHA da
 // gravação for o atual, a gravação aceita e sobrescreve, apagando os itens
 // recentes que não foram lidos. A Blobs API não passa por CDN.
@@ -2482,6 +2501,7 @@ async function initData(){
       atualizarUltimaSyncUI();
       verificarVersaoNova();
       if(!window._intervaloVersaoCartoes) window._intervaloVersaoCartoes = setInterval(verificarVersaoNova, 60000);
+      abrirDeepLinkPendenteCF();
     } else {
       document.getElementById('loading-screen').style.display='none';
       document.getElementById('firstuse-screen').style.display='flex';
@@ -2913,12 +2933,14 @@ function renderLancamentos(filtro){
   if(_filtroLancCategoriaId)lista=lista.filter(c=>c.categoriaId===_filtroLancCategoriaId||categoriaById(c.categoriaId)?.parentId===_filtroLancCategoriaId);
   if(_filtroLancCCId)lista=lista.filter(c=>c.centroCustoId===_filtroLancCCId||centroCustoById(c.centroCustoId)?.parentId===_filtroLancCCId);
   if(_filtroLancDirecId)lista=lista.filter(c=>c.direcionamentoId===_filtroLancDirecId||direcionamentoById(c.direcionamentoId)?.parentId===_filtroLancDirecId);
+  if(_filtroLancCompraId)lista=lista.filter(c=>c.compraId===_filtroLancCompraId);
   const filtroCadEl=document.getElementById('lanc-filtro-cadastro-ativo');
   if(filtroCadEl){
     let txt='';
     if(_filtroLancCategoriaId) txt=`Categoria: ${nomeCompletoCadastro(categoriaById(_filtroLancCategoriaId)||{},categorias)}`;
     else if(_filtroLancCCId) txt=`Centro de Custo: ${nomeCompletoCadastro(centroCustoById(_filtroLancCCId)||{},centrosCusto)}`;
     else if(_filtroLancDirecId) txt=`Direcionamento: ${nomeCompletoCadastro(direcionamentoById(_filtroLancDirecId)||{},direcionamentos)}`;
+    else if(_filtroLancCompraId) txt=`Compra: ${lista[0]?.desc||_filtroLancCompraId} (Registro Mestre)`;
     filtroCadEl.style.display=txt?'inline-flex':'none';
     filtroCadEl.innerHTML=txt?`🔎 ${esc(txt)} <span onclick="limparFiltroLancCadastro()" style="cursor:pointer;margin-left:6px;font-weight:700">✕</span>`:'';
   }
@@ -3005,18 +3027,30 @@ function renderLancamentos(filtro){
 // ── MENU DE CONTEXTO (duplo clique/clique direito) ─────────────
 // Filtro "Ir para" ativo na tela de Lançamentos (Categoria/Centro de
 // Custo/Direcionamento) — estilo Money, igual ao Extrato do TesourariaSys.
-let _filtroLancCategoriaId='', _filtroLancCCId='', _filtroLancDirecId='';
+let _filtroLancCategoriaId='', _filtroLancCCId='', _filtroLancDirecId='', _filtroLancCompraId='';
 function limparFiltroLancCadastro(){
-  _filtroLancCategoriaId='';_filtroLancCCId='';_filtroLancDirecId='';
+  _filtroLancCategoriaId='';_filtroLancCCId='';_filtroLancDirecId='';_filtroLancCompraId='';
   renderLancamentos(filtroAtivo);
 }
 function irParaCompra(campo, valor){
   fecharMenuCompra();
-  if(campo==='categoriaId'){ _filtroLancCategoriaId=valor; _filtroLancCCId=''; _filtroLancDirecId=''; }
-  if(campo==='centroCustoId'){ _filtroLancCCId=valor; _filtroLancCategoriaId=''; _filtroLancDirecId=''; }
-  if(campo==='direcionamentoId'){ _filtroLancDirecId=valor; _filtroLancCategoriaId=''; _filtroLancCCId=''; }
+  if(campo==='categoriaId'){ _filtroLancCategoriaId=valor; _filtroLancCCId=''; _filtroLancDirecId=''; _filtroLancCompraId=''; }
+  if(campo==='centroCustoId'){ _filtroLancCCId=valor; _filtroLancCategoriaId=''; _filtroLancDirecId=''; _filtroLancCompraId=''; }
+  if(campo==='direcionamentoId'){ _filtroLancDirecId=valor; _filtroLancCategoriaId=''; _filtroLancCCId=''; _filtroLancCompraId=''; }
+  if(campo==='compraId'){ _filtroLancCompraId=valor; _filtroLancCategoriaId=''; _filtroLancCCId=''; _filtroLancDirecId=''; }
   showPage('lancamentos');
   renderLancamentos(filtroAtivo);
+}
+// 🔗 Link direto: ?verCompra=compraId abre Lançamentos já filtrado nas
+// parcelas daquela compra assim que os dados carregarem — mesmo padrão de
+// deep-link já usado pelo ChequeSys (?editarCheque=/?editarBoleto=), usado
+// aqui pelo "Ir para registro mestre" do TesourariaSys (linkVerParcelasCartao,
+// Registro Mestre de Compra no Cartão, 16/08/2026).
+function abrirDeepLinkPendenteCF(){
+  const params = new URLSearchParams(location.search);
+  const compraId = params.get('verCompra');
+  if(!compraId) return;
+  if(compras.some(c=>c.compraId===compraId)) irParaCompra('compraId', compraId);
 }
 // Converte a compra entre Despesa e Estorno/Crédito (equivalente simplificado
 // ao "Alterar tipo de transação" do TesourariaSys — aqui só existem os 2
@@ -3050,6 +3084,10 @@ function abrirMenuCompra(ev, uid){
   if(cc && cc.parentId) acoes.push({label:`👉 Ir para Centro de Custo: ${nomeCompletoCadastro(cc,centrosCusto)}`, fn:()=>irParaCompra('centroCustoId', cc.id)});
   if(direcMae) acoes.push({label:`👉 Ir para Direcionamento: ${direcMae.nome}`, fn:()=>irParaCompra('direcionamentoId', direcMae.id)});
   if(direc && direc.parentId) acoes.push({label:`👉 Ir para Direcionamento: ${nomeCompletoCadastro(direc,direcionamentos)}`, fn:()=>irParaCompra('direcionamentoId', direc.id)});
+  // Registro Mestre de Compra no Cartão (16/08/2026): parcela gerada a
+  // partir de um lançamento mestre no TesourariaSys — mesmo padrão de link
+  // cross-app já usado no ChequeSys/TesourariaSys (linkEdicaoChequeSys).
+  if(c.registroMestreId) acoes.push({label:'📎 Ir para registro mestre', fn:()=>{ fecharMenuCompra(); window.open('https://fabio9500.github.io/tesourariasys/?editarLancamento='+encodeURIComponent(c.registroMestreId),'cc_janela_tesouraria'); }});
   acoes.push({sep:true});
   acoes.push({label:c.tipo==='estorno'?'⇄ Converter para Despesa normal':'⇄ Converter para Estorno/Crédito', fn:()=>converterTipoCompra(uid)});
   acoes.push({label:'↪ Mover para outro cartão...', fn:()=>{ fecharMenuCompra(); editarParcela(uid); }});
@@ -3214,13 +3252,24 @@ function salvarEdicao(){
   if(!novoCartao && cartaoOrig){showToast('Erro ao ler o cartão selecionado — feche e abra a edição de novo antes de salvar.',true);return;}
 
   if(nNovo!==nOriginal){
+    // Divergência com Registro Mestre (16/08/2026, mesmo princípio de
+    // deletarParcela/abrirConfirm): reparcelar muda a contagem de parcelas
+    // desta compra — se ela pertence a um lançamento mestre no
+    // TesourariaSys (nParcelas registrado lá), isso diverge do que está lá
+    // e precisa de confirmação explícita, nunca aceito em silêncio.
+    const grupoAtual=compras.filter(x=>x.compraId===compraId);
+    const registroMestreId=grupoAtual.find(x=>x.registroMestreId)?.registroMestreId||null;
+    if(registroMestreId){
+      const ok=window.confirm(`Esta compra pertence a um Registro Mestre de Compra no Cartão (nº de parcelas registrado lá: ${nOriginal}). Reparcelar aqui pra ${nNovo}x NÃO atualiza o lançamento mestre no TesourariaSys automaticamente — o vínculo é mantido, mas confira/ajuste o mestre manualmente depois. Continuar mesmo assim?`);
+      if(!ok) return;
+    }
     const novosRegistros=[];
     for(let i=1;i<=nNovo;i++){
       const valEl=document.getElementById('ep-pe-val-'+i),vencEl=document.getElementById('ep-pe-venc-'+i);
       const vpAbs=parseFloat(valEl&&valEl.value)||0,vc=vencEl&&vencEl.value;
       if(!vpAbs||!vc){showToast('Preencha valor e vencimento de todas as parcelas',true);return;}
       const vp=tipo==='estorno'?-Math.abs(vpAbs):Math.abs(vpAbs);
-      novosRegistros.push({uid:uid(),compraId,desc,cartao:novoCartao,dataCompra,nParcelas:nNovo,parcela:i,valorParcela:vp,venc:vc,tipo,...(memo?{memo}:{}),...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(direcionamentoId?{direcionamentoId}:{})});
+      novosRegistros.push({uid:uid(),compraId,desc,cartao:novoCartao,dataCompra,nParcelas:nNovo,parcela:i,valorParcela:vp,venc:vc,tipo,...(memo?{memo}:{}),...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(direcionamentoId?{direcionamentoId}:{}),...(registroMestreId?{registroMestreId}:{})});
     }
     compras=compras.filter(x=>x.compraId!==compraId).concat(novosRegistros);
     salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
@@ -3248,9 +3297,14 @@ function ACF(msg,cb){
 }
 function deletarParcela(uid){
   const c=compras.find(x=>x.uid===uid);if(!c)return;
-  const msg=c.nParcelas>1
+  let msg=c.nParcelas>1
     ?`Excluir apenas a parcela ${c.parcela}/${c.nParcelas} de "${c.desc}"? As demais parcelas desta compra serão mantidas.`
     :`Excluir "${c.desc}"?`;
+  // Divergência com Registro Mestre (16/08/2026): esta parcela foi gerada a
+  // partir de um lançamento mestre no TesourariaSys — excluí-la sem avisar
+  // deixaria o total ali registrado maior do que as parcelas que sobraram
+  // aqui, sem ninguém perceber. Nunca aceita isso em silêncio.
+  if(c.registroMestreId) msg += `\n\n⚠ Esta parcela pertence a um Registro Mestre de Compra no Cartão (${c.nParcelas} parcela(s) esperada(s) no TesourariaSys). Excluí-la aqui NÃO atualiza o valor total lá — confira/ajuste o lançamento mestre manualmente depois de confirmar.`;
   ACF(msg, ()=>{
     compras=compras.filter(x=>x.uid!==uid);
     salvar();renderDashboard();renderFaturas();renderLancamentos(filtroAtivo);
@@ -3263,7 +3317,12 @@ function deletarCompraFatura(cid){abrirConfirm(cid);}
 function deletarCompra(cid){abrirConfirm(cid);}
 function abrirConfirm(cid){
   _cid=cid;const rel=compras.filter(x=>x.compraId===cid);
-  document.getElementById('confirm-msg').textContent=`"${rel[0]?.desc||'esta compra'}" — ${rel.length} parcela${rel.length>1?'s':''} serão removidas.`;
+  let msg=`"${rel[0]?.desc||'esta compra'}" — ${rel.length} parcela${rel.length>1?'s':''} serão removidas.`;
+  // Mesma divergência com Registro Mestre de deletarParcela() — excluir a
+  // compra inteira sem avisar deixaria o lançamento mestre no TesourariaSys
+  // "órfão" (sem nenhuma parcela real correspondente), sem ninguém perceber.
+  if(rel.some(x=>x.registroMestreId)) msg += `\n\n⚠ Esta compra pertence a um Registro Mestre de Compra no Cartão. Excluí-la aqui NÃO remove nem ajusta o lançamento mestre no TesourariaSys — confira/ajuste manualmente depois de confirmar.`;
+  document.getElementById('confirm-msg').textContent=msg;
   document.getElementById('confirm-overlay').classList.add('open');
 }
 function confirmarSim(){document.getElementById('confirm-overlay').classList.remove('open');if(_acfCb){const fn=_acfCb;_acfCb=null;fn();return;}if(!_cid)return;compras=compras.filter(x=>x.compraId!==_cid);_cid=null;salvar();renderDashboard();renderFaturas();renderLancamentos(filtroAtivo);showToast('Compra excluída ✓');}
@@ -3690,27 +3749,23 @@ function enfileirarOperacaoTesouraria(tipo, item){
   atualizarStatusTokenTesouraria();
 }
 function enfileirarDebitoTesouraria(item){ enfileirarOperacaoTesouraria('debito', item); }
-function enfileirarCompraTesouraria(item){ enfileirarOperacaoTesouraria('compra', item); }
-function enfileirarCreditoContaCartao(item){ enfileirarOperacaoTesouraria('credito', item); }
-function enfileirarComprasTesouraria(item){ enfileirarOperacaoTesouraria('comprasLote', item); }
-function enfileirarEstornoContaCartao(item){ enfileirarOperacaoTesouraria('estornoCredito', item); }
+// Tipos aposentados junto com registrarCompraTesouraria/registrarCreditoContaCartao/
+// estornarCreditoContaCartao/registrarComprasTesouraria (16/08/2026, ver comentário
+// acima de registrarDebitoTesouraria) — um item desses ainda preso na fila de algum
+// dispositivo (de antes da aposentadoria) é só descartado, nunca tentado de novo.
+const TIPOS_FILA_TESOURARIA_APOSENTADOS = new Set(['compra','credito','estornoCredito','comprasLote']);
 let _processandoFilaTesouraria = false;
 async function processarFilaTesouraria(silencioso){
   if(_processandoFilaTesouraria) return;
-  const fila = getFilaTesouraria();
-  if(!fila.length){ if(!silencioso) showToast('Nenhum débito pendente de sincronizar.'); return; }
+  const fila = getFilaTesouraria().filter(item=>!TIPOS_FILA_TESOURARIA_APOSENTADOS.has(item.tipo));
+  if(!fila.length){ setFilaTesouraria([]); if(!silencioso) showToast('Nenhum débito pendente de sincronizar.'); return; }
   if(!isOnline()){ if(!silencioso) showToast('Sem conexão agora — vai tentar de novo assim que voltar.', true); return; }
   _processandoFilaTesouraria = true;
   const restantes = [];
   let sucesso = 0;
   for(const item of fila){
-    let res;
-    if(item.tipo==='compra') res = await registrarCompraTesouraria(item.cartao, item.data, item.valorTotal, item.categoriaId, item.centroCustoId, item.direcionamentoId, item.desc);
-    else if(item.tipo==='credito') res = await registrarCreditoContaCartao(item.cartao, item.itens, item.dataPagamento);
-    else if(item.tipo==='estornoCredito') res = await estornarCreditoContaCartao(item.cartao, item.itens, item.dataEstorno);
-    else if(item.tipo==='comprasLote') res = await registrarComprasTesouraria(item.cartao, item.itens);
-    else res = await registrarDebitoTesouraria(item.contaId, item.valor, item.data, item.descricao);
-    if(res.ok) sucesso++; else restantes.push(item.tipo==='comprasLote' ? {...item, itens:res.itensQueFalharam||item.itens} : item);
+    const res = await registrarDebitoTesouraria(item.contaId, item.valor, item.data, item.descricao);
+    if(res.ok) sucesso++; else restantes.push(item);
   }
   setFilaTesouraria(restantes);
   atualizarStatusTokenTesouraria();
@@ -3732,11 +3787,15 @@ async function registrarDebitoTesouraria(contaId, valor, data, descricao, _tenta
   const ano = (data||'').slice(0,4);
   const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
   try{
-    const catCad = await ghCadastroCarregar('pj');
-    const catFatCartao = (catCad.categorias||[]).find(c=>c.nome==='Fatura Cartão de Crédito'&&c.tipo==='despesa');
+    // Sem categoria própria (16/08/2026, decidido com o Fabio junto com o
+    // Registro Mestre de Compra no Cartão): pagar a fatura é baixa de
+    // dívida, não uma despesa nova — quem categoriza a compra, uma vez só,
+    // é sempre o registro mestre (ou a própria parcela, se for órfã). Antes
+    // este lançamento saía categorizado como "Fatura Cartão de Crédito",
+    // que duplicaria a categorização junto com os mestres.
     const novoLanc = {
       id: uid(), contaId, data, tipo:'saida', valor,
-      categoriaId: catFatCartao?catFatCartao.id:'', centroCustoId:'',
+      categoriaId:'', centroCustoId:'',
       contraparte: 'CartoesPJ', descricao,
       origem:'manual', contaPagarId:null,
       criadoEm: new Date().toISOString()
@@ -3807,228 +3866,24 @@ async function garantirAnoNoIndiceTesouraria(ano, token){
   }catch(e){ /* não crítico — o lançamento já foi salvo; só o índice de anos não atualizou */ }
 }
 
-// ── CONTA CARTÃO — integração v5.3 ────────────────────────────────
-// Cada cartão tem uma conta de controle no TesourariaSys (CARTOES[cartao].
-// contaTesourariaId, saldo negativo = quanto falta pagar, mesma convenção
-// das contas bancárias reais). Ao lançar uma compra, grava um lançamento
-// tipo 'saida' (aparece nos relatórios de categoria) na data da compra, pelo
-// valor total (soma das parcelas). Ao pagar uma fatura, grava um 'entrada'
-// por parcela quitada, devolvendo o saldo — assim uma compra em 3x vai
-// abatendo aos poucos, uma fatura por vez.
-async function registrarCompraTesouraria(cartao, data, valorTotal, categoriaId, centroCustoId, direcionamentoId, desc, _tentativa){
-  _tentativa = _tentativa || 1;
-  const token = getTokenTesouraria();
-  const contaId = CARTOES[cartao]?.contaTesourariaId;
-  if(!token || !contaId) return {ok:false};
-  const ano = (data||'').slice(0,4);
-  const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
-  try{
-    // valorTotal negativo = estorno/crédito (reduz a dívida) -> vira 'entrada'
-    const ehEstorno = valorTotal < 0;
-    const novoLanc = {
-      id: uid(), contaId, data, tipo: ehEstorno?'entrada':'saida', valor: Math.abs(valorTotal),
-      categoriaId: categoriaId||'', centroCustoId: centroCustoId||'',
-      ...(direcionamentoId?{direcionamentoId}:{}),
-      contraparte: CARTOES[cartao]?.nome||cartao, descricao: desc||(ehEstorno?'Estorno/crédito no cartão':'Compra no cartão'),
-      origem:'manual', contaPagarId:null,
-      criadoEm: new Date().toISOString()
-    };
-    const rGet = await fetch(urlAno, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
-    let listaAno = [], shaAno = null;
-    if(rGet.status === 404){
-      listaAno = [];
-    } else if(rGet.ok){
-      const jGet = await rGet.json();
-      shaAno = jGet.sha;
-      if(!jGet.content || jGet.content.trim()===''){
-        listaAno = await buscarBlobGH('Fabio9500', 'tesourariasys', jGet.sha, token);
-      } else {
-        listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
-      }
-    } else {
-      return {ok:false, erro:'Não foi possível acessar o TesourariaSys (HTTP '+rGet.status+').'};
-    }
-    listaAno = [...listaAno, novoLanc];
-    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(listaAno))));
-    const bodyPut = { message:'Compra no cartão — CartoesPJ', content:conteudo };
-    if(shaAno) bodyPut.sha = shaAno;
-    const rPut = await fetch(urlAno, {
-      method:'PUT',
-      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
-      body: JSON.stringify(bodyPut)
-    });
-    if(!rPut.ok){
-      if(_tentativa===1){
-        await new Promise(r=>setTimeout(r,500));
-        return registrarCompraTesouraria(cartao, data, valorTotal, categoriaId, centroCustoId, direcionamentoId, desc, 2);
-      }
-      return {ok:false, erro:'Erro ao gravar no TesourariaSys mesmo após tentar de novo (HTTP '+rPut.status+').'};
-    }
-    garantirAnoNoIndiceTesouraria(ano, token);
-    return {ok:true, tentativas:_tentativa};
-  }catch(e){
-    if(_tentativa===1){
-      await new Promise(r=>setTimeout(r,500));
-      return registrarCompraTesouraria(cartao, data, valorTotal, categoriaId, centroCustoId, direcionamentoId, desc, 2);
-    }
-    return {ok:false, erro:e.message};
-  }
-}
-// itens: [{desc, valor}] — uma parcela quitada por item, mesma data de pagamento pra todas
-async function registrarCreditoContaCartao(cartao, itens, dataPagamento, _tentativa){
-  _tentativa = _tentativa || 1;
-  const token = getTokenTesouraria();
-  const contaId = CARTOES[cartao]?.contaTesourariaId;
-  if(!token || !contaId || !itens?.length) return {ok:false};
-  const ano = (dataPagamento||'').slice(0,4);
-  const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
-  try{
-    const nomeCartao = CARTOES[cartao]?.nome||cartao;
-    const novosLancs = itens.map(it=>({
-      id: uid(), contaId, data: dataPagamento, tipo:'entrada', valor: it.valor,
-      categoriaId:'', centroCustoId:'',
-      contraparte: nomeCartao, descricao: `Pagamento fatura — ${it.desc||'parcela'} (${nomeCartao})`,
-      origem:'manual', contaPagarId:null,
-      criadoEm: new Date().toISOString()
-    }));
-    const rGet = await fetch(urlAno, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
-    let listaAno = [], shaAno = null;
-    if(rGet.status === 404){
-      listaAno = [];
-    } else if(rGet.ok){
-      const jGet = await rGet.json();
-      shaAno = jGet.sha;
-      if(!jGet.content || jGet.content.trim()===''){
-        listaAno = await buscarBlobGH('Fabio9500', 'tesourariasys', jGet.sha, token);
-      } else {
-        listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
-      }
-    } else {
-      return {ok:false, erro:'Não foi possível acessar o TesourariaSys (HTTP '+rGet.status+').'};
-    }
-    listaAno = [...listaAno, ...novosLancs];
-    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(listaAno))));
-    const bodyPut = { message:`Pagamento fatura ${nomeCartao} — CartoesPJ (${itens.length} parcela(s))`, content:conteudo };
-    if(shaAno) bodyPut.sha = shaAno;
-    const rPut = await fetch(urlAno, {
-      method:'PUT',
-      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
-      body: JSON.stringify(bodyPut)
-    });
-    if(!rPut.ok){
-      if(_tentativa===1){
-        await new Promise(r=>setTimeout(r,500));
-        return registrarCreditoContaCartao(cartao, itens, dataPagamento, 2);
-      }
-      return {ok:false, erro:'Erro ao gravar no TesourariaSys mesmo após tentar de novo (HTTP '+rPut.status+').'};
-    }
-    garantirAnoNoIndiceTesouraria(ano, token);
-    return {ok:true, tentativas:_tentativa};
-  }catch(e){
-    if(_tentativa===1){
-      await new Promise(r=>setTimeout(r,500));
-      return registrarCreditoContaCartao(cartao, itens, dataPagamento, 2);
-    }
-    return {ok:false, erro:e.message};
-  }
-}
-// Reverte o crédito lançado por registrarCreditoContaCartao() quando o Fabio
-// desfaz um pagamento de fatura — cria lançamentos de saída (mesmo valor,
-// data de hoje) em vez de tentar achar/apagar os lançamentos originais
-// (mais simples e mais seguro: fica um rastro auditável de que o pagamento
-// foi desfeito, em vez de reescrever o passado).
-async function estornarCreditoContaCartao(cartao, itens, dataEstorno){
-  const token = getTokenTesouraria();
-  const contaId = CARTOES[cartao]?.contaTesourariaId;
-  if(!token || !contaId || !itens?.length) return {ok:false};
-  const ano = (dataEstorno||'').slice(0,4);
-  const nomeCartao = CARTOES[cartao]?.nome||cartao;
-  const novosLancs = itens.map(it=>({
-    id: uid(), contaId, data: dataEstorno, tipo:'saida', valor: it.valor,
-    categoriaId:'', centroCustoId:'',
-    contraparte: nomeCartao, descricao: `Estorno de pagamento desfeito — ${it.desc||'parcela'} (${nomeCartao})`,
-    origem:'manual', contaPagarId:null,
-    criadoEm: new Date().toISOString()
-  }));
-  return _gravarLoteLancamentosAno(ano, novosLancs, `Estorno de pagamento desfeito — ${nomeCartao} — CartoesPJ (${itens.length} parcela(s))`, token);
-}
-// Grava um lote de lançamentos no arquivo de ano do TesourariaSys (1 fetch+PUT
-// por ano — evita uma chamada de API por item quando a importação tem dezenas
-// de transações). Usada só por registrarComprasTesouraria().
-async function _gravarLoteLancamentosAno(ano, novosLancs, mensagem, token, _tentativa){
-  _tentativa = _tentativa || 1;
-  const urlAno = `https://api.github.com/repos/Fabio9500/tesourariasys/contents/lancamentos_${ano}.json`;
-  try{
-    const rGet = await fetch(urlAno, { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' } });
-    let listaAno = [], shaAno = null;
-    if(rGet.status === 404){
-      listaAno = [];
-    } else if(rGet.ok){
-      const jGet = await rGet.json();
-      shaAno = jGet.sha;
-      if(!jGet.content || jGet.content.trim()===''){
-        listaAno = await buscarBlobGH('Fabio9500', 'tesourariasys', jGet.sha, token);
-      } else {
-        listaAno = JSON.parse(decodeURIComponent(escape(atob(jGet.content.replace(/\n/g,'')))));
-      }
-    } else {
-      return {ok:false};
-    }
-    listaAno = [...listaAno, ...novosLancs];
-    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(listaAno))));
-    const bodyPut = { message: mensagem, content: conteudo };
-    if(shaAno) bodyPut.sha = shaAno;
-    const rPut = await fetch(urlAno, {
-      method:'PUT',
-      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
-      body: JSON.stringify(bodyPut)
-    });
-    if(!rPut.ok){
-      if(_tentativa===1){
-        await new Promise(r=>setTimeout(r,500));
-        return _gravarLoteLancamentosAno(ano, novosLancs, mensagem, token, 2);
-      }
-      return {ok:false};
-    }
-    garantirAnoNoIndiceTesouraria(ano, token);
-    return {ok:true};
-  }catch(e){
-    if(_tentativa===1){
-      await new Promise(r=>setTimeout(r,500));
-      return _gravarLoteLancamentosAno(ano, novosLancs, mensagem, token, 2);
-    }
-    return {ok:false};
-  }
-}
-// Compras importadas (OFX/CSV/QIF) chamam aqui em vez de registrarCompraTesouraria
-// uma vez por transação — agrupa por ano e faz 1 gravação por ano, com o mesmo
-// retry automático (fila offline) se algum ano falhar.
-// itens: [{data, valorTotal, categoriaId, centroCustoId, direcionamentoId, desc}]
-async function registrarComprasTesouraria(cartao, itens){
-  const token = getTokenTesouraria();
-  const contaId = CARTOES[cartao]?.contaTesourariaId;
-  if(!token || !contaId || !itens?.length) return {ok:false};
-  const nomeCartao = CARTOES[cartao]?.nome||cartao;
-  const porAno = {};
-  for(const it of itens){ const ano=(it.data||'').slice(0,4); (porAno[ano]=porAno[ano]||[]).push(it); }
-  const falharam = [];
-  for(const [ano, lista] of Object.entries(porAno)){
-    const novosLancs = lista.map(it=>{
-      const ehEstorno = it.valorTotal < 0;
-      return {
-        id: uid(), contaId, data: it.data, tipo: ehEstorno?'entrada':'saida', valor: Math.abs(it.valorTotal),
-        categoriaId: it.categoriaId||'', centroCustoId: it.centroCustoId||'',
-        ...(it.direcionamentoId?{direcionamentoId:it.direcionamentoId}:{}),
-        contraparte: nomeCartao, descricao: it.desc||(ehEstorno?'Estorno/crédito no cartão':'Compra no cartão'),
-        origem:'manual', contaPagarId:null, criadoEm: new Date().toISOString()
-      };
-    });
-    const res = await _gravarLoteLancamentosAno(ano, novosLancs, `Importação de compras — CartoesPJ (${lista.length} lançamento(s), ${ano})`, token);
-    if(!res.ok) falharam.push(...lista);
-  }
-  if(falharam.length) return {ok:false, itensQueFalharam:falharam};
-  return {ok:true};
-}
+// ── CONTA CARTÃO — integração v5.3, APOSENTADA em 16/08/2026 ──────
+// Este mecanismo (registrarCompraTesouraria/registrarCreditoContaCartao/
+// estornarCreditoContaCartao/registrarComprasTesouraria, todos removidos
+// aqui) criava uma "conta virtual" por cartão no TesourariaSys
+// (CARTOES[cartao].contaTesourariaId) e lançava lá, automaticamente, um
+// categorizado por compra e um de baixa por fatura paga — na prática um
+// "mestre implícito" que nunca teve vínculo formal (registroMestreId) com
+// as parcelas e que passou a competir com o Registro Mestre de Compra no
+// Cartão de verdade (ver TesourariaSys, "Nova Compra no Cartão").
+// Decidido com o Fabio (16/08/2026): não criar mais esses lançamentos
+// automáticos — compras feitas direto no Cartões (fora do fluxo Nova
+// Compra no Cartão) voltam a ser parcelas órfãs normais, contando pela
+// própria categoriaId que já têm. O histórico já gravado por este
+// mecanismo (lançamentos antigos no TesourariaSys, contas virtuais
+// contaTesourariaId) foi deixado como está — sem migração retroativa.
+// registrarDebitoTesouraria (pagamento de fatura contra conta BANCÁRIA
+// real, não a conta virtual) continua existindo, só sem categoria própria
+// (ver comentário acima da função).
 
 function abrirPagamento(cartao,venc,total){
   const card=CARTOES[cartao],dv=new Date(venc+'T12:00:00');
@@ -4049,9 +3904,6 @@ async function confirmarPagamento(){
   const contaTsr=document.getElementById('pag-conta-tsr')?.value||'';
   if(!valor||valor<=0||!data){showToast('Preencha valor e data',true);return;}
   pagamentos[cartao+'|'+venc]={valor,data,total};
-  // estornos já reduziram a dívida da conta-cartão no lançamento (entrada) da
-  // própria compra — não entram aqui de novo, senão a dívida seria creditada 2x
-  const itensQuitados = compras.filter(c=>c.cartao===cartao&&c.venc===venc&&c.tipo!=='estorno').map(c=>({desc:c.desc, valor:Math.abs(c.valorParcela)}));
   compras.forEach(c=>{if(c.cartao===cartao&&c.venc===venc)c.pago=true;});
   salvar();fecharModal('modal-pagamento');renderFaturas();renderDashboard();renderLimites();
   if(contaTsr){
@@ -4067,26 +3919,12 @@ async function confirmarPagamento(){
   } else {
     showToast(`Pagamento de ${fmt(valor)} registrado ✓`);
   }
-  if(CARTOES[cartao]?.contaTesourariaId && getTokenTesouraria() && itensQuitados.length){
-    registrarCreditoContaCartao(cartao, itensQuitados, data).then(res=>{
-      if(!res.ok) enfileirarCreditoContaCartao({cartao, itens:itensQuitados, dataPagamento:data});
-    });
-  }
 }
 function desfazerPagamento(key){
   const[cartao,venc]=key.split('|');
-  // mesma exclusão de estornos que confirmarPagamento() usa ao creditar —
-  // eles não entraram no crédito original, não entram no estorno dele agora
-  const itensQuitados = compras.filter(c=>c.cartao===cartao&&c.venc===venc&&c.tipo!=='estorno'&&c.pago).map(c=>({desc:c.desc, valor:Math.abs(c.valorParcela)}));
   compras.forEach(c=>{if(c.cartao===cartao&&c.venc===venc)delete c.pago;});
   delete pagamentos[key];
   salvar();renderFaturas();renderDashboard();renderLimites();showToast('Pagamento desfeito');
-  if(CARTOES[cartao]?.contaTesourariaId && getTokenTesouraria() && itensQuitados.length){
-    const dataEstorno = hoje.toISOString().split('T')[0];
-    estornarCreditoContaCartao(cartao, itensQuitados, dataEstorno).then(res=>{
-      if(!res.ok) enfileirarEstornoContaCartao({cartao, itens:itensQuitados, dataEstorno});
-    });
-  }
 }
 
 // ── COMPRAS (relatório de filtragem por data da COMPRA, não vencimento) ──
@@ -4150,7 +3988,7 @@ function _svgBarrasGruposCF(grupos){
 function _comprasAgregadasPorCompraId(){
   const porCompra={};
   compras.forEach(c=>{
-    if(!porCompra[c.compraId]) porCompra[c.compraId]={compraId:c.compraId,desc:c.desc,dataCompra:c.dataCompra||c.venc,cartao:c.cartao,nParcelas:c.nParcelas,tipo:c.tipo||'despesa',categoriaId:c.categoriaId,centroCustoId:c.centroCustoId,direcionamentoId:c.direcionamentoId,memo:c.memo,primeiroUid:c.uid,valorTotal:0};
+    if(!porCompra[c.compraId]) porCompra[c.compraId]={compraId:c.compraId,desc:c.desc,dataCompra:c.dataCompra||c.venc,cartao:c.cartao,nParcelas:c.nParcelas,tipo:c.tipo||'despesa',categoriaId:c.categoriaId,centroCustoId:c.centroCustoId,direcionamentoId:c.direcionamentoId,memo:c.memo,primeiroUid:c.uid,registroMestreId:c.registroMestreId||null,valorTotal:0};
     porCompra[c.compraId].valorTotal+=c.valorParcela;
   });
   return Object.values(porCompra);
@@ -4172,6 +4010,12 @@ function _comprasFiltradasCF(){
   return lista.sort((a,b)=>b.dataCompra.localeCompare(a.dataCompra));
 }
 function _agruparComprasCF(lista, dim){
+  // Agrupamentos por categoria/CC/direcionamento/fornecedor excluem compras
+  // com registroMestreId — já contam pelo lançamento mestre no TesourariaSys
+  // (Registro Mestre de Compra no Cartão, 16/08/2026); somar aqui de novo
+  // duplicaria o valor. Por cartão/mês continua somando tudo — é saldo
+  // devedor real, sem relação com duplicidade de categoria/fornecedor.
+  if(dim==='categoria'||dim==='cc'||dim==='direc'||dim==='fornecedor') lista=lista.filter(x=>!x.registroMestreId);
   const grupos={};
   lista.forEach(x=>{
     let chave,label;
@@ -4540,6 +4384,21 @@ function lerArquivoTextoAutoEncoding(arquivo, callback, onerror){
   leitor1.onerror = onerror;
   leitor1.readAsText(arquivo, 'UTF-8');
 }
+// Divergência de nº de parcelas com Registro Mestre (16/08/2026, a pedido
+// do Fabio): se uma transação importada (OFX/CSV) cai perto — mesmo cartão,
+// dentro de 5 dias de alguma parcela já existente — de uma compra que tem
+// registroMestreId, mas não bateu no dedup normal (fitid ou data+valor
+// exatos), pode ser uma parcela extra/divergente da que foi registrada no
+// mestre (ex: fatura veio com 7 parcelas, mas o mestre registrou 6, ou
+// apareceu um encargo à parte). Nunca aceita isso em silêncio — a
+// transação entra na revisão DESMARCADA, com aviso, exigindo confirmação
+// explícita de quem for incluí-la mesmo assim.
+function possivelDivergenciaMestre(cartao, dataRef){
+  const MS_DIA=86400000;
+  const alvo=new Date(dataRef+'T12:00:00').getTime();
+  const c=compras.find(x=>x.cartao===cartao && x.registroMestreId && Math.abs(new Date(x.venc+'T12:00:00').getTime()-alvo)<=5*MS_DIA);
+  return c ? {compraId:c.compraId, nParcelas:c.nParcelas, desc:c.desc} : null;
+}
 function processarArquivoOFXCartao(){
   const cartao = document.getElementById('ofxc-cartao').value;
   const input = document.getElementById('ofxc-arquivo');
@@ -4559,11 +4418,12 @@ function processarArquivoOFXCartao(){
       const jaExiste = t.fitid && idsExistentes.has(t.fitid);
       const match = casarComHistoricoCompra(t.memoOriginal, dicionario);
       const venc = calcVenc(t.data, cartao, 1);
+      const divergenciaMestre = jaExiste ? null : possivelDivergenciaMestre(cartao, t.data);
       return {
-        ...t, incluir: !jaExiste, jaExiste, venc,
+        ...t, incluir: !jaExiste && !divergenciaMestre, jaExiste, venc,
         desc: match?match.desc:t.memoOriginal,
         categoriaId: match?match.categoriaId:'', centroCustoId: match?match.centroCustoId:'', direcionamentoId: match?match.direcionamentoId:'',
-        reconhecido: !!match,
+        reconhecido: !!match, divergenciaMestre,
       };
     });
     mostrarRevisaoOFXCartao();
@@ -4573,7 +4433,7 @@ function mostrarRevisaoOFXCartao(){
   const reconhecidos = _ofxPendenteCartao.filter(t=>t.reconhecido).length;
   const duplicados = _ofxPendenteCartao.filter(t=>t.jaExiste).length;
   const linhas = _ofxPendenteCartao.map((t,i)=>`<tr style="${t.jaExiste?'opacity:.5':''}">
-    <td><input type="checkbox" ${t.incluir?'checked':''} onchange="_ofxPendenteCartao[${i}].incluir=this.checked">${t.jaExiste?' <span style="font-size:10px;color:#999">(já importado)</span>':''}</td>
+    <td><input type="checkbox" ${t.incluir?'checked':''} onchange="_ofxPendenteCartao[${i}].incluir=this.checked">${t.jaExiste?' <span style="font-size:10px;color:#999">(já importado)</span>':''}${t.divergenciaMestre?` <span style="font-size:10px;color:#da3633;font-weight:700" title="Perto de uma parcela de &quot;${esc(t.divergenciaMestre.desc)}&quot;, que tem Registro Mestre com ${t.divergenciaMestre.nParcelas} parcela(s) — confira antes de incluir, pode ser divergência">⚠ confira (Registro Mestre)</span>`:''}</td>
     <td>${new Date(t.data+'T12:00:00').toLocaleDateString('pt-BR')}</td>
     <td><input type="text" value="${esc(t.desc)}" style="width:100%;font-size:11px" onchange="_ofxPendenteCartao[${i}].desc=this.value">${t.reconhecido?' <span title="Reconhecido pelo histórico">✓</span>':''}</td>
     <td><select style="font-size:11px" onchange="_ofxPendenteCartao[${i}].categoriaId=this.value">${['<option value="">Sem categoria</option>'].concat(categorias.filter(c=>itemValidoPF(c)&&c.tipo==='despesa').map(c=>`<option value="${c.id}"${c.id===t.categoriaId?' selected':''}>${esc(nomeCompletoCadastro(c,categorias))}</option>`)).join('')}</select></td>
@@ -4600,7 +4460,6 @@ function confirmarImportacaoOFXCartao(){
   const selecionados = _ofxPendenteCartao.filter(t=>t.incluir);
   if(!selecionados.length){ fecharModal('modal-ofx-cartao'); return; }
   const agora = new Date().toISOString();
-  let totalReal = 0;
   selecionados.forEach(t=>{
     const compraId = uid();
     compras.push({
@@ -4609,21 +4468,13 @@ function confirmarImportacaoOFXCartao(){
       ...(t.categoriaId?{categoriaId:t.categoriaId}:{}), ...(t.centroCustoId?{centroCustoId:t.centroCustoId}:{}), ...(t.direcionamentoId?{direcionamentoId:t.direcionamentoId}:{}),
       fitid: t.fitid||null, origemImportacao: 'ofx', dataImportacao: agora,
     });
-    totalReal += t.valor;
   });
   if(!limites[_ofxCartaoAlvo]) limites[_ofxCartaoAlvo] = {total:0};
   salvar();
-  const cartaoImportado = _ofxCartaoAlvo;
-  const itensParaTesouraria = selecionados.map(t=>({data:t.data, valorTotal:t.valor, categoriaId:t.categoriaId, centroCustoId:t.centroCustoId, direcionamentoId:t.direcionamentoId, desc:t.desc}));
   _ofxPendenteCartao = []; _ofxCartaoAlvo = '';
   fecharModal('modal-ofx-cartao');
   renderDashboard();
   showToast(`✅ ${selecionados.length} compra(s) importada(s)`);
-  if(CARTOES[cartaoImportado]?.contaTesourariaId && getTokenTesouraria()){
-    registrarComprasTesouraria(cartaoImportado, itensParaTesouraria).then(res=>{
-      if(!res.ok) enfileirarComprasTesouraria({cartao:cartaoImportado, itens:res.itensQueFalharam||itensParaTesouraria});
-    });
-  }
 }
 
 // ══════════════════════════════════════════
@@ -4774,7 +4625,11 @@ function processarArquivoCSVCartao(){
     if(!registros.length){ mostrarErro('Nenhum lançamento encontrado neste arquivo. Se o banco não for o Bradesco, confira se o CSV tem colunas de Data, Descrição e Valor.'); return; }
     _csvCartaoAlvo = cartao;
     _csvOrigemAlvo = origem;
-    _csvPendenteCartao = registros.map(r=>({ ...r, incluir: !jaExisteLancamentoCSV(cartao, r), jaExiste: jaExisteLancamentoCSV(cartao, r) }));
+    _csvPendenteCartao = registros.map(r=>{
+      const jaExiste = jaExisteLancamentoCSV(cartao, r);
+      const divergenciaMestre = jaExiste ? null : possivelDivergenciaMestre(cartao, r.dataCompra);
+      return { ...r, incluir: !jaExiste && !divergenciaMestre, jaExiste, divergenciaMestre };
+    });
     mostrarRevisaoCSVCartao();
   }, () => mostrarErro('Não foi possível ler o arquivo. Tente novamente.'));
 }
@@ -4785,7 +4640,7 @@ function mostrarRevisaoCSVCartao(){
     const parcTxt = t.nParcelas>1 ? `${t.parcela}/${t.nParcelas}` : 'à vista';
     const avisoParcial = (t.parcela>1 && !t.jaExiste) ? ' <span style="font-size:10px;color:#b58900" title="Parcelas anteriores desta compra não foram encontradas no sistema — será lançada só esta parcela isolada, sem supor as demais">⚠ parcela avulsa</span>' : '';
     return `<tr style="${t.jaExiste?'opacity:.5':''}">
-    <td><input type="checkbox" ${t.incluir?'checked':''} onchange="_csvPendenteCartao[${i}].incluir=this.checked">${t.jaExiste?' <span style="font-size:10px;color:#999">(já lançado)</span>':''}</td>
+    <td><input type="checkbox" ${t.incluir?'checked':''} onchange="_csvPendenteCartao[${i}].incluir=this.checked">${t.jaExiste?' <span style="font-size:10px;color:#999">(já lançado)</span>':''}${t.divergenciaMestre?` <span style="font-size:10px;color:#da3633;font-weight:700" title="Perto de uma parcela de &quot;${esc(t.divergenciaMestre.desc)}&quot;, que tem Registro Mestre com ${t.divergenciaMestre.nParcelas} parcela(s) — confira antes de incluir, pode ser divergência">⚠ confira (Registro Mestre)</span>`:''}</td>
     <td>${new Date(t.dataCompra+'T12:00:00').toLocaleDateString('pt-BR')}</td>
     <td><input type="text" value="${esc(t.desc)}" style="width:100%;font-size:11px" onchange="_csvPendenteCartao[${i}].desc=this.value">${avisoParcial}</td>
     <td><select style="font-size:11px" onchange="_csvPendenteCartao[${i}].categoriaId=this.value">${['<option value="">Sem categoria</option>'].concat(categorias.filter(c=>itemValidoPF(c)&&c.tipo==='despesa').map(c=>`<option value="${c.id}"${c.id===t.categoriaId?' selected':''}>${esc(nomeCompletoCadastro(c,categorias))}</option>`)).join('')}</select></td>
@@ -4815,8 +4670,7 @@ function confirmarImportacaoCSVCartao(){
   const selecionados = _csvPendenteCartao.filter(t=>t.incluir);
   if(!selecionados.length){ fecharModal('modal-csv-cartao'); return; }
   const agora = new Date().toISOString();
-  let totalReal = 0, totalLancamentos = 0, totalCompras = 0;
-  const itensParaTesouraria = [];
+  let totalLancamentos = 0, totalCompras = 0;
   selecionados.forEach(t=>{
     const compraId = uid();
     totalCompras++;
@@ -4830,9 +4684,8 @@ function confirmarImportacaoCSVCartao(){
           ...(t.categoriaId?{categoriaId:t.categoriaId}:{}), ...(t.centroCustoId?{centroCustoId:t.centroCustoId}:{}), ...(t.direcionamentoId?{direcionamentoId:t.direcionamentoId}:{}),
           origemImportacao: _csvOrigemAlvo, dataImportacao: agora,
         });
-        totalReal += t.valor; totalLancamentos++;
+        totalLancamentos++;
       }
-      itensParaTesouraria.push({data:t.dataCompra, valorTotal:t.valor*t.nParcelas, categoriaId:t.categoriaId, centroCustoId:t.centroCustoId, direcionamentoId:t.direcionamentoId, desc:t.desc});
     } else {
       // a vista (1/1) ou parcela avulsa (meio/fim de uma compra sem historico anterior no sistema)
       const venc = calcVenc(t.dataCompra, _csvCartaoAlvo, t.parcela);
@@ -4842,22 +4695,15 @@ function confirmarImportacaoCSVCartao(){
         ...(t.categoriaId?{categoriaId:t.categoriaId}:{}), ...(t.centroCustoId?{centroCustoId:t.centroCustoId}:{}), ...(t.direcionamentoId?{direcionamentoId:t.direcionamentoId}:{}),
         origemImportacao: _csvOrigemAlvo, dataImportacao: agora,
       });
-      totalReal += t.valor; totalLancamentos++;
-      itensParaTesouraria.push({data:t.dataCompra, valorTotal:t.valor, categoriaId:t.categoriaId, centroCustoId:t.centroCustoId, direcionamentoId:t.direcionamentoId, desc:t.desc});
+      totalLancamentos++;
     }
   });
   if(!limites[_csvCartaoAlvo]) limites[_csvCartaoAlvo] = {total:0};
   salvar();
-  const cartaoImportado = _csvCartaoAlvo;
   _csvPendenteCartao = []; _csvCartaoAlvo = '';
   fecharModal('modal-csv-cartao');
   renderDashboard();
   showToast(`✅ ${totalCompras} compra(s) da fatura importada(s) (${totalLancamentos} lançamento(s) de parcela)`);
-  if(CARTOES[cartaoImportado]?.contaTesourariaId && getTokenTesouraria()){
-    registrarComprasTesouraria(cartaoImportado, itensParaTesouraria).then(res=>{
-      if(!res.ok) enfileirarComprasTesouraria({cartao:cartaoImportado, itens:res.itensQueFalharam||itensParaTesouraria});
-    });
-  }
 }
 
 // ── IMPORTAR QIF DO MICROSOFT MONEY ──────────────────────────
@@ -5068,10 +4914,11 @@ function renderRevisaoQIF(){
     const categoriaId = _qifMapaCategoria[r.categoriaTexto||'(Sem categoria)']||'';
     const catNome = categoriaId ? nomeCompletoCadastro(categoriaById(categoriaId)||{}, categorias) : '—';
     const jaExiste = jaExisteLancamentoCSV(_qifCartaoAlvo, {dataCompra:r.data, parcela:1, nParcelas:1, valor:Math.abs(r.valor)});
+    const divergenciaMestre = (!jaExiste && r.data) ? possivelDivergenciaMestre(_qifCartaoAlvo, r.data) : null;
     return `<tr style="${jaExiste?'opacity:.5':''}">
-      <td style="text-align:center"><input type="checkbox" id="qifrev${i}" ${jaExiste?'':'checked'}></td>
+      <td style="text-align:center"><input type="checkbox" id="qifrev${i}" ${(jaExiste||divergenciaMestre)?'':'checked'}></td>
       <td style="font-size:.75rem;white-space:nowrap">${r.data?new Date(r.data+'T12:00:00').toLocaleDateString('pt-BR'):'<span style="color:#c00">data inválida</span>'}</td>
-      <td style="font-size:.78rem;">${esc(r.payee||r.memo||'(sem descrição)')}${jaExiste?' <span style="font-size:.68rem;color:var(--muted)">(parece já existir)</span>':''}</td>
+      <td style="font-size:.78rem;">${esc(r.payee||r.memo||'(sem descrição)')}${jaExiste?' <span style="font-size:.68rem;color:var(--muted)">(parece já existir)</span>':''}${divergenciaMestre?` <span style="font-size:.68rem;color:#da3633;font-weight:700" title="Perto de uma parcela de &quot;${esc(divergenciaMestre.desc)}&quot;, que tem Registro Mestre com ${divergenciaMestre.nParcelas} parcela(s) — confira antes de incluir, pode ser divergência">⚠ confira (Registro Mestre)</span>`:''}</td>
       <td style="font-size:.72rem;color:var(--muted)">${esc(catNome)}</td>
       <td style="text-align:right;font-weight:600;font-size:.78rem;${r.valor>=0?'color:#0a7d33':''}">${fmt(Math.abs(r.valor))}${r.valor>=0?' (crédito)':''}</td>
     </tr>`;
@@ -5094,8 +4941,7 @@ function renderRevisaoQIF(){
 }
 function confirmarImportacaoQIF(){
   const agora = new Date().toISOString();
-  let totalReal=0, qtd=0;
-  const itensParaTesouraria = [];
+  let qtd=0;
   _qifPendente.forEach((r,i)=>{
     if(!r.data) return;
     if(!document.getElementById(`qifrev${i}`)?.checked) return;
@@ -5110,21 +4956,14 @@ function confirmarImportacaoQIF(){
       ...(r.memo&&r.memo!==r.payee?{memo:r.memo}:{}), ...(categoriaId?{categoriaId}:{}), ...(_qifCentroCustoId?{centroCustoId:_qifCentroCustoId}:{}),
       origemImportacao:'qif-money', dataImportacao: agora,
     });
-    totalReal += tipo==='estorno'?-valorAbs:valorAbs; qtd++;
-    itensParaTesouraria.push({data:r.data, valorTotal: tipo==='estorno'?-valorAbs:valorAbs, categoriaId, centroCustoId:_qifCentroCustoId, desc});
+    qtd++;
   });
   if(!limites[_qifCartaoAlvo]) limites[_qifCartaoAlvo]={total:0};
   salvar();
-  const cartaoImportado = _qifCartaoAlvo;
   _qifPendente=[]; _qifCartaoAlvo=''; _qifCategoriasUnicas=[]; _qifMapaCategoria={}; _qifCentroCustoId='';
   fecharModal('modal-qif-cartao');
   renderDashboard();
   showToast(`✅ ${qtd} lançamento(s) do Money importado(s)`);
-  if(CARTOES[cartaoImportado]?.contaTesourariaId && getTokenTesouraria()){
-    registrarComprasTesouraria(cartaoImportado, itensParaTesouraria).then(res=>{
-      if(!res.ok) enfileirarComprasTesouraria({cartao:cartaoImportado, itens:res.itensQueFalharam||itensParaTesouraria});
-    });
-  }
 }
 
 function salvarCompra(){
@@ -5134,21 +4973,16 @@ function salvarCompra(){
   const tipo=document.getElementById('c-tipo')?.value==='estorno'?'estorno':'despesa';
   const n=tipo==='estorno'?1:parseInt(document.getElementById('c-parcelas').value);
   if(!desc||!data||!valorAbs||valorAbs<=0){showToast('Preencha todos os campos',true);return;}
-  const compraId=uid();let totalReal=0;
+  const compraId=uid();
   const memo=document.getElementById('c-memo')?.value.trim()||'';
   const categoriaId=valorFinalCascata('c','categoria');
   const centroCustoId=valorFinalCascata('c','cc');
   const direcionamentoId=valorFinalCascata('c','direc');
   for(let i=1;i<=n;i++){const vValAbs=parseFloat(document.getElementById('pe-val-'+i).value)||0,vVenc=document.getElementById('pe-venc-'+i).value;
     const vVal=tipo==='estorno'?-Math.abs(vValAbs):Math.abs(vValAbs);
-    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,tipo,...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(memo?{memo}:{}),...(direcionamentoId?{direcionamentoId}:{})});totalReal+=vVal;}
+    compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,tipo,...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(memo?{memo}:{}),...(direcionamentoId?{direcionamentoId}:{})});}
   if(!limites[cartao])limites[cartao]={total:0};
   salvar();fecharModal('modal-compra');renderDashboard();showToast(tipo==='estorno'?'Estorno/crédito lançado ✓':'Compra lançada ✓');
-  if(CARTOES[cartao]?.contaTesourariaId && getTokenTesouraria()){
-    registrarCompraTesouraria(cartao, data, totalReal, categoriaId, centroCustoId, direcionamentoId, desc).then(res=>{
-      if(!res.ok) enfileirarCompraTesouraria({cartao, data, valorTotal:totalReal, categoriaId, centroCustoId, direcionamentoId, desc});
-    });
-  }
 }
 
 // ── BACKUP ──────────────────────────────────────────────────
@@ -5804,14 +5638,21 @@ function getSecData(secId){
   const iniEl=document.getElementById('sf-'+secId+'-ini');
   const fimEl=document.getElementById('sf-'+secId+'-fim');
   const useDate=iniEl&&iniEl.style.display!=='none'&&iniEl.value&&fimEl&&fimEl.value;
+  // catmensal/forn: exclui parcelas com registroMestreId — essas já são
+  // contadas pelo lançamento mestre no TesourariaSys (Registro Mestre de
+  // Compra no Cartão, 16/08/2026); somar aqui de novo duplicaria o valor.
+  // As demais seções (fatura/cartão, pagos etc.) continuam somando TODAS as
+  // parcelas — é saldo devedor real, não tem relação com duplicidade de
+  // categoria/fornecedor.
+  const base = (secId==='catmensal'||secId==='forn') ? compras.filter(x=>!x.registroMestreId) : compras;
   if(selVal==='passadas'){
-    return compras.filter(x=>{if(x.venc>=hj)return false;if(cartao!=='todos'&&x.cartao!==cartao)return false;return true;});
+    return base.filter(x=>{if(x.venc>=hj)return false;if(cartao!=='todos'&&x.cartao!==cartao)return false;return true;});
   }
   if(selVal==='avencer'){
-    return compras.filter(x=>{if(x.venc<hj)return false;if(cartao!=='todos'&&x.cartao!==cartao)return false;return true;});
+    return base.filter(x=>{if(x.venc<hj)return false;if(cartao!=='todos'&&x.cartao!==cartao)return false;return true;});
   }
   if(useDate){
-    return compras.filter(x=>{
+    return base.filter(x=>{
       if(x.venc<iniEl.value||x.venc>fimEl.value)return false;
       if(cartao!=='todos'&&x.cartao!==cartao)return false;
       return true;
@@ -5820,10 +5661,10 @@ function getSecData(secId){
   const n=parseInt(selVal)||0;
   const now=new Date();
   const meses=[];
-  if(n===0){return compras.filter(x=>{if(cartao!=='todos'&&x.cartao!==cartao)return false;return true;});}
+  if(n===0){return base.filter(x=>{if(cartao!=='todos'&&x.cartao!==cartao)return false;return true;});}
   for(let i=n-1;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);meses.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}
   const minM=meses[0];
-  return compras.filter(x=>{
+  return base.filter(x=>{
     if(x.venc.slice(0,7)<minM)return false;
     if(cartao!=='todos'&&x.cartao!==cartao)return false;
     return true;
