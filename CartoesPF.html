@@ -1455,7 +1455,23 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // app-title/<title> do PF passou a dizer "PF" (estava genérico
 // "Cartões", igual ao PJ). Notificações também passaram a usar o ícone
 // local do app em vez de um favicon.ico compartilhado que nem existia.
-const VERSAO = 'v5.46';
+// v5.47 — CORREÇÃO CRÍTICA de perda de dados no autosave (auditoria
+// 15-16/08/2026, mesma causa raiz corrigida no ChequeSys e no
+// TesourariaSys): saveToGitHub() buscava um SHA "fresco" só pra passar
+// pela trava técnica do GitHub, mas nunca checava se o CONTEÚDO remoto
+// tinha mudado desde que a sessão carregou os dados — uma correção
+// manual feita direto no GitHub (ou outro dispositivo salvando entre o
+// load e o save) podia ser silenciosamente revertida no próximo
+// autosave. Agora, se o SHA divergir, busca o conteúdo remoto atual e
+// faz merge de 3 vias (baseline/local/remoto) registro a registro antes
+// de gravar — mudanças que não se cruzam são mescladas automaticamente;
+// um conflito real no mesmo registro preserva a versão já segura na
+// nuvem e avisa (toast + console). Mesmo padrão em compras por ano
+// (salvarComprasPorAno) e nas coleções de dados.json (limites,
+// pagamentos, fechamentos, cartoesCustom, fornecedores, usuários,
+// favoritosCF, log de auditoria) — prepara o sistema pra 2-3 usuários
+// simultâneos sem perder trabalho de ninguém.
+const VERSAO = 'v5.47';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1818,6 +1834,22 @@ let ghToken='', ghSha='';
 // anterior são carregados por padrão.
 let _anosCarregadosCompras = new Set();
 let _shaAnosCompras = {};
+let _baselineAnosCompras = {};
+// _baselineDados: "última verdade conhecida" do dados.json (tudo que NÃO é
+// compras por ano) — capturada sempre que os dados são carregados/aplicados
+// via _aplicarCamposPayload. Usada em saveToGitHub pra decidir, campo a
+// campo, o que mudou nesta sessão vs. o que veio de fora (mesmo padrão do
+// ChequeSys/TesourariaSys, auditoria 15-16/08/2026).
+let _baselineDados = {};
+// COLECOES_MESCLAVEIS_DADOS_PF: coleções dentro de dados.json que são
+// arrays de registros com "id" — mescladas via merge3ViasPorId.
+// CHAVES_MESCLAVEIS_DADOS_PF: coleções que são objetos chave→valor —
+// mescladas via merge3ViasPorChave. ordemCartoesDash fica de fora de
+// propósito: é uma preferência única de ordenação (não uma coleção de
+// registros independentes), então mesclar não faz sentido — segue o
+// comportamento anterior (o que a sessão que salva por último define).
+const COLECOES_MESCLAVEIS_DADOS_PF = ['fornecedores','usuarios','favoritosCF','logAuditoriaPF'];
+const CHAVES_MESCLAVEIS_DADOS_PF = ['limites','pagamentos','fechamentos','cartoesCustom'];
 let _anosComprasIndice = [];
 function anoDaCompra(c){ return (c.dataCompra||c.venc||'').slice(0,4); }
 function anosPadraoParaCarregar(){ const a=new Date().getFullYear(); return [String(a-1), String(a)]; }
@@ -1921,14 +1953,21 @@ async function carregarComprasDosAnosPadrao(anosIndice){
     _anosCarregadosCompras.add(ano);
     if(anosIndice && !anosIndice.includes(ano)) continue; // ano ainda não existe
     const res=await buscarArquivoAnoGH(ARQ_ANO('compras',ano));
-    if(res){ _shaAnosCompras[ano]=res.sha; compras.push(...(res.conteudo||[])); }
+    if(res){
+      _shaAnosCompras[ano]=res.sha;
+      // Baseline = a "última verdade conhecida" desse ano — usada pra
+      // decidir, na hora de salvar, o que foi alteração DESTA sessão e o que
+      // veio de fora (ver merge3ViasPorId em salvarComprasPorAno).
+      _baselineAnosCompras[ano]=JSON.parse(JSON.stringify(res.conteudo||[]));
+      compras.push(...(res.conteudo||[]));
+    }
   }
   _anosComprasIndice = anosIndice||[];
   return compras;
 }
-async function salvarComprasPorAno(compras){
+async function salvarComprasPorAno(comprasLocal){
   const porAno={};
-  compras.forEach(c=>{ const a=anoDaCompra(c); if(a){ (porAno[a]=porAno[a]||[]).push(c); } });
+  comprasLocal.forEach(c=>{ const a=anoDaCompra(c); if(a){ (porAno[a]=porAno[a]||[]).push(c); } });
   const anosParaGravar = _anosCarregadosCompras.size ? [..._anosCarregadosCompras] : Object.keys(porAno);
   // Busca o SHA atual do arquivo de ano bem na hora de gravar, em vez do
   // valor cacheado em _shaAnosCompras desde antes — mesmo bug real do
@@ -1946,15 +1985,32 @@ async function salvarComprasPorAno(compras){
   // Cada arquivo de ano tenta de novo (com SHA fresco a cada tentativa)
   // antes de desistir, em vez de declarar falha na primeira tentativa —
   // reduz a chance de uma falha de rede transitória travar a fila.
-  async function salvarArquivoAnoComRetry(ano, lista, tentativas){
+  // CRÍTICO (15-16/08/2026, mesma causa raiz corrigida no ChequeSys e no
+  // TesourariaSys): o SHA buscado acima só passava pela trava técnica do
+  // GitHub, nunca detectava se o CONTEÚDO remoto tinha mudado desde que esta
+  // sessão carregou o ano. Agora, se o SHA fresco vier diferente do que esta
+  // sessão conhecia, busca o conteúdo remoto atual e faz o merge de 3 vias
+  // antes de gravar (ver merge3ViasPorId).
+  async function salvarArquivoAnoComRetry(ano, lista, baselineAno, tentativas){
     tentativas = tentativas || 3;
     for(let i=0;i<tentativas;i++){
       const shaAno=await shaAtualDoAno(ano);
-      const conteudoAno=btoa(unescape(encodeURIComponent(JSON.stringify(lista))));
+      let listaParaGravar = lista;
+      let conflitos = [];
+      let houveMerge = false;
+      if(shaAno && _shaAnosCompras[ano] && shaAno!==_shaAnosCompras[ano]){
+        const remotoRes = await buscarArquivoAnoGH(ARQ_ANO('compras',ano));
+        const remotoConteudo = remotoRes ? (remotoRes.conteudo||[]) : [];
+        const rMerge = merge3ViasPorId(baselineAno||[], lista, remotoConteudo);
+        listaParaGravar = rMerge.mesclado;
+        conflitos = rMerge.conflitos;
+        houveMerge = true;
+      }
+      const conteudoAno=btoa(unescape(encodeURIComponent(JSON.stringify(listaParaGravar))));
       const bodyAno={message:`Compras ${ano} (${TIPO_DADOS})`, content:conteudoAno, branch:GH_BRANCH, ...(shaAno?{sha:shaAno}:{})};
       try{
         const r=await ghFetch(`contents/${ARQ_ANO('compras',ano)}`,{method:'PUT',body:JSON.stringify(bodyAno)});
-        if(r.ok){ const d=await r.json(); return {ok:true, sha:d.content.sha}; }
+        if(r.ok){ const d=await r.json(); return {ok:true, sha:d.content.sha, listaFinal:listaParaGravar, houveMerge, conflitos}; }
         const eBody=await r.json().catch(()=>({}));
         console.error(`Falha ao salvar compras do ano ${ano} (tentativa ${i+1}/${tentativas})`, eBody);
       }catch(e){
@@ -1968,15 +2024,108 @@ async function salvarComprasPorAno(compras){
   // era ignorada em silêncio: dados.json podia salvar OK (com o índice de
   // anos avançado) mesmo com compras de um ano inteiro sem ir pro GitHub.
   let falhaAno=false;
+  const anosMesclados={};
+  const conflitosMerge=[];
   await Promise.all(anosParaGravar.map(async ano=>{
     const lista=porAno[ano]||[];
-    const r=await salvarArquivoAnoComRetry(ano, lista);
-    if(r.ok){ _shaAnosCompras[ano]=r.sha; }
+    const baselineAno=_baselineAnosCompras[ano];
+    const r=await salvarArquivoAnoComRetry(ano, lista, baselineAno);
+    if(r.ok){
+      _shaAnosCompras[ano]=r.sha;
+      _baselineAnosCompras[ano]=JSON.parse(JSON.stringify(r.listaFinal));
+      if(r.houveMerge) anosMesclados[ano]=r.listaFinal;
+      if(r.conflitos && r.conflitos.length) conflitosMerge.push({rotulo:`Compra (${ano})`, conflitos:r.conflitos});
+    }
     else { falhaAno=true; }
   }));
   if(falhaAno) return false;
+  // Repõe em "compras" (variável global) o resultado do merge dos anos que
+  // precisaram — sem isso a TELA continuaria mostrando a versão
+  // desatualizada desta sessão.
+  if(Object.keys(anosMesclados).length){
+    compras = compras.filter(c=>!(anoDaCompra(c) in anosMesclados));
+    Object.keys(anosMesclados).forEach(ano=>{ compras.push(...anosMesclados[ano]); });
+  }
+  if(conflitosMerge.length) mostrarConflitosMergeCartoes(conflitosMerge);
   _anosComprasIndice=[...new Set([..._anosComprasIndice, ...Object.keys(porAno)])].sort();
   return true;
+}
+// ══════════════════════════════════════════
+// MERGE DE 3 VIAS (baseline / local / remoto) — usado antes de gravar
+// qualquer arquivo por cima do remoto, pra nunca mais sobrescrever
+// silenciosamente uma alteração feita por outro dispositivo/usuário/edição
+// manual no GitHub entre o momento em que esta aba carregou os dados e o
+// momento em que ela salva (mesma causa raiz real corrigida no ChequeSys e
+// no TesourariaSys, auditoria 15-16/08/2026: buscar um SHA "fresco" só pra
+// passar pela trava técnica do GitHub NÃO detecta se o conteúdo mudou).
+//
+// merge3ViasPorId: pra arrays de objetos com "id" (compras, fornecedores,
+// usuários, etc). merge3ViasPorChave: mesma lógica, pra objetos chave→valor
+// (limites, pagamentos, fechamentos, cartoesCustom — não são arrays aqui).
+// Em ambos: se só um lado mudou em relação ao baseline, aplica o lado que
+// mudou; se os dois mudaram igual, tanto faz; se os dois mudaram DIFERENTE
+// — conflito real —, preserva a versão REMOTA (já segura na nuvem) e devolve
+// o conflito separadamente, pra avisar o usuário.
+// ══════════════════════════════════════════
+function _deepIgualJSON(a, b){
+  if(a===b) return true;
+  if(typeof a!=='object' || typeof b!=='object' || a===null || b===null) return false;
+  if(Array.isArray(a)!==Array.isArray(b)) return false;
+  if(Array.isArray(a)){
+    if(a.length!==b.length) return false;
+    for(let i=0;i<a.length;i++) if(!_deepIgualJSON(a[i],b[i])) return false;
+    return true;
+  }
+  const ka=Object.keys(a), kb=Object.keys(b);
+  if(ka.length!==kb.length) return false;
+  for(const k of ka){ if(!(k in b) || !_deepIgualJSON(a[k],b[k])) return false; }
+  return true;
+}
+function merge3ViasPorId(baseline, local, remoto){
+  const porId = arr => { const m={}; (arr||[]).forEach(r=>{ if(r && r.id) m[r.id]=r; }); return m; };
+  const bMap=porId(baseline), lMap=porId(local), rMap=porId(remoto);
+  const todosIds = new Set([...Object.keys(bMap), ...Object.keys(lMap), ...Object.keys(rMap)]);
+  const mesclado=[], conflitos=[];
+  todosIds.forEach(id=>{
+    const b=bMap[id], l=lMap[id], r=rMap[id];
+    const localMudou = !_deepIgualJSON(l,b);
+    const remotoMudou = !_deepIgualJSON(r,b);
+    if(!localMudou){ if(r) mesclado.push(r); return; }
+    if(!remotoMudou){ if(l) mesclado.push(l); return; }
+    if(_deepIgualJSON(l,r)){ if(l) mesclado.push(l); return; }
+    if(r) mesclado.push(r); // conflito real: mantém o que já está seguro na nuvem
+    conflitos.push({id, baseline:b, local:l, remoto:r});
+  });
+  return { mesclado, conflitos };
+}
+function merge3ViasPorChave(baseline, local, remoto){
+  baseline=baseline||{}; local=local||{}; remoto=remoto||{};
+  const todasChaves = new Set([...Object.keys(baseline), ...Object.keys(local), ...Object.keys(remoto)]);
+  const mesclado={}, conflitos=[];
+  todasChaves.forEach(chave=>{
+    const b=baseline[chave], l=local[chave], r=remoto[chave];
+    const localMudou = !_deepIgualJSON(l,b);
+    const remotoMudou = !_deepIgualJSON(r,b);
+    if(!localMudou){ if(r!==undefined) mesclado[chave]=r; return; }
+    if(!remotoMudou){ if(l!==undefined) mesclado[chave]=l; return; }
+    if(_deepIgualJSON(l,r)){ if(l!==undefined) mesclado[chave]=l; return; }
+    if(r!==undefined) mesclado[chave]=r; // conflito real: mantém o que já está seguro na nuvem
+    conflitos.push({id:chave, baseline:b, local:l, remoto:r});
+  });
+  return { mesclado, conflitos };
+}
+// Aviso quando o merge de 3 vias achou um conflito real (edição local E
+// remota diferentes no mesmo registro) — a gravação já aconteceu,
+// preservando a versão remota nesses casos específicos; isto só avisa quais
+// registros conferir/refazer se ainda fizer sentido. Este app não tem um
+// sistema de modal rico (ver ChequeSys/TesourariaSys pra isso) — usa o
+// toast existente (showToast) e detalha tudo no console pra quem for
+// investigar. Nunca deixa o conflito passar batido em silêncio.
+function mostrarConflitosMergeCartoes(grupos){
+  const total = grupos.reduce((s,g)=>s+g.conflitos.length,0);
+  if(!total) return;
+  console.warn('⚠️ Conflitos de merge (versão da nuvem mantida nestes registros — confira e refaça se ainda fizer sentido):', grupos);
+  showToast(`⚠️ ${total} registro(s) alterado(s) em outro lugar ao mesmo tempo — versão da nuvem mantida (detalhes no console)`, true);
 }
 async function saveToGitHub(payload){
   // ARQUIVAMENTO POR ANO: se o payload trouxer "compras", grava os anos
@@ -1993,16 +2142,58 @@ async function saveToGitHub(payload){
     delete payload.compras;
     payload.anosCompras=_anosComprasIndice;
   }
-  // Confere o sha mais recente antes de gravar, reduz risco de conflito 409
+  // Confere o sha mais recente antes de gravar, reduz risco de conflito 409.
+  // CRÍTICO (15-16/08/2026, mesma causa raiz corrigida no ChequeSys e no
+  // TesourariaSys): antes, esse sha "fresco" só servia pra passar pela trava
+  // técnica do GitHub — nunca checava se o CONTEÚDO remoto tinha mudado
+  // desde que esta sessão carregou os dados. Se tinha (ex: correção manual
+  // feita direto no GitHub, ou outro dispositivo salvando entre o load e
+  // este save), o PUT sobrescrevia tudo silenciosamente, revertendo a
+  // correção. Agora, se o sha divergir do que esta sessão conhecia, busca o
+  // conteúdo remoto atual e mescla campo a campo antes de gravar.
+  const shaAntesDoSave = ghSha;
   try{
     const rGet=await ghFetch(`contents/${GH_FILE}`);
-    if(rGet.ok){const dGet=await rGet.json(); ghSha=dGet.sha;}
+    if(rGet.ok){
+      const dGet=await rGet.json();
+      ghSha=dGet.sha;
+      if(shaAntesDoSave && dGet.sha!==shaAntesDoSave && dGet.content){
+        try{
+          const remoto = JSON.parse(decodeURIComponent(escape(atob(dGet.content.replace(/\n/g,'')))));
+          const baselineDados = _baselineDados||{};
+          const conflitosDados = [];
+          COLECOES_MESCLAVEIS_DADOS_PF.forEach(chave=>{
+            const { mesclado, conflitos } = merge3ViasPorId(baselineDados[chave]||[], payload[chave]||[], remoto[chave]||[]);
+            payload = { ...payload, [chave]: mesclado };
+            if(conflitos.length) conflitosDados.push({rotulo:chave, conflitos});
+          });
+          CHAVES_MESCLAVEIS_DADOS_PF.forEach(chave=>{
+            const { mesclado, conflitos } = merge3ViasPorChave(baselineDados[chave]||{}, payload[chave]||{}, remoto[chave]||{});
+            payload = { ...payload, [chave]: mesclado };
+            if(conflitos.length) conflitosDados.push({rotulo:chave, conflitos});
+          });
+          // anosCompras: array de ANOS (strings), não de registros com id —
+          // nunca reduz, sempre a união do que já existia no remoto com o
+          // que esta sessão conhece (evita "esquecer" um ano que outra
+          // sessão tenha criado nesse meio-tempo).
+          if(payload.anosCompras || remoto.anosCompras){
+            payload = { ...payload, anosCompras: [...new Set([...(remoto.anosCompras||[]), ...(payload.anosCompras||[])])].sort() };
+          }
+          if(conflitosDados.length) mostrarConflitosMergeCartoes(conflitosDados);
+        }catch(eMerge){ /* se a mesclagem falhar, segue salvando o que já tínhamos, melhor que travar */ }
+      }
+    }
   }catch(e){/* segue com o sha que já tínhamos */}
   const content=btoa(unescape(encodeURIComponent(JSON.stringify(payload,null,2))));
   const body={message:`Sync ${new Date().toISOString().slice(0,16).replace('T',' ')}`,content,branch:GH_BRANCH,...(ghSha?{sha:ghSha}:{})};
   const r=await ghFetch(`contents/${GH_FILE}`,{method:'PUT',body:JSON.stringify(body)});
   if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||`Erro ${r.status}`);}
   const d=await r.json(); ghSha=d.content.sha; setLastSha(ghSha);
+  _baselineDados = JSON.parse(JSON.stringify({
+    limites: payload.limites||{}, pagamentos: payload.pagamentos||{}, fechamentos: payload.fechamentos||{},
+    fornecedores: payload.fornecedores||[], cartoesCustom: payload.cartoesCustom||{}, usuarios: payload.usuarios||[],
+    favoritosCF: payload.favoritosCF||[], logAuditoriaPF: payload.logAuditoriaPF||[]
+  }));
 }
 function setSyncStatus(s){
   const dot=document.getElementById('sync-dot'),txt=document.getElementById('sync-txt'),gh=document.getElementById('gh-status-txt');
@@ -2048,6 +2239,8 @@ async function sincronizarAgora(){
       compras=data.compras; limites=data.limites||{}; pagamentos=data.pagamentos||{};
       fechamentos=data.fechamentos||{}; fornecedores=data.fornecedores||[]; cartoesCustom=data.cartoesCustom||{};
       usuarios=data.usuarios||[]; favoritosCF=data.favoritosCF||[]; ordemCartoesDash=data.ordemCartoesDash||[];
+      logAuditoriaPF=data.logAuditoriaPF||[];
+      _capturarBaselineDados(data);
       Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
       try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
       setSyncStatus('ok');
@@ -2124,6 +2317,19 @@ function _aplicarCamposPayload(dados){
   Object.entries(cartoesCustom).forEach(([k,v])=>{CARTOES[k]={...(CARTOES[k]||{}), ...v};});
   popularFiltroFaturaCartao();
 }
+// _capturarBaselineDados: só deve ser chamada com dados que representam a
+// "verdade" REMOTA confirmada (acabou de vir do GitHub) — nunca com uma fila
+// offline/local ainda não salva. Chamar com dados locais faria o merge em
+// saveToGitHub comparar local contra ele mesmo (sempre "sem mudança") e
+// aceitar cegamente o que estiver no remoto na hora de salvar, jogando fora
+// justamente as alterações que ainda não foram sincronizadas.
+function _capturarBaselineDados(dados){
+  _baselineDados = JSON.parse(JSON.stringify({
+    limites: dados.limites||{}, pagamentos: dados.pagamentos||{}, fechamentos: dados.fechamentos||{},
+    fornecedores: dados.fornecedores||[], cartoesCustom: dados.cartoesCustom||{}, usuarios: dados.usuarios||[],
+    favoritosCF: dados.favoritosCF||[], logAuditoriaPF: dados.logAuditoriaPF||[]
+  }));
+}
 // Mesma classe de bug documentada em editarParcela() (achado 02/08/2026):
 // este <select> era HTML estático com só os 5 cartões originais. Um cartão
 // CUSTOM (ex: "picpay", criado depois via cartoesCustom) nunca aparecia como
@@ -2198,8 +2404,11 @@ async function _salvarReal(){
 }
 async function resolverFilaPendente(filaPayload,dadosRemotos,shaRemotoAtual,shaQuandoFicouOffline){
   if(!shaQuandoFicouOffline||shaQuandoFicouOffline===shaRemotoAtual){
-    // Ninguém mais alterou os dados remotos enquanto estávamos offline — aplica nossa fila com segurança
+    // Ninguém mais alterou os dados remotos enquanto estávamos offline — aplica nossa fila com segurança.
+    // Baseline = dadosRemotos (a verdade remota confirmada, não a fila local) —
+    // é contra ela que saveToGitHub vai comparar pra saber o que mudou aqui.
     _aplicarCamposPayload(filaPayload);
+    _capturarBaselineDados(dadosRemotos);
     limparFila();
     try{await saveToGitHub(montarPayload());try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}setSyncStatus('ok');}
     catch(e){setFila(montarPayload());setSyncStatus('queued');}
@@ -2207,6 +2416,7 @@ async function resolverFilaPendente(filaPayload,dadosRemotos,shaRemotoAtual,shaQ
   }
   // CONFLITO: outro dispositivo salvou dados diferentes enquanto este estava offline
   _aplicarCamposPayload(dadosRemotos);
+  _capturarBaselineDados(dadosRemotos);
   window._conflitoFila=filaPayload; window._conflitoRemoto=dadosRemotos;
   document.getElementById('modal-conflito').classList.add('open');
 }
@@ -2215,9 +2425,13 @@ async function resolverConflito(opcao){
   if(opcao==='nuvem'){
     limparFila();
     _aplicarCamposPayload(window._conflitoRemoto);
+    _capturarBaselineDados(window._conflitoRemoto);
     setSyncStatus('ok'); showToast('☁️ Dados da nuvem mantidos');
   } else {
+    // Baseline = window._conflitoRemoto (a verdade remota já confirmada no
+    // conflito), não window._conflitoFila — mesmo motivo do bloco acima.
     _aplicarCamposPayload(window._conflitoFila);
+    _capturarBaselineDados(window._conflitoRemoto);
     limparFila();
     try{await saveToGitHub(montarPayload());setSyncStatus('ok');showToast('✅ Suas alterações offline foram salvas');}
     catch(e){setFila(montarPayload());setSyncStatus('queued');showToast('Alterações guardadas neste dispositivo — tentaremos novamente',true);}
@@ -2264,6 +2478,7 @@ async function initData(){
         await resolverFilaPendente(fila,data,ghSha,_shaAntesUltimoLoad);
       } else {
         _aplicarCamposPayload(data);
+        _capturarBaselineDados(data);
         try{localStorage.setItem(PREFIX+'_bkp',JSON.stringify(montarPayload()));}catch(e){}
         setSyncStatus('ok');
       }
