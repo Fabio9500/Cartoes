@@ -1490,7 +1490,12 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // compra feita direto no Cartões (fora do fluxo novo) volta a ser parcela
 // órfã normal. Pagamento de fatura (registrarDebitoTesouraria) deixou de
 // gravar categoria própria — vira baixa de dívida, não despesa nova.
-const VERSAO = 'v5.49';
+// v5.50 (18/08/2026, a pedido do Fabio — revisão geral tela×impressão e padrão de
+// mouse): impressão da fatura única (🖨) agora mostra o badge "↩ Estorno" igual à
+// tela (antes sumia só na impressão). Padrão de mouse único/duplo/direito (v5.38)
+// estendido pros cards de cartão do Dashboard, lista "Próximas Faturas" e cards de
+// Limites, que tinham ficado de fora do escopo original.
+const VERSAO = 'v5.50';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2825,7 +2830,7 @@ function renderDashboard(){
     <div class="card-chip" style="cursor:pointer" draggable="true"
       ondragstart="cardDragStart(event,'${k}')" ondragend="cardDragEnd(event)"
       ondragover="cardDragOver(event)" ondragleave="cardDragLeave(event)" ondrop="event.stopPropagation();cardDrop(event,'${k}')"
-      onclick="verFaturaAtualCard('${k}','${proxVenc}')" title="Ver fatura atual">
+      onclick="verFaturaAtualCard('${k}','${proxVenc}')" ondblclick="abrirCad('cart','${k}')" oncontextmenu="return abrirMenuCad(event,'cart','${k}')" title="Clique: ver fatura atual — Duplo clique: editar cartão — Clique direito: mais opções">
       <div class="chip-toolbar no-print" onclick="event.stopPropagation()">
         <button onclick="moverCartaoDash('${k}',-1)" title="Mover pra posição anterior" ${idx===0?'disabled style="opacity:.3;cursor:default;"':''}>◀</button>
         <span class="chip-drag-handle" title="Arraste pra reordenar">⠿</span>
@@ -2867,7 +2872,7 @@ function renderDashboard(){
       :dias===1?`<span style="color:var(--warn)">Amanhã</span>`
       :`<span style="color:${corT}">Em ${dias} dias</span>`;
     lista.innerHTML+=`
-    <div class="fatura-row ${cls}" onclick="abrirFaturaDetalhe('${g.cartao}','${g.venc}')" title="Ver detalhes da fatura">
+    <div class="fatura-row ${cls}" onclick="abrirFaturaDetalhe('${g.cartao}','${g.venc}')" ondblclick="imprimirFaturaUnica('${g.cartao}','${g.venc}')" oncontextmenu="return abrirMenuFaturaProxima(event,'${g.cartao}','${g.venc}')" title="Clique: ver fatura — Duplo clique: imprimir — Clique direito: mais opções">
       <div class="dia-circle" style="background:${corC}">
         <div class="d" style="color:${corT}">${String(dv.getDate()).padStart(2,'0')}</div>
         <div class="m" style="color:${corT}">${dv.toLocaleDateString('pt-BR',{month:'short'}).replace('.','')}</div>
@@ -4201,7 +4206,7 @@ function renderLimites(){
   const usadoB=usoReal['8139']+usoReal['7672']+usoReal['4290'],totalB=limites['8139']?.total||0;
   const pctB=totalB>0?Math.min(100,(usadoB/totalB)*100):0,corB=corLimite(pctB);
   grid.innerHTML+=`
-  <div class="card-chip" style="border:2px solid #ffc107;">
+  <div class="card-chip" style="border:2px solid #ffc107;cursor:pointer" ondblclick="editarLimiteCartao('bradesco',${totalB})" title="Duplo clique: editar este limite">
     <div class="chip-top"><span class="bank-label bradesco">Bradesco</span><span style="font-size:.62rem;background:#fff3cd;color:#856404;padding:2px 6px;border-radius:4px;font-weight:700;">UNIFICADO</span></div>
     <div class="chip-name">BRA 01 + 10 + 20</div>
     <div style="font-size:.7rem;color:var(--muted);margin-bottom:8px">Limite: ${fmt(totalB)} (3 cartões)</div>
@@ -4213,7 +4218,7 @@ function renderLimites(){
     const c=CARTOES[k],l=limites[k]||{total:0},usado=usoReal[k]||0,total=l.total||0;
     const pct=total>0?Math.min(100,(usado/total)*100):0,cor=corLimite(pct);
     grid.innerHTML+=`
-    <div class="card-chip">
+    <div class="card-chip" style="cursor:pointer" ondblclick="editarLimiteCartao('${k}',${total})" title="Duplo clique: editar este limite">
       <div class="chip-top"><span class="bank-label ${c.tag}">${c.banco}</span><span class="venc-info">Dia ${c.venc}</span></div>
       <div class="chip-name">${c.nome}</div>
       <div style="font-size:.7rem;color:var(--muted);margin-bottom:8px">Limite: ${fmt(total)}</div>
@@ -4222,6 +4227,15 @@ function renderLimites(){
       <div style="text-align:center;font-size:.78rem;font-weight:700;color:${cor};margin-top:8px">${pct.toFixed(1)}%</div>
     </div>`;
   });
+}
+// Duplo clique num card de Limites (18/08/2026, a pedido do Fabio — estende o padrão
+// de mouse da v5.38 pra esta tela). Não há modal por cartão: os cards só informam,
+// a edição é sempre pelo formulário único "Editar Limite" abaixo da grade — então
+// aqui só pré-seleciona o cartão certo nesse formulário e leva o foco pro valor.
+function editarLimiteCartao(k, totalAtual){
+  const sel=document.getElementById('lim-cartao'), val=document.getElementById('lim-valor');
+  if(sel) sel.value=k;
+  if(val){ val.value=totalAtual||''; val.scrollIntoView({behavior:'smooth',block:'center'}); val.focus(); }
 }
 function salvarLimite(){
   const sel=document.getElementById('lim-cartao').value,val=parseFloat(document.getElementById('lim-valor').value);
@@ -5400,7 +5414,7 @@ function imprimirFaturaUnica(cartao, venc){
   if(!w)return;
   const linhas=itens.map(x=>`<tr>
     <td>${x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'—'}</td>
-    <td><strong>${esc(x.desc)}</strong></td>
+    <td><strong>${esc(x.desc)}</strong>${x.tipo==='estorno'?` <span style="display:inline-block;font-size:9px;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;">↩ Estorno</span>`:''}</td>
     <td style="color:#8a8070;font-size:10px;">${x.memo?esc(x.memo):'—'}</td>
     <td>${x.categoria?`<span style="display:inline-block;padding:1px 6px;border-radius:8px;background:#f0ede8;font-size:9px;font-weight:700;">${esc(x.categoria)}</span>`:'—'}</td>
     <td style="text-align:center;">${x.nParcelas>1?x.parcela+'/'+x.nParcelas:'à vista'}</td>
@@ -6275,6 +6289,29 @@ function fecharMenuCad(){
   if(m)m.style.display='none';
 }
 document.addEventListener('click', fecharMenuCad);
+// Clique direito nas listas "Próximas Faturas" (Dashboard) — estende o padrão de
+// mouse único/duplo/direito da v5.38, que cobria Lançamentos/Faturas/Compras
+// Filtradas/Cadastros mas não essa lista (18/08/2026, a pedido do Fabio).
+function abrirMenuFaturaProxima(ev,cartao,venc){
+  ev.preventDefault();ev.stopPropagation();
+  const menu=document.getElementById('ctx-menu-cad');
+  const acoes=[
+    {label:'👉 Ver fatura', fn:()=>abrirFaturaDetalhe(cartao,venc)},
+    {label:'🖨 Imprimir', fn:()=>imprimirFaturaUnica(cartao,venc)},
+    {label:'💳 Ir para o cartão', fn:()=>irParaLancamentosDeCartao(cartao)},
+  ];
+  menu.innerHTML=acoes.map((a,i)=>`<div class="ctxmenu-item" data-idx="${i}">${esc(a.label)}</div>`).join('');
+  menu.querySelectorAll('.ctxmenu-item').forEach(el=>{
+    const a=acoes[Number(el.dataset.idx)];
+    el.addEventListener('click',(e)=>{e.stopPropagation();fecharMenuCad();a.fn();});
+  });
+  menu.style.display='block';
+  const x=Math.min(ev.clientX, window.innerWidth-220);
+  const y=Math.min(ev.clientY, window.innerHeight-(acoes.length*34+20));
+  menu.style.left=Math.max(4,x)+'px';
+  menu.style.top=Math.max(4,y)+'px';
+  return false;
+}
 function renderCadCat(){ renderCadMD('cat'); }
 function renderCadCC(){ renderCadMD('cc'); }
 function renderCadDirec(){ renderCadMD('direc'); }
