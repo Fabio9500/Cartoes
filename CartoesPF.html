@@ -480,18 +480,18 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
   <div class="section-head">
     <div class="section-title">Faturas Detalhadas</div>
     <div style="display:flex;gap:8px;align-items:center;" class="no-print">
-      <select id="filtro-fatura-cartao" onchange="renderFaturas()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
+      <select id="filtro-fatura-cartao" onchange="_faturaDetalheIdx=null;renderFaturas()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
         <option value="todos">Todos os cartões</option>
         <option value="8139">BRA 01</option><option value="7672">BRA 10</option>
         <option value="4290">BRA 20</option><option value="5883">American 07</option>
         <option value="santander">Santander</option>
         <option value="picpay">PicPay</option>
       </select>
-      <select id="filtro-fatura-periodo" onchange="toggleFiltroFaturaMes()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
+      <select id="filtro-fatura-periodo" onchange="_faturaDetalheIdx=null;toggleFiltroFaturaMes()" style="padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
         <option value="todas">Todas</option><option value="apagar">A Pagar</option><option value="pagas">Pagas</option>
         <option value="mes">Mês específico</option>
       </select>
-      <input type="month" id="filtro-fatura-mes" onchange="renderFaturas()" style="display:none;padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
+      <input type="month" id="filtro-fatura-mes" onchange="_faturaDetalheIdx=null;renderFaturas()" style="display:none;padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-family:Outfit,sans-serif;font-size:.78rem;">
       <button class="btn btn-outline btn-sm" onclick="window.print()">🖨 Imprimir</button>
     </div>
   </div>
@@ -1495,7 +1495,14 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // tela (antes sumia só na impressão). Padrão de mouse único/duplo/direito (v5.38)
 // estendido pros cards de cartão do Dashboard, lista "Próximas Faturas" e cards de
 // Limites, que tinham ficado de fora do escopo original.
-const VERSAO = 'v5.50';
+// v5.51 (18/08/2026, a pedido do Fabio): tela de Faturas Detalhadas deixou de
+// empilhar todas as faturas filtradas numa lista enorme — agora mostra 1 fatura
+// por vez, sempre abrindo por padrão na ATUAL (a mais próxima ainda não vencida),
+// com botões ◀ Anterior / Próxima ▶ e indicador de posição ("X de Y"). Os
+// filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
+// entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
+// direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
+const VERSAO = 'v5.51';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -3368,6 +3375,24 @@ function toggleFiltroFaturaMes(){
   }
   renderFaturas();
 }
+// Índice da fatura em exibição na tela de Faturas Detalhadas — null significa
+// "ainda não posicionado", e o render escolhe a fatura ATUAL (a primeira ainda
+// não vencida; se todas já venceram, a mais recente). Fica de fora dos filtros
+// (fC/fP/fMes) porque não é um critério de busca, é só a posição da navegação.
+let _faturaDetalheIdx = null;
+// Fatura específica a abrir no próximo render (usado por abrirFaturaDetalhe, chamada
+// pelo clique em "Próximas Faturas" do Dashboard) — tem prioridade sobre a fatura
+// ATUAL calculada por padrão, senão o clique levaria pra fatura errada.
+let _faturaDetalheAlvo = null;
+// Mostra sempre 1 fatura por vez (18/08/2026, a pedido do Fabio — antes
+// ficavam todas empilhadas numa tela enorme). Os mesmos filtros de sempre
+// (cartão/período/mês) continuam decidindo QUAIS faturas entram na lista;
+// só a apresentação virou "anterior ◀ atual ▶ próxima" com navegação, em vez
+// de mostrar a lista inteira de uma vez.
+function navegarFaturaDetalhe(delta){
+  _faturaDetalheIdx = (_faturaDetalheIdx||0) + delta;
+  renderFaturas();
+}
 function renderFaturas(){
   const container=document.getElementById('faturas-detalhe-container');
   const fC=document.getElementById('filtro-fatura-cartao').value,fP=document.getElementById('filtro-fatura-periodo').value;
@@ -3387,47 +3412,62 @@ function renderFaturas(){
   });
   const sorted=Object.values(grupos).sort((a,b)=>a.venc.localeCompare(b.venc));
   if(!sorted.length){container.innerHTML='<div class="empty-state"><div class="icon">📋</div><div>Nenhuma fatura no período</div></div>';return;}
-  sorted.forEach(g=>{
-    const dv=new Date(g.venc+'T12:00:00'),dias=diasAte(g.venc),card=CARTOES[g.cartao];
-    const key=g.cartao+'|'+g.venc,pag=pagamentos[key],pago=!!pag;
-    const corB=pago?'var(--success)':g.passada?'#ccc':dias<=3?'var(--danger)':dias<=7?'var(--warn)':'var(--accent2)';
-    const diasStr=pago?`<span class="pago-badge">✓ Pago em ${new Date(pag.data+'T12:00:00').toLocaleDateString('pt-BR')} — ${fmt(pag.valor)}</span>`
-      :g.passada?`<span style="color:#aaa;font-size:.72rem">Vencida</span>`
-      :dias===0?`<span style="color:var(--warn);font-size:.72rem">Vence hoje</span>`
-      :`<span style="color:${corB};font-size:.72rem">Vence em ${dias} dias</span>`;
-    const btnP=pago?`<button class="btn btn-outline btn-sm no-print" onclick="desfazerPagamento('${key}')" style="color:var(--muted);font-size:.72rem;">↩ Desfazer</button>`
-      :`<button class="btn btn-pagar btn-sm no-print" onclick="abrirPagamento('${g.cartao}','${g.venc}',${g.total})">💰 Pagar</button>`;
-    container.innerHTML+=`
-    <div class="fatura-detalhe${pago?' paga':''}" style="border-top:4px solid ${corB};${g.passada&&!pago?'opacity:.75':''}">
-      <div class="fatura-detalhe-hd">
-        <div class="fd-left"><span class="tag ${card.tag}">${card.nome}</span>
-          <span style="font-weight:600;font-size:.9rem">${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</span>${diasStr}</div>
-        <div style="display:flex;align-items:center;gap:10px;"><div class="fd-total">${fmt(g.total)}</div>${btnP}</div>
+  if(_faturaDetalheAlvo){
+    const idxAlvo=sorted.findIndex(g=>g.cartao===_faturaDetalheAlvo.cartao&&g.venc===_faturaDetalheAlvo.venc);
+    if(idxAlvo!==-1) _faturaDetalheIdx=idxAlvo;
+    _faturaDetalheAlvo=null;
+  } else if(_faturaDetalheIdx===null){
+    const idxAtual=sorted.findIndex(g=>!g.passada);
+    _faturaDetalheIdx = idxAtual===-1 ? sorted.length-1 : idxAtual;
+  }
+  _faturaDetalheIdx = Math.max(0, Math.min(sorted.length-1, _faturaDetalheIdx));
+  const g=sorted[_faturaDetalheIdx];
+  const anterior=sorted[_faturaDetalheIdx-1], proxima=sorted[_faturaDetalheIdx+1];
+  const nomeResumo=x=>x?`${CARTOES[x.cartao].nome} — ${new Date(x.venc+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}`:'';
+  const navHtml=`<div class="no-print" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+    <button class="btn btn-outline btn-sm" onclick="navegarFaturaDetalhe(-1)" ${anterior?'':'disabled style="opacity:.35;cursor:default;"'} title="${anterior?'Anterior: '+nomeResumo(anterior):'Não há fatura anterior'}">◀ Anterior</button>
+    <span style="font-size:.72rem;color:var(--muted)">${_faturaDetalheIdx+1} de ${sorted.length}</span>
+    <button class="btn btn-outline btn-sm" onclick="navegarFaturaDetalhe(1)" ${proxima?'':'disabled style="opacity:.35;cursor:default;"'} title="${proxima?'Próxima: '+nomeResumo(proxima):'Não há próxima fatura'}">Próxima ▶</button>
+  </div>`;
+  const dv=new Date(g.venc+'T12:00:00'),dias=diasAte(g.venc),card=CARTOES[g.cartao];
+  const key=g.cartao+'|'+g.venc,pag=pagamentos[key],pago=!!pag;
+  const corB=pago?'var(--success)':g.passada?'#ccc':dias<=3?'var(--danger)':dias<=7?'var(--warn)':'var(--accent2)';
+  const diasStr=pago?`<span class="pago-badge">✓ Pago em ${new Date(pag.data+'T12:00:00').toLocaleDateString('pt-BR')} — ${fmt(pag.valor)}</span>`
+    :g.passada?`<span style="color:#aaa;font-size:.72rem">Vencida</span>`
+    :dias===0?`<span style="color:var(--warn);font-size:.72rem">Vence hoje</span>`
+    :`<span style="color:${corB};font-size:.72rem">Vence em ${dias} dias</span>`;
+  const btnP=pago?`<button class="btn btn-outline btn-sm no-print" onclick="desfazerPagamento('${key}')" style="color:var(--muted);font-size:.72rem;">↩ Desfazer</button>`
+    :`<button class="btn btn-pagar btn-sm no-print" onclick="abrirPagamento('${g.cartao}','${g.venc}',${g.total})">💰 Pagar</button>`;
+  container.innerHTML=navHtml+`
+  <div class="fatura-detalhe${pago?' paga':''}" style="border-top:4px solid ${corB};${g.passada&&!pago?'opacity:.75':''}">
+    <div class="fatura-detalhe-hd">
+      <div class="fd-left"><span class="tag ${card.tag}">${card.nome}</span>
+        <span style="font-weight:600;font-size:.9rem">${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</span>${diasStr}</div>
+      <div style="display:flex;align-items:center;gap:10px;"><div class="fd-total">${fmt(g.total)}</div>${btnP}</div>
+    </div>
+    <div>
+      <div class="fd-row fd-row-cab" style="background:var(--surface2);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">
+        <div style="min-width:55px;max-width:55px">Dt.</div><div class="fd-desc">Fornecedor</div><div style="flex:1;min-width:110px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Memorando</div><div style="min-width:90px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Categoria</div><div class="fd-parc">Parcela</div><div class="fd-val">Valor</div>
+        <div style="min-width:60px" class="no-print"></div>
       </div>
-      <div>
-        <div class="fd-row fd-row-cab" style="background:var(--surface2);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">
-          <div style="min-width:55px;max-width:55px">Dt.</div><div class="fd-desc">Fornecedor</div><div style="flex:1;min-width:110px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Memorando</div><div style="min-width:90px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Categoria</div><div class="fd-parc">Parcela</div><div class="fd-val">Valor</div>
-          <div style="min-width:60px" class="no-print"></div>
+      ${g.itens.sort((a,b)=>a.desc.localeCompare(b.desc)).map(i=>`
+      <div class="fd-row" style="cursor:pointer" onclick="cliqueLinhaLancamento('${i.uid}')" ondblclick="cancelarCliqueComEspera('${i.uid}'); editarParcela('${i.uid}')" oncontextmenu="return abrirMenuCompra(event,'${i.uid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
+        <div style="min-width:55px;max-width:55px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${i.dataCompra?new Date(i.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</div>
+        <div class="fd-desc">${i.desc}${i.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}</div>
+        <div style="flex:1;min-width:110px;font-size:.75rem;color:var(--muted);padding:0 4px;">${i.memo||'<span style="opacity:.3">—</span>'}</div>
+        <div style="min-width:90px;">${nomeCatCompra(i)?`<span style="display:inline-block;padding:1px 6px;border-radius:10px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--muted);">${esc(nomeCatCompra(i))}</span>`:''}</div>
+        <div class="fd-parc"><span class="parc-tag${g.passada?' passada':''}">${i.parcela}/${i.nParcelas}</span></div>
+        <div class="fd-val" style="${i.valorParcela<0?'color:#0a7d33':''}">${fmt(i.valorParcela)}</div>
+        <div style="min-width:60px;display:flex;gap:3px;" class="no-print" onclick="event.stopPropagation()">
+          <button class="icon-btn del" onclick="deletarParcela('${i.uid}')">🗑</button>
         </div>
-        ${g.itens.sort((a,b)=>a.desc.localeCompare(b.desc)).map(i=>`
-        <div class="fd-row" style="cursor:pointer" onclick="cliqueLinhaLancamento('${i.uid}')" ondblclick="cancelarCliqueComEspera('${i.uid}'); editarParcela('${i.uid}')" oncontextmenu="return abrirMenuCompra(event,'${i.uid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
-          <div style="min-width:55px;max-width:55px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${i.dataCompra?new Date(i.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</div>
-          <div class="fd-desc">${i.desc}${i.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}</div>
-          <div style="flex:1;min-width:110px;font-size:.75rem;color:var(--muted);padding:0 4px;">${i.memo||'<span style="opacity:.3">—</span>'}</div>
-          <div style="min-width:90px;">${nomeCatCompra(i)?`<span style="display:inline-block;padding:1px 6px;border-radius:10px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--muted);">${esc(nomeCatCompra(i))}</span>`:''}</div>
-          <div class="fd-parc"><span class="parc-tag${g.passada?' passada':''}">${i.parcela}/${i.nParcelas}</span></div>
-          <div class="fd-val" style="${i.valorParcela<0?'color:#0a7d33':''}">${fmt(i.valorParcela)}</div>
-          <div style="min-width:60px;display:flex;gap:3px;" class="no-print" onclick="event.stopPropagation()">
-            <button class="icon-btn del" onclick="deletarParcela('${i.uid}')">🗑</button>
-          </div>
-        </div>`).join('')}
-        <div class="fd-row" style="background:var(--surface2);font-weight:700;border-radius:0 0 var(--radius) var(--radius);">
-          <div class="fd-desc" style="color:var(--muted)">Total da fatura</div><div style="flex:1;min-width:110px;"></div><div style="min-width:90px;"></div><div class="fd-parc"></div>
-          <div class="fd-val" style="font-size:.95rem">${fmt(g.total)}</div><div style="min-width:28px" class="no-print"></div>
-        </div>
+      </div>`).join('')}
+      <div class="fd-row" style="background:var(--surface2);font-weight:700;border-radius:0 0 var(--radius) var(--radius);">
+        <div class="fd-desc" style="color:var(--muted)">Total da fatura</div><div style="flex:1;min-width:110px;"></div><div style="min-width:90px;"></div><div class="fd-parc"></div>
+        <div class="fd-val" style="font-size:.95rem">${fmt(g.total)}</div><div style="min-width:28px" class="no-print"></div>
       </div>
-    </div>`;
-  });
+    </div>
+  </div>`;
 }
 
 // ── PAGAMENTOS ──────────────────────────────────────────────
@@ -5386,22 +5426,15 @@ function abrirFaturaDetalhe(cartao, venc){
   if(selCartao) selCartao.value = cartao;
   if(selPeriodo) selPeriodo.value = 'todas';
   if(mesEl) mesEl.style.display = 'none';
+  // Desde que a tela passou a mostrar 1 fatura por vez (18/08/2026), aponta
+  // direto pra fatura clicada em vez de tentar achá-la rolando a lista inteira
+  // (que não existe mais).
+  _faturaDetalheAlvo = {cartao, venc};
   renderFaturas();
-  // Scroll to the specific fatura after render
   setTimeout(()=>{
-    const key = cartao+'|'+venc;
-    const faturas = document.querySelectorAll('.fatura-detalhe');
-    for(const f of faturas){
-      const btn = f.querySelector('button[onclick*="'+venc+'"]') || 
-                  f.querySelector('[onclick*="'+venc+'"]');
-      if(btn || f.innerHTML.includes(new Date(venc+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}))){
-        f.scrollIntoView({behavior:'smooth', block:'start'});
-        f.style.outline = '2px solid var(--accent)';
-        setTimeout(()=>f.style.outline='', 2000);
-        break;
-      }
-    }
-  }, 300);
+    const f = document.querySelector('.fatura-detalhe');
+    if(f){ f.scrollIntoView({behavior:'smooth', block:'start'}); f.style.outline='2px solid var(--accent)'; setTimeout(()=>f.style.outline='', 2000); }
+  }, 100);
 }
 
 
