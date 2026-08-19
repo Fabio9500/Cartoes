@@ -1508,7 +1508,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
 // entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
 // direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
-const VERSAO = 'v5.52';
+const VERSAO = 'v5.53';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -3562,11 +3562,28 @@ function carregarCadastrosUnicosOffline(){
     aplicarCadastrosUnicosLocal();
   }catch(e){}
 }
+// CORRIGIDO 19/08/2026 (achado pelo Fabio): itens "ambos" (ex: Bordero
+// Cheque/Boleto) ficam gravados fisicamente nos dois arquivos (pf e pj)
+// com o MESMO id — a junção antiga só concatenava as duas listas sem
+// checar isso, então cada item "ambos" aparecia duplicado no dropdown
+// (2x o mesmo borderô). Mesma correção já usada no TesourariaSys
+// (função juntarSemDuplicarId) — só faltava aqui no Cartões.
+function juntarSemDuplicarId(listaPf, listaPj){
+  const vistos = new Map();
+  const resultado = [];
+  [...listaPf, ...listaPj].forEach(item=>{
+    const anterior = vistos.get(item.id);
+    if(anterior && anterior.nome===item.nome && anterior.parentId===item.parentId) return;
+    vistos.set(item.id, item);
+    resultado.push(item);
+  });
+  return resultado;
+}
 function aplicarCadastrosUnicosLocal(){
   const marcar = (lista, padrao) => (lista||[]).map(i => ({...i, tipoPFPJ: i.tipoPFPJ || padrao}));
-  categorias      = [...marcar(CADASTRO_PF.categorias,'PF'),      ...marcar(CADASTRO_PJ.categorias,'PJ')];
-  centrosCusto    = [...marcar(CADASTRO_PF.centrosCusto,'PF'),    ...marcar(CADASTRO_PJ.centrosCusto,'PJ')];
-  direcionamentos = [...marcar(CADASTRO_PF.direcionamentos,'PF'), ...marcar(CADASTRO_PJ.direcionamentos,'PJ')];
+  categorias      = juntarSemDuplicarId(marcar(CADASTRO_PF.categorias,'PF'),      marcar(CADASTRO_PJ.categorias,'PJ'));
+  centrosCusto    = juntarSemDuplicarId(marcar(CADASTRO_PF.centrosCusto,'PF'),    marcar(CADASTRO_PJ.centrosCusto,'PJ'));
+  direcionamentos = juntarSemDuplicarId(marcar(CADASTRO_PF.direcionamentos,'PF'), marcar(CADASTRO_PJ.direcionamentos,'PJ'));
 }
 // Só mostra o que vale pra PF (mais os itens 'ambos', de sistema).
 function itemValidoPF(item){ return !item.tipoPFPJ || item.tipoPFPJ==='PF' || item.tipoPFPJ==='ambos'; }
