@@ -1168,6 +1168,13 @@ body.dark .iphone-box{background:linear-gradient(135deg,#0a0806,#1a1410);}
     <button class="btn btn-outline" onclick="processarFilaTesouraria(false)" style="margin-left:6px">🔄 Tentar sincronizar pendentes agora</button>
   </div>
   <div class="backup-section">
+    <h3>🔗 Integração com ChequeSys</h3>
+    <p>Ao direcionar uma compra pra um "Bordero Cheque", "Bordero Boleto" ou "Bordero Empréstimo", o valor total da compra é registrado automaticamente como pagamento naquele borderô lá no ChequeSys — sem precisar lançar de novo manualmente. Precisa de um token do GitHub com permissão de escrita no repositório <code style="background:var(--surface2);padding:1px 5px;border-radius:4px">Fabio9500/chequesys</code>.</p>
+    <div id="chq-token-status" style="font-size:.78rem;color:var(--muted);margin-bottom:10px;"></div>
+    <button class="btn btn-outline" onclick="configurarTokenChequeSys();atualizarStatusTokenChequeSys()">⚙ Configurar Token</button>
+    <button class="btn btn-outline" onclick="processarFilaChequeSys(false)" style="margin-left:6px">🔄 Tentar sincronizar pendentes agora</button>
+  </div>
+  <div class="backup-section">
     <h3>🔔 Notificações</h3>
     <p>Receba alertas sobre faturas próximas do vencimento.</p>
     <button class="btn btn-outline" onclick="pedirPermissaoNotificacao()">Ativar Notificações</button>
@@ -1513,7 +1520,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
 // entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
 // direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
-const VERSAO = 'v5.53';
+const VERSAO = 'v5.54';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2629,6 +2636,7 @@ window.addEventListener('beforeunload', ev => {
 window.addEventListener('online',async()=>{
   atualizarIndicadorConexao();
   processarFilaTesouraria(true);
+  processarFilaChequeSys(true);
   if(getFilaCadastro().length) resolverFilaCadastroPendente();
   if(_sincronizando)return;
   const fila=getFila();
@@ -2688,6 +2696,7 @@ async function bootAposAuth(){
   if(!ghToken){document.getElementById('loading-screen').style.display='none';document.getElementById('setup-screen').style.display='flex';return;}
   await initData();
   processarFilaTesouraria(true);
+  processarFilaChequeSys(true);
 }
 
 
@@ -2767,7 +2776,7 @@ function showPage(id){
   if(id==='limites')renderLimites();
   if(id==='relatorios')renderRelatorios();
   if(id==='cadastros')renderCadastros();
-  if(id==='backup')atualizarStatusTokenTesouraria();
+  if(id==='backup'){atualizarStatusTokenTesouraria();atualizarStatusTokenChequeSys();}
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function irInicio(){showPage('dashboard');}
@@ -3472,6 +3481,116 @@ function getTokenTesouraria(){ return localStorage.getItem('cc_pj_tsr_token') ||
 function setTokenTesouraria(t){ localStorage.setItem('cc_pj_tsr_token', t); }
 
 // ══════════════════════════════════════════
+// INTEGRAÇÃO COM CHEQUESYS — pagamento de borderô (19/08/2026, a pedido do
+// Fabio): quando uma compra é direcionada a um "Bordero Cheque"/"Bordero
+// Boleto"/"Bordero Empréstimo" (cadastro compartilhado, já sincronizado
+// automaticamente pelo ChequeSys), o valor da compra vira um pagamento
+// registrado de verdade no borderô/empréstimo correspondente lá — sem
+// precisar fazer nada manual. Mesmo padrão de token+fila+retry já usado
+// pra integração com o TesourariaSys logo abaixo.
+// ══════════════════════════════════════════
+function getTokenChequeSys(){ return localStorage.getItem('cc_pj_chq_token') || ''; }
+function setTokenChequeSys(t){ localStorage.setItem('cc_pj_chq_token', t); }
+function configurarTokenChequeSys(){
+  const atual = getTokenChequeSys();
+  const t = prompt('Token do GitHub para o ChequeSys (com permissão de escrita):', atual);
+  if(t===null) return;
+  setTokenChequeSys(t.trim());
+  atualizarStatusTokenChequeSys();
+}
+function atualizarStatusTokenChequeSys(){
+  const el = document.getElementById('chq-token-status');
+  if(!el) return;
+  const base = getTokenChequeSys() ? '✅ Token configurado.' : '⚠ Token não configurado ainda.';
+  const pend = getFilaChequeSys().length;
+  el.textContent = base + (pend ? ` ⏳ ${pend} pagamento(s) pendente(s) de sincronizar.` : '');
+}
+function getFilaChequeSys(){ try{ return JSON.parse(localStorage.getItem(PREFIX+'_fila_chq')||'[]'); }catch(e){ return []; } }
+function setFilaChequeSys(lista){ try{ localStorage.setItem(PREFIX+'_fila_chq', JSON.stringify(lista)); }catch(e){} }
+function enfileirarPagamentoChequeSys(item){
+  const fila = getFilaChequeSys().filter(x=>x.compraId!==item.compraId); // substitui pendência antiga da mesma compra, se houver
+  fila.push({...item, id:uid(), criadoEm:new Date().toISOString()});
+  setFilaChequeSys(fila);
+  atualizarStatusTokenChequeSys();
+}
+let _processandoFilaChequeSys = false;
+async function processarFilaChequeSys(silencioso){
+  if(_processandoFilaChequeSys) return;
+  const fila = getFilaChequeSys();
+  if(!fila.length){ if(!silencioso) showToast('Nenhum pagamento pendente de sincronizar com o ChequeSys.'); return; }
+  if(!isOnline()){ if(!silencioso) showToast('Sem conexão agora — vai tentar de novo assim que voltar.', true); return; }
+  _processandoFilaChequeSys = true;
+  const restantes = [];
+  let sucesso = 0;
+  for(const item of fila){
+    const res = await registrarPagamentoBorderoChequeSys(item.direcionamentoId, item.valor, item.data, item.compraId, item.descricao, true);
+    if(res.ok) sucesso++; else restantes.push(item);
+  }
+  setFilaChequeSys(restantes);
+  atualizarStatusTokenChequeSys();
+  _processandoFilaChequeSys = false;
+  if(sucesso) showToast(`✅ ${sucesso} pagamento(s) pendente(s) sincronizado(s) com o ChequeSys!`);
+  else if(!silencioso) showToast('⚠ Ainda não deu para sincronizar os pendentes com o ChequeSys — vai tentar de novo mais tarde.', true);
+}
+// Identifica se um Direcionamento é filho de "Bordero Cheque"/"Bordero
+// Boleto"/"Bordero Empréstimo" — devolve {tipo, numero} ou null se não for
+// (ex: um Direcionamento comum, tipo "Obra X", que não tem nada a ver com
+// o ChequeSys).
+function infoBorderoDoDirecionamento(direcionamentoId){
+  if(!direcionamentoId) return null;
+  const item = direcionamentoById(direcionamentoId);
+  if(!item || !item.parentId) return null;
+  const pai = direcionamentoById(item.parentId);
+  if(!pai) return null;
+  const mapa = {'Bordero Cheque':'cheque', 'Bordero Boleto':'boleto', 'Bordero Empréstimo':'emprestimo'};
+  const tipo = mapa[pai.nome];
+  if(!tipo) return null;
+  return {tipo, numero: item.nome};
+}
+// Grava (ou atualiza, se já existir um pagamento desta mesma compra) o
+// valor da compra como pagamento no borderô/empréstimo correspondente lá
+// no dados.json do ChequeSys. _viaFila=true quando chamado de dentro da
+// fila de retry (evita reenfileirar em loop se falhar de novo).
+async function registrarPagamentoBorderoChequeSys(direcionamentoId, valor, data, compraId, descricao, _viaFila){
+  const info = infoBorderoDoDirecionamento(direcionamentoId);
+  if(!info) return {ok:true}; // não é um Direcionamento de borderô — nada a sincronizar, não é erro
+  const token = getTokenChequeSys();
+  if(!token){
+    if(!_viaFila) enfileirarPagamentoChequeSys({direcionamentoId, valor, data, compraId, descricao});
+    return {ok:false, erro:'sem token'};
+  }
+  try{
+    const url = 'https://api.github.com/repos/Fabio9500/chequesys/contents/dados.json';
+    const r = await fetch(url+'?t='+Date.now(), { headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' }, cache:'no-store' });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    const dados = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+    let colecao;
+    if(info.tipo==='cheque') colecao = dados.borderos||[];
+    else if(info.tipo==='boleto') colecao = dados.borderosBoleto||[];
+    else colecao = dados.emprestimosCheque||[];
+    const alvo = colecao.find(b=>b.numero===info.numero);
+    if(!alvo){
+      showToast(`⚠ ${info.numero} não encontrado no ChequeSys — pagamento não sincronizado.`, true);
+      return {ok:false, erro:'borderô não encontrado'};
+    }
+    alvo.pagamentos = (alvo.pagamentos||[]).filter(p=>p.origemCompraId!==compraId);
+    alvo.pagamentos.push({ id:uid(), valor:Number(valor), data, contaNome:'Cartão de Crédito', auto:true, origemCompraId:compraId, obs:descricao||'' });
+    const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(dados))));
+    const rw = await fetch(url, {
+      method:'PUT',
+      headers:{ 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body: JSON.stringify({ message:`Pagamento via Cartão — ${info.numero} (R$ ${fmt(valor)}) — automático via CartõesPJ`, content:conteudo, sha:j.sha })
+    });
+    if(!rw.ok) throw new Error('HTTP '+rw.status);
+    if(!_viaFila) showToast(`✅ R$ ${fmt(valor)} registrado no ${info.numero} (ChequeSys)`);
+    return {ok:true};
+  }catch(e){
+    console.error('Falha ao sincronizar pagamento com o ChequeSys:', e);
+    if(!_viaFila) enfileirarPagamentoChequeSys({direcionamentoId, valor, data, compraId, descricao});
+    return {ok:false, erro:e.message};
+  }
+}
 // CADASTRO ÚNICO (Categoria / Centro de Custo / Direcionamento)
 // Vive em cadastros-pf.json e cadastros-pj.json no repo do
 // TesourariaSys (Fabio9500/tesourariasys) — é a mesma fonte usada
@@ -5065,6 +5184,10 @@ function salvarCompra(){
     compras.push({uid:uid(),compraId,desc,dataCompra:data,cartao,nParcelas:n,parcela:i,valorParcela:vVal,venc:vVenc,tipo,...(categoriaId?{categoriaId}:{}),...(centroCustoId?{centroCustoId}:{}),...(memo?{memo}:{}),...(direcionamentoId?{direcionamentoId}:{})});}
   if(!limites[cartao])limites[cartao]={total:0};
   salvar();fecharModal('modal-compra');renderDashboard();showToast(tipo==='estorno'?'Estorno/crédito lançado ✓':'Compra lançada ✓');
+  if(direcionamentoId){
+    const valorTotalCompra = compras.filter(c=>c.compraId===compraId).reduce((s,c)=>s+Math.abs(c.valorParcela),0);
+    registrarPagamentoBorderoChequeSys(direcionamentoId, valorTotalCompra, data, compraId, `${desc}${memo?' — '+memo:''}`);
+  }
 }
 
 // ── BACKUP ──────────────────────────────────────────────────
