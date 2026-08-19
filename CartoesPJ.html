@@ -1520,7 +1520,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
 // entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
 // direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
-const VERSAO = 'v5.54';
+const VERSAO = 'v5.55';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -3306,6 +3306,13 @@ function salvarEdicao(){
     compras=compras.filter(x=>x.compraId!==compraId).concat(novosRegistros);
     salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
     showToast(`Reparcelado em ${nNovo}x ✓`);
+    // v5.55 — extensão da automação Cartões→ChequeSys (18/08/2026, a pedido do
+    // Fabio): antes só sincronizava na CRIAÇÃO da compra; agora também
+    // re-sincroniza ao editar (reparcelar muda o total das parcelas).
+    if(direcionamentoId){
+      const valorTotalCompra=compras.filter(c=>c.compraId===compraId).reduce((s,c)=>s+Math.abs(c.valorParcela),0);
+      registrarPagamentoBorderoChequeSys(direcionamentoId, valorTotalCompra, dataCompra, compraId, `${desc}${memo?' — '+memo:''}`);
+    }
     return;
   }
 
@@ -3320,6 +3327,13 @@ function salvarEdicao(){
   }else{compras[idx]={...compras[idx],desc,valorParcela:val,venc,dataCompra,cartao:novoCartao,memo,categoriaId,centroCustoId,direcionamentoId,tipo};}
   salvar();fecharModal('modal-edit');renderLancamentos(filtroAtivo);renderDashboard();renderFaturas();
   showToast(trocou?`Cartão alterado para ${CARTOES[novoCartao].nome} ✓`:'Atualizado ✓');
+  // v5.55 — extensão da automação Cartões→ChequeSys (18/08/2026, a pedido do
+  // Fabio): cobre também edição (escopo 'todas' ou parcela única), não só
+  // criação de compra nova.
+  if(direcionamentoId){
+    const valorTotalCompra=compras.filter(c=>c.compraId===compraId).reduce((s,c)=>s+Math.abs(c.valorParcela),0);
+    registrarPagamentoBorderoChequeSys(direcionamentoId, valorTotalCompra, dataCompra, compraId, `${desc}${memo?' — '+memo:''}`);
+  }
 }
 let _cid=null, _acfCb=null;
 function ACF(msg,cb){
