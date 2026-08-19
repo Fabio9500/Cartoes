@@ -144,7 +144,13 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 .modal-ft{padding:12px 20px 20px;display:flex;gap:8px;justify-content:flex-end;flex:0 0 auto;border-top:1px solid var(--border);background:var(--surface);}
 .info-box{background:#fff8e8;border:1px solid #f0d070;border-radius:8px;padding:9px 12px;font-size:.78rem;color:#7a5c00;margin-bottom:12px;line-height:1.5;}
 .parcelas-edit-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:6px;}
-.parcelas-edit-table th{text-align:left;padding:6px 9px;background:var(--surface2);font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+.parcelas-edit-table th{text-align:left;padding:6px 9px;background:var(--surface2);font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);position:static;top:auto;}
+/* CORRIGIDO 19/08/2026 (mesmo bug achado pelo Fabio no CartõesPJ): a regra
+   global "thead th{position:sticky;top:56px}" foi pensada pra tabelas de
+   tela cheia, mas vazava pra dentro do modal de Nova Compra, cujo scroll
+   interno é bem menor — com poucas linhas (à vista) o cabeçalho ficava
+   grudado 56px pra dentro do modal, cobrindo a linha e empurrando o
+   rodapé (Salvar) pra fora da área visível. Anulado aqui pra este caso. */
 .parcelas-edit-table td{padding:5px 7px;border-top:1px solid var(--border);}
 .parcelas-edit-table input{width:100%;padding:4px 7px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;background:var(--surface2);font-family:'Outfit',sans-serif;}
 .parcelas-edit-table input:focus{outline:none;border-color:var(--accent);}
@@ -1502,7 +1508,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
 // entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
 // direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
-const VERSAO = 'v5.51';
+const VERSAO = 'v5.52';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
