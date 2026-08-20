@@ -1520,7 +1520,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
 // entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
 // direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
-const VERSAO = 'v5.55';
+const VERSAO = 'v5.56';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -7537,6 +7537,33 @@ boot();
 
 
 
+
+
+// ===== Enter avança pro próximo campo (20/08/2026, a pedido do Fabio) =====
+// Em qualquer input/select de um formulário/modal, Enter move o foco pro
+// próximo campo visível em vez de ficar "travado" (obrigando usar o mouse).
+// Não interfere em campos que já têm ação própria no Enter (ex: "+ Adicionar"
+// em Pagamentos) — se o handler específico já chamou preventDefault(), este
+// listener global respeita e não faz nada (checa e.defaultPrevented).
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Enter') return;
+  const el = e.target;
+  const tag = (el.tagName||'').toLowerCase();
+  if(tag !== 'input' && tag !== 'select') return;
+  if(el.type === 'button' || el.type === 'submit' || el.type === 'checkbox' || el.type === 'radio' || el.type === 'file') return;
+  if(e.defaultPrevented) return;
+  e.preventDefault();
+  const focusables = Array.prototype.slice.call(document.querySelectorAll('input, select, textarea, button'))
+    .filter(function(f){ return !f.disabled && f.offsetParent !== null && f.tabIndex !== -1; });
+  const idx = focusables.indexOf(el);
+  if(idx > -1 && idx < focusables.length - 1){
+    const prox = focusables[idx+1];
+    prox.focus();
+    if(typeof prox.select === 'function' && (prox.tagName||'').toLowerCase()==='input'){
+      try{ prox.select(); }catch(err){}
+    }
+  }
+});
 
 </script>
 
