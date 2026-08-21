@@ -1520,7 +1520,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
 // entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
 // direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
-const VERSAO = 'v5.56';
+const VERSAO = 'v5.57';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -3407,6 +3407,38 @@ function navegarFaturaDetalhe(delta){
   _faturaDetalheIdx = (_faturaDetalheIdx||0) + delta;
   renderFaturas();
 }
+// Ordenação de colunas da tela de Fatura Detalhada (21/08/2026, a pedido do
+// Fabio — regra permanente de colunas ordenáveis em toda listagem editável).
+// Duplo clique no cabeçalho ordena; clicar de novo alterna asc/desc. Padrão
+// (sem clique ainda) continua igual a antes: por Fornecedor, alfabético.
+let _faturaOrdem = {campo:'desc', dir:'asc'};
+function ordenarFatura(campo){
+  if(_faturaOrdem.campo===campo) _faturaOrdem.dir = _faturaOrdem.dir==='asc'?'desc':'asc';
+  else _faturaOrdem = {campo, dir:'asc'};
+  renderFaturas();
+}
+function _campoOrdemFatura(i, campo){
+  if(campo==='dataCompra') return i.dataCompra||'';
+  if(campo==='desc') return i.desc||'';
+  if(campo==='memo') return i.memo||'';
+  if(campo==='categoria') return nomeCatCompra(i)||'';
+  if(campo==='parcela') return Number(i.parcela)||0;
+  if(campo==='valorParcela') return Number(i.valorParcela)||0;
+  return '';
+}
+function ordenarItensFatura(itens){
+  const {campo, dir} = _faturaOrdem;
+  const mult = dir==='asc'?1:-1;
+  return itens.slice().sort((a,b)=>{
+    const va=_campoOrdemFatura(a,campo), vb=_campoOrdemFatura(b,campo);
+    if(typeof va==='number'||typeof vb==='number') return ((Number(va)||0)-(Number(vb)||0))*mult;
+    return String(va).localeCompare(String(vb),'pt-BR')*mult;
+  });
+}
+function thFatura(campo, label, estiloExtra){
+  const seta = _faturaOrdem.campo===campo ? (_faturaOrdem.dir==='asc'?' ▲':' ▼') : '';
+  return `<div style="${estiloExtra||''};cursor:pointer;user-select:none" ondblclick="ordenarFatura('${campo}')" title="Duplo clique pra ordenar">${label}${seta}</div>`;
+}
 function renderFaturas(){
   const container=document.getElementById('faturas-detalhe-container');
   const fC=document.getElementById('filtro-fatura-cartao').value,fP=document.getElementById('filtro-fatura-periodo').value;
@@ -3461,10 +3493,10 @@ function renderFaturas(){
     </div>
     <div>
       <div class="fd-row fd-row-cab" style="background:var(--surface2);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">
-        <div style="min-width:55px;max-width:55px">Dt.</div><div class="fd-desc">Fornecedor</div><div style="flex:1;min-width:110px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Memorando</div><div style="min-width:90px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Categoria</div><div class="fd-parc">Parcela</div><div class="fd-val">Valor</div>
+        ${thFatura('dataCompra','Dt.','min-width:55px;max-width:55px')}${thFatura('desc','Fornecedor','flex:2')}${thFatura('memo','Memorando','flex:1;min-width:110px')}${thFatura('categoria','Categoria','min-width:90px')}${thFatura('parcela','Parcela','min-width:55px;text-align:center')}${thFatura('valorParcela','Valor','min-width:70px;text-align:right')}
         <div style="min-width:60px" class="no-print"></div>
       </div>
-      ${g.itens.sort((a,b)=>a.desc.localeCompare(b.desc)).map(i=>`
+      ${ordenarItensFatura(g.itens).map(i=>`
       <div class="fd-row" style="cursor:pointer" onclick="cliqueLinhaLancamento('${i.uid}')" ondblclick="cancelarCliqueComEspera('${i.uid}'); editarParcela('${i.uid}')" oncontextmenu="return abrirMenuCompra(event,'${i.uid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
         <div style="min-width:55px;max-width:55px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${i.dataCompra?new Date(i.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</div>
         <div class="fd-desc">${i.desc}${i.tipo==='estorno'?` <span style="display:inline-block;font-size:.6rem;font-weight:700;color:#0a7d33;background:#e6f7ec;border:1px solid #b8e6c8;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle">↩ Estorno</span>`:''}</div>
