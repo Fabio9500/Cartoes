@@ -1515,7 +1515,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
 // entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
 // direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
-const VERSAO = 'v5.57';
+const VERSAO = 'v5.58';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -5568,7 +5568,7 @@ function verFaturaAtualCard(cartao, venc){
   document.getElementById('vf-modal-titulo').innerHTML=`<span class="tag ${card.tag}">${card.nome}</span>`;
   document.getElementById('vf-modal-sub').textContent=`Vencimento: ${dv.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})} • ${itens.length} lançamento${itens.length!==1?'s':''}`;
   document.getElementById('vf-modal-body').innerHTML=itens.length?itens.map(x=>`
-    <tr style="border-top:1px solid var(--border);">
+    <tr style="border-top:1px solid var(--border);cursor:pointer" onclick="cliqueLinhaLancamento('${x.uid}')" ondblclick="cancelarCliqueComEspera('${x.uid}'); fecharModal('modal-ver-fatura'); editarParcela('${x.uid}')" oncontextmenu="return abrirMenuCompra(event,'${x.uid}')" title="Clique: ver fornecedor — Duplo clique: editar — Clique direito: mais opções">
       <td style="padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:.75rem;white-space:nowrap;color:var(--muted);">${x.dataCompra?new Date(x.dataCompra+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'-'}</td>
       <td style="padding:7px 12px;font-weight:600;">${esc(x.desc)}</td>
       <td style="padding:7px 12px;text-align:center;font-size:.75rem;color:var(--muted);">${x.nParcelas>1?x.parcela+'/'+x.nParcelas:'à vista'}</td>
