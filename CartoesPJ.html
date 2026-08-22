@@ -1520,7 +1520,7 @@ const AUTH_TIMEOUT   = 30 * 60 * 1000; // 30 min sem uso → pede senha novament
 // filtros de cartão/período/mês continuam os mesmos, só decidindo quais faturas
 // entram na navegação. O clique em "Próximas Faturas" do Dashboard agora aponta
 // direto pra fatura certa (_faturaDetalheAlvo), em vez de rolar a lista antiga.
-const VERSAO = 'v5.58';
+const VERSAO = 'v5.59';
 document.addEventListener('DOMContentLoaded', ()=>{
   ['logo-versao','login-versao-txt'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1994,10 +1994,21 @@ async function buscarArquivoAnoGH(nomeArquivo){
 async function carregarComprasDosAnosPadrao(anosIndice){
   let compras=[];
   for(const ano of anosPadraoParaCarregar()){
-    _anosCarregadosCompras.add(ano);
+    // CRÍTICO (21/08/2026 — bug real que zerou compras_pf_2026.json,
+    // 1269 registros perdidos e restaurados manualmente): antes,
+    // _anosCarregadosCompras.add(ano) rodava ANTES do await abaixo — ou
+    // seja, o ano já entrava na lista de "carregado" mesmo que a busca no
+    // GitHub ainda estivesse em andamento (ou tivesse falhado). Se
+    // qualquer ação de salvar (mesmo sem relação com compras) disparasse
+    // saveToGitHub() nesse intervalo, salvarComprasPorAno() via esse ano
+    // como "carregado" mas com `compras` ainda vazio na memória, e
+    // gravava um array vazio por cima do arquivo remoto real. Agora só
+    // marca como carregado DEPOIS da busca confirmar sucesso (dentro do
+    // if(res){...} abaixo).
     if(anosIndice && !anosIndice.includes(ano)) continue;
     const res=await buscarArquivoAnoGH(ARQ_ANO('compras',ano));
     if(res){
+      _anosCarregadosCompras.add(ano);
       _shaAnosCompras[ano]=res.sha;
       // Baseline = a "última verdade conhecida" desse ano — usada pra
       // decidir, na hora de salvar, o que foi alteração DESTA sessão e o que
@@ -2127,6 +2138,20 @@ async function salvarComprasPorAno(comprasLocal){
         listaParaGravar = rMerge.mesclado;
         conflitos = rMerge.conflitos;
         houveMerge = true;
+      }
+      // Trava de segurança (21/08/2026, mesmo espírito da trava que já
+      // existe pro campo "cartao" vazio — ver comentário em 02/08/2026):
+      // nunca grava uma lista VAZIA por cima de um ano que a própria sessão
+      // já sabe que tinha registros (baseline carregado do GitHub nesta
+      // sessão) — bloqueia e avisa, em vez de apagar em silêncio. Não
+      // impede excluir o ÚLTIMO registro de um ano manualmente (isso passa
+      // por listaParaGravar.length>0 na prática, já que exclusão remove 1
+      // item de cada vez); só pega o caso do array inteiro vindo vazio por
+      // engano (ex: ano marcado como carregado antes da hora, ver fix acima).
+      if(listaParaGravar.length===0 && (baselineAno||[]).length>0){
+        console.error(`🚨 BLOQUEADO: tentativa de gravar compras_${TIPO_DADOS}_${ano}.json vazio por cima de ${baselineAno.length} registro(s) conhecido(s) — provável bug de carregamento, não uma exclusão real.`);
+        showToast(`🚨 Bloqueado: as compras de ${ano} sumiram da memória antes de salvar — nada foi gravado, pra não apagar seus dados. Feche e abra o app de novo.`, true);
+        return false;
       }
       const conteudoAno=btoa(unescape(encodeURIComponent(JSON.stringify(listaParaGravar))));
       const bodyAno={message:`Compras ${ano} (${TIPO_DADOS})`, content:conteudoAno, branch:GH_BRANCH, ...(shaAno?{sha:shaAno}:{})};
